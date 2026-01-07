@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #059669; /* Emerald 600 */
+  --color-primary-dark: #047857; /* Emerald 700 */
+  --color-secondary: #d97706; /* Amber 600 (Gold-ish) */
+  --color-secondary-dark: #b45309; /* Amber 700 */
+  --color-background: #f8fafc; /* Slate 50 */
+  --color-surface: #ffffff;
+  --color-border: #f1f5f9; /* Slate 100 - Extra soft border */
+  --color-fg-main: #1e293b; /* Slate 800 */
+  --color-fg-muted: #334155; /* Slate 700 - Even better contrast for Light Mode */
+  --font-sans: 'Outfit', sans-serif;
+}
+
+:root {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-fg-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark {
+  --color-background: #0f172a; /* Slate 900 */
+  --color-surface: #1e293b; /* Slate 800 */
+  --color-border: #334155; /* Slate 700 - Subtle dark border */
+  --color-fg-main: #f1f5f9; /* Slate 100 */
+  --color-fg-muted: #94a3b8; /* Slate 400 */
+  color: var(--color-fg-main);
+  color-scheme: dark;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.6); /* Slate 900 */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* Slate 300 */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* Slate 400 */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.3s ease-out forwards;
+}
+
+/* Gradient Text */
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(to right, var(--color-primary), var(--color-primary-dark));
+}
+
+.text-gradient-gold {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(to right, var(--color-secondary), var(--color-secondary-dark));
+}
