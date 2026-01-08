@@ -53,11 +53,14 @@ const PortalLayout = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-12 text-[13px] font-black text-slate-700 uppercase tracking-widest">
-               <a href="#hero" className="text-[#059669] border-b-2 border-[#059669] pb-1 hover:opacity-80 transition-all">Home</a>
-               <a href="#academic" className="hover:text-[#059669] transition-all">Course</a>
-               <a href="#gallery" className="hover:text-[#059669] transition-all">Gallery</a>
-               <a href="#about" className="hover:text-[#059669] transition-all">About Us</a>
+            <nav className="hidden lg:flex items-center gap-6 text-[9px] font-black text-slate-700 uppercase tracking-widest leading-loose">
+               <a href="#hero" className="text-[#059669] border-b-2 border-[#059669] pb-1 hover:opacity-80 transition-all whitespace-nowrap">হোম</a>
+               <a href="#about" className="hover:text-[#059669] transition-all whitespace-nowrap">আমাদের সম্পর্কে</a>
+               <a href="#academic" className="hover:text-[#059669] transition-all whitespace-nowrap">ক্লাস কারিকুলাম</a>
+               <a href="#students" className="hover:text-[#059669] transition-all whitespace-nowrap">আমাদের শিক্ষার্থী</a>
+               <a href="#teachers" className="hover:text-[#059669] transition-all whitespace-nowrap">আমাদের শিক্ষক</a>
+               <a href="#gallery" className="hover:text-[#059669] transition-all whitespace-nowrap">ভিডিও গ্যালারি</a>
+               <a href="#photos" className="hover:text-[#059669] transition-all whitespace-nowrap">ফটো গ্যালারি</a>
             </nav>
 
             {/* Mobile Menu Button */}
@@ -71,12 +74,15 @@ const PortalLayout = () => {
 
           {/* Mobile Navigation Menu Overlay */}
           <div className={`lg:hidden fixed inset-0 top-[110px] bg-white z-[90] transition-all duration-350 border-t border-slate-100 ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}>
-            <nav className="flex flex-col items-center justify-center h-full gap-8 text-lg font-black text-slate-700 uppercase tracking-[0.2em]">
-               <a href="#hero" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">Home</a>
-               <a href="#academic" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">Course</a>
-               <a href="#gallery" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">Gallery</a>
-               <a href="#about" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">About Us</a>
-               <div className="mt-10 px-8 py-3 bg-[#059669] text-white rounded-full text-sm">ভর্তি আবেদন</div>
+            <nav className="flex flex-col items-center justify-center py-10 gap-6 text-sm font-black text-slate-700 uppercase tracking-[0.2em] overflow-y-auto max-h-[calc(100vh-110px)]">
+               <a href="#hero" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">হোম</a>
+               <a href="#about" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">আমাদের সম্পর্কে</a>
+               <a href="#academic" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">ক্লাস কারিকুলাম</a>
+               <a href="#students" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">আমাদের শিক্ষার্থী</a>
+               <a href="#teachers" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">আমাদের শিক্ষক</a>
+               <a href="#gallery" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">ভিডিও গ্যালারি</a>
+               <a href="#photos" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">ফটো গ্যালারি</a>
+               <Link to="online-admission" onClick={() => setIsMenuOpen(false)} className="mt-4 px-8 py-3 bg-[#059669] text-white rounded-full text-xs">অনলাইন ভর্তি ফরম</Link>
             </nav>
           </div>
         </header>
@@ -105,7 +111,7 @@ const PortalLayout = () => {
             <div>
               <h4 className="font-black text-white mb-10 text-xl italic underline decoration-[#059669] underline-offset-8">Quick Info</h4>
               <ul className="space-y-6 text-sm font-bold opacity-70 italic tracking-wide">
-                <li><a href="#" className="hover:text-white transition-colors">Admission</a></li>
+                <li><Link to="online-admission" className="hover:text-white transition-colors">Admission</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">Our History</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Portfolio</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Career</a></li>

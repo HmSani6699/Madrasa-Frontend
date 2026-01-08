@@ -164,10 +164,10 @@ const MadrasaPortal = () => {
                   </p>
                   
                   <div className="flex flex-col sm:flex-row flex-wrap justify-center md:justify-start gap-4 md:gap-6">
-                     <button className="px-6 md:px-10 py-3 md:py-4 bg-[#059669] text-white font-black text-xs md:text-sm rounded-full shadow-2xl shadow-emerald-900/40 flex items-center justify-center gap-2 hover:scale-105 transition-all">
+                     <Link to="admission" className="px-6 md:px-10 py-3 md:py-4 bg-[#059669] text-white font-black text-xs md:text-sm rounded-full shadow-2xl shadow-emerald-900/40 flex items-center justify-center gap-2 hover:scale-105 transition-all">
                        ভর্তি আবেদনের নিয়মাবলী
                        <ArrowRight className="w-4 h-4" />
-                     </button>
+                     </Link>
                      <button className="px-6 md:px-10 py-3 md:py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-xs md:text-sm rounded-full flex items-center justify-center gap-2 hover:bg-white/20 transition-all">
                        আমাদের সম্পর্কে জানুন
                      </button>
@@ -290,7 +290,7 @@ const MadrasaPortal = () => {
       </section>
 
       {/* 5. Student Showcase Slider */}
-      <section className="py-24 bg-white">
+      <section id="students" className="py-24 bg-white">
          <div className="max-w-[1400px] mx-auto px-6">
             <div className="text-center mb-16 px-4">
                <span className="inline-block px-4 py-1.5 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-full mb-4">আমাদের শিক্ষার্থী</span>
@@ -350,7 +350,7 @@ const MadrasaPortal = () => {
       </section>
 
       {/* 6. Teachers Section Slider */}
-      <section className="py-24 bg-[#f8fafc]">
+      <section id="teachers" className="py-24 bg-[#f8fafc]">
          <div className="max-w-[1400px] mx-auto px-6">
             <div className="text-center mb-16 px-4">
                <span className="inline-block px-4 py-1.5 bg-emerald-50 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-4">আমাদের শিক্ষক</span>
@@ -476,7 +476,7 @@ const MadrasaPortal = () => {
          </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section id="photos" className="py-24 bg-white">
          <div className="max-w-[1200px] mx-auto px-6 text-center">
             <span className="inline-block px-4 py-1.5 bg-emerald-50 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-4">ফটো গ্যালারি</span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic mb-16">আমাদের একাডেমির ছবি গ্যালারি ঘুরে দেখুন</h2>

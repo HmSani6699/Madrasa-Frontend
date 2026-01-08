@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Login from "../Pages/Auth/Login";
 import AuthLayout from "../layouts/AuthLayout";
 import MainLayout from "../layouts/MainLayout";
@@ -41,6 +41,8 @@ const flattenRoutes = (navItems) => {
 
 import MadrasaPortal from "../Pages/Portal/MadrasaPortal";
 import AboutUs from "../Pages/Portal/AboutUs";
+import AdmissionGuidelines from "../Pages/Portal/AdmissionGuidelines";
+import OnlineAdmissionForm from "../Pages/Portal/OnlineAdmissionForm";
 import PortalLayout from "../layouts/PortalLayout";
 
 const adminRoutes = flattenRoutes(adminNavigation);
@@ -55,7 +57,9 @@ const router = createBrowserRouter([
     element: <PortalLayout />,
     children: [
       { index: true, element: <MadrasaPortal /> },
-      { path: "about", element: <AboutUs /> }
+      { path: "about", element: <AboutUs /> },
+      { path: "admission", element: <AdmissionGuidelines /> },
+      { path: "online-admission", element: <OnlineAdmissionForm /> }
     ]
   },
   {
