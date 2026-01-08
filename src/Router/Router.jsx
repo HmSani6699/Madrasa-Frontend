@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Login from "../Pages/Auth/Login";
+// import Login from "../Pages/Auth/Login";
 import AuthLayout from "../layouts/AuthLayout";
 import MainLayout from "../layouts/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
@@ -44,6 +44,7 @@ import AboutUs from "../Pages/Portal/AboutUs";
 import AdmissionGuidelines from "../Pages/Portal/AdmissionGuidelines";
 import OnlineAdmissionForm from "../Pages/Portal/OnlineAdmissionForm";
 import PortalLayout from "../layouts/PortalLayout";
+import Login from "../pages/Auth/Login";
 
 const adminRoutes = flattenRoutes(adminNavigation);
 

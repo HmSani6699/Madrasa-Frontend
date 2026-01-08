@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Outlet, Link } from "react-router";
+import { useState, useEffect, useRef } from "react";
+import { Outlet, Link, useLocation } from "react-router";
 import { 
   Phone, 
   Mail, 
@@ -13,6 +13,49 @@ import {
 
 const PortalLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("hero");
+  const location = useLocation();
+  const observer = useRef(null);
+
+  useEffect(() => {
+    // Only run intersection observer on the portal home page sections
+    // This assumes the sections exist on the home page (MadrasaPortal)
+    const options = {
+      root: null,
+      rootMargin: "-20% 0px -60% 0px",
+      threshold: [0, 0.1, 0.2]
+    };
+
+    const handleIntersect = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    observer.current = new IntersectionObserver(handleIntersect, options);
+
+    const sections = ["hero", "about", "academic", "students", "teachers", "gallery", "photos"];
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.current.observe(el);
+    });
+
+    return () => {
+      if (observer.current) observer.current.disconnect();
+    };
+  }, [location.pathname]);
+
+  const navItems = [
+    { id: "hero", label: "হোম" },
+    { id: "about", label: "আমাদের সম্পর্কে" },
+    { id: "academic", label: "ক্লাস কারিকুলাম" },
+    { id: "students", label: "শিক্ষার্থী" },
+    { id: "teachers", label: "শিক্ষক" },
+    { id: "gallery", label: "ভিডিও" },
+    { id: "photos", label: "ফটো গ্যালারি" },
+  ];
 
   return (
     <div className="min-h-screen bg-white transition-colors duration-300 font-sans">
@@ -53,14 +96,20 @@ const PortalLayout = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-6 text-[9px] font-black text-slate-700 uppercase tracking-widest leading-loose">
-               <a href="#hero" className="text-[#059669] border-b-2 border-[#059669] pb-1 hover:opacity-80 transition-all whitespace-nowrap">হোম</a>
-               <a href="#about" className="hover:text-[#059669] transition-all whitespace-nowrap">আমাদের সম্পর্কে</a>
-               <a href="#academic" className="hover:text-[#059669] transition-all whitespace-nowrap">ক্লাস কারিকুলাম</a>
-               <a href="#students" className="hover:text-[#059669] transition-all whitespace-nowrap">আমাদের শিক্ষার্থী</a>
-               <a href="#teachers" className="hover:text-[#059669] transition-all whitespace-nowrap">আমাদের শিক্ষক</a>
-               <a href="#gallery" className="hover:text-[#059669] transition-all whitespace-nowrap">ভিডিও গ্যালারি</a>
-               <a href="#photos" className="hover:text-[#059669] transition-all whitespace-nowrap">ফটো গ্যালারি</a>
+            <nav className="hidden lg:flex items-center gap-6 text-[11px] font-black text-slate-700 uppercase tracking-widest leading-loose">
+               {navItems.map((item) => (
+                  <a 
+                    key={item.id}
+                    href={`#${item.id}`} 
+                    className={`transition-all whitespace-nowrap pb-1 ${
+                      activeSection === item.id 
+                        ? "text-[#059669] border-b-2 border-[#059669]" 
+                        : "hover:text-[#059669] border-b-2 border-transparent"
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+               ))}
             </nav>
 
             {/* Mobile Menu Button */}
@@ -75,13 +124,16 @@ const PortalLayout = () => {
           {/* Mobile Navigation Menu Overlay */}
           <div className={`lg:hidden fixed inset-0 top-[110px] bg-white z-[90] transition-all duration-350 border-t border-slate-100 ${isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"}`}>
             <nav className="flex flex-col items-center justify-center py-10 gap-6 text-sm font-black text-slate-700 uppercase tracking-[0.2em] overflow-y-auto max-h-[calc(100vh-110px)]">
-               <a href="#hero" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">হোম</a>
-               <a href="#about" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">আমাদের সম্পর্কে</a>
-               <a href="#academic" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">ক্লাস কারিকুলাম</a>
-               <a href="#students" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">আমাদের শিক্ষার্থী</a>
-               <a href="#teachers" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">আমাদের শিক্ষক</a>
-               <a href="#gallery" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">ভিডিও গ্যালারি</a>
-               <a href="#photos" onClick={() => setIsMenuOpen(false)} className="hover:text-[#059669] transition-all">ফটো গ্যালারি</a>
+                {navItems.map((item) => (
+                  <a 
+                    key={item.id}
+                    href={`#${item.id}`} 
+                    onClick={() => setIsMenuOpen(false)} 
+                    className={`transition-all ${activeSection === item.id ? "text-[#059669]" : "hover:text-[#059669]"}`}
+                  >
+                    {item.label}
+                  </a>
+                ))}
                <Link to="online-admission" onClick={() => setIsMenuOpen(false)} className="mt-4 px-8 py-3 bg-[#059669] text-white rounded-full text-xs">অনলাইন ভর্তি ফরম</Link>
             </nav>
           </div>
