@@ -16,80 +16,119 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
-  
-  const dropdownRef = useRef(null);
+   const { theme, toggleTheme } = useTheme();
+   const { t, i18n } = useTranslation();
+   const [isFullScreen, setIsFullScreen] = useState(false);
+   const [activeDropdown, setActiveDropdown] = useState(null);
+   
+   const dropdownRef = useRef(null);
+ 
+   const toggleFullScreen = () => {
+     if (!document.fullscreenElement) {
+       document.documentElement.requestFullscreen();
+       setIsFullScreen(true);
+     } else {
+       if (document.exitFullscreen) {
+         document.exitFullscreen();
+         setIsFullScreen(false);
+       }
+     }
+   };
+ 
+   useEffect(() => {
+     const handleClickOutside = (event) => {
+       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+         setActiveDropdown(null)
+       }
+     };
+     document.addEventListener("mousedown", handleClickOutside);
+     return () => document.removeEventListener("mousedown", handleClickOutside);
+   }, []);
+ 
+   const toggleDropdown = (name) => {
+     setActiveDropdown(activeDropdown === name ? null : name);
+   };
+ 
+   const notifications = [
+     { title: "New Admission", time: "5 min ago", desc: "A new student has registered." },
+     { title: "Staff Leave", time: "1 hour ago", desc: "Teacher Omar requested leave." },
+     { title: "Fee Collection", time: "2 hours ago", desc: "Daily collection report is ready." },
+   ];
+ 
+   const messages = [
+     { from: "Principal Office", time: "10:30 AM", msg: "Meeting at 2:00 PM today." },
+     { from: "Accounts", time: "Yesterday", msg: "Monthly budget needs review." },
+   ];
+ 
+   return (
+     <header className="h-[73px] bg-surface/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 md:px-6 fixed top-0 right-0 left-0 md:left-72 z-30 transition-all duration-300">
+       <div className="flex items-center gap-4">
+         <button 
+           onClick={onMenuClick}
+           className="md:hidden p-2 text-fg-muted hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+         >
+           <Menu className="w-6 h-6" />
+         </button>
+         
+         <Link 
+           to="/portal/global-international" 
+           target="_blank"
+           className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-xl transition-all border border-primary/10"
+         >
+           <Globe className="w-4 h-4" />
+           <span className="text-xs font-bold uppercase tracking-wider">{t('navbar.view_portal')}</span>
+         </Link>
+       </div>
+ 
+       <div className="flex items-center gap-2 md:gap-4 ml-auto" ref={dropdownRef}>
+         <div className="flex items-center gap-1 md:gap-2 pr-2 md:pr-4 border-r border-border">
+            {/* Language Switcher */}
+            {/* Language Switcher Dropdown */}
+            <div className="relative">
+              <button 
+                onClick={() => toggleDropdown('language')}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all font-bold text-xs uppercase ${activeDropdown === 'language' ? 'bg-primary/10 text-primary' : 'text-fg-muted hover:text-primary hover:bg-primary/5'}`}
+                title="Switch Language"
+              >
+                <Globe className="w-4 h-4" />
+                <span>{i18n.language === 'en' ? 'English' : 'বাংলা'}</span>
+                <ChevronDown className={`w-3 h-3 transition-transform ${activeDropdown === 'language' ? 'rotate-180' : ''}`} />
+              </button>
 
-  const toggleFullScreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-      setIsFullScreen(true);
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-        setIsFullScreen(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setActiveDropdown(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const toggleDropdown = (name) => {
-    setActiveDropdown(activeDropdown === name ? null : name);
-  };
-
-  const notifications = [
-    { title: "New Admission", time: "5 min ago", desc: "A new student has registered." },
-    { title: "Staff Leave", time: "1 hour ago", desc: "Teacher Omar requested leave." },
-    { title: "Fee Collection", time: "2 hours ago", desc: "Daily collection report is ready." },
-  ];
-
-  const messages = [
-    { from: "Principal Office", time: "10:30 AM", msg: "Meeting at 2:00 PM today." },
-    { from: "Accounts", time: "Yesterday", msg: "Monthly budget needs review." },
-  ];
-
-  return (
-    <header className="h-[73px] bg-surface/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 md:px-6 fixed top-0 right-0 left-0 md:left-72 z-30 transition-all duration-300">
-      <div className="flex items-center gap-4">
-        <button 
-          onClick={onMenuClick}
-          className="md:hidden p-2 text-fg-muted hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
-        >
-          <Menu className="w-6 h-6" />
-        </button>
-        
-        <Link 
-          to="/portal/global-international" 
-          target="_blank"
-          className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-xl transition-all border border-primary/10"
-        >
-          <Globe className="w-4 h-4" />
-          <span className="text-xs font-bold uppercase tracking-wider">View Portal</span>
-        </Link>
-      </div>
-
-      <div className="flex items-center gap-2 md:gap-4 ml-auto" ref={dropdownRef}>
-        <div className="flex items-center gap-1 md:gap-2 pr-2 md:pr-4 border-r border-border">
-           <button 
-             onClick={toggleTheme}
-             className="p-2.5 text-fg-muted hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
-           >
-             {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5 text-amber-500" />}
-           </button>
+              {activeDropdown === 'language' && (
+                <div className="absolute right-0 top-full mt-3 w-40 bg-surface rounded-2xl shadow-xl border border-border py-2 animate-fade-in-down origin-top-right overflow-hidden z-50">
+                  <button 
+                    onClick={() => {
+                      i18n.changeLanguage('bn');
+                      setActiveDropdown(null);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm font-medium hover:bg-primary/5 transition-colors ${i18n.language === 'bn' ? 'text-primary' : 'text-fg-muted'}`}
+                  >
+                    বাংলা (Bengali)
+                  </button>
+                  <button 
+                    onClick={() => {
+                      i18n.changeLanguage('en');
+                      setActiveDropdown(null);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm font-medium hover:bg-primary/5 transition-colors ${i18n.language === 'en' ? 'text-primary' : 'text-fg-muted'}`}
+                  >
+                    English
+                  </button>
+                </div>
+              )}
+            </div>
+ 
+            <button 
+              onClick={toggleTheme}
+              className="p-2.5 text-fg-muted hover:text-primary hover:bg-primary/5 rounded-xl transition-all"
+            >
+              {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5 text-amber-500" />}
+            </button>
 
            <div className="relative">
              <button 

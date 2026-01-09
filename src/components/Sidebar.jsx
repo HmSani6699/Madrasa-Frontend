@@ -12,13 +12,26 @@ import {
   X
 } from "lucide-react";
 import { adminNavigation } from "../navigation/adminNavigation";
+import { teacherNavigation } from "../navigation/teacherNavigation";
+import { studentNavigation } from "../navigation/studentNavigation";
+import { guardianNavigation } from "../navigation/guardianNavigation";
+import { talimatNavigation } from "../navigation/talimatNavigation";
+import { accountingNavigation } from "../navigation/accountingNavigation";
+import { useTranslation } from "react-i18next";
 
 const SidebarItem = ({ item, level = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation();
   const hasChildren = item.children && item.children.length > 0;
   const isActive = item.path && location.pathname === item.path;
   
+  // Helper to generate translation keys from English names
+  const getTransKey = (name) => {
+    const key = name.toLowerCase().replace(/ /g, '_').replace(/&/g, '').replace(/_+/g, '_');
+    return `sidebar.${key}`;
+  };
+
   const isChildActive = (children) => {
     if (!children) return false;
     return children.some(child => 
@@ -57,7 +70,7 @@ const SidebarItem = ({ item, level = 0 }) => {
              ) : (
                <div className="w-8" />
              )}
-             <span className="truncate font-medium">{item.name}</span>
+             <span className="truncate font-medium">{t(getTransKey(item.name), item.name)}</span>
            </div>
            {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-fg-secondary group-hover:text-primary" /> : <ChevronRight className="w-3.5 h-3.5 text-fg-secondary group-hover:text-primary" />}
         </button>
@@ -101,13 +114,14 @@ const SidebarItem = ({ item, level = 0 }) => {
       ) : (
         <div className="w-8" />
       )}
-      <span className="truncate font-medium">{item.name}</span>
+      <span className="truncate font-medium">{t(getTransKey(item.name), item.name)}</span>
     </NavLink>
   );
 };
 
 const Sidebar = ({ isMobileOpen, closeMobile }) => {
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   
   const superAdminLinks = [
     { title: "Main", links: [
@@ -125,14 +139,30 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
     { title: "Management", links: adminNavigation.slice(10) }
   ];
 
+  const teacherLinks = [
+    { title: "Main", links: teacherNavigation.slice(0, 1) },
+    { title: "Academic", links: teacherNavigation.slice(1, 5) },
+    { title: "Others", links: teacherNavigation.slice(5) }
+  ];
+
   const getLinks = () => {
     switch (user?.role) {
       case "super_admin":
         return superAdminLinks;
       case "admin":
         return adminLinks;
+      case "teacher":
+        return teacherLinks;
+      case "student":
+        return [{ title: "Student Portal", links: studentNavigation }];
+      case "guardian":
+        return [{ title: "Guardian Portal", links: guardianNavigation }];
+      case "talimat":
+        return [{ title: "Education Secretary", links: talimatNavigation }];
+      case "accountant":
+        return [{ title: "Accountant Portal", links: accountingNavigation }];
       default:
-        return [{ title: "Main", links: [{ name: "Dashboard", path: "/admin", icon: LayoutDashboard }] }];
+        return [{ title: "Main", links: [{ name: "Dashboard", path: "/teacher", icon: LayoutDashboard }] }];
     }
   };
 
@@ -179,7 +209,7 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
         {sections.map((section, sIndex) => (
           <div key={sIndex}>
             <div className="flex items-center gap-3 px-3 mb-3">
-              <span className="text-[11px] font-bold text-fg-muted uppercase tracking-widest">{section.title}</span>
+              <span className="text-[11px] font-bold text-fg-muted uppercase tracking-widest">{t(`sidebar.${section.title.toLowerCase().replace(/ /g, '_')}`, section.title)}</span>
               <div className="h-[1px] flex-1 bg-border" />
             </div>
             <div className="space-y-0.5">
@@ -200,7 +230,7 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
           className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all duration-200 border border-transparent hover:border-red-100 dark:hover:border-red-900/30"
         >
           <LogOut className="w-4 h-4" />
-          Sign Out
+          {t('navbar.sign_out')}
         </button>
       </div>
     </aside>

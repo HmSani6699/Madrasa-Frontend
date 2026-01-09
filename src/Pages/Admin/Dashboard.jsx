@@ -1,17 +1,38 @@
-import { 
+import {
     Calendar,
     ArrowUpRight,
     TrendingUp,
-    Zap
+    Zap,
+    Users, 
+    GraduationCap, 
+    Wallet, 
+    CalendarCheck,
+    Clock,
+    Bell,
+    Search,
+    BookOpen
 } from "lucide-react";
 import GreetingHeader from "../../components/Dashboard/GreetingHeader";
 import DailyPulse from "../../components/Dashboard/DailyPulse";
 import ActionCenter from "../../components/Dashboard/ActionCenter";
 import RecentAdmissions from "../../components/RecentAdmissions";
+import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const AdminDashboard = () => {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+
   // Mock Attendance Data
   const attendanceData = [85, 88, 92, 86, 90, 89, 94];
+
+  // Dummy Data
+  const stats = [
+    { title: t('dashboard.total_students'), value: "1,250", icon: Users, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
+    { title: t('dashboard.active_staff'), value: "48", icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50 dark:bg-purple-900/20" },
+    { title: t('dashboard.daily_collection'), value: "৳ 25,400", icon: Wallet, color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
+    { title: t('dashboard.attendance_rate'), value: "94%", icon: CalendarCheck, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/20" },
+  ];
 
   return (
     <div className="animate-in fade-in duration-700 pb-20 px-2 lg:px-0">

@@ -10,8 +10,10 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
+import { usePortalSettings } from "../../context/PortalSettingsContext";
 
 const MadrasaPortal = () => {
+  const { settings } = usePortalSettings();
   // --- Responsive Window Logic ---
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   useEffect(() => {
@@ -32,27 +34,17 @@ const MadrasaPortal = () => {
   const visibleVideos = getVisibleItems('videos');
 
   // --- Hero Slider State & Logic ---
+  // --- Dynamic Slider Logic ---
+  const slides = settings.hero.slides;
+  const students = settings.students.items;
+  const teachers = settings.teachers.items;
+  const videos = settings.gallery.videos;
+  const stats = settings.stats;
+
   const [currentSlide, setCurrentSlide] = useState(0);
-  const slides = [
-    {
-      image: "https://plus.unsplash.com/premium_photo-1661884485590-b186b518779d?q=80&w=2070",
-      title: "আল-কুরআনুল কারীম একাডেমি",
-      subtitle: "নাজরা বিভাগ, হিফজ বিভাগ, মাদ্দে একাডেমি",
-      accent: "সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2070",
-      title: "আধুনিক দ্বীনি শিক্ষা প্রতিষ্ঠান",
-      subtitle: "উন্নত পরিবেশে সঠিক তিলাওয়াত ও হিফজ শিক্ষা",
-      accent: "অভিজ্ঞ হাফেজ ও কারীগণের তত্ত্বাবধানে পরিচালিত"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?q=80&w=1974",
-      title: "আপনার সন্তানের উজ্জ্বল ভবিষ্যৎ",
-      subtitle: "হৃদয়ে ঈমান ও আমলের চর্চা ই আমাদের লক্ষ্য",
-      accent: "সুন্দর ও সুশৃঙ্খল পরিবেশের নিশ্চয়তা"
-    }
-  ];
+  const [studentIndex, setStudentIndex] = useState(0);
+  const [teacherIndex, setTeacherIndex] = useState(0);
+  const [videoIndex, setVideoIndex] = useState(0);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
@@ -67,68 +59,17 @@ const MadrasaPortal = () => {
     return () => clearInterval(timer);
   }, [nextSlide]);
 
-  // --- Student Slider State & Logic ---
-  const [studentIndex, setStudentIndex] = useState(0);
-  const students = [
-    { name: "হযরত আলী", dept: "হিফজ বিভাগ", id: 1, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974" },
-    { name: "ওমর ফারুক", dept: "নাজরা বিভাগ", id: 2, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974" },
-    { name: "উসমান গনী", dept: "হিফজ বিভাগ", id: 3, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974" },
-    { name: "আবু বকর", dept: "মাদ্দে একাডেমি", id: 4, image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1974" },
-    { name: "খালেদ বিন ওয়ালিদ", dept: "হিফজ বিভাগ", id: 5, image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1974" },
-    { name: "তারেক বিন জিয়াদ", dept: "নাজরা বিভাগ", id: 6, image: "https://images.unsplash.com/photo-1542343633-ce3256f2183e?q=80&w=1974" },
-    { name: "সালাহউদ্দিন আইয়ুবী", dept: "হিফজ বিভাগ", id: 7, image: "https://images.unsplash.com/photo-1503443207922-dff7d543fd0e?q=80&w=1974" },
-    { name: "মুহাম্মদ আল-ফাতিহ", dept: "মাদ্দে একাডেমি", id: 8, image: "https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?q=80&w=1974" }
-  ];
-
   const maxStudentIndex = Math.max(0, students.length - visibleStudents);
-
-  const nextStudent = () => {
-    setStudentIndex((prev) => (prev >= maxStudentIndex ? 0 : prev + 1));
-  };
-
-  const prevStudent = () => {
-    setStudentIndex((prev) => (prev <= 0 ? maxStudentIndex : prev - 1));
-  };
-
-  // --- Teacher Slider State & Logic ---
-  const [teacherIndex, setTeacherIndex] = useState(0);
-  const teachers = [
-    { name: "মুফতি আব্দুর রহমান", role: "সিনিয়র শিক্ষক", image: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=1974" },
-    { name: "হাফেজ মাওলানা ওবায়দুল্লাহ", role: "হিফজ বিভাগীয় প্রধান", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974" },
-    { name: "মাওলানা মাহমুদ হাসান", role: "আরবি সাহিত্যিক", image: "https://images.unsplash.com/photo-1463453091185-61582044d556?q=80&w=1974" },
-    { name: "মাওলানা সাইফুল ইসলাম", role: "সিনিয়র মুহাদ্দিস", image: "https://images.unsplash.com/photo-1504257432389-52343af06ae3?q=80&w=1974" },
-    { name: "মুফতি সালমান আহমদ", role: "শাইখুল হাদিস", image: "https://images.unsplash.com/photo-1556157382-97dee2dcbfe6?q=80&w=1974" }
-  ];
+  const nextStudent = () => setStudentIndex((prev) => (prev >= maxStudentIndex ? 0 : prev + 1));
+  const prevStudent = () => setStudentIndex((prev) => (prev <= 0 ? maxStudentIndex : prev - 1));
 
   const maxTeacherIndex = Math.max(0, teachers.length - visibleTeachers);
-
-  const nextTeacher = () => {
-    setTeacherIndex((prev) => (prev >= maxTeacherIndex ? 0 : prev + 1));
-  };
-
-  const prevTeacher = () => {
-    setTeacherIndex((prev) => (prev <= 0 ? maxTeacherIndex : prev - 1));
-  };
-
-  // --- Video Slider State & Logic ---
-  const [videoIndex, setVideoIndex] = useState(0);
-  const videos = [
-    { title: "বার্ষিক পুরষ্কার বিতরণী অনুষ্ঠান ২০২৪", thumb: "https://images.unsplash.com/photo-1523050353055-f112d624bf3b?q=80&w=2070" },
-    { title: "হিফজ প্রতিযোগিতার বিশেষ মুহূর্ত", thumb: "https://images.unsplash.com/photo-1540561214051-518451f2f87a?q=80&w=1974" },
-    { title: "উন্নত দ্বীনি শিক্ষা ও আধুনিক পরিবেশ", thumb: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2070" },
-    { title: "মাদরাসা প্রাঙ্গণে বিশেষ দোয়ার মাহফিল", thumb: "https://images.unsplash.com/photo-1563911302283-d2bc1d9e7290?q=80&w=1976" },
-    { title: "খতমে কুরআন ও ইফতার মাহফিল", thumb: "https://images.unsplash.com/photo-1582213702164-ff884d00a84c?q=80&w=2070" }
-  ];
+  const nextTeacher = () => setTeacherIndex((prev) => (prev >= maxTeacherIndex ? 0 : prev + 1));
+  const prevTeacher = () => setTeacherIndex((prev) => (prev <= 0 ? maxTeacherIndex : prev - 1));
 
   const maxVideoIndex = Math.max(0, videos.length - visibleVideos);
-
-  const nextVideo = () => {
-    setVideoIndex((prev) => (prev >= maxVideoIndex ? 0 : prev + 1));
-  };
-
-  const prevVideo = () => {
-    setVideoIndex((prev) => (prev <= 0 ? maxVideoIndex : prev - 1));
-  };
+  const nextVideo = () => setVideoIndex((prev) => (prev >= maxVideoIndex ? 0 : prev + 1));
+  const prevVideo = () => setVideoIndex((prev) => (prev <= 0 ? maxVideoIndex : prev - 1));
 
   return (
     <div className="overflow-hidden font-sans bg-white pb-20">
@@ -209,15 +150,10 @@ const MadrasaPortal = () => {
 
       {/* 2. Overlapping Stats Cards */}
       <div className="max-w-[1000px] mx-auto px-4 relative z-30 -mb-10 md:-mb-20 mt-12 md:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-         {[
-           { val: "৫০০+", label: "শিক্ষার্থী", icon: Users },
-           { val: "৩০+", label: "শিক্ষক", icon: GraduationCap },
-           { val: "১৫+", label: "শ্রেণী", icon: BookOpen },
-           { val: "১০+", label: "পুরস্কার", icon: Award }
-         ].map((stat, i) => (
+         {stats.map((stat, i) => (
            <div key={i} className="bg-white p-6 md:p-8 rounded-3xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-50 text-center hover:translate-y-[-5px] transition-all">
               <div className="w-12 h-12 bg-emerald-50 text-[#059669] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-100">
-                 <stat.icon className="w-6 h-6" />
+                 {i === 0 ? <Users className="w-6 h-6" /> : i === 1 ? <GraduationCap className="w-6 h-6" /> : i === 2 ? <BookOpen className="w-6 h-6" /> : <Award className="w-6 h-6" />}
               </div>
               <h3 className="text-3xl font-black text-[#042f2c] mb-1 italic">{stat.val}</h3>
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
@@ -230,27 +166,21 @@ const MadrasaPortal = () => {
          <div className="max-w-[1200px] mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="flex-1 relative mb-12 lg:mb-0">
                 <div className="rounded-[3rem] overflow-hidden shadow-2xl bg-white p-3 border border-slate-100">
-                   <img src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2070" className="w-full h-auto rounded-[2.5rem]" alt="Madrasa Campus" />
+                   <img src={settings.about.mainImage} className="w-full h-auto rounded-[2.5rem]" alt="Madrasa Campus" />
                 </div>
                <div className="absolute bottom-[-30px] right-2 sm:right-[-20px] md:right-[-40px] w-32 h-32 md:w-48 md:h-48 rounded-full border-[6px] md:border-[10px] border-white shadow-2xl overflow-hidden z-20 transition-all duration-500">
-                  <img src="https://images.unsplash.com/photo-1540561214051-518451f2f87a?q=80&w=1974" className="w-full h-full object-cover bg-emerald-50" alt="Principal" />
+                  <img src={settings.about.principalImage} className="w-full h-full object-cover bg-emerald-50" alt="Principal" />
                </div>
             </div>
             <div className="flex-1">
-               <span className="inline-block px-4 py-1.5 bg-emerald-50 border border-emerald-100 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-6">আমাদের সম্পর্কে</span>
-               <h2 className="text-2xl md:text-[30px] font-black text-[#042f2c] mb-6 md:mb-8 italic leading-[1.2]"> আধুনিক সুশিক্ষিত ও আদর্শ জাতির অন্যতম প্রধান কারিগর গঠন</h2>
+               <span className="inline-block px-4 py-1.5 bg-emerald-50 border border-emerald-100 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-6">{settings.about.badge}</span>
+               <h2 className="text-2xl md:text-[30px] font-black text-[#042f2c] mb-6 md:mb-8 italic leading-[1.2]">{settings.about.title}</h2>
                <p className="text-slate-600 font-medium mb-8 md:mb-10 leading-relaxed text-base md:text-lg italic">
-                 আল-কুরআনুল কারীম একাডেমি একটি উত্তর আধুনিক দ্বীনি প্রতিষ্ঠান। যেখানে সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান করা হয়। 
-                 সঠিক দ্বীনি শিক্ষা ই পারে একটি সুন্দর ও শান্তিময় সমাজ উপহার দিতে।
+                 {settings.about.description}
                </p>
                
                <div className="space-y-4 mb-10">
-                  {[
-                    "উন্নত আধুনিক পদ্ধতিতে পাঠদান",
-                    "অভিজ্ঞ ও দক্ষ হাফেজ ও কারী",
-                    "সুশৃঙ্খল পরিবেশ ও আধুনিক পাঠদান",
-                    "মাসিক বিশেষ মূল্যায়নের ব্যবস্থা"
-                  ].map((text, i) => (
+                  {settings.about.highlights.map((text, i) => (
                     <div key={i} className="flex items-center gap-3">
                        <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white"><ArrowRight className="w-3 h-3" /></div>
                        <span className="text-slate-800 font-bold italic">{text}</span>
@@ -270,8 +200,8 @@ const MadrasaPortal = () => {
          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white opacity-5 rounded-full blur-[100px] -mr-32 -mt-32"></div>
          <div className="max-w-[1200px] mx-auto px-6 relative z-10">
             <div className="text-center mb-16">
-               <span className="inline-block px-4 py-1.5 bg-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-full mb-4">পাঠ্যক্রম</span>
-               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white italic">বিশেষ ক্লাস কারিকুলাম</h2>
+               <span className="inline-block px-4 py-1.5 bg-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-full mb-4">{settings.curriculum.badge}</span>
+               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white italic">{settings.curriculum.title}</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                {[1, 2, 3, 4, 5, 6].map((idx) => (
@@ -293,8 +223,8 @@ const MadrasaPortal = () => {
       <section id="students" className="py-24 bg-white">
          <div className="max-w-[1400px] mx-auto px-6">
             <div className="text-center mb-16 px-4">
-               <span className="inline-block px-4 py-1.5 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-full mb-4">আমাদের শিক্ষার্থী</span>
-               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic">আমাদের কৃতি শিক্ষার্থী বৃন্দ</h2>
+               <span className="inline-block px-4 py-1.5 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-full mb-4">{settings.students.badge}</span>
+               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic">{settings.students.title}</h2>
             </div>
             
             <div className="relative group/nav px-12 md:px-16">
@@ -304,9 +234,9 @@ const MadrasaPortal = () => {
                     style={{ transform: `translateX(calc(-${studentIndex} * (100% + 2rem) / ${visibleStudents}))` }}
                   >
                      <div className="flex gap-8">
-                        {students.map((student) => (
+                        {students.map((student, idx) => (
                            <div 
-                             key={student.id} 
+                             key={idx} 
                              className="text-center group flex-shrink-0"
                              style={{ width: `calc((100% - ${(visibleStudents - 1) * 2}rem) / ${visibleStudents})` }}
                            >
@@ -353,8 +283,8 @@ const MadrasaPortal = () => {
       <section id="teachers" className="py-24 bg-[#f8fafc]">
          <div className="max-w-[1400px] mx-auto px-6">
             <div className="text-center mb-16 px-4">
-               <span className="inline-block px-4 py-1.5 bg-emerald-50 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-4">আমাদের শিক্ষক</span>
-               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic">আমাদের হিতাকাঙ্খী শিক্ষক বৃন্দ</h2>
+               <span className="inline-block px-4 py-1.5 bg-emerald-50 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-4">{settings.teachers.badge}</span>
+               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic">{settings.teachers.title}</h2>
             </div>
             
             <div className="relative group/nav px-6 md:px-12">
@@ -481,7 +411,7 @@ const MadrasaPortal = () => {
             <span className="inline-block px-4 py-1.5 bg-emerald-50 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-4">ফটো গ্যালারি</span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic mb-16">আমাদের একাডেমির ছবি গ্যালারি ঘুরে দেখুন</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+               {settings.gallery.photos.map((i) => (
                   <div key={i} className="relative rounded-3xl overflow-hidden group aspect-square shadow-md">
                      <img src={`https://picsum.photos/seed/${i + 22}/400`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Gallery" />
                      <div className="absolute inset-0 bg-[#059669]/20 opacity-0 group-hover:opacity-100 transition-opacity" />

@@ -23,8 +23,23 @@ const Login = () => {
       } else if (formData.email === "muhtamim@mms.com" && formData.password === "password") {
         login({ name: "Muhtamim", email: formData.email, role: "admin" });
          navigate("/admin");
+      } else if (formData.email === "teacher@mms.com" && formData.password === "password") {
+        login({ name: "Sheikh Abdullah", email: formData.email, role: "teacher" });
+        navigate("/teacher");
+      } else if (formData.email === "student@mms.com" && formData.password === "password") {
+        login({ name: "Abdullah Mamun", email: formData.email, role: "student" });
+        navigate("/student/dashboard");
+      } else if (formData.email === "parent@mms.com" && formData.password === "password") {
+        login({ name: "Abdur Rahman", email: formData.email, role: "guardian" });
+        navigate("/guardian/dashboard");
+      } else if (formData.email === "accountant@mms.com" && formData.password === "password") {
+        login({ name: "Accountant", email: formData.email, role: "accountant" });
+        navigate("/accounting");
+      } else if (formData.email === "talimat@mms.com" && formData.password === "password") {
+        login({ name: "Education Secretary", email: formData.email, role: "talimat" });
+        navigate("/talimat");
       } else {
-        setError("Invalid credentials (try admin@mms.com / password)");
+        setError("Invalid credentials (try admin@mms.com / teacher@mms.com / student@mms.com / parent@mms.com)");
         setLoading(false);
       }
     }, 1500);

@@ -36,7 +36,7 @@ export const adminNavigation = [
     icon: UserPlus,
     children: [
       { name: "Create Admission", path: "/admin/admission/create" },
-      { name: "Online Admission", path: "/admin/admission/online" },
+      { name: "Online Admission", path: "/admin/admissions/online" },
     ],
   },
   {
@@ -59,6 +59,7 @@ export const adminNavigation = [
     name: "Employee",
     icon: Briefcase,
     children: [
+      { name: "Add New Employee", path: "/admin/employee/create" },
       { name: "Employee List", path: "/admin/employee/list" },
       { name: "Add Department", path: "/admin/employee/department" },
       { name: "Add Designation", path: "/admin/employee/designation" },
@@ -83,13 +84,9 @@ export const adminNavigation = [
       { name: "Control Class", path: "/admin/academic/control-class" },
       { name: "Assign Class Teacher", path: "/admin/academic/assign-teacher" },
       { name: "Subject", path: "/admin/academic/subject" },
-      { 
-          name: "Class Assign", 
-          children: [
-            { name: "Class Schedule", path: "/admin/academic/schedule/class" },
-            { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher" },
-          ]
-      },
+      { name: "Class Assign", path: "/admin/academic/class-assign" }, 
+      { name: "Class Schedule", path: "/admin/academic/schedule/class" },
+      { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher" },
     ],
   },
   {
