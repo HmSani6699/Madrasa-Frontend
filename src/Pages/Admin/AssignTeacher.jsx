@@ -252,13 +252,13 @@ const AssignTeacher = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-6 py-4 border-y-2 border-slate-50 border-dashed">
+              <div className="flex flex-col items-center gap-6 py-4 border-y-2 border-slate-50 border-dashed">
                 <div className="w-20 h-20 rounded-3xl overflow-hidden border-4 border-white shadow-xl relative group-hover:scale-105 transition-transform shrink-0 shadow-slate-100">
                   <img src={as.photo} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/5 transition-colors" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-slate-800 leading-tight">{as.teacherName}</h3>
+                  <h3 className="text-[18px] font-black text-slate-800 leading-tight">{as.teacherName}</h3>
                   <div className="flex items-center gap-2 mt-2">
                     <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest rounded-full border border-emerald-100">
                         {as.experience} Exp

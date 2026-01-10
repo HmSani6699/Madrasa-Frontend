@@ -18,7 +18,7 @@ import {
   AlertCircle
 } from "lucide-react";
 
-const ClassSectionList = () => {
+const DepartmentSectionList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   
   // Modal States
@@ -102,7 +102,7 @@ const ClassSectionList = () => {
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
             <School className="w-8 h-8 text-[#00bd7f]" />
-            Class & Section
+            Department & Section
           </h1>
           <p className="text-slate-500 font-bold mt-1">Manage academic structure and grade levels</p>
         </div>
@@ -483,4 +483,4 @@ const ClassSectionList = () => {
   );
 };
 
-export default ClassSectionList;
+export default DepartmentSectionList;

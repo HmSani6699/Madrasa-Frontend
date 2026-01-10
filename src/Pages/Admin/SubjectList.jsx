@@ -130,10 +130,10 @@ const SubjectList = () => {
 
         <button 
           onClick={openAddModal}
-          className="w-full lg:w-auto px-10 py-5 bg-amber-500 text-white rounded-[1.5rem] font-black shadow-2xl shadow-amber-100 hover:bg-amber-600 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group relative z-10"
+          className="w-full lg:w-auto px-10 py-5 bg-[#00bd7f] text-white rounded-[1.5rem] font-black shadow-2xl shadow-amber-100  hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group relative z-10"
         >
           <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
-          Add Curriculum
+          Add Subject
         </button>
       </div>
 
@@ -159,8 +159,8 @@ const SubjectList = () => {
               onClick={() => setLevelFilter(l)}
               className={`px-8 py-3 rounded-2xl text-xs font-black transition-all border-2 whitespace-nowrap ${
                 levelFilter === l 
-                  ? "bg-amber-500 border-amber-500 text-white shadow-xl shadow-amber-100" 
-                  : "bg-white border-slate-100 text-slate-500 hover:border-amber-400 hover:text-amber-500"
+                  ? "bg-[#00bd7f] border-[#00bd7f] text-white shadow-xl shadow-amber-100" 
+                  : "bg-white border-slate-100 text-slate-500 hover:border-[#00bd7f] hover:text-[#00bd7f]"
               }`}
             >
               {l}
@@ -191,7 +191,7 @@ const SubjectList = () => {
                         <Shapes className="w-6 h-6 text-amber-500 animate-pulse" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-base font-black text-slate-800 tracking-tight">{subject.name}</span>
+                        <span className="text-base font-black text-slate-800 tracking-tight whitespace-nowrap">{subject.name}</span>
                         <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest mt-1 px-2 py-0.5 bg-amber-50 rounded w-fit">
                             ID: {subject.code}
                         </span>
@@ -199,7 +199,7 @@ const SubjectList = () => {
                     </div>
                   </td>
                   <td className="px-10 py-8 text-center">
-                    <span className="px-6 py-2 bg-indigo-50 text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-indigo-100 shadow-sm">
+                    <span className="px-6 py-2 bg-indigo-50 text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-indigo-100 shadow-sm whitespace-nowrap">
                       {subject.level} Level
                     </span>
                   </td>
@@ -266,7 +266,7 @@ const SubjectList = () => {
                     </div>
                     <div>
                         <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                            {modalType === 'add' ? 'New Curriculum Unity' : 'Modify Asset Specs'}
+                            {modalType === 'add' ? 'Add New Subject' : 'Modify Asset Specs'}
                         </h2>
                         <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Core Academic Definition</p>
                     </div>
@@ -282,11 +282,11 @@ const SubjectList = () => {
              <div className="p-10 space-y-10 overflow-y-auto">
                 <div className="grid grid-cols-2 gap-8">
                     <div className="space-y-3 col-span-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Institutional Subject Name</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Subject Name</label>
                         <input 
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-base font-black focus:border-amber-400 focus:bg-white outline-none transition-all shadow-inner" 
+                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-base font-black focus:border-[#00bd7f] focus:bg-white outline-none transition-all shadow-inner" 
                             placeholder="e.g. Higher Arabic Literature" 
                         />
                     </div>
@@ -295,12 +295,12 @@ const SubjectList = () => {
                         <input 
                             value={formData.code}
                             onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black focus:border-amber-400 focus:bg-white outline-none transition-all" 
+                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black focus:border-[#00bd7f] focus:bg-white outline-none transition-all" 
                             placeholder="e.g. ARB701" 
                         />
                     </div>
                     <div className="space-y-3 col-span-2 sm:col-span-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Deployment Status</label>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Status</label>
                         <div className="flex gap-2">
                              <button 
                                 onClick={() => setFormData({...formData, status: 'active'})}
@@ -320,31 +320,20 @@ const SubjectList = () => {
                              </button>
                         </div>
                     </div>
-                    <div className="space-y-3 col-span-2 sm:col-span-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Academic Tier</label>
+                    <div className="space-y-3 col-span-2 sm:col-span-2">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Department</label>
                         <select 
                             value={formData.level}
                             onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black focus:border-amber-400 outline-none appearance-none cursor-pointer"
+                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black ffocus:border-[#00bd7f] outline-none appearance-none cursor-pointer"
                         >
-                            <option>Primary</option>
-                            <option>Secondary</option>
+                            <option>One</option>
+                            <option>Two</option>
                             <option>Hifz</option>
                             <option>Kitab</option>
                         </select>
                     </div>
-                    <div className="space-y-3 col-span-2 sm:col-span-1">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Category Bracket</label>
-                        <select 
-                            value={formData.type}
-                            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black focus:border-amber-400 outline-none appearance-none cursor-pointer"
-                        >
-                            <option>Religious</option>
-                            <option>General</option>
-                            <option>Technical</option>
-                        </select>
-                    </div>
+                  
                 </div>
 
                 <div className="flex gap-6 pt-5">
@@ -352,13 +341,13 @@ const SubjectList = () => {
                         onClick={() => setIsModalOpen(false)} 
                         className="flex-1 py-5 text-slate-400 font-black rounded-2xl hover:bg-slate-100 transition-all text-sm uppercase tracking-widest"
                     >
-                        Discard
+                        Cancel
                     </button>
                     <button 
                         onClick={handleAction}
-                        className="flex-1 py-5 bg-amber-500 text-white font-black rounded-2xl shadow-2xl shadow-amber-100 hover:bg-amber-600 active:scale-95 transition-all text-sm uppercase tracking-widest flex items-center justify-center gap-3"
+                        className="flex-1 py-5 bg-[#00bd7f] text-white font-black rounded-2xl shadow-2xl shadow-amber-100 hover:bg-amber-600 active:scale-95 transition-all text-sm uppercase tracking-widest flex items-center justify-center gap-3"
                     >
-                        <CheckCircle2 className="w-5 h-5" /> {modalType === 'add' ? 'Seal Registry' : 'Push Update'}
+                        <CheckCircle2 className="w-5 h-5" /> {modalType === 'add' ? 'Add Subject' : 'Push Update'}
                     </button>
                 </div>
              </div>

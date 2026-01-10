@@ -42,7 +42,7 @@ const EventsManager = () => {
 
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="w-full lg:w-auto px-8 py-4 bg-rose-600 text-white rounded-2xl font-black shadow-xl shadow-rose-100 hover:bg-rose-700 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+            className="w-full lg:w-auto px-8 py-4 bg-rose-600 text-white rounded-2xl font-black shadow-xl shadow-rose-100 hover:bg-rose-700 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 whitespace-nowrap"
           >
             <Plus className="w-5 h-5" />
             Create New Event

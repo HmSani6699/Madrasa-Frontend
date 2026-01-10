@@ -60,7 +60,7 @@ const GenerateStudentCertificate = () => {
               <Star className="w-8 h-8 text-amber-500" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Generate Student Certificates</h1>
+              <h1 className="text-xl md:text-xl font-black text-slate-800 tracking-tight">Generate Student Certificates</h1>
               <p className="text-slate-500 font-bold mt-1">Bulk generate and print custom certificates for students</p>
             </div>
           </div>
@@ -77,18 +77,18 @@ const GenerateStudentCertificate = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+        <div >
           
           {/* Left: Configuration Sidebar */}
-          <div className="xl:col-span-1 space-y-6">
-            <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm space-y-8">
+          <div >
+            <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm space-y-2">
               <div className="flex items-center gap-3 pb-6 border-b border-slate-50">
                 <Filter className="w-5 h-5 text-indigo-500" />
                 <h2 className="text-xl font-black text-slate-800 tracking-tight">Configuration</h2>
               </div>
 
-              <div className="space-y-6">
-                <div className="space-y-3">
+              <div className="grid grid-cols-1 xl:grid-cols-4 gap-5">
+                <div className="">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select Template</label>
                   <select 
                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-amber-500 outline-none appearance-none cursor-pointer"
@@ -99,7 +99,7 @@ const GenerateStudentCertificate = () => {
                   </select>
                 </div>
 
-                <div className="space-y-3">
+                <div className="">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Academic Class</label>
                   <select 
                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-amber-500 outline-none appearance-none cursor-pointer"
@@ -111,7 +111,7 @@ const GenerateStudentCertificate = () => {
                   </select>
                 </div>
 
-                <div className="space-y-3">
+                <div className="">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Section</label>
                   <select 
                     className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-amber-500 outline-none appearance-none cursor-pointer"
@@ -123,23 +123,20 @@ const GenerateStudentCertificate = () => {
                   </select>
                 </div>
 
-                <button className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all flex items-center justify-center gap-3">
+                <div className="flex items-center h-full">
+                   <button className="w-full p-3 bg-slate-900 text-white rounded-2xl font-black shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all flex items-center justify-center gap-3">
                   <Search className="w-5 h-5" />
                   Apply Filter
                 </button>
+               </div>
               </div>
             </div>
 
-            {/* Hint Box */}
-            <div className="bg-indigo-600 rounded-[2.5rem] p-8 text-white shadow-xl shadow-indigo-100 flex flex-col gap-4 relative overflow-hidden">
-               <Award className="absolute -right-4 -bottom-4 w-32 h-32 text-indigo-500 opacity-20" />
-               <h3 className="text-xl font-black relative z-10">Pro Tip!</h3>
-               <p className="text-indigo-100 text-sm font-bold relative z-10">You can bulk generate certificates for an entire section in just one click.</p>
-            </div>
+          
           </div>
 
           {/* Right: Student List */}
-          <div className="xl:col-span-3 space-y-6">
+          <div className="xl:col-span-3 space-y-6 mt-6">
             <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
               <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-4">

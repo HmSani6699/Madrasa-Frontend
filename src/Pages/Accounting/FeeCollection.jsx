@@ -114,8 +114,33 @@ const FeeCollection = () => {
                 <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
                     <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                         <h3 className="font-bold text-slate-700">Select Fees to Pay</h3>
+                        <div className="flex gap-2">
+                             <select 
+                                className="px-3 py-1.5 text-xs font-bold border border-slate-300 rounded-lg text-slate-600 focus:outline-none hover:border-primary"
+                                onChange={(e) => {
+                                    if(e.target.value) {
+                                        const newFeeId = selectedStudent.fees.length + Math.random();
+                                        const newFee = { id: newFeeId, head: `Monthly Tuition (${e.target.value})`, amount: 1000, isPaid: false };
+                                        setSelectedStudent(prev => ({
+                                            ...prev,
+                                            fees: [...prev.fees, newFee]
+                                        }));
+                                        setSelectedFeeIds(prev => [...prev, newFeeId]);
+                                        e.target.value = ""; // Reset
+                                    }
+                                }}
+                             >
+                                 <option value="">+ Add Advance</option>
+                                 <option value="Feb">February</option>
+                                 <option value="Mar">March</option>
+                                 <option value="Apr">April</option>
+                                 <option value="May">May</option>
+                                 <option value="Jun">June</option>
+                                 <option value="Full Year">Full Year (12 Months)</option>
+                             </select>
+                        </div>
                     </div>
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
                         {selectedStudent.fees.filter(f => !f.isPaid).map(fee => (
                             <div 
                               key={fee.id} 
@@ -131,7 +156,9 @@ const FeeCollection = () => {
                                     />
                                     <div>
                                         <p className="font-bold text-slate-800">{fee.head}</p>
-                                        <p className="text-xs text-slate-500">Due Date: Today</p>
+                                        <p className="text-xs text-slate-500">
+                                            {fee.head.includes('Jan') ? 'Due: Today' : 'Advance Payment'}
+                                        </p>
                                     </div>
                                 </div>
                                 <p className="font-bold text-slate-800">৳ {fee.amount}</p>

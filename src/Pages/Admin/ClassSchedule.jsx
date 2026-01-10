@@ -24,6 +24,7 @@ import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 const ClassSchedule = () => {
   const [selectedClass, setSelectedClass] = useState("Class 5");
   const [selectedSection, setSelectedSection] = useState("Section A");
+  const [selectedSubject, setSelectedSubject] = useState("Bangla");
   const [viewMode, setViewMode] = useState("grid"); // "grid" or "list"
   
   // Modal States
@@ -78,6 +79,7 @@ const ClassSchedule = () => {
       room: "",
       class: selectedClass,
       section: selectedSection,
+      subject: selectedSubject,
       color: "bg-blue-50 border-blue-200 text-blue-700",
       isBreak: false,
       label: ""
@@ -119,7 +121,8 @@ const ClassSchedule = () => {
       item.day === day && 
       item.time === time && 
       item.class === selectedClass && 
-      item.section === selectedSection
+      item.section === selectedSection&&
+      item.subject === selectedSubject
     );
   };
 
@@ -175,6 +178,15 @@ const ClassSchedule = () => {
             <option>Section B</option>
             <option>Section C</option>
           </select>
+          <select 
+            value={selectedSubject} 
+            onChange={(e) => setSelectedSubject(e.target.value)}
+            className="flex-1 md:w-40 bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none"
+          >
+            <option>Subject A</option>
+            <option>Subject B</option>
+            <option>Subject C</option>
+          </select>
         </div>
 
         <div className="flex bg-slate-100 p-1.5 rounded-2xl">
@@ -199,7 +211,7 @@ const ClassSchedule = () => {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-slate-50/50">
-                <th className="p-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-r-2 border-slate-100 w-48 sticky left-0 bg-slate-50 z-10">Time / Day</th>
+                <th className="p-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-r-2 border-slate-100 w-48 sticky left-0 bg-slate-50 z-10 whitespace-nowrap">Time / Day</th>
                 {days.map(day => (
                   <th key={day} className="p-6 text-center text-[10px] font-black text-slate-600 uppercase tracking-widest min-w-[220px]">
                     {day}
@@ -210,7 +222,7 @@ const ClassSchedule = () => {
             <tbody className="divide-y-2 divide-slate-100">
               {timeSlots.map((slot, idx) => (
                 <tr key={idx} className="group transition-colors">
-                  <td className="p-6 bg-slate-50/20 border-r-2 border-slate-100 sticky left-0 z-10 backdrop-blur-sm">
+                  <td className="p-6 bg-slate-50/20 border-r-2 border-slate-100 sticky left-0 z-10 backdrop-blur-sm whitespace-nowrap">
                     <div className="flex items-center gap-3">
                         <Clock className="w-4 h-4 text-[#00bd7f]" />
                         <span className="text-xs font-black text-slate-700">{slot}</span>
@@ -220,7 +232,7 @@ const ClassSchedule = () => {
                     const period = getSlot(day, slot);
                     
                     if (!period) return (
-                         <td key={day} className="p-4 relative group/cell">
+                         <td key={day} className="p-4 relative group/cell whitespace-nowrap">
                              <div 
                                 className="w-full h-28 border-2 border-dashed border-slate-100 rounded-3xl flex items-center justify-center opacity-0 group-hover/cell:opacity-100 transition-all cursor-pointer hover:border-[#00bd7f]/30 hover:bg-[#00bd7f]/5"
                                 onClick={() => {

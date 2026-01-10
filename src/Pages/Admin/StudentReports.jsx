@@ -25,14 +25,14 @@ const StudentReports = () => {
     const path = location.pathname;
     if (path.includes("login")) setActiveTab("login");
     else if (path.includes("admission")) setActiveTab("admission");
-    else if (path.includes("class-section")) setActiveTab("class-section");
+    else if (path.includes("department-section")) setActiveTab("department-section");
     else if (path.includes("sibling")) setActiveTab("sibling");
   }, [location.pathname]);
 
   const tabs = [
     { id: "login", label: "Login Credentials", icon: Key },
     { id: "admission", label: "Admission Report", icon: UserPlus },
-    { id: "class-section", label: "Class & Section", icon: Layers },
+    { id: "department-section", label: "Department & Section", icon: Layers },
     { id: "sibling", label: "Sibling Report", icon: Users2 },
   ];
 
@@ -92,7 +92,7 @@ const StudentReports = () => {
               </div>
            </div>
            <div className="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Class & Section</label>
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Department & Section</label>
               <div className="relative">
                  <Layers className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                  <select className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-10 pr-4 py-3 text-sm font-bold focus:border-blue-500 outline-none appearance-none cursor-pointer">
@@ -174,7 +174,7 @@ const StudentReports = () => {
                   <thead>
                     <tr className="border-b border-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                        <th className="px-10 py-6 text-left">Student Name</th>
-                       <th className="px-10 py-6 text-left">Class & Section</th>
+                       <th className="px-10 py-6 text-left">Department & Section</th>
                        <th className="px-10 py-6 text-left">Date of Admission</th>
                        <th className="px-10 py-6 text-center">Blood Group</th>
                        <th className="px-10 py-6 text-center">Status</th>

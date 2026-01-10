@@ -92,7 +92,7 @@ const ExamScheduleList = () => {
                   <td className="px-8 py-6">
                     <div className="flex flex-col">
                        <span className="text-sm font-black text-slate-800">{new Date(sc.date).toLocaleDateString()}</span>
-                       <div className="flex items-center gap-1.5 mt-1 text-[10px] font-black text-amber-500 uppercase">
+                       <div className="flex items-center gap-1.5 mt-1 text-[10px] font-black text-amber-500 uppercase whitespace-nowrap">
                           <Clock className="w-3 h-3" /> {sc.time}
                        </div>
                     </div>
@@ -103,19 +103,19 @@ const ExamScheduleList = () => {
                           <BookOpen className="w-5 h-5 text-amber-500" />
                        </div>
                        <div className="flex flex-col">
-                          <span className="text-sm font-black text-slate-800">{sc.subject}</span>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">{sc.class}</span>
+                          <span className="text-sm font-black text-slate-800 whitespace-nowrap">{sc.subject}</span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase whitespace-nowrap">{sc.class}</span>
                        </div>
                     </div>
                   </td>
                   <td className="px-8 py-6 text-center">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-100 rounded-full border border-slate-200">
                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                       <span className="text-xs font-black text-slate-600 uppercase">{sc.hall}</span>
+                       <span className="text-xs font-black text-slate-600 uppercase whitespace-nowrap">{sc.hall}</span>
                     </div>
                   </td>
                   <td className="px-8 py-6 text-center">
-                    <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-[10px] font-black uppercase tracking-widest">
+                    <span className="px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
                        {sc.term}
                     </span>
                   </td>

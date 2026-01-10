@@ -42,8 +42,7 @@
       "subject_wise": "বিষয় ভিত্তিক",
       "exam": "পরীক্ষা",
       
-      "class_&_section": "ক্লাস এবং সেকশন",
-      "control_class": "ক্লাস নিয়ন্ত্রণ",
+      "department_&_section": "ক্লাস এবং সেকশন",
       "assign_class_teacher": "ক্লাস শিক্ষক নিয়োগ",
       "class_teacher": "শ্রেণী শিক্ষক",
       "subject": "বিষয়",
@@ -89,7 +88,7 @@
       "student_reports": "ছাত্র রিপোর্ট",
       "login_credential": "লগইন তথ্য",
       "admission_report": "ভর্তি রিপোর্ট",
-      "class_&_section_report": "ক্লাস এবং সেকশন রিপোর্ট",
+      "department_&_section_report": "ক্লাস এবং সেকশন রিপোর্ট",
       "sibling_report": "সহদর রিপোর্ট",
       "fees_reports": "ফি রিপোর্ট",
       "fees_report": "ফি রিপোর্ট",

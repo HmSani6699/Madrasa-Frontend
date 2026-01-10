@@ -10,7 +10,8 @@ import {
   RefreshCw,
   Eye,
   Building2,
-  UserCheck
+  UserCheck,
+  Users
 } from "lucide-react";
 
 const GenerateEmployeeCertificate = () => {
@@ -43,14 +44,14 @@ const GenerateEmployeeCertificate = () => {
       <div className="max-w-[1600px] mx-auto space-y-8">
         
         {/* Header Section */}
-        <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6">
+        <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center border border-blue-100 shadow-inner">
               <UserCheck className="w-8 h-8 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Generate Employee Certificates</h1>
-              <p className="text-slate-500 font-bold mt-1">Recognize and reward staff achievements with custom certificates</p>
+              <h1 className="text-xl md:text-xl font-black text-slate-800 tracking-tight">Generate Employee Certificates</h1>
+              <p className="text-slate-500 font-bold mt-1">Recognize staff achievements with custom certificates</p>
             </div>
           </div>
 
@@ -66,18 +67,18 @@ const GenerateEmployeeCertificate = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+        <div className="">
           
           {/* Left: Configuration Sidebar */}
-          <div className="xl:col-span-1 space-y-6">
-            <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm space-y-8">
-              <div className="flex items-center gap-3 pb-6 border-b border-slate-50">
+          <div className="">
+            <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm space-y-2">
+              <div className="flex items-center gap-3  border-b border-slate-50">
                 <Filter className="w-5 h-5 text-blue-500" />
                 <h2 className="text-xl font-black text-slate-800 tracking-tight">Filters</h2>
               </div>
 
-              <div className="space-y-6">
-                <div className="space-y-3">
+              <div className="grid grid-cols-1 xl:grid-cols-4 gap-5">
+                <div className="">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select Template</label>
                   <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none appearance-none cursor-pointer">
                     <option value="">Choose a Template</option>
@@ -85,7 +86,7 @@ const GenerateEmployeeCertificate = () => {
                   </select>
                 </div>
 
-                <div className="space-y-3">
+                <div className="">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Department</label>
                   <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none appearance-none cursor-pointer">
                     <option value="">All Departments</option>
@@ -94,7 +95,7 @@ const GenerateEmployeeCertificate = () => {
                   </select>
                 </div>
 
-                <div className="space-y-3">
+                <div className="">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Designation</label>
                   <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none appearance-none cursor-pointer">
                     <option value="">All Designations</option>
@@ -109,16 +110,10 @@ const GenerateEmployeeCertificate = () => {
                 </button>
               </div>
             </div>
-
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2.5rem] p-8 text-white shadow-xl shadow-blue-100 relative overflow-hidden group">
-               <Briefcase className="absolute -right-6 -bottom-6 w-36 h-36 text-white opacity-10 group-hover:scale-110 transition-transform duration-700" />
-               <h3 className="text-xl font-black relative z-10">Staff Recognition</h3>
-               <p className="text-blue-100 text-sm font-bold mt-4 relative z-10">Boosting morale with official certificates increases productivity and staff retention rates.</p>
-            </div>
           </div>
 
           {/* Right: Employee List */}
-          <div className="xl:col-span-3 space-y-6">
+          <div className="xl:col-span-3 space-y-6 mt-5">
             <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
               <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-4">

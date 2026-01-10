@@ -42,7 +42,7 @@
       "subject_wise": "Subject Wise",
       "exam": "Exam",
       
-      "class_&_section": "Class & Section",
+      "department_&_section": "Department & Section",
       "control_class": "Control Class",
       "assign_class_teacher": "Assign Class Teacher",
       "class_teacher": "Class Teacher",
@@ -89,7 +89,7 @@
       "student_reports": "Student Reports",
       "login_credential": "Login Credential",
       "admission_report": "Admission Report",
-      "class_&_section_report": "Class & Section Report",
+      "department_&_section_report": "Department & Section Report",
       "sibling_report": "Sibling Report",
       "fees_reports": "Fees Reports",
       "fees_report": "Fees Report",

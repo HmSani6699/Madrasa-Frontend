@@ -88,12 +88,11 @@ export const adminNavigation = [
     name: "Academic",
     icon: School,
     children: [
-      { name: "Class & Section", path: "/admin/academic/class-section" },
-      { name: "Control Class", path: "/admin/academic/control-class" },
-      { name: "Assign Class Teacher", path: "/admin/academic/assign-teacher" },
+      { name: "Department & Section", path: "/admin/academic/department-section" },
       { name: "Subject", path: "/admin/academic/subject" },
-      { name: "Class Assign", path: "/admin/academic/class-assign" }, 
       { name: "Class Schedule", path: "/admin/academic/schedule/class" },
+      { name: "Class Assign", path: "/admin/academic/class-assign" }, 
+      { name: "Assign Class Teacher", path: "/admin/academic/assign-teacher" },
       { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher" },
     ],
   },
@@ -166,6 +165,7 @@ export const adminNavigation = [
         icon: Wallet,
         children: [
           { name: "Collect Fees", path: "/admin/accounting/fees/collect", icon: DollarSign },
+          { name: "Fee Setup", path: "/admin/accounting/fees/setup", icon: Settings },
           { name: "Dues Pending", path: "/admin/accounting/fees/dues", icon: Receipt },
           { name: "Fee Reports", path: "/admin/reports/fees", icon: FilePieChart },
         ]
@@ -175,6 +175,7 @@ export const adminNavigation = [
         icon: Banknote,
         children: [
           { name: "Process Salary", path: "/admin/accounting/payroll/process", icon: Calculator },
+          { name: "Salary Setup", path: "/admin/accounting/payroll/setup", icon: Settings },
           { name: "Salary History", path: "/admin/accounting/payroll/history", icon: Receipt },
         ]
       },
@@ -213,7 +214,7 @@ export const adminNavigation = [
           children: [
               { name: "Login Credential", path: "/admin/reports/student/login" },
               { name: "Admission Report", path: "/admin/reports/student/admission" },
-              { name: "Class & Section Report", path: "/admin/reports/student/class-section" },
+              { name: "Department & Section Report", path: "/admin/reports/student/department-section" },
               { name: "Sibling Report", path: "/admin/reports/student/sibling" },
           ]
       },
