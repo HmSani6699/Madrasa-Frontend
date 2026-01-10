@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 
@@ -260,10 +261,11 @@ const Navbar = ({ onMenuClick }) => {
                     <LogOut className="w-4 h-4" />
                     <span>Sign Out</span>
                   </button>
-               </div>
+                 </div>
             )}
         </div>
       </div>
+
     </header>
   );
 };

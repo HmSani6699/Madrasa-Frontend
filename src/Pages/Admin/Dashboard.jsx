@@ -20,7 +20,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user, currentMadrasa } = useAuth();
   const { t } = useTranslation();
 
   // Mock Attendance Data
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
                     <div className="relative z-10">
                         <div className="flex justify-between items-start mb-8">
                             <div>
-                                <h3 className="text-xl font-bold tracking-tight">Institutional Finance</h3>
+                                <h3 className="text-xl font-bold tracking-tight">{currentMadrasa?.name || "Institutional Finance"}</h3>
                                 <p className="text-slate-400 text-xs font-medium uppercase tracking-widest mt-1">Operational Metrics</p>
                             </div>
                             <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-xl border border-emerald-500/20 text-xs font-black">

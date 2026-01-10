@@ -21,7 +21,11 @@ const Login = () => {
         login({ name: "Super Admin", email: formData.email, role: "super_admin" });
         navigate("/super-admin");
       } else if (formData.email === "muhtamim@mms.com" && formData.password === "password") {
-        login({ name: "Muhtamim", email: formData.email, role: "admin" });
+        const mockMadrasas = [
+           { id: 1, name: "Jamia Islamia Dhaka", role: "admin", logo: "https://ui-avatars.com/api/?name=JI&background=0D8ABC&color=fff" },
+           { id: 2, name: "Al-Madina Institute", role: "admin", logo: "https://ui-avatars.com/api/?name=AM&background=22c55e&color=fff" }
+        ];
+        login({ name: "Muhtamim", email: formData.email, role: "admin" }, mockMadrasas);
          navigate("/admin");
       } else if (formData.email === "teacher@mms.com" && formData.password === "password") {
         login({ name: "Sheikh Abdullah", email: formData.email, role: "teacher" });

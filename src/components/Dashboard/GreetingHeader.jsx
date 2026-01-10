@@ -39,18 +39,18 @@ const GreetingHeader = () => {
                       </div>
                   </div>
                   
-                  <p className="text-emerald-50/90 text-lg md:text-xl font-medium max-w-2xl leading-relaxed">
+                  {/* <p className="text-emerald-50/90 text-lg md:text-xl font-medium max-w-2xl leading-relaxed">
                       Assalamu Alaikum. It's a productive day ahead. You have <span className="bg-white/20 px-3 py-1 rounded-full font-bold text-white border border-white/10 mx-1">3 key actions</span> waiting for your approval in the command center.
-                  </p>
+                  </p> */}
                   
-                  <div className="flex flex-wrap items-center gap-4 mt-10">
+                  {/* <div className="flex flex-wrap items-center gap-4 mt-10">
                       <button className="px-6 py-3 bg-white text-primary font-black text-sm rounded-xl shadow-xl hover:scale-105 transition-all active:scale-95">
                           Open Action Center
                       </button>
                       <button className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold text-sm rounded-xl hover:bg-white/20 transition-all">
                           Manage Admissions
                       </button>
-                  </div>
+                  </div> */}
               </div>
 
               {/* Glassmorphism Date Card */}
@@ -58,7 +58,7 @@ const GreetingHeader = () => {
                   <div className="bg-white/10 backdrop-blur-xl rounded-[2rem] p-8 border border-white/20 shadow-2xl relative overflow-hidden group-hover/card:bg-white/15 transition-all">
                       <div className="absolute top-0 right-0 p-4 opacity-20 capitalize text-[8px] font-black tracking-[0.3em] rotate-90 origin-top-right">Institutional View</div>
                       
-                      <div className="flex items-center gap-5 mb-8">
+                      {/* <div className="flex items-center gap-5 mb-8">
                           <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-xl rotate-[-6deg] group-hover/card:rotate-0 transition-transform">
                               <CalendarDays className="w-7 h-7" />
                           </div>
@@ -66,18 +66,18 @@ const GreetingHeader = () => {
                               <p className="text-[10px] text-emerald-100 font-black uppercase tracking-widest leading-none mb-1">Current Date</p>
                               <p className="text-sm font-bold text-white tracking-wide">Today's Schedule</p>
                           </div>
-                      </div>
+                      </div> */}
                       
-                      <div className="space-y-4">
+                      {/* <div className="space-y-4">
                           <div className="p-4 bg-white/10 rounded-2xl border border-white/5">
                              <p className="text-xs font-black text-emerald-200 uppercase tracking-widest mb-1">Gregorian</p>
-                             <p className="font-bold text-lg">{gregorianDate}</p>
+                             <p className="font-bold text-[14px]">{gregorianDate}</p>
                           </div>
                           <div className="p-4 bg-primary/20 rounded-2xl border border-white/5">
                              <p className="text-xs font-black text-emerald-300 uppercase tracking-widest mb-1">Islamic (Hijri)</p>
                              <p className="font-bold text-lg text-emerald-50">{hijriDate}</p>
                           </div>
-                      </div>
+                      </div> */}
                   </div>
               </div>
           </div>

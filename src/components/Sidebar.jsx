@@ -18,6 +18,7 @@ import { guardianNavigation } from "../navigation/guardianNavigation";
 import { talimatNavigation } from "../navigation/talimatNavigation";
 import { accountingNavigation } from "../navigation/accountingNavigation";
 import { useTranslation } from "react-i18next";
+import MadrasaSwitcher from "./MadrasaSwitcher";
 
 const SidebarItem = ({ item, level = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -193,15 +194,7 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
 
       {/* Organization Card */}
       <div className="px-5 mb-6">
-        <div className="p-3 bg-surface border border-border rounded-xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-border flex items-center justify-center overflow-hidden">
-            <span className="text-primary font-bold text-xs">GI</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-fg-main truncate leading-none mb-1">Global International</p>
-            <p className="text-[10px] text-fg-muted font-medium">Madrasa Management</p>
-          </div>
-        </div>
+        <MadrasaSwitcher />
       </div>
 
       {/* Navigation */}

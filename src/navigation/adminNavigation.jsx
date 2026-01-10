@@ -22,7 +22,14 @@ import {
   ShieldAlert,
   Contact,
   School,
-  FileText
+  FileText,
+  Wallet, 
+  Receipt, 
+  Banknote, 
+  TrendingDown, 
+  TrendingUp, 
+  FilePieChart,
+  DollarSign,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -151,7 +158,42 @@ export const adminNavigation = [
   {
     name: "Office Accounting",
     icon: Calculator,
-    path: "/admin/accounting", // Might expand later
+    children: [
+     
+      {
+        name: "Fees Collection",
+        icon: Wallet,
+        children: [
+          { name: "Collect Fees", path: "/admin/reports/fees", icon: DollarSign },
+          { name: "Dues Pending", path: "/guardian/finance/fees", icon: Receipt },
+          { name: "Fee Reports", path: "/admin/reports/fees", icon: FilePieChart },
+        ]
+      },
+      {
+        name: "Payroll",
+        icon: Banknote,
+        children: [
+          { name: "Employee Salaries", path: "/admin/employee/list", icon: Users },
+          { name: "Salary Slip", path: "/admin/certificate/employee", icon: Receipt },
+        ]
+      },
+      {
+        name: "Expenses",
+        icon: TrendingDown,
+        children: [
+          { name: "Add Expense", path: "/admin/inventory/purchase", icon: CreditCard },
+          { name: "Expense Report", path: "/admin/reports/finance", icon: FilePieChart },
+        ]
+      },
+      {
+        name: "Income",
+        icon: TrendingUp,
+        children: [
+          { name: "Other Income", path: "/admin/inventory/sales", icon: DollarSign },
+          { name: "Income Report", path: "/admin/reports/finance", icon: FilePieChart },
+        ]
+      },
+    ],
   },
   {
     name: "Reports",
