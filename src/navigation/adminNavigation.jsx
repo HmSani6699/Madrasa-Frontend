@@ -30,6 +30,7 @@ import {
   TrendingUp, 
   FilePieChart,
   DollarSign,
+  HeartHandshake,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -164,8 +165,8 @@ export const adminNavigation = [
         name: "Fees Collection",
         icon: Wallet,
         children: [
-          { name: "Collect Fees", path: "/admin/reports/fees", icon: DollarSign },
-          { name: "Dues Pending", path: "/guardian/finance/fees", icon: Receipt },
+          { name: "Collect Fees", path: "/admin/accounting/fees/collect", icon: DollarSign },
+          { name: "Dues Pending", path: "/admin/accounting/fees/dues", icon: Receipt },
           { name: "Fee Reports", path: "/admin/reports/fees", icon: FilePieChart },
         ]
       },
@@ -173,15 +174,23 @@ export const adminNavigation = [
         name: "Payroll",
         icon: Banknote,
         children: [
-          { name: "Employee Salaries", path: "/admin/employee/list", icon: Users },
-          { name: "Salary Slip", path: "/admin/certificate/employee", icon: Receipt },
+          { name: "Process Salary", path: "/admin/accounting/payroll/process", icon: Calculator },
+          { name: "Salary History", path: "/admin/accounting/payroll/history", icon: Receipt },
+        ]
+      },
+      {
+        name: "Donation",
+        icon: HeartHandshake,
+        children: [
+            { name: "Receive Donation", path: "/admin/accounting/donation/create", icon: HeartHandshake },
+            { name: "Donation History", path: "/admin/accounting/donation/list", icon: ClipboardList }
         ]
       },
       {
         name: "Expenses",
         icon: TrendingDown,
         children: [
-          { name: "Add Expense", path: "/admin/inventory/purchase", icon: CreditCard },
+          { name: "Add Expense", path: "/admin/accounting/expense/create", icon: CreditCard },
           { name: "Expense Report", path: "/admin/reports/finance", icon: FilePieChart },
         ]
       },

@@ -1,20 +1,14 @@
 import {
-    Calendar,
-    ArrowUpRight,
-    TrendingUp,
-    Zap,
     Users, 
     GraduationCap, 
     Wallet, 
     CalendarCheck,
-    Clock,
-    Bell,
-    Search,
-    BookOpen
+    ArrowUpRight,
+    TrendingUp,
+    MoreHorizontal,
+    CalendarDays,
+    Bell
 } from "lucide-react";
-import GreetingHeader from "../../components/Dashboard/GreetingHeader";
-import DailyPulse from "../../components/Dashboard/DailyPulse";
-import ActionCenter from "../../components/Dashboard/ActionCenter";
 import RecentAdmissions from "../../components/RecentAdmissions";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -23,144 +17,162 @@ const AdminDashboard = () => {
   const { user, currentMadrasa } = useAuth();
   const { t } = useTranslation();
 
-  // Mock Attendance Data
-  const attendanceData = [85, 88, 92, 86, 90, 89, 94];
-
-  // Dummy Data
+  // Mock Stats Data
   const stats = [
-    { title: t('dashboard.total_students'), value: "1,250", icon: Users, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/20" },
-    { title: t('dashboard.active_staff'), value: "48", icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50 dark:bg-purple-900/20" },
-    { title: t('dashboard.daily_collection'), value: "৳ 25,400", icon: Wallet, color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
-    { title: t('dashboard.attendance_rate'), value: "94%", icon: CalendarCheck, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/20" },
+    { title: t('dashboard.total_students'), value: "1,250", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+    { title: t('dashboard.active_staff'), value: "48", icon: GraduationCap, color: "text-purple-600", bg: "bg-purple-50" },
+    { title: t('dashboard.daily_collection'), value: "৳ 25,400", icon: Wallet, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { title: t('dashboard.attendance_rate'), value: "94%", icon: CalendarCheck, color: "text-amber-600", bg: "bg-amber-50" },
+  ];
+
+  // Mock Notices
+  const notices = [
+    { id: 1, title: "Staff Meeting", date: "Today, 2:00 PM", type: "Urgent" },
+    { id: 2, title: "Exam Schedule Published", date: "Yesterday", type: "Academic" },
+    { id: 3, title: "Holiday Announcement", date: "2 days ago", type: "General" },
   ];
 
   return (
-    <div className="animate-in fade-in duration-700 pb-20 px-2 lg:px-0">
+    <div className="p-6 md:p-8 space-y-8 animate-in fade-in duration-500">
       
-      {/* 1. High-Fidelity Greeting */}
-      <GreetingHeader />
+      {/* 1. Dashboard Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+           <h1 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
+             {currentMadrasa?.name || "Admin Dashboard"}
+           </h1>
+           <p className="text-slate-500 text-sm font-medium mt-1">
+             Welcome back, {user?.name}
+           </p>
+        </div>
+        <div className="flex items-center gap-3">
+            <span className="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-semibold text-slate-600 shadow-sm">
+                Academic Year: 2025-26
+            </span>
+            <button className="p-2 bg-white border border-slate-200 rounded-lg text-slate-500 hover:text-primary hover:border-primary/30 transition-all shadow-sm">
+                <Bell className="w-5 h-5" />
+            </button>
+        </div>
+      </div>
 
-      {/* 2. Premium Daily Pulse */}
-      <DailyPulse />
-
-      {/* 3. Main Ecosystem Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-         
-         {/* Left Column: Command & Analytics (8/12 width) */}
-         <div className="xl:col-span-8 space-y-8">
-            
-            {/* Action Center & Financial Mini-Dashboard */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                 {/* Financial Overview Card - Redesigned for SaaS feel */}
-                 <div className="group relative bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl overflow-hidden min-h-[300px] flex flex-col justify-between">
-                    {/* Atmospheric Glow */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary rounded-full blur-[100px] opacity-20 -mr-20 -mt-20 group-hover:opacity-30 transition-opacity" />
-                    
-                    <div className="relative z-10">
-                        <div className="flex justify-between items-start mb-8">
-                            <div>
-                                <h3 className="text-xl font-bold tracking-tight">{currentMadrasa?.name || "Institutional Finance"}</h3>
-                                <p className="text-slate-400 text-xs font-medium uppercase tracking-widest mt-1">Operational Metrics</p>
-                            </div>
-                            <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-xl border border-emerald-500/20 text-xs font-black">
-                                <TrendingUp className="w-3.5 h-3.5" />
-                                +12.4%
-                            </div>
-                        </div>
-                        
-                        <div className="space-y-6">
-                            <div>
-                                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">Mtd Revenue</p>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-5xl font-black tracking-tighter">৳ 1.2M</span>
-                                    <span className="text-slate-500 text-sm font-bold">BDT</span>
-                                </div>
-                            </div>
-                            
-                            <div className="flex gap-10">
-                                <div>
-                                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Active Budget</p>
-                                    <p className="text-lg font-bold text-slate-200">৳ 450k</p>
-                                </div>
-                                <div>
-                                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">Unpaid Fees</p>
-                                    <p className="text-lg font-bold text-rose-400">৳ 120k</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button className="relative z-10 w-full mt-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm font-black uppercase tracking-widest transition-all text-slate-300 hover:text-white flex items-center justify-center gap-2">
-                        View Detailed Ledger
-                        <ArrowUpRight className="w-4 h-4" />
-                    </button>
-                 </div>
-
-                 {/* Action Center - Should be refined internally as well */}
-                 <div className="flex flex-col">
-                    <ActionCenter />
-                 </div>
-            </div>
-
-            {/* Attendance Analytics with Premium Charting feel */}
-            <div className="bg-white dark:bg-slate-800 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm relative overflow-hidden group">
-                <div className="flex items-center justify-between mb-10">
-                    <div>
-                        <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">Weekly Engagement</h3>
-                            <div className="bg-primary/10 px-2 py-0.5 rounded text-[10px] font-black text-primary uppercase animate-pulse">Live</div>
-                        </div>
-                        <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">Tracking student presence across all departments.</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <button className="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-400 hover:text-primary transition-all shadow-inner">
-                            <Calendar className="w-5 h-5" />
-                        </button>
-                        <button className="px-5 py-2.5 bg-primary text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">Report</button>
+      {/* 2. Key Metrics Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+            <div key={index} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between mb-4">
+                    <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                        <stat.icon className="w-6 h-6" />
                     </div>
                 </div>
+                <div>
+                    <h3 className="text-3xl font-bold text-slate-800 tracking-tight mb-1">{stat.value}</h3>
+                    <p className="text-sm font-medium text-slate-500">{stat.title}</p>
+                </div>
+            </div>
+        ))}
+      </div>
+
+      {/* 3. Main Content Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+         
+         {/* Left Column (Main) */}
+         <div className="xl:col-span-2 space-y-8">
+            
+            {/* Fees Collection Summary (Simplified) */}
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-lg font-bold text-slate-800">Fees Overview</h2>
+                    <button className="text-primary text-sm font-semibold hover:underline flex items-center gap-1">
+                        View Report <ArrowUpRight className="w-4 h-4" />
+                    </button>
+                </div>
                 
-                <div className="h-56 flex items-end justify-between gap-6 px-4">
-                    {attendanceData.map((value, idx) => (
-                        <div key={idx} className="flex-1 max-w-[40px] h-full flex flex-col justify-end gap-3 group/bar">
-                            <div className="relative h-full w-full bg-slate-50 dark:bg-slate-900 rounded-2xl overflow-hidden shadow-inner">
-                                <div 
-                                    className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-primary via-primary/80 to-primary/40 rounded-2xl transition-all duration-1000 ease-out group-hover/bar:brightness-110 shadow-[0_0_20px_rgba(5,150,105,0.2)]"
-                                    style={{ height: `${value}%`, transitionDelay: `${idx * 100}ms` }}
-                                >
-                                    <div className="absolute top-2 left-1/2 -translate-x-1/2 w-1 h-3 bg-white/20 rounded-full" />
-                                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100/50">
+                        <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">Collected Today</p>
+                        <p className="text-2xl font-bold text-slate-800">৳ 25,400</p>
+                        <div className="flex items-center gap-1 mt-2 text-xs font-semibold text-emerald-600">
+                            <TrendingUp className="w-3 h-3" /> +12% from yesterday
+                        </div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Monthly Target</p>
+                        <p className="text-2xl font-bold text-slate-800">৳ 450,000</p>
+                        <div className="w-full bg-slate-200 h-1.5 rounded-full mt-3 overflow-hidden">
+                            <div className="bg-primary h-full rounded-full" style={{ width: '65%' }}></div>
+                        </div>
+                        <p className="text-[10px] text-slate-400 mt-1 font-medium">65% Achieved</p>
+                    </div>
+                     <div className="p-4 rounded-xl bg-rose-50 border border-rose-100/50">
+                        <p className="text-xs font-bold text-rose-600 uppercase tracking-wider mb-2">Pending Dues</p>
+                        <p className="text-2xl font-bold text-slate-800">৳ 120,500</p>
+                         <p className="text-[10px] text-rose-500/80 mt-2 font-medium">42 Students</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Recent Admissions Table */}
+            <div>
+                 {/* Reusing existing component but assuming it fits well or we might need to wrap it specifically */}
+                <RecentAdmissions />
+            </div>
+
+         </div>
+
+         {/* Right Column (Sidebar) */}
+         <div className="space-y-8">
+            
+            {/* Notice Board */}
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-lg font-bold text-slate-800">Notice Board</h2>
+                    <button className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
+                        <MoreHorizontal className="w-5 h-5 text-slate-400" />
+                    </button>
+                </div>
+                <div className="space-y-4">
+                    {notices.map((notice) => (
+                        <div key={notice.id} className="flex gap-4 pb-4 border-b border-slate-100 last:border-0 last:pb-0 group cursor-pointer">
+                            <div className="flex-col items-center justify-center hidden sm:flex">
+                                <div className="w-2 h-2 rounded-full bg-primary mt-2 group-hover:scale-125 transition-transform"></div>
+                                <div className="w-0.5 h-full bg-slate-100 my-1 group-last:hidden"></div>
                             </div>
-                            <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 text-center uppercase tracking-widest">{ ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][idx] }</span>
+                            <div>
+                                <h4 className="text-sm font-semibold text-slate-800 group-hover:text-primary transition-colors">{notice.title}</h4>
+                                <p className="text-xs text-slate-500 mt-1">{notice.date}</p>
+                                <span className="inline-block px-2 py-0.5 mt-2 bg-slate-100 text-slate-600 text-[10px] uppercase font-bold rounded">{notice.type}</span>
+                            </div>
                         </div>
                     ))}
                 </div>
-                
-                {/* Visual Accent */}
-                <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none">
-                    <Zap className="w-40 h-40 text-slate-900 dark:text-white" />
-                </div>
+                <button className="w-full mt-6 py-2.5 text-sm font-semibold text-primary border border-primary/20 rounded-xl hover:bg-primary/5 transition-all">
+                    View All Notices
+                </button>
             </div>
-         </div>
 
-         {/* Right Column: High-Activity Zones (4/12 width) */}
-         <div className="xl:col-span-4 space-y-8">
-             <div className="sticky top-24">
-                <RecentAdmissions />
-                
-                {/* Secondary Feature Card */}
-                <div className="mt-8 p-8 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden group">
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
-                   <h4 className="text-lg font-black mb-2 flex items-center gap-2">
-                       <Zap className="w-5 h-5 text-amber-400 fill-amber-400" />
-                       Academic Calendar
-                   </h4>
-                   <p className="text-indigo-100 text-sm mb-6 leading-relaxed">Preparation for Mid-term exams starts in 12 days. Verify all exam papers.</p>
-                   <button className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-xs font-bold transition-all backdrop-blur-sm shadow-xl">Scheduled Tasks</button>
+            {/* Upcoming Event / Calendar Mini */}
+            <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-lg">
+                <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-white/10 rounded-lg">
+                        <CalendarDays className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                        <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Upcoming</p>
+                        <p className="font-bold">Annual Sports Day</p>
+                    </div>
                 </div>
-             </div>
+                <div className="flex items-end gap-2 mb-6">
+                    <span className="text-4xl font-bold">12</span>
+                    <span className="text-sm font-medium text-slate-400 mb-1">Days remaining</span>
+                </div>
+                <button className="w-full py-2 bg-white text-slate-900 text-sm font-bold rounded-lg hover:bg-indigo-50 transition-colors">
+                    View Calendar
+                </button>
+            </div>
+
          </div>
       </div>
+
     </div>
   );
 };

@@ -93,6 +93,9 @@ import AttendanceReports from "../Pages/Admin/AttendanceReports";
 import ExamReports from "../Pages/Admin/ExamReports";
 import InventoryReports from "../Pages/Admin/InventoryReports";
 import SettingsPage from "../Pages/Admin/SettingsPage";
+import DonationEntry from "../Pages/Accounting/DonationEntry";
+import FeeCollection from "../Pages/Accounting/FeeCollection";
+import PayrollProcess from "../Pages/Accounting/PayrollProcess";
 
 // Guardian Pages
 import ChildSelection from "../Pages/Guardian/ChildSelection";
@@ -288,6 +291,17 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/message") {
         element = <MessageCenter />;
+      }
+      
+      // Accounting Routes Mapping
+      if (item.path === "/admin/accounting/donation/create") {
+        element = <DonationEntry />;
+      }
+      if (item.path === "/admin/accounting/fees/collect") {
+        element = <FeeCollection />;
+      }
+      if (item.path === "/admin/accounting/payroll/process") {
+        element = <PayrollProcess />;
       }
       
       // Reports
