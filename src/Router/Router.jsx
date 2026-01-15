@@ -96,6 +96,7 @@ import FeeCollection from "../Pages/Accounting/FeeCollection";
 import PayrollProcess from "../Pages/Accounting/PayrollProcess";
 import FeeSetup from "../Pages/Accounting/FeeSetup";
 import SalarySetup from "../Pages/Accounting/SalarySetup";
+import SMS from "../Pages/Admin/SMS";
 
 // Guardian Pages
 import ChildSelection from "../Pages/Guardian/ChildSelection";
@@ -288,6 +289,9 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/message") {
         element = <MessageCenter />;
+      }
+      if (item.path === "/admin/sms") {
+        element = <SMS />;
       }
       
       // Accounting Routes Mapping

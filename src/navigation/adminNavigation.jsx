@@ -6,8 +6,6 @@ import {
   Briefcase,
   CalendarCheck,
   BookOpen,
-  MonitorPlay,
-  ClipboardList,
   GraduationCap,
   CreditCard,
   Award,
@@ -31,6 +29,8 @@ import {
   FilePieChart,
   DollarSign,
   HeartHandshake,
+  Smartphone,
+  ClipboardList,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -308,5 +308,10 @@ export const adminNavigation = [
     name: "Settings",
     icon: Settings,
     path: "/admin/settings",
+  },
+  {
+    name: "SMS",
+    icon: Smartphone,
+    path: "/admin/sms",
   },
 ];
