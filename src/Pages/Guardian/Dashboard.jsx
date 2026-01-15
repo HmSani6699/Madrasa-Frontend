@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { 
   Users, 
   ChevronRight, 
@@ -14,32 +14,15 @@ import {
 } from "lucide-react";
 
 const GuardianDashboard = () => {
-  const [selectedChild, setSelectedChild] = useState(0);
+  const { guardianChildren, activeChild, selectChild } = useAuth();
 
-  const children = [
-    { 
-      id: 1, 
-      name: "Abdullah Mamun", 
-      class: "Mishkat (Sec A)", 
-      attendance: "94%", 
-      status: "Present", 
-      dues: "৳ 2,500",
-      initials: "AM",
-      lastActivity: "Submitted Homework: Arabic Nahw"
-    },
-    { 
-      id: 2, 
-      name: "Zaid Bin Harith", 
-      class: "Hifz (Sec B)", 
-      attendance: "98%", 
-      status: "Present", 
-      dues: "৳ 1,200",
-      initials: "ZH",
-      lastActivity: "New Grade Posted: Tajweed"
-    }
-  ];
+  // Fallback if no children (shouldn't happen with correct login flow)
+  if (!activeChild || guardianChildren.length === 0) {
+      return <div className="p-8 text-center text-slate-500">No student records linked. Please contact administration.</div>;
+  }
 
-  const currentChild = children[selectedChild];
+  const currentChild = activeChild;
+  const children = guardianChildren;
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 animate-in fade-in duration-500">
@@ -54,7 +37,7 @@ const GuardianDashboard = () => {
                 </div>
                 <div>
                   <h1 className="text-xl md:text-3xl font-black text-slate-800 tracking-tight uppercase leading-none mb-1 md:mb-3">Guardian Control Panel</h1>
-                  <p className="text-slate-500 font-bold mt-1 text-xs md:text-base">Managing institutional progress for multiple enrolled children</p>
+                  <p className="text-slate-500 font-bold mt-1 text-xs md:text-base">Managing institutional progress for <span className="text-indigo-600 underline decoration-2 underline-offset-4">{children.length} enrolled children</span></p>
                 </div>
               </div>
 
@@ -63,25 +46,25 @@ const GuardianDashboard = () => {
                  {children.map((child, idx) => (
                     <button 
                        key={child.id}
-                       onClick={() => setSelectedChild(idx)}
+                       onClick={() => selectChild(child)}
                        className={`flex items-center gap-3 px-6 py-3 rounded-2xl md:rounded-3xl transition-all border ${
-                          selectedChild === idx 
+                          activeChild.id === child.id 
                           ? 'bg-slate-900 text-white border-slate-900 shadow-xl shadow-slate-200 scale-105' 
                           : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300 hover:text-slate-600'
                        }`}
                     >
                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black ${
-                          selectedChild === idx ? 'bg-white/20' : 'bg-slate-100'
+                          activeChild.id === child.id ? 'bg-white/20' : 'bg-slate-100'
                        }`}>
                           {child.initials}
                        </div>
                        <span className="text-xs font-black uppercase tracking-widest">{child.name}</span>
-                       {selectedChild === idx && <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>}
+                       {activeChild.id === child.id && <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>}
                     </button>
                  ))}
                  <button className="flex items-center justify-center w-12 h-12 rounded-2xl border border-dashed border-slate-300 text-slate-300 hover:border-indigo-500 hover:text-indigo-500 transition-all">
                     <UserPlus className="w-5 h-5" />
-                 </button>
+                  </button>
               </div>
            </div>
         </div>
@@ -154,11 +137,7 @@ const GuardianDashboard = () => {
                  </div>
                  
                  <div className="space-y-4">
-                    {[
-                       { period: "08:30 AM", subject: "Al-Quran (Hifz)", teacher: "Sheikh Abdullah", room: "Hall 01" },
-                       { period: "10:00 AM", subject: "Arabic Nahw", teacher: "Ustad Junaid", room: "Room 105" },
-                       { period: "12:00 PM", subject: "Fiqh Basics", teacher: "Mufti Omar", room: "Main Room" }
-                    ].map((item, idx) => (
+                    {currentChild.schedule.map((item, idx) => (
                        <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-slate-50/50 rounded-2xl md:rounded-[2rem] border border-slate-50 hover:bg-slate-50 transition-all group">
                           <div className="flex items-center gap-6 mb-4 sm:mb-0">
                              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center font-black text-slate-400 text-xs shadow-sm border border-slate-100 group-hover:border-indigo-100 group-hover:text-indigo-600 transition-all">

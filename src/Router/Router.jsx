@@ -478,6 +478,14 @@ const router = createBrowserRouter([
               ...adminRoutes
             ],
           },
+          // Teacher Routes - accessible by admin and talimat too
+           {
+             element: <ProtectedRoute allowedRoles={["teacher", "admin", "talimat"]} />,
+             children: [
+               { path: "/teacher", element: <TeachersDashboard /> },
+               ...teacherRoutes
+             ],
+           },
           // Talimat Routes
           {
             element: <ProtectedRoute allowedRoles={["talimat", "admin"]} />,
@@ -495,13 +503,7 @@ const router = createBrowserRouter([
             ],
           },
           // Other Roles
-           {
-             element: <ProtectedRoute allowedRoles={["teacher", "admin", "talimat"]} />,
-             children: [
-               { path: "/teacher", element: <TeachersDashboard /> },
-               ...teacherRoutes
-             ],
-           },
+
            {
              element: <ProtectedRoute allowedRoles={["student"]} />,
              children: [

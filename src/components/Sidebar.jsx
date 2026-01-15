@@ -121,7 +121,7 @@ const SidebarItem = ({ item, level = 0 }) => {
 };
 
 const Sidebar = ({ isMobileOpen, closeMobile }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, currentMadrasa } = useAuth();
   const { t } = useTranslation();
   
   const superAdminLinks = [
@@ -179,10 +179,27 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
       {/* Header */}
       <div className="p-6 flex items-center justify-between h-[73px]">
         <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
-              M
-            </div>
-            <span className="font-bold text-xl text-fg-main tracking-tight">MMS SaaS</span>
+          {user?.role !== "super_admin" ? (
+            <>
+              <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-bold shadow-sm overflow-hidden">
+                {currentMadrasa?.logo ? (
+                  <img src={currentMadrasa.logo} alt="Logo" className="w-full h-full object-cover" />
+                ) : (
+                  <Building2 className="w-5 h-5" />
+                )}
+              </div>
+              <span className="font-bold text-lg text-fg-main tracking-tight leading-tight line-clamp-1">
+                {currentMadrasa?.name || "Madrasa Panel"}
+              </span>
+            </>
+          ) : (
+            <>
+              <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-primary/20">
+                M
+              </div>
+              <span className="font-bold text-xl text-fg-main tracking-tight">MMS SaaS</span>
+            </>
+          )}
         </div>
         <button 
           onClick={closeMobile} 
@@ -193,12 +210,14 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
       </div>
 
       {/* Organization Card */}
-      <div className="px-5 mb-6">
-        <MadrasaSwitcher />
-      </div>
+      {user?.role !== "teacher" && (
+        <div className="px-5 mb-6">
+          <MadrasaSwitcher />
+        </div>
+      )}
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-4 custom-scrollbar space-y-6">
+      <nav className={`flex-1 overflow-y-auto px-4 custom-scrollbar space-y-6 ${user?.role === "teacher" ? "mt-2" : ""}`}>
         {sections.map((section, sIndex) => (
           <div key={sIndex}>
             <div className="flex items-center gap-3 px-3 mb-3">

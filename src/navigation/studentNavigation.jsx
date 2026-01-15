@@ -40,14 +40,7 @@ export const studentNavigation = [
       { name: "Progress Report", path: "/student/exam/results" },
     ],
   },
-  {
-    name: "Resources",
-    icon: Library,
-    children: [
-      { name: "Digital Library", path: "/student/library" },
-      { name: "E-Books", path: "/student/library/ebooks" },
-    ],
-  },
+
   {
     name: "Communication",
     icon: MessageSquare,

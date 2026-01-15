@@ -34,7 +34,49 @@ const Login = () => {
         login({ name: "Abdullah Mamun", email: formData.email, role: "student" });
         navigate("/student/dashboard");
       } else if (formData.email === "parent@mms.com" && formData.password === "password") {
-        login({ name: "Abdur Rahman", email: formData.email, role: "guardian" });
+        const mockChildren = [
+            { 
+              id: 1, 
+              name: "Abdullah Mamun", 
+              class: "Mishkat (Sec A)", 
+              attendance: "94%", 
+              status: "Present", 
+              dues: "৳ 2,500",
+              initials: "AM",
+              gender: "Male",
+              section: "Sec A",
+              roll: "042",
+              color: "bg-indigo-600",
+              lastActivity: "Submitted Homework: Arabic Nahw",
+              classTeacher: "Sheikh Abdullah",
+              schedule: [
+                 { period: "08:30 AM", subject: "Al-Quran (Hifz)", teacher: "Sheikh Abdullah", room: "Hall 01" },
+                 { period: "10:00 AM", subject: "Arabic Nahw", teacher: "Ustad Junaid", room: "Room 105" },
+                 { period: "12:00 PM", subject: "Fiqh Basics", teacher: "Mufti Omar", room: "Main Room" }
+              ]
+            },
+            { 
+              id: 2, 
+              name: "Zaid Bin Harith", 
+              class: "Hifz (Sec B)", 
+              attendance: "98%", 
+              status: "Present", 
+              dues: "৳ 1,200",
+              initials: "ZH",
+              gender: "Male",
+              section: "Sec B",
+              roll: "012",
+              color: "bg-emerald-600",
+              lastActivity: "New Grade Posted: Tajweed",
+              classTeacher: "Hafiz Kareem",
+              schedule: [
+                 { period: "07:00 AM", subject: "Morning Hifz", teacher: "Hafiz Kareem", room: "Hall 02" },
+                 { period: "09:30 AM", subject: "Tajweed Rule", teacher: "Qari Basit", room: "Room 105" },
+                 { period: "11:00 AM", subject: "Islamic Manners", teacher: "Ustad Ahmed", room: "Hall 02" }
+              ]
+            }
+        ];
+        login({ name: "Abdur Rahman", email: formData.email, role: "guardian" }, [], mockChildren);
         navigate("/guardian/dashboard");
       } else if (formData.email === "accountant@mms.com" && formData.password === "password") {
         login({ name: "Accountant", email: formData.email, role: "accountant" });

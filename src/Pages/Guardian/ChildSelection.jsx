@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import { 
   Users, 
   ArrowRight, 
@@ -10,30 +11,14 @@ import {
 } from "lucide-react";
 
 const ChildSelection = () => {
-  const children = [
-    { 
-      id: 1, 
-      name: "Abdullah Mamun", 
-      class: "Mishkat", 
-      section: "Sec A", 
-      roll: "042",
-      status: "Active", 
-      gender: "Male",
-      initials: "AM",
-      color: "bg-indigo-600"
-    },
-    { 
-      id: 2, 
-      name: "Zaid Bin Harith", 
-      class: "Hifz", 
-      section: "Sec B", 
-      roll: "012",
-      status: "Active", 
-      gender: "Male",
-      initials: "ZH",
-      color: "bg-emerald-600"
-    }
-  ];
+  const { guardianChildren, selectChild, activeChild } = useAuth();
+  const navigate = useNavigate();
+  const children = guardianChildren;
+
+  const handleSelect = (child) => {
+      selectChild(child);
+      navigate("/guardian/dashboard");
+  };
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 animate-in fade-in duration-500">
@@ -91,7 +76,7 @@ const ChildSelection = () => {
                     </div>
                  </div>
 
-                 <button className="w-full mt-4 py-5 bg-slate-50 group-hover:bg-slate-900 text-slate-400 group-hover:text-white rounded-[1.5rem] md:rounded-[2.5rem] font-black text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-3">
+                 <button onClick={() => handleSelect(child)} className="w-full mt-4 py-5 bg-slate-50 group-hover:bg-slate-900 text-slate-400 group-hover:text-white rounded-[1.5rem] md:rounded-[2.5rem] font-black text-[11px] uppercase tracking-widest transition-all flex items-center justify-center gap-3">
                     Access Academic Portal <ArrowRight className="w-4 h-4" />
                  </button>
               </div>
