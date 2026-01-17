@@ -21,11 +21,11 @@ import {
   Contact,
   School,
   FileText,
-  Wallet, 
-  Receipt, 
-  Banknote, 
-  TrendingDown, 
-  TrendingUp, 
+  Wallet,
+  Receipt,
+  Banknote,
+  TrendingDown,
+  TrendingUp,
   FilePieChart,
   DollarSign,
   HeartHandshake,
@@ -59,9 +59,9 @@ export const adminNavigation = [
     name: "Parents",
     icon: Contact,
     children: [
-        { name: "Parent List", path: "/admin/parents/list" },
-        { name: "Login Deactive", path: "/admin/parents/deactive" },
-    ]
+      { name: "Parent List", path: "/admin/parents/list" },
+      { name: "Login Deactive", path: "/admin/parents/deactive" },
+    ],
   },
   {
     name: "Employee",
@@ -88,10 +88,13 @@ export const adminNavigation = [
     name: "Academic",
     icon: School,
     children: [
-      { name: "Department & Section", path: "/admin/academic/department-section" },
+      {
+        name: "Department & Section",
+        path: "/admin/academic/department-section",
+      },
       { name: "Subject", path: "/admin/academic/subject" },
       { name: "Class Schedule", path: "/admin/academic/schedule/class" },
-      { name: "Class Assign", path: "/admin/academic/class-assign" }, 
+      { name: "Class Assign", path: "/admin/academic/class-assign" },
       { name: "Assign Class Teacher", path: "/admin/academic/assign-teacher" },
       { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher" },
     ],
@@ -108,31 +111,31 @@ export const adminNavigation = [
     name: "Exam Master",
     icon: GraduationCap,
     children: [
-      { 
-          name: "Exam",
-          children: [
-              { name: "Exam Term", path: "/admin/exam/term" },
-              { name: "Exam Hall", path: "/admin/exam/hall" },
-              { name: "Distribution", path: "/admin/exam/distribution" },
-              { name: "Exam Setup", path: "/admin/exam/setup" },
-              { name: "Marksheet Template", path: "/admin/exam/template" },
-          ]
+      {
+        name: "Exam",
+        children: [
+          { name: "Exam Term", path: "/admin/exam/term" },
+          { name: "Exam Hall", path: "/admin/exam/hall" },
+          { name: "Distribution", path: "/admin/exam/distribution" },
+          { name: "Exam Setup", path: "/admin/exam/setup" },
+          { name: "Marksheet Template", path: "/admin/exam/template" },
+        ],
       },
-      { 
-          name: "Exam Schedule",
-          children: [
-              { name: "Schedule", path: "/admin/exam/schedule/list" },
-              { name: "Add Schedule", path: "/admin/exam/schedule/add" },
-          ]
-       },
-      { 
-          name: "Marks",
-          children: [
-              { name: "Mark Entries", path: "/admin/exam/marks/entry" },
-              { name: "Generate Position", path: "/admin/exam/marks/position" },
-              { name: "Grades Range", path: "/admin/exam/marks/grades" },
-          ]
-       },
+      {
+        name: "Exam Schedule",
+        children: [
+          { name: "Schedule", path: "/admin/exam/schedule/list" },
+          { name: "Add Schedule", path: "/admin/exam/schedule/add" },
+        ],
+      },
+      {
+        name: "Marks",
+        children: [
+          { name: "Mark Entries", path: "/admin/exam/marks/entry" },
+          { name: "Generate Position", path: "/admin/exam/marks/position" },
+          { name: "Grades Range", path: "/admin/exam/marks/grades" },
+        ],
+      },
     ],
   },
   {
@@ -159,49 +162,100 @@ export const adminNavigation = [
     name: "Office Accounting",
     icon: Calculator,
     children: [
-     
       {
         name: "Fees Collection",
         icon: Wallet,
         children: [
-          { name: "Collect Fees", path: "/admin/accounting/fees/collect", icon: DollarSign },
-          { name: "Fee Setup", path: "/admin/accounting/fees/setup", icon: Settings },
-          { name: "Dues Pending", path: "/admin/accounting/fees/dues", icon: Receipt },
-          { name: "Fee Reports", path: "/admin/reports/fees", icon: FilePieChart },
-        ]
+          {
+            name: "Collect Fees",
+            path: "/admin/accounting/fees/collect",
+            icon: DollarSign,
+          },
+          {
+            name: "Fee Setup",
+            path: "/admin/accounting/fees/setup",
+            icon: Settings,
+          },
+          {
+            name: "Dues Pending",
+            path: "/admin/accounting/fees/dues",
+            icon: Receipt,
+          },
+          {
+            name: "Fee Reports",
+            path: "/admin/reports/fees",
+            icon: FilePieChart,
+          },
+        ],
       },
       {
         name: "Payroll",
         icon: Banknote,
         children: [
-          { name: "Process Salary", path: "/admin/accounting/payroll/process", icon: Calculator },
-          { name: "Salary Setup", path: "/admin/accounting/payroll/setup", icon: Settings },
-          { name: "Salary History", path: "/admin/accounting/payroll/history", icon: Receipt },
-        ]
+          {
+            name: "Process Salary",
+            path: "/admin/accounting/payroll/process",
+            icon: Calculator,
+          },
+          {
+            name: "Pay Salary",
+            path: "/admin/accounting/payroll/pay",
+            icon: DollarSign,
+          },
+          {
+            name: "Salary History",
+            path: "/admin/accounting/payroll/history",
+            icon: Receipt,
+          },
+        ],
       },
       {
         name: "Donation",
         icon: HeartHandshake,
         children: [
-            { name: "Receive Donation", path: "/admin/accounting/donation/create", icon: HeartHandshake },
-            { name: "Donation History", path: "/admin/accounting/donation/list", icon: ClipboardList }
-        ]
+          {
+            name: "Receive Donation",
+            path: "/admin/accounting/donation/create",
+            icon: HeartHandshake,
+          },
+          {
+            name: "Donation History",
+            path: "/admin/accounting/donation/list",
+            icon: ClipboardList,
+          },
+        ],
       },
       {
         name: "Expenses",
         icon: TrendingDown,
         children: [
-          { name: "Add Expense", path: "/admin/accounting/expense/create", icon: CreditCard },
-          { name: "Expense Report", path: "/admin/reports/finance", icon: FilePieChart },
-        ]
+          {
+            name: "Add Expense",
+            path: "/admin/accounting/expense/create",
+            icon: CreditCard,
+          },
+          {
+            name: "Expense Report",
+            path: "/admin/reports/finance",
+            icon: FilePieChart,
+          },
+        ],
       },
       {
         name: "Income",
         icon: TrendingUp,
         children: [
-          { name: "Other Income", path: "/admin/inventory/sales", icon: DollarSign },
-          { name: "Income Report", path: "/admin/reports/finance", icon: FilePieChart },
-        ]
+          {
+            name: "Other Income",
+            path: "/admin/inventory/sales",
+            icon: DollarSign,
+          },
+          {
+            name: "Income Report",
+            path: "/admin/reports/finance",
+            icon: FilePieChart,
+          },
+        ],
       },
     ],
   },
@@ -209,65 +263,104 @@ export const adminNavigation = [
     name: "Reports",
     icon: FileBarChart,
     children: [
-      { 
-          name: "Student Reports",
-          children: [
-              { name: "Login Credential", path: "/admin/reports/student/login" },
-              { name: "Admission Report", path: "/admin/reports/student/admission" },
-              { name: "Department & Section Report", path: "/admin/reports/student/department-section" },
-              { name: "Sibling Report", path: "/admin/reports/student/sibling" },
-          ]
+      {
+        name: "Student Reports",
+        children: [
+          { name: "Login Credential", path: "/admin/reports/student/login" },
+          {
+            name: "Admission Report",
+            path: "/admin/reports/student/admission",
+          },
+          {
+            name: "Department & Section Report",
+            path: "/admin/reports/student/department-section",
+          },
+          { name: "Sibling Report", path: "/admin/reports/student/sibling" },
+        ],
       },
       {
-          name: "Fees Reports",
-          children: [
-              { name: "Fees Report", path: "/admin/reports/fees/general" },
-              { name: "Receipts Report", path: "/admin/reports/fees/receipts" },
-              { name: "Due Fees Report", path: "/admin/reports/fees/due" },
-              { name: "Fine Report", path: "/admin/reports/fees/fine" },
-          ]
+        name: "Fees Reports",
+        children: [
+          { name: "Fees Report", path: "/admin/reports/fees/general" },
+          { name: "Receipts Report", path: "/admin/reports/fees/receipts" },
+          { name: "Due Fees Report", path: "/admin/reports/fees/due" },
+          { name: "Fine Report", path: "/admin/reports/fees/fine" },
+        ],
       },
       {
-          name: "Financial Reports",
-          children: [
-             { name: "Account Statement", path: "/admin/reports/finance/statement" },
-             { name: "Income Reports", path: "/admin/reports/finance/income" },
-             { name: "Expense Reports", path: "/admin/reports/finance/expense" },
-             { name: "Transaction Reports", path: "/admin/reports/finance/transactions" },
-             { name: "Balance Sheet", path: "/admin/reports/finance/balance" },
-             { name: "Income Vs Expense", path: "/admin/reports/finance/income-vs-expense" },
-          ]
+        name: "Financial Reports",
+        children: [
+          {
+            name: "Account Statement",
+            path: "/admin/reports/finance/statement",
+          },
+          { name: "Income Reports", path: "/admin/reports/finance/income" },
+          { name: "Expense Reports", path: "/admin/reports/finance/expense" },
+          {
+            name: "Transaction Reports",
+            path: "/admin/reports/finance/transactions",
+          },
+          { name: "Balance Sheet", path: "/admin/reports/finance/balance" },
+          {
+            name: "Income Vs Expense",
+            path: "/admin/reports/finance/income-vs-expense",
+          },
+        ],
       },
       {
-          name: "Attendance Reports",
-          children: [
-              { name: "Student Reports", path: "/admin/reports/attendance/student" }, // ambiguous in request, handled as sub-cat
-              { name: "Student Daily Reports", path: "/admin/reports/attendance/student-daily" },
-              { name: "Student Overview", path: "/admin/reports/attendance/student-overview" },
-              { name: "Subject Wise Reports", path: "/admin/reports/attendance/subject-wise" },
-              { name: "Subject Wise By Day", path: "/admin/reports/attendance/subject-day" },
-              { name: "Subject Wise By Month", path: "/admin/reports/attendance/subject-month" },
-              { name: "Employee Reports", path: "/admin/reports/attendance/employee" },
-          ]
+        name: "Attendance Reports",
+        children: [
+          {
+            name: "Student Reports",
+            path: "/admin/reports/attendance/student",
+          }, // ambiguous in request, handled as sub-cat
+          {
+            name: "Student Daily Reports",
+            path: "/admin/reports/attendance/student-daily",
+          },
+          {
+            name: "Student Overview",
+            path: "/admin/reports/attendance/student-overview",
+          },
+          {
+            name: "Subject Wise Reports",
+            path: "/admin/reports/attendance/subject-wise",
+          },
+          {
+            name: "Subject Wise By Day",
+            path: "/admin/reports/attendance/subject-day",
+          },
+          {
+            name: "Subject Wise By Month",
+            path: "/admin/reports/attendance/subject-month",
+          },
+          {
+            name: "Employee Reports",
+            path: "/admin/reports/attendance/employee",
+          },
+        ],
       },
       {
-          name: "Exam Reports",
-          children: [
-              { name: "Examination", path: "/admin/reports/exam/list" },
-              { name: "Report Card", path: "/admin/reports/exam/card" },
-              { name: "Tabulation Sheet", path: "/admin/reports/exam/tabulation" },
-              { name: "Progress Reports", path: "/admin/reports/exam/progress" },
-          ]
+        name: "Exam Reports",
+        children: [
+          { name: "Examination", path: "/admin/reports/exam/list" },
+          { name: "Report Card", path: "/admin/reports/exam/card" },
+          { name: "Tabulation Sheet", path: "/admin/reports/exam/tabulation" },
+          { name: "Progress Reports", path: "/admin/reports/exam/progress" },
+        ],
       },
       {
-           name: "Inventory Reports",
-           children: [
-               { name: "Stock Report", path: "/admin/reports/inventory/stock" },
-               { name: "Purchase Report", path: "/admin/reports/inventory/purchase" },
-               { name: "Sales Report", path: "/admin/reports/inventory/sales" },
-               { name: "Issue Report", path: "/admin/reports/inventory/issue" },
-           ]
-      }
+        name: "Inventory Reports",
+        children: [
+          { name: "Stock Report", path: "/admin/reports/inventory/stock" },
+          {
+            name: "Purchase Report",
+            path: "/admin/reports/inventory/purchase",
+          },
+          { name: "Sales Report", path: "/admin/reports/inventory/sales" },
+          { name: "Issue Report", path: "/admin/reports/inventory/issue" },
+        ],
+      },
     ],
   },
   {

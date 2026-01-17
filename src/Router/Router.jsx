@@ -95,8 +95,10 @@ import DonationEntry from "../Pages/Accounting/DonationEntry";
 import FeeCollection from "../Pages/Accounting/FeeCollection";
 import PayrollProcess from "../Pages/Accounting/PayrollProcess";
 import FeeSetup from "../Pages/Accounting/FeeSetup";
-import SalarySetup from "../Pages/Accounting/SalarySetup";
 import SMS from "../Pages/Admin/SMS";
+import DuesPending from "../Pages/Admin/DuesPending";
+import DonationHistory from "../Pages/Accounting/DonationHistory";
+import SalaryHistory from "../Pages/Accounting/SalaryHistory";
 
 // Guardian Pages
 import ChildSelection from "../Pages/Guardian/ChildSelection";
@@ -123,10 +125,10 @@ import StudentProfilePage from "../Pages/Students/Profile";
 // Helper to flatten routes
 const flattenRoutes = (navItems) => {
   let routes = [];
-  navItems.forEach(item => {
-    if (item.path && item.path !== '/admin' && item.path !== '/teacher') {
+  navItems.forEach((item) => {
+    if (item.path && item.path !== "/admin" && item.path !== "/teacher") {
       let element = <Placeholder title={item.name} />;
-      
+
       // Map specific paths to their components
       if (item.path === "/admin/frontend") {
         element = <FrontendManager />;
@@ -293,10 +295,13 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/sms") {
         element = <SMS />;
       }
-      
+
       // Accounting Routes Mapping
       if (item.path === "/admin/accounting/donation/create") {
         element = <DonationEntry />;
+      }
+      if (item.path === "/admin/accounting/donation/list") {
+        element = <DonationHistory />;
       }
       if (item.path === "/admin/accounting/fees/collect") {
         element = <FeeCollection />;
@@ -307,10 +312,16 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/accounting/payroll/process") {
         element = <PayrollProcess />;
       }
-      if (item.path === "/admin/accounting/payroll/setup") {
-        element = <SalarySetup />;
+      if (item.path === "/admin/accounting/payroll/pay") {
+        element = <PaySalary />;
       }
-      
+      if (item.path === "/admin/accounting/payroll/history") {
+        element = <SalaryHistory />;
+      }
+      if (item.path === "/admin/accounting/fees/dues") {
+        element = <DuesPending />;
+      }
+
       // Reports
       if (item.path?.startsWith("/admin/reports/student")) {
         element = <StudentReports />;
@@ -330,7 +341,7 @@ const flattenRoutes = (navItems) => {
       if (item.path?.startsWith("/admin/reports/inventory")) {
         element = <InventoryReports />;
       }
-      
+
       // Settings
       if (item.path === "/admin/settings") {
         element = <SettingsPage />;
@@ -340,7 +351,10 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/teacher/academic/schedule") {
         element = <MySchedule />;
       }
-      if (item.path === "/teacher/attendance/daily" || item.path === "/teacher/attendance/subject") {
+      if (
+        item.path === "/teacher/attendance/daily" ||
+        item.path === "/teacher/attendance/subject"
+      ) {
         element = <MarkAttendance />;
       }
       if (item.path?.startsWith("/teacher/homework")) {
@@ -349,7 +363,7 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/teacher/exam/marks") {
         element = <Gradebook />;
       }
-      
+
       if (item.path === "/teacher/academic/subjects") {
         element = <MySubjects />;
       }
@@ -359,14 +373,14 @@ const flattenRoutes = (navItems) => {
       if (item.path?.startsWith("/teacher/notice")) {
         element = <NoticeBoard />;
       }
-      
+
       if (item.path === "/teacher/exam/schedule") {
         element = <TeacherExamSchedule />;
       }
       if (item.path === "/teacher/attendance/report") {
         element = <TeacherAttendanceReport />;
       }
-      
+
       // Secondary/Shared Teacher Routes
       if (item.path?.startsWith("/teacher/message")) {
         element = <MessageCenter />;
@@ -380,24 +394,34 @@ const flattenRoutes = (navItems) => {
 
       // Guardian Routes Mapping
       if (item.path === "/guardian/dashboard") element = <GuardianDashboard />;
-      if (item.path === "/guardian/children/selection") element = <ChildSelection />;
-      if (item.path === "/guardian/children/summary") element = <AcademicSummary />;
+      if (item.path === "/guardian/children/selection")
+        element = <ChildSelection />;
+      if (item.path === "/guardian/children/summary")
+        element = <AcademicSummary />;
       if (item.path === "/guardian/finance/fees") element = <FeesAndDues />;
-      if (item.path === "/guardian/finance/history") element = <PaymentHistory />;
-      if (item.path === "/guardian/performance/results") element = <ExamResults />;
-      if (item.path === "/guardian/performance/analytics") element = <ProgressAnalytics />;
-      if (item.path === "/guardian/attendance") element = <GuardianAttendance />;
+      if (item.path === "/guardian/finance/history")
+        element = <PaymentHistory />;
+      if (item.path === "/guardian/performance/results")
+        element = <ExamResults />;
+      if (item.path === "/guardian/performance/analytics")
+        element = <ProgressAnalytics />;
+      if (item.path === "/guardian/attendance")
+        element = <GuardianAttendance />;
       if (item.path === "/guardian/notice") element = <NoticeBoard />;
       if (item.path === "/guardian/message") element = <MessageCenter />;
       if (item.path === "/guardian/profile") element = <GuardianProfile />;
 
       // Student Routes Mapping
       if (item.path === "/student/dashboard") element = <StudentsDashboard />;
-      if (item.path === "/student/academic/schedule") element = <StudentSchedule />;
-      if (item.path === "/student/academic/subjects") element = <StudentSubjects />;
+      if (item.path === "/student/academic/schedule")
+        element = <StudentSchedule />;
+      if (item.path === "/student/academic/subjects")
+        element = <StudentSubjects />;
       if (item.path === "/student/homework/pending") element = <PendingTasks />;
-      if (item.path === "/student/homework/history") element = <SubmissionHistory />;
-      if (item.path === "/student/exam/schedule") element = <StudentExamSchedule />;
+      if (item.path === "/student/homework/history")
+        element = <SubmissionHistory />;
+      if (item.path === "/student/exam/schedule")
+        element = <StudentExamSchedule />;
       if (item.path === "/student/exam/results") element = <StudentResults />;
       if (item.path === "/student/library") element = <StudentLibrary />;
       if (item.path === "/student/library/ebooks") element = <EBooks />;
@@ -422,6 +446,7 @@ import PortalLayout from "../layouts/PortalLayout";
 import Login from "../pages/Auth/Login";
 import AccountDeactivated from "../pages/Auth/AccountDeactivated";
 import DepartmentSectionList from "../Pages/Admin/DepartmentSectionList";
+import PaySalary from "../Pages/Accounting/PaySalary";
 
 const adminRoutes = flattenRoutes(adminNavigation);
 const teacherRoutes = flattenRoutes(teacherNavigation);
@@ -442,8 +467,8 @@ const router = createBrowserRouter([
       { index: true, element: <MadrasaPortal /> },
       { path: "about", element: <AboutUs /> },
       { path: "admission", element: <AdmissionGuidelines /> },
-      { path: "online-admission", element: <OnlineAdmissionForm /> }
-    ]
+      { path: "online-admission", element: <OnlineAdmissionForm /> },
+    ],
   },
   {
     element: <AuthLayout />,
@@ -475,27 +500,36 @@ const router = createBrowserRouter([
           },
           // Admin (Muhtamim) Routes - accessible by talimat and accountant for specific modules
           {
-            element: <ProtectedRoute allowedRoles={["admin", "talimat", "accountant"]} />,
+            element: (
+              <ProtectedRoute
+                allowedRoles={["admin", "talimat", "accountant"]}
+              />
+            ),
             children: [
               { path: "/admin", element: <AdminDashboard /> },
-              { path: "/admin/student/profile/:id", element: <StudentProfile /> },
-              ...adminRoutes
+              {
+                path: "/admin/student/profile/:id",
+                element: <StudentProfile />,
+              },
+              ...adminRoutes,
             ],
           },
           // Teacher Routes - accessible by admin and talimat too
-           {
-             element: <ProtectedRoute allowedRoles={["teacher", "admin", "talimat"]} />,
-             children: [
-               { path: "/teacher", element: <TeachersDashboard /> },
-               ...teacherRoutes
-             ],
-           },
+          {
+            element: (
+              <ProtectedRoute allowedRoles={["teacher", "admin", "talimat"]} />
+            ),
+            children: [
+              { path: "/teacher", element: <TeachersDashboard /> },
+              ...teacherRoutes,
+            ],
+          },
           // Talimat Routes
           {
             element: <ProtectedRoute allowedRoles={["talimat", "admin"]} />,
             children: [
               { path: "/talimat", element: <TalimatDashboard /> },
-              ...talimatRoutes
+              ...talimatRoutes,
             ],
           },
           // Accounting Routes
@@ -503,40 +537,57 @@ const router = createBrowserRouter([
             element: <ProtectedRoute allowedRoles={["accountant", "admin"]} />,
             children: [
               { path: "/accounting", element: <AccountingDashboard /> },
-              ...accountingRoutes
+              ...accountingRoutes,
             ],
           },
           // Other Roles
 
-           {
-             element: <ProtectedRoute allowedRoles={["student"]} />,
-             children: [
-               { path: "/student", element: <Navigate to="/student/dashboard" replace /> },
-               { path: "/student/dashboard", element: <StudentsDashboard /> },
-               ...studentRoutes
-             ],
-           },
-           {
-             element: <ProtectedRoute allowedRoles={["guardian"]} />,
-             children: [
-               { path: "/guardian", element: <Navigate to="/guardian/dashboard" replace /> },
-               ...guardianRoutes
-             ],
-           },
-           { path: "/students", element: <StudentsDashboard /> },
-           { path: "/staff", element: <StaffDashboard /> },
+          {
+            element: <ProtectedRoute allowedRoles={["student"]} />,
+            children: [
+              {
+                path: "/student",
+                element: <Navigate to="/student/dashboard" replace />,
+              },
+              { path: "/student/dashboard", element: <StudentsDashboard /> },
+              ...studentRoutes,
+            ],
+          },
+          {
+            element: <ProtectedRoute allowedRoles={["guardian"]} />,
+            children: [
+              {
+                path: "/guardian",
+                element: <Navigate to="/guardian/dashboard" replace />,
+              },
+              ...guardianRoutes,
+            ],
+          },
+          { path: "/students", element: <StudentsDashboard /> },
+          { path: "/staff", element: <StaffDashboard /> },
         ],
       },
     ],
   },
   {
     path: "/unauthorized",
-    element: <div className="p-10 text-center"><h1>Unauthorized Access</h1><a href="/login" className="text-blue-500">Go to Login</a></div>
+    element: (
+      <div className="p-10 text-center">
+        <h1>Unauthorized Access</h1>
+        <a href="/login" className="text-blue-500">
+          Go to Login
+        </a>
+      </div>
+    ),
   },
   {
     path: "*",
-    element: <div className="p-10 text-center"><h1>404 - Page Not Found</h1></div>
-  }
+    element: (
+      <div className="p-10 text-center">
+        <h1>404 - Page Not Found</h1>
+      </div>
+    ),
+  },
 ]);
 
 export default router;
