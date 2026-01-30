@@ -25,7 +25,6 @@ const AttendanceReports = () => {
     const path = location.pathname;
     if (path.includes("student-daily")) setActiveTab("daily");
     else if (path.includes("student-overview")) setActiveTab("overview");
-    else if (path.includes("subject-wise")) setActiveTab("subject");
     else if (path.includes("employee")) setActiveTab("employee");
     else setActiveTab("daily");
   }, [location.pathname]);
@@ -33,7 +32,6 @@ const AttendanceReports = () => {
   const tabs = [
     { id: "daily", label: "Student Daily", icon: CalendarCheck },
     { id: "overview", label: "Student Overview", icon: ClipboardCheck },
-    { id: "subject", label: "Subject Wise", icon: PieChart },
     { id: "employee", label: "Employee Reports", icon: Users },
   ];
 
@@ -44,8 +42,8 @@ const AttendanceReports = () => {
         {/* Header Section */}
         <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center border border-emerald-100 shadow-inner">
-              <CalendarCheck className="w-8 h-8 text-emerald-600" />
+            <div className="w-16 h-16 bg-[#e6f4ef] rounded-2xl flex items-center justify-center border border-emerald-100 shadow-inner">
+              <CalendarCheck className="w-8 h-8 text-[#00bd7f]" />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight text-uppercase">Attendance Analytics</h1>
@@ -58,7 +56,7 @@ const AttendanceReports = () => {
                <Calendar className="w-5 h-5" />
                Select Date
             </button>
-            <button className="flex-[2] lg:flex-none px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-xl shadow-emerald-100 hover:bg-emerald-700 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]">
+            <button className="flex-[2] lg:flex-none px-8 py-4 bg-[#00bd7f] text-white rounded-2xl font-black shadow-xl shadow-emerald-100 hover:bg-[#009b68] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]">
               <Printer className="w-5 h-5" />
               Print Selected
             </button>
@@ -73,7 +71,7 @@ const AttendanceReports = () => {
                onClick={() => setActiveTab(tab.id)}
                className={`flex items-center gap-3 px-6 py-4 rounded-[2rem] font-black transition-all ${
                  activeTab === tab.id 
-                   ? "bg-emerald-600 text-white shadow-lg shadow-emerald-100 scale-[1.02]" 
+                   ? "bg-[#00bd7f] text-white shadow-lg shadow-emerald-100 scale-[1.02]" 
                    : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
                }`}
              >
@@ -89,13 +87,13 @@ const AttendanceReports = () => {
               <div key={label} className="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm group hover:border-emerald-200 transition-all">
                  <div className="flex justify-between items-center mb-4">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</p>
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors`}>
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 group-hover:bg-[#e6f4ef] group-hover:text-[#00bd7f] transition-colors`}>
                        <Clock className="w-4 h-4" />
                     </div>
                  </div>
                  <div className="flex items-end justify-between">
                     <h4 className="text-3xl font-black text-slate-800 tracking-tight">{[245, 12, 5, 8][idx]}</h4>
-                    <span className="text-[10px] font-black text-emerald-500">+2%</span>
+                    <span className="text-[10px] font-black text-[#00bd7f]">+2%</span>
                  </div>
               </div>
            ))}
@@ -114,7 +112,7 @@ const AttendanceReports = () => {
               <div className="flex gap-4 shrink-0">
                  <div className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
-                    <input className="bg-white border border-slate-200 rounded-xl pl-10 pr-6 py-3 text-sm font-bold focus:border-emerald-500 outline-none w-64 shadow-sm transition-all" placeholder="Search by name..." />
+                    <input className="bg-white border border-slate-200 rounded-xl pl-10 pr-6 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none w-64 shadow-sm transition-all" placeholder="Search by name..." />
                  </div>
                  <button className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200">
                     Apply Filter
@@ -148,7 +146,7 @@ const AttendanceReports = () => {
                           </td>
                           <td className="px-10 py-6 text-center">
                              <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                                i % 3 === 0 ? "bg-rose-50 text-rose-500 border-rose-100" : "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                i % 3 === 0 ? "bg-rose-50 text-rose-500 border-rose-100" : "bg-[#e6f4ef] text-[#00bd7f] border-emerald-100"
                              }`}>
                                 <UserCheck className="w-3 h-3" />
                                 {i % 3 === 0 ? "Absent" : "Present"}
@@ -171,7 +169,7 @@ const AttendanceReports = () => {
            <div className="p-10 bg-slate-50/50 flex justify-center border-t border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400">
               <div className="flex items-center gap-10">
                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500"></div> Present (92%)
+                    <div className="w-2 h-2 rounded-full bg-[#00bd7f]"></div> Present (92%)
                  </div>
                  <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-rose-500"></div> Absent (5%)

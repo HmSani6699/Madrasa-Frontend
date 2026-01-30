@@ -2,8 +2,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #059669; /* Emerald 600 */
-  --color-primary-dark: #047857; /* Emerald 700 */
+  --color-primary: #00bd7f; 
+  --color-primary-dark: #009b68; 
   --color-secondary: #d97706; /* Amber 600 (Gold-ish) */
   --color-secondary-dark: #b45309; /* Amber 700 */
   --color-background: #f8fafc; /* Slate 50 */

@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { 
-  Plus, 
-  Search, 
-  Settings2, 
-  UserCheck, 
-  CheckCircle2, 
-  AlertCircle, 
-  Save, 
-  Filter, 
+import {
+  Plus,
+  Search,
+  Settings2,
+  UserCheck,
+  CheckCircle2,
+  AlertCircle,
+  Save,
+  Filter,
   ChevronRight,
   School,
-  BookOpen
+  BookOpen,
 } from "lucide-react";
+import SelectInputField from "../../components/SelectInputField";
 
 const MarkEntries = () => {
   const [selectedTerm, setSelectedTerm] = useState("First Term 2026");
@@ -20,10 +21,34 @@ const MarkEntries = () => {
 
   // Sample Data: Students for Mark Entry
   const [students, setStudents] = useState([
-    { id: "STU001", name: "মোহাম্মদ রহমান", roll: "01", marks: { theory: "85", viva: "25" }, status: "present" },
-    { id: "STU002", name: "আয়েশা খাতুন", roll: "02", marks: { theory: "78", viva: "28" }, status: "present" },
-    { id: "STU003", name: "ইউসুফ হোসেন", roll: "03", marks: { theory: "0", viva: "0" }, status: "absent" },
-    { id: "STU004", name: "ফাতিমা জোহরা", roll: "04", marks: { theory: "92", viva: "29" }, status: "present" },
+    {
+      id: "STU001",
+      name: "মোহাম্মদ রহমান",
+      roll: "01",
+      marks: { theory: "85", viva: "25" },
+      status: "present",
+    },
+    {
+      id: "STU002",
+      name: "আয়েশা খাতুন",
+      roll: "02",
+      marks: { theory: "78", viva: "28" },
+      status: "present",
+    },
+    {
+      id: "STU003",
+      name: "ইউসুফ হোসেন",
+      roll: "03",
+      marks: { theory: "0", viva: "0" },
+      status: "absent",
+    },
+    {
+      id: "STU004",
+      name: "ফাতিমা জোহরা",
+      roll: "04",
+      marks: { theory: "92", viva: "29" },
+      status: "present",
+    },
   ]);
 
   return (
@@ -35,8 +60,10 @@ const MarkEntries = () => {
             <UserCheck className="w-8 h-8 text-emerald-600" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-black text-slate-800">Mark Entries</h1>
-            <p className="text-slate-500 font-bold mt-1">Register and manage student examination scores</p>
+            <h1 className="text-2xl md:text-3xl font-black text-slate-800">
+              Mark Entries
+            </h1>
+            {/* <p className="text-slate-500 font-bold mt-1">Register and manage student examination scores</p> */}
           </div>
         </div>
 
@@ -48,112 +75,113 @@ const MarkEntries = () => {
 
       {/* Control Bar */}
       <div className="bg-white p-6 rounded-[2rem] border-2 border-slate-200 shadow-sm flex flex-col lg:flex-row gap-6 items-end">
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
-            <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Exam Term</label>
-                <select className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-emerald-500 outline-none">
-                    <option>First Term 2026</option>
-                    <option>Mid Term 2026</option>
-                </select>
-            </div>
-            <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Class</label>
-                <select className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-emerald-500 outline-none">
-                    <option>Class 5</option>
-                    <option>Class 6</option>
-                </select>
-            </div>
-            <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Subject</label>
-                <select className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-emerald-500 outline-none">
-                    <option>Arabic Grammar</option>
-                    <option>Mathematics</option>
-                </select>
-            </div>
-         </div>
-         <button className="px-8 py-4 bg-slate-800 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-900 transition-all">
-            Load Sheet
-         </button>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
+          <SelectInputField
+            title={"Exam Name"}
+            options={[{ value: "First Semister" }]}
+          />
+          <SelectInputField title={"Class"} options={[{ value: "One" }]} />
+          <SelectInputField title={"Subject"} options={[{ value: "Bangla" }]} />
+        </div>
       </div>
 
       {/* Marks Table */}
       <div className="bg-white rounded-[2.5rem] border-2 border-slate-200 shadow-sm overflow-hidden">
         <div className="p-6 bg-slate-50/50 border-b-2 border-slate-50 flex items-center justify-between">
-           <div className="flex items-center gap-4">
-              <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Marking Schema:</span>
-              <div className="flex gap-2">
-                 <span className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-[10px] font-black text-slate-400 uppercase">Theory (70)</span>
-                 <span className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-[10px] font-black text-slate-400 uppercase">Viva (30)</span>
-              </div>
-           </div>
-           <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
-              <input className="w-full pl-9 pr-4 py-2 bg-white border-2 border-slate-100 rounded-xl text-xs font-bold outline-none focus:border-emerald-500" placeholder="Search student..." />
-           </div>
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-black text-slate-500 uppercase tracking-widest">
+              Marking Table
+            </span>
+            {/* <div className="flex gap-2">
+              <span className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-[10px] font-black text-slate-400 uppercase">
+                Theory (70)
+              </span>
+              <span className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-[10px] font-black text-slate-400 uppercase">
+                Viva (30)
+              </span>
+            </div> */}
+          </div>
+          <div className="relative w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+            <input
+              className="w-full pl-9 pr-4 py-2 bg-white border-2 border-slate-100 rounded-xl text-xs font-bold outline-none focus:border-emerald-500"
+              placeholder="Search student..."
+            />
+          </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-50/30">
               <tr>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Roll</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Student</th>
-                <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Theory Marks</th>
-                <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Viva Marks</th>
-                <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Total</th>
-                <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                <th className="px-8 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Roll
+                </th>
+                <th className="px-8 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Student
+                </th>
+
+                <th className="px-8 py-2 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Marks
+                </th>
+
+                <th className="px-8 py-2 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Status
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y-2 divide-slate-50">
               {students.map((student) => {
-                const total = parseInt(student.marks.theory) + parseInt(student.marks.viva);
+                const total =
+                  parseInt(student.marks.theory) + parseInt(student.marks.viva);
                 const isTheoryOver = parseInt(student.marks.theory) > 70;
                 const isVivaOver = parseInt(student.marks.viva) > 30;
 
                 return (
-                  <tr key={student.id} className="group hover:bg-emerald-50/30 transition-colors">
-                    <td className="px-8 py-6">
-                      <span className="text-sm font-black text-emerald-600 tracking-tight">{student.roll}</span>
+                  <tr
+                    key={student.id}
+                    className="group hover:bg-emerald-50/30 transition-colors"
+                  >
+                    <td className="px-8 py-4">
+                      <span className="text-sm font-black text-emerald-600 tracking-tight">
+                        {student.roll}
+                      </span>
                     </td>
-                    <td className="px-8 py-6">
+                    <td className="px-8 py-4">
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-slate-800">{student.name}</span>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">ID: {student.id}</span>
+                        <span className="text-sm font-bold text-slate-800">
+                          {student.name}
+                        </span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                          ID: {student.id}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-8 py-6 text-center">
-                       <input 
-                         disabled={student.status === 'absent'}
-                         defaultValue={student.marks.theory}
-                         className={`w-20 px-4 py-2 bg-slate-50 border-2 rounded-xl text-sm font-black text-center focus:outline-none transition-all ${
-                            student.status === 'absent' ? 'opacity-30 border-slate-100' : 
-                            isTheoryOver ? 'border-rose-300 text-rose-600 bg-rose-50' : 'border-slate-100 focus:border-emerald-500'
-                         }`}
-                       />
+
+                    <td className="px-8 py-4 text-center">
+                      <input
+                        disabled={student.status === "absent"}
+                        defaultValue={student.marks.viva}
+                        className={`w-20 px-4 py-2 bg-slate-50 border-2 rounded-xl text-sm font-black text-center focus:outline-none transition-all ${
+                          student.status === "absent"
+                            ? "opacity-30 border-slate-100"
+                            : isVivaOver
+                              ? "border-rose-300 text-rose-600 bg-rose-50"
+                              : "border-slate-100 focus:border-emerald-500"
+                        }`}
+                      />
                     </td>
-                    <td className="px-8 py-6 text-center">
-                       <input 
-                         disabled={student.status === 'absent'}
-                         defaultValue={student.marks.viva}
-                         className={`w-20 px-4 py-2 bg-slate-50 border-2 rounded-xl text-sm font-black text-center focus:outline-none transition-all ${
-                            student.status === 'absent' ? 'opacity-30 border-slate-100' : 
-                            isVivaOver ? 'border-rose-300 text-rose-600 bg-rose-50' : 'border-slate-100 focus:border-emerald-500'
-                         }`}
-                       />
-                    </td>
-                    <td className="px-8 py-6 text-center">
-                       <span className={`text-lg font-black ${student.status === 'absent' ? 'text-slate-200' : 'text-slate-800'}`}>
-                          {student.status === 'absent' ? '-' : total}
-                       </span>
-                    </td>
-                    <td className="px-8 py-6 text-center">
-                       <button className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all ${
-                          student.status === 'present' 
-                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                            : 'bg-rose-50 text-rose-600 border-rose-100'
-                       }`}>
-                          {student.status}
-                       </button>
+
+                    <td className="px-8 py-4 text-center">
+                      <button
+                        className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all ${
+                          student.status === "present"
+                            ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                            : "bg-rose-50 text-rose-600 border-rose-100"
+                        }`}
+                      >
+                        {student.status}
+                      </button>
                     </td>
                   </tr>
                 );

@@ -43,35 +43,36 @@ export const adminNavigation = [
     name: "Admission",
     icon: UserPlus,
     children: [
+      { name: "Student List", path: "/admin/student/list" },
       { name: "Create Admission", path: "/admin/admission/create" },
       { name: "Online Admission", path: "/admin/admissions/online" },
     ],
   },
-  {
-    name: "Student Details",
-    icon: Users,
-    children: [
-      { name: "Student List", path: "/admin/student/list" },
-      { name: "Login Deactive", path: "/admin/student/deactive" },
-    ],
-  },
+  // {
+  //   name: "Student Details",
+  //   icon: Users,
+  //   children: [
+  //     { name: "Student List", path: "/admin/student/list" },
+  //     { name: "Login Deactive", path: "/admin/student/deactive" },
+  //   ],
+  // },
   {
     name: "Parents",
     icon: Contact,
     children: [
       { name: "Parent List", path: "/admin/parents/list" },
-      { name: "Login Deactive", path: "/admin/parents/deactive" },
+      // { name: "Login Deactive", path: "/admin/parents/deactive" },
     ],
   },
   {
     name: "Employee",
     icon: Briefcase,
     children: [
-      { name: "Add New Employee", path: "/admin/employee/create" },
       { name: "Employee List", path: "/admin/employee/list" },
-      { name: "Add Department", path: "/admin/employee/department" },
+      { name: "Add New Employee", path: "/admin/employee/create" },
       { name: "Add Designation", path: "/admin/employee/designation" },
-      { name: "Login Deactive", path: "/admin/employee/deactive" },
+      // { name: "Add Department", path: "/admin/employee/department" },
+      // { name: "Login Deactive", path: "/admin/employee/deactive" },
     ],
   },
   {
@@ -79,7 +80,6 @@ export const adminNavigation = [
     icon: CalendarCheck,
     children: [
       { name: "Student", path: "/admin/attendance/student" },
-      { name: "Subject Wise", path: "/admin/attendance/subject" },
       { name: "Employee", path: "/admin/attendance/employee" },
       { name: "Exam", path: "/admin/attendance/exam" },
     ],
@@ -93,8 +93,8 @@ export const adminNavigation = [
         path: "/admin/academic/department-section",
       },
       { name: "Subject", path: "/admin/academic/subject" },
-      { name: "Class Schedule", path: "/admin/academic/schedule/class" },
       { name: "Class Assign", path: "/admin/academic/class-assign" },
+      { name: "Class Schedule", path: "/admin/academic/schedule/class" },
       { name: "Assign Class Teacher", path: "/admin/academic/assign-teacher" },
       { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher" },
     ],
@@ -114,11 +114,11 @@ export const adminNavigation = [
       {
         name: "Exam",
         children: [
-          { name: "Exam Term", path: "/admin/exam/term" },
+          { name: "Exam Name", path: "/admin/exam/term" },
           { name: "Exam Hall", path: "/admin/exam/hall" },
-          { name: "Distribution", path: "/admin/exam/distribution" },
+          // { name: "Distribution", path: "/admin/exam/distribution" },
           { name: "Exam Setup", path: "/admin/exam/setup" },
-          { name: "Marksheet Template", path: "/admin/exam/template" },
+          // { name: "Marksheet Template", path: "/admin/exam/template" },
         ],
       },
       {
@@ -136,26 +136,6 @@ export const adminNavigation = [
           { name: "Grades Range", path: "/admin/exam/marks/grades" },
         ],
       },
-    ],
-  },
-  {
-    name: "Card Management",
-    icon: CreditCard,
-    children: [
-      { name: "ID Card Template", path: "/admin/card/template" },
-      { name: "Student ID Card", path: "/admin/card/student" },
-      { name: "Employee ID Card", path: "/admin/card/employee" },
-      { name: "Admit Card Template", path: "/admin/card/admit-template" },
-      { name: "Generate Admit Card", path: "/admin/card/admit-generate" },
-    ],
-  },
-  {
-    name: "Certificate Management",
-    icon: Award,
-    children: [
-      { name: "Certificate Template", path: "/admin/certificate/template" },
-      { name: "Generate Student", path: "/admin/certificate/student" },
-      { name: "Generate Employee", path: "/admin/certificate/employee" },
     ],
   },
   {
@@ -323,18 +303,6 @@ export const adminNavigation = [
             path: "/admin/reports/attendance/student-overview",
           },
           {
-            name: "Subject Wise Reports",
-            path: "/admin/reports/attendance/subject-wise",
-          },
-          {
-            name: "Subject Wise By Day",
-            path: "/admin/reports/attendance/subject-day",
-          },
-          {
-            name: "Subject Wise By Month",
-            path: "/admin/reports/attendance/subject-month",
-          },
-          {
             name: "Employee Reports",
             path: "/admin/reports/attendance/employee",
           },
@@ -364,14 +332,24 @@ export const adminNavigation = [
     ],
   },
   {
-    name: "Frontend",
-    icon: LayoutTemplate,
-    path: "/admin/frontend",
+    name: "Card Management",
+    icon: CreditCard,
+    children: [
+      { name: "ID Card Template", path: "/admin/card/template" },
+      { name: "Student ID Card", path: "/admin/card/student" },
+      { name: "Employee ID Card", path: "/admin/card/employee" },
+      { name: "Admit Card Template", path: "/admin/card/admit-template" },
+      { name: "Generate Admit Card", path: "/admin/card/admit-generate" },
+    ],
   },
   {
-    name: "Library",
-    icon: Library,
-    path: "/admin/library",
+    name: "Certificate Management",
+    icon: Award,
+    children: [
+      { name: "Certificate Template", path: "/admin/certificate/template" },
+      { name: "Generate Student", path: "/admin/certificate/student" },
+      { name: "Generate Employee", path: "/admin/certificate/employee" },
+    ],
   },
   {
     name: "Events",
@@ -383,6 +361,17 @@ export const adminNavigation = [
     icon: MessageSquare,
     path: "/admin/message",
   },
+  {
+    name: "Library",
+    icon: Library,
+    path: "/admin/library",
+  },
+  {
+    name: "Frontend",
+    icon: LayoutTemplate,
+    path: "/admin/frontend",
+  },
+
   {
     name: "Inventory",
     icon: Package,
@@ -401,10 +390,5 @@ export const adminNavigation = [
     name: "Settings",
     icon: Settings,
     path: "/admin/settings",
-  },
-  {
-    name: "SMS",
-    icon: Smartphone,
-    path: "/admin/sms",
   },
 ];

@@ -6,7 +6,10 @@ import { User, Lock, ArrowRight, Loader2 } from "lucide-react";
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ identifier: "", password: "password" });
+  const [formData, setFormData] = useState({
+    identifier: "",
+    password: "password",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,7 +21,7 @@ const Login = () => {
     // Simulate API Call
     setTimeout(() => {
       const { identifier, password } = formData;
-      
+
       if (
         (identifier === "admin@mms.com" || identifier === "01700000000") &&
         password === "password"
@@ -49,8 +52,13 @@ const Login = () => {
           },
         ];
         login(
-          { name: "Muhtamim", email: "muhtamim@mms.com", phone: "01711111111", role: "admin" },
-          mockMadrasas
+          {
+            name: "Muhtamim",
+            email: "muhtamim@mms.com",
+            phone: "01711111111",
+            role: "admin",
+          },
+          mockMadrasas,
         );
         navigate("/admin");
       } else if (
@@ -152,9 +160,14 @@ const Login = () => {
           },
         ];
         login(
-          { name: "Abdur Rahman", email: "parent@mms.com", phone: "01744444444", role: "guardian" },
+          {
+            name: "Abdur Rahman",
+            email: "parent@mms.com",
+            phone: "01744444444",
+            role: "guardian",
+          },
           [],
-          mockChildren
+          mockChildren,
         );
         navigate("/guardian/dashboard");
       } else if (
@@ -180,9 +193,7 @@ const Login = () => {
         });
         navigate("/talimat");
       } else {
-        setError(
-          "Invalid credentials (try admin@mms.com or 01700000000)"
-        );
+        setError("Invalid credentials (try admin@mms.com or 01700000000)");
         setLoading(false);
       }
     }, 1500);

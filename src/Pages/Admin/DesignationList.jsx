@@ -68,13 +68,13 @@ const DesignationList = () => {
   const [toast, setToast] = useState(null);
 
   const filteredDesgs = designations.filter((d) =>
-    d.title.toLowerCase().includes(searchTerm.toLowerCase())
+    d.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleSave = (title, level) => {
     if (editDesg) {
       setDesignations((prev) =>
-        prev.map((d) => (d.id === editDesg.id ? { ...d, title, level } : d))
+        prev.map((d) => (d.id === editDesg.id ? { ...d, title, level } : d)),
       );
       setToast(`Designation updated to "${title}"`);
     } else {
@@ -115,7 +115,7 @@ const DesignationList = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all relative z-10"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all relative z-10 cursor-pointer"
         >
           <Plus className="w-5 h-5" /> Add Designation
         </button>
@@ -327,7 +327,7 @@ const DesignationList = () => {
               <button
                 onClick={() => {
                   setDesignations((prev) =>
-                    prev.filter((d) => d.id !== deleteDesg.id)
+                    prev.filter((d) => d.id !== deleteDesg.id),
                   );
                   setToast(`Role erased.`);
                   setDeleteDesg(null);

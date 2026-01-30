@@ -66,13 +66,15 @@ const CreateEmployee = () => {
     linkedin: "",
 
     // Bank Details
-    skipBank: false,
+    paymentMethod: "Mobile Banking", // Options: "Bank", "Mobile Banking", "None"
     bankName: "",
     holderName: "",
     bankBranch: "",
     bankAddress: "",
     ifscCode: "",
     accountNo: "",
+    mobileMethods: ["Bkash"], // Options: "Bkash", "Nagad", "Rocket"
+    mobileNumber: "",
   });
 
   const handleInputChange = (field, value) => {
@@ -98,7 +100,7 @@ const CreateEmployee = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-5 animate-in fade-in duration-700">
+    <div className="min-h-screen bg-slate-50 p-5 animate-in fade-in duration-700">
       {/* Page Header */}
       <div className="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-8">
         <div className="flex items-center gap-6">
@@ -117,20 +119,14 @@ const CreateEmployee = () => {
             </p>
           </div>
         </div>
-        <div className="flex gap-4">
-          {/* <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-white text-slate-600 font-black rounded-xl hover:bg-slate-50 transition-all uppercase text-[10px] tracking-widest border border-slate-200"
-          >
-            Clear Form
-          </button> */}
 
-          <Link to={"/admin/employee/list"}>
-            <button className="px-8 py-3 bg-[#00bd7f] text-white font-black rounded-xl hover:bg-[#00d992] transition-all shadow-xl shadow-emerald-500/20  text-[10px] tracking-widest flex items-center gap-2">
-              <User className="w-4 h-4" /> All Staff
-            </button>{" "}
-          </Link>
+        <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10">
+          <button
+            onClick={() => navigate("/admin/employee/list")}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+          >
+            <User className="w-5 h-5" /> All Staff
+          </button>
         </div>
       </div>
 
@@ -144,11 +140,11 @@ const CreateEmployee = () => {
           title="Academic Details"
           icon={GraduationCap}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             <FormSelect
               label="Role"
               field="role"
-              options={["Admin", "Teacher", "Staff", "Manager"]}
+              options={["Teacher", "Talimat", "Accountant", "Staff"]}
               data={formData}
               setter={handleInputChange}
               required
@@ -172,7 +168,7 @@ const CreateEmployee = () => {
               required
               icon={Briefcase}
             />
-            <FormSelect
+            {/* <FormSelect
               label="Department"
               field="department"
               options={["Administrator", "Academic", "Maintenance"]}
@@ -180,7 +176,7 @@ const CreateEmployee = () => {
               setter={handleInputChange}
               required
               icon={Building2}
-            />
+            /> */}
             <FormInput
               label="Qualification"
               field="qualification"
@@ -189,14 +185,14 @@ const CreateEmployee = () => {
               icon={FileText}
               placeholder={"Enter qualification"}
             />
-            <FormInput
+            {/* <FormInput
               label="Total Experience"
               field="totalExperience"
               data={formData}
               setter={handleInputChange}
               icon={Briefcase}
               placeholder={"Enter Total Experience"}
-            />
+            /> */}
           </div>
         </SectionContainer>
 
@@ -392,31 +388,21 @@ const CreateEmployee = () => {
           </div>
         </SectionContainer>
 
-        {/* Bank Details Section */}
-        <SectionContainer id="bank" title="Bank Details" icon={CreditCard}>
-          <div className="mb-8">
-            <label className="flex items-center gap-4 cursor-pointer group">
-              <div
-                className={`w-6 h-6 rounded-md border-2 transition-all flex items-center justify-center ${
-                  formData.skipBank
-                    ? "bg-[#00bd7f] border-[#00bd7f]"
-                    : "border-slate-300 group-hover:border-[#00bd7f]"
-                }`}
-                onClick={() =>
-                  handleInputChange("skipBank", !formData.skipBank)
-                }
-              >
-                {formData.skipBank && (
-                  <ShieldCheck className="w-4 h-4 text-white" />
-                )}
-              </div>
-              <span className="text-slate-600 text-sm font-black uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">
-                Skipped Bank Details
-              </span>
-            </label>
+        {/* Bank & Payment Details Section */}
+        <SectionContainer id="bank" title="Payment Details" icon={CreditCard}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+            <FormSelect
+              label="Payment Method"
+              field="paymentMethod"
+              options={["Bank", "Mobile Banking", "None"]}
+              data={formData}
+              setter={handleInputChange}
+              required
+              icon={ShieldCheck}
+            />
           </div>
 
-          {!formData.skipBank && (
+          {formData.paymentMethod === "Bank" && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in slide-in-from-top-4 duration-500">
               <FormInput
                 label="Bank Name"
@@ -425,6 +411,7 @@ const CreateEmployee = () => {
                 setter={handleInputChange}
                 required
                 icon={Building2}
+                placeholder="Enter Bank Name"
               />
               <FormInput
                 label="Holder Name"
@@ -433,6 +420,7 @@ const CreateEmployee = () => {
                 setter={handleInputChange}
                 required
                 icon={User}
+                placeholder="Enter Account Holder Name"
               />
               <FormInput
                 label="Bank Branch"
@@ -441,6 +429,7 @@ const CreateEmployee = () => {
                 setter={handleInputChange}
                 required
                 icon={MapPin}
+                placeholder="Enter Branch Name"
               />
               <FormInput
                 label="Bank Address"
@@ -448,6 +437,7 @@ const CreateEmployee = () => {
                 data={formData}
                 setter={handleInputChange}
                 icon={Map}
+                placeholder="Enter Bank Address"
               />
               <FormInput
                 label="IFSC Code"
@@ -455,6 +445,7 @@ const CreateEmployee = () => {
                 data={formData}
                 setter={handleInputChange}
                 icon={ShieldCheck}
+                placeholder="Enter IFSC/Routing Code"
               />
               <FormInput
                 label="Account No"
@@ -463,7 +454,73 @@ const CreateEmployee = () => {
                 setter={handleInputChange}
                 required
                 icon={CreditCard}
+                placeholder="Enter Account Number"
               />
+            </div>
+          )}
+
+          {formData.paymentMethod === "Mobile Banking" && (
+            <div className="space-y-8 animate-in slide-in-from-top-4 duration-500">
+              <div className="space-y-4">
+                <label className="text-slate-500 text-[14px] font-black tracking-widest flex items-center gap-3 transition-colors">
+                  Mobile Banking Methods{" "}
+                  <span className="text-[#00bd7f]">*</span>
+                </label>
+                <div className="flex flex-wrap gap-4">
+                  {["Bkash", "Nagad", "Rocket"].map((method) => (
+                    <button
+                      key={method}
+                      type="button"
+                      onClick={() => {
+                        const currentMethods = formData.mobileMethods || [];
+                        const newMethods = currentMethods.includes(method)
+                          ? currentMethods.filter((m) => m !== method)
+                          : [...currentMethods, method];
+                        handleInputChange("mobileMethods", newMethods);
+                      }}
+                      className={`px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 border-2 ${
+                        formData.mobileMethods?.includes(method)
+                          ? "bg-[#00bd7f] border-[#00bd7f] text-white shadow-lg shadow-emerald-500/20"
+                          : "bg-[#e6f4ef] border-transparent text-slate-600 hover:border-emerald-200"
+                      }`}
+                    >
+                      <div
+                        className={`w-4 h-4 rounded-md border-2 flex items-center justify-center ${
+                          formData.mobileMethods?.includes(method)
+                            ? "bg-white border-white"
+                            : "bg-white border-slate-200"
+                        }`}
+                      >
+                        {formData.mobileMethods?.includes(method) && (
+                          <ShieldCheck className="w-3 h-3 text-[#00bd7f]" />
+                        )}
+                      </div>
+                      {method}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <FormInput
+                  label="Mobile Number"
+                  field="mobileNumber"
+                  data={formData}
+                  setter={handleInputChange}
+                  required
+                  icon={Phone}
+                  placeholder="01XXXXXXXXX"
+                />
+              </div>
+            </div>
+          )}
+
+          {formData.paymentMethod === "None" && (
+            <div className="p-6 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 text-center">
+              <p className="text-slate-500 font-bold italic">
+                No payment details provided. Staff will be paid in cash or
+                through other manual methods.
+              </p>
             </div>
           )}
         </SectionContainer>
@@ -499,7 +556,7 @@ const SectionContainer = ({ title, icon: Icon, children }) => (
         <Icon className="w-5 h-5 text-[#00bd7f]" />
       </div>
       <div className="flex-1 flex items-center gap-6">
-        <h2 className="text-xl font-black text-rose-500 tracking-tight whitespace-nowrap">
+        <h2 className="text-xl font-black text-[#00bd7f] tracking-tight whitespace-nowrap">
           {title}
         </h2>
         <div className="h-[2px] w-full bg-slate-50" />
@@ -523,8 +580,8 @@ const FormInput = ({
   placeholder,
 }) => (
   <div className="space-y-4 group">
-    <label className="text-slate-500 text-[14px] font-black  tracking-widest flex items-center gap-3 transition-colors group-focus-within:text-emerald-600">
-      {label} {required && <span className="text-rose-500 ">*</span>}
+    <label className="text-slate-500 text-[14px] font-black  tracking-widest flex items-center gap-3 transition-colors group-focus-within:text-[#00bd7f]">
+      {label} {required && <span className="text-[#00bd7f] ">*</span>}
     </label>
     <div className="relative">
       <input
@@ -588,8 +645,8 @@ const FormTextarea = ({
   placeholder,
 }) => (
   <div className="space-y-4 group">
-    <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-colors group-focus-within:text-emerald-600">
-      {label} {required && <span className="text-rose-500 text-lg">*</span>}
+    <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-colors group-focus-within:text-[#00bd7f]">
+      {label} {required && <span className="text-[#00bd7f] text-lg">*</span>}
     </label>
     <div className="relative">
       <textarea

@@ -26,6 +26,9 @@ import {
   Bus,
 } from "lucide-react";
 import { Link } from "react-router";
+import InputField from "../../components/InputField";
+import TextareaField from "../../components/TextareaField";
+import SelectInputField from "../../components/SelectInputField";
 
 const CreateAdmission = () => {
   const [useExistingGuardian, setUseExistingGuardian] = useState(false);
@@ -70,12 +73,6 @@ const CreateAdmission = () => {
     section: "",
     photo: "",
     password: "password",
-    financial: {
-      admissionFee: "0",
-      monthlyFee: "0",
-      hostelFee: "0",
-      transportFee: "0",
-    },
     transport: {
       required: false,
       route: "",
@@ -84,11 +81,14 @@ const CreateAdmission = () => {
       required: false,
       roomType: "",
     },
+    fees: {}, // To store { "Fee Name": "Amount" }
+    note: "",
   };
 
   const [formData, setFormData] = useState({
     academicYear: "2025-2026",
     admissionDate: new Date().toISOString().split("T")[0],
+    position: "New",
     students: [{ ...initialStudent }],
     guardian: {
       fatherName: "",
@@ -184,7 +184,7 @@ const CreateAdmission = () => {
     (g) =>
       g.fatherName.toLowerCase().includes(guardianSearchTerm.toLowerCase()) ||
       g.motherName.toLowerCase().includes(guardianSearchTerm.toLowerCase()) ||
-      g.contact.includes(guardianSearchTerm)
+      g.contact.includes(guardianSearchTerm),
   );
 
   const handleSubmit = (e) => {
@@ -198,6 +198,7 @@ const CreateAdmission = () => {
       setFormData({
         academicYear: "2025-2026",
         admissionDate: new Date().toISOString().split("T")[0],
+        position: "New",
         students: [{ ...initialStudent, id: Date.now() }],
         guardian: {
           fatherName: "",
@@ -213,6 +214,15 @@ const CreateAdmission = () => {
       });
     }
   };
+
+  const allFeeType = [
+    { name: "Admission Fee" },
+    { name: "Monthly Fee" },
+    { name: "Boding Fee" },
+    { name: "Card Fee" },
+    { name: "Tussion Fee" },
+    { name: "utiliy Fee" },
+  ];
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-6 lg:p-8">
@@ -243,43 +253,38 @@ const CreateAdmission = () => {
         {/* Academic Year & Admission Date */}
         <div className="bg-white dark:bg-white rounded-3xl border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-100 flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-emerald-600" />
+            <div className="w-10 h-10 rounded-xl bg-[#e6f4ef] flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-[#00bd7f]" />
             </div>
-            <h2 className="text-xl font-black text-emerald-700 dark:text-emerald-700">
+            <h2 className="text-xl font-black text-[#00bd7f]">
               Academic Information
             </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-            <div>
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Academic Year <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.academicYear}
-                onChange={(e) =>
-                  handleInputChange(null, "academicYear", e.target.value)
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                placeholder="2025-2026"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Admission Date <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                required
-                value={formData.admissionDate}
-                onChange={(e) =>
-                  handleInputChange(null, "admissionDate", e.target.value)
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-              />
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <SelectInputField
+              title={" Academic Year"}
+              value={formData.academicYear}
+              setValue={(val) => handleInputChange(null, "academicYear", val)}
+              options={[{ value: "2025-2026" }, { value: "2026-2027" }]}
+              required={true}
+            />
+
+            <InputField
+              title={"Admission Date "}
+              value={formData.admissionDate}
+              setValue={(val) => handleInputChange(null, "admissionDate", val)}
+              type={"date"}
+              required={true}
+              placeholder={"Admission Date "}
+            />
+
+            <SelectInputField
+              title={"Positon"}
+              value={formData.position}
+              setValue={(val) => handleInputChange(null, "position", val)}
+              options={[{ value: "Old" }, { value: "New" }]}
+              required={true}
+            />
           </div>
         </div>
 
@@ -287,10 +292,10 @@ const CreateAdmission = () => {
         <div className="bg-white dark:bg-white rounded-3xl border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-100 flex items-center justify-center">
-                <Users className="w-5 h-5 text-emerald-600" />
+              <div className="w-10 h-10 rounded-xl bg-[#e6f4ef] flex items-center justify-center">
+                <Users className="w-5 h-5 text-[#00bd7f]" />
               </div>
-              <h2 className="text-xl font-black text-emerald-700 dark:text-emerald-700">
+              <h2 className="text-xl font-black text-[#00bd7f]">
                 Guardian Information
               </h2>
             </div>
@@ -389,273 +394,56 @@ const CreateAdmission = () => {
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div>
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Father's Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.guardian.fatherName}
-                onChange={(e) =>
-                  handleInputChange("guardian", "fatherName", e.target.value)
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                placeholder="Enter father's name"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Mother's Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.guardian.motherName}
-                onChange={(e) =>
-                  handleInputChange("guardian", "motherName", e.target.value)
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                placeholder="Enter mother's name"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Father's Occupation
-              </label>
-              <input
-                type="text"
-                value={formData.guardian.fatherOccupation}
-                onChange={(e) =>
-                  handleInputChange(
-                    "guardian",
-                    "fatherOccupation",
-                    e.target.value
-                  )
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                placeholder="Enter occupation"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Mother's Occupation
-              </label>
-              <input
-                type="text"
-                value={formData.guardian.motherOccupation}
-                onChange={(e) =>
-                  handleInputChange(
-                    "guardian",
-                    "motherOccupation",
-                    e.target.value
-                  )
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                placeholder="Enter occupation"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Contact Number (Father's){" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="tel"
-                required
-                value={formData.guardian.contact}
-                onChange={(e) =>
-                  handleInputChange("guardian", "contact", e.target.value)
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                placeholder="01XXXXXXXXX"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Contact Number (Mother's)
-              </label>
-              <input
-                type="tel"
-                value={formData.guardian.email || ""}
-                onChange={(e) =>
-                  handleInputChange("guardian", "email", e.target.value)
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                placeholder="01XXXXXXXXX"
-              />
-            </div>
-            <div className="grid-cols-1 sm:col-span-2 lg:col-span-3">
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                Address <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                required
-                rows="3"
-                value={formData.guardian.address}
-                onChange={(e) =>
-                  handleInputChange("guardian", "address", e.target.value)
-                }
-                className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                placeholder="Enter full address"
-              />
-            </div>
+            <InputField
+              title={"Father's Name"}
+              value={formData.guardian.fatherName}
+              setValue={(val) => handleInputChange("guardian", "fatherName", val)}
+              required={true}
+              placeholder={"Enter your father name"}
+            />
+            <InputField
+              title={"Mother's Name"}
+              value={formData.guardian.motherName}
+              setValue={(val) => handleInputChange("guardian", "motherName", val)}
+              required={true}
+              placeholder={"Enter your Mother name"}
+            />
+            <InputField
+              title={"Father's Occupation"}
+              value={formData.guardian.fatherOccupation}
+              setValue={(val) => handleInputChange("guardian", "fatherOccupation", val)}
+              placeholder={"Father's Occupation"}
+            />
+            <InputField
+              title={" Mother's Occupation"}
+              value={formData.guardian.motherOccupation}
+              setValue={(val) => handleInputChange("guardian", "motherOccupation", val)}
+              placeholder={" Mother's Occupation"}
+            />
+            <InputField
+              title={"Contact Number (Father's)"}
+              value={formData.guardian.contact}
+              setValue={(val) => handleInputChange("guardian", "contact", val)}
+              required={true}
+              type={"number"}
+              placeholder={"019XXXXXXXX"}
+            />
+            <InputField
+              title={"Contact Number  (Mother's)"}
+              value={formData.guardian.motherContact || ""}
+              setValue={(val) => handleInputChange("guardian", "motherContact", val)}
+              type={"number"}
+              placeholder={"019XXXXXXXX"}
+            />
+
+            <TextareaField
+              title={"Address"}
+              value={formData.guardian.address}
+              setValue={(val) => handleInputChange("guardian", "address", val)}
+              required={true}
+              placeholder={"Address"}
+            />
           </div>
-
-          {/* Document Uploads Sub-grid */}
-          {/* <div className="mt-8 pt-8 border-t-2 border-slate-100"> */}
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> */}
-          {/* Father's Document Upload */}
-          {/* <div className="w-full">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-3 block">
-                  Father's Document (ID Card, NID, etc.)
-                </label>
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                  {formData.guardian.fatherDocument ? (
-                    <div className="relative group">
-                      <div className="w-44 h-44 rounded-2xl overflow-hidden border-4 border-emerald-200 dark:border-emerald-800 shadow-lg">
-                        <img
-                          src={formData.guardian.fatherDocument}
-                          alt="Father's Document"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleInputChange("guardian", "fatherDocument", "")
-                        }
-                        className="absolute -top-3 -right-3 p-2.5 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-all hover:scale-110"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="w-44 h-44 rounded-2xl border-4 border-dashed border-slate-200 dark:border-slate-200 flex items-center justify-center bg-[#e6f4ef] dark:bg-[#e6f4ef]">
-                      <div className="text-center">
-                        <ImageIcon className="w-14 h-14 text-emerald-400 mx-auto mb-2" />
-                        <p className="text-xs text-emerald-600 font-bold">
-                          No Document
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex-1">
-                    <label className="block cursor-pointer group">
-                      <div className="border-3 border-dashed border-slate-200 dark:border-slate-200 rounded-2xl p-8 bg-[#e6f4ef] dark:bg-[#e6f4ef] hover:bg-[#d9ede6] transition-all">
-                        <div className="flex flex-col items-center text-center gap-3">
-                          <div className="w-16 h-16 rounded-full bg-white dark:bg-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <Upload className="w-8 h-8 text-[#00bd7f]" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-1">
-                              {formData.guardian.fatherDocument
-                                ? "Change Document"
-                                : "Upload Father's Document"}
-                            </p>
-                            <p className="text-xs text-slate-500 dark:text-slate-500">
-                              Click to browse or drag and drop
-                            </p>
-                            <p className="text-xs text-slate-400 dark:text-slate-400 mt-1">
-                              PNG, JPG, PDF up to 5MB
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <input
-                        type="file"
-                        accept="image/*,.pdf"
-                        className="hidden"
-                        onChange={(e) =>
-                          handleImageUpload(
-                            e.target.files?.[0],
-                            "guardian",
-                            "fatherDocument"
-                          )
-                        }
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div> */}
-          {/* </div> */}
-
-          {/* Mother's Document Upload */}
-          {/* <div className="w-full">
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-3 block">
-                Mother's Document (ID Card, NID, etc.)
-              </label>
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                {formData.guardian.motherDocument ? (
-                  <div className="relative group">
-                    <div className="w-44 h-44 rounded-2xl overflow-hidden border-4 border-emerald-200 dark:border-emerald-800 shadow-lg">
-                      <img
-                        src={formData.guardian.motherDocument}
-                        alt="Mother's Document"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleInputChange("guardian", "motherDocument", "")
-                      }
-                      className="absolute -top-3 -right-3 p-2.5 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-all hover:scale-110"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="w-44 h-44 rounded-2xl border-4 border-dashed border-slate-200 dark:border-slate-200 flex items-center justify-center bg-[#e6f4ef] dark:bg-[#e6f4ef]">
-                    <div className="text-center">
-                      <ImageIcon className="w-14 h-14 text-emerald-400 mx-auto mb-2" />
-                      <p className="text-xs text-emerald-600 font-bold">
-                        No Document
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex-1">
-                  <label className="block cursor-pointer group">
-                    <div className="border-3 border-dashed border-slate-200 dark:border-slate-200 rounded-2xl p-8 bg-[#e6f4ef] dark:bg-[#e6f4ef] hover:bg-[#d9ede6] transition-all">
-                      <div className="flex flex-col items-center text-center gap-3">
-                        <div className="w-16 h-16 rounded-full bg-white dark:bg-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Upload className="w-8 h-8 text-[#00bd7f]" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-1">
-                            {formData.guardian.motherDocument
-                              ? "Change Document"
-                              : "Upload Mother's Document"}
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-500">
-                            Click to browse or drag and drop
-                          </p>
-                          <p className="text-xs text-slate-400 dark:text-slate-400 mt-1">
-                            PNG, JPG, PDF up to 5MB
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*,.pdf"
-                      className="hidden"
-                      onChange={(e) =>
-                        handleImageUpload(
-                          e.target.files?.[0],
-                          "guardian",
-                          "motherDocument"
-                        )
-                      }
-                    />
-                  </label>
-                </div>
-              </div>
-            </div> */}
-          {/* </div> */}
         </div>
 
         {/* Students Section */}
@@ -689,7 +477,6 @@ const CreateAdmission = () => {
                   <Trash2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
               )}
-
               <div className="flex items-center gap-3 mb-8 pb-4 border-b-2 border-slate-100 dark:border-slate-100">
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-500/30">
                   {index + 1}
@@ -703,12 +490,11 @@ const CreateAdmission = () => {
                   </p>
                 </div>
               </div>
-
               {/* Student Bio */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Full Name <span className="text-red-500">*</span>
+                    Full Name <span className="text-[#00bd7f]">*</span>
                   </label>
                   <input
                     type="text"
@@ -717,13 +503,14 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "firstName", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                     placeholder="Enter student name"
                   />
                 </div>
+
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Gender <span className="text-red-500">*</span>
+                    Gender <span className="text-[#00bd7f]">*</span>
                   </label>
                   <select
                     required
@@ -731,7 +518,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "gender", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -739,7 +526,7 @@ const CreateAdmission = () => {
                 </div>
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Date of Birth <span className="text-red-500">*</span>
+                    Date of Birth <span className="text-[#00bd7f]">*</span>
                   </label>
                   <input
                     type="date"
@@ -748,24 +535,9 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "dateOfBirth", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   />
                 </div>
-                {/* <div>
-                  <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Phone Number <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={student.phone}
-                    onChange={(e) =>
-                      handleStudentChange(index, "phone", e.target.value)
-                    }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                    placeholder="01XXXXXXXXX"
-                  />
-                </div> */}
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
                     Blood Group
@@ -775,7 +547,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "bloodGroup", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   >
                     <option value="">Select Blood Group</option>
                     <option value="A+">A+</option>
@@ -790,7 +562,7 @@ const CreateAdmission = () => {
                 </div>
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Assigned Class <span className="text-red-500">*</span>
+                    Assigned Class <span className="text-[#00bd7f]">*</span>
                   </label>
                   <select
                     required
@@ -798,7 +570,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "class", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   >
                     <option value="">Select Class</option>
                     <option value="Nursery">Nursery</option>
@@ -819,7 +591,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "section", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   >
                     <option value="">Select Section</option>
                     <option value="A">A</option>
@@ -827,24 +599,6 @@ const CreateAdmission = () => {
                     <option value="C">C</option>
                   </select>
                 </div>
-                {/* <div>
-                  <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Login Password <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
-                      type="text"
-                      required
-                      value={student.password}
-                      onChange={(e) =>
-                        handleStudentChange(index, "password", e.target.value)
-                      }
-                      className="w-full pl-10 pr-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
-                      placeholder="Admission password"
-                    />
-                  </div>
-                </div> */}
 
                 {/* Photo Upload for this student */}
                 <div className="col-span-full">
@@ -871,7 +625,7 @@ const CreateAdmission = () => {
                               e.target.files?.[0],
                               "student",
                               "photo",
-                              index
+                              index,
                             )
                           }
                         />
@@ -888,182 +642,75 @@ const CreateAdmission = () => {
                   </div>
                 </div>
               </div>
+              {/* Fee Setup (ফি সেটআপ) */}
+              <div className="flex items-center gap-2 mb-6 text-emerald-700">
+                <Calculator className="w-5 h-5" />
+                <h4 className="font-black">Fee Setup (ফি সেটআপ)</h4>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {allFeeType?.map((type, i) => (
+                  <div key={i} className="p-5 rounded-3xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3 text-emerald-700">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                          <Home className="w-4 h-4 text-[#00bd7f]" />
+                        </div>
+                        <span className="font-bold text-slate-700">{type?.name}</span>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
+                          checked={!!student.fees?.[type.name]}
+                          onChange={(e) => {
+                            const currentFees = { ...(student.fees || {}) };
+                            if (e.target.checked) {
+                              currentFees[type.name] = "0";
+                            } else {
+                              delete currentFees[type.name];
+                            }
+                            handleStudentChange(index, "fees", currentFees);
+                          }}
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00bd7f]"></div>
+                      </label>
+                    </div>
 
-              {/* Fee Setup for this student */}
-              <div className="bg-slate-50 dark:bg-slate-50/50 rounded-2xl p-6 border-2 border-slate-100 mb-8">
-                <div className="flex items-center gap-2 mb-6 text-emerald-700">
-                  <Calculator className="w-5 h-5" />
-                  <h4 className="font-black">Fee Setup (ফি সেটআপ)</h4>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div>
-                    <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-                      Admission Fee
-                    </label>
-                    <input
-                      type="number"
-                      value={student.financial.admissionFee}
-                      onChange={(e) =>
-                        handleStudentChange(
-                          index,
-                          "admissionFee",
-                          e.target.value,
-                          "financial"
-                        )
-                      }
-                      className="w-full px-4 py-2.5 bg-white border-2 border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
+                    {/* Dynamic Amount Input */}
+                    {student.fees?.[type.name] !== undefined && (
+                      <div className="animate-in slide-in-from-top-2 duration-300">
+                        <div className="relative group">
+                          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold group-focus-within:text-[#00bd7f] transition-colors">৳</div>
+                          <input
+                            type="number"
+                            value={student.fees[type.name]}
+                            onChange={(e) => {
+                              const currentFees = { ...(student.fees || {}) };
+                              currentFees[type.name] = e.target.value;
+                              handleStudentChange(index, "fees", currentFees);
+                            }}
+                            placeholder="Enter amount"
+                            className="w-full pl-8 pr-4 py-2.5 bg-[#f8fafc] border-2 border-slate-100 rounded-xl outline-none focus:border-[#00bd7f] focus:bg-white text-sm font-bold text-slate-700 transition-all placeholder:text-slate-300"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-                      Monthly Fee
-                    </label>
-                    <input
-                      type="number"
-                      value={student.financial.monthlyFee}
-                      onChange={(e) =>
-                        handleStudentChange(
-                          index,
-                          "monthlyFee",
-                          e.target.value,
-                          "financial"
-                        )
-                      }
-                      className="w-full px-4 py-2.5 bg-white border-2 border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-                      Boarding Fee
-                    </label>
-                    <input
-                      type="number"
-                      value={student.financial.hostelFee}
-                      onChange={(e) =>
-                        handleStudentChange(
-                          index,
-                          "hostelFee",
-                          e.target.value,
-                          "financial"
-                        )
-                      }
-                      className="w-full px-4 py-2.5 bg-white border-2 border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-                      Transport Fee
-                    </label>
-                    <input
-                      type="number"
-                      value={student.financial.transportFee}
-                      onChange={(e) =>
-                        handleStudentChange(
-                          index,
-                          "transportFee",
-                          e.target.value,
-                          "financial"
-                        )
-                      }
-                      className="w-full px-4 py-2.5 bg-white border-2 border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
 
-              {/* Transport & Hostel for this student */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-5 rounded-2xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2 text-emerald-700">
-                      <Bus className="w-5 h-5" />
-                      <span className="font-bold">Transport Service</span>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={student.transport.required}
-                        onChange={(e) =>
-                          handleStudentChange(
-                            index,
-                            "required",
-                            e.target.checked,
-                            "transport"
-                          )
-                        }
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00bd7f]"></div>
-                    </label>
-                  </div>
-                  {student.transport.required && (
-                    <select
-                      value={student.transport.route}
-                      onChange={(e) =>
-                        handleStudentChange(
-                          index,
-                          "route",
-                          e.target.value,
-                          "transport"
-                        )
-                      }
-                      className="w-full px-4 py-2.5 bg-[#e6f4ef] border-2 border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                      <option value="">Select Route</option>
-                      <option value="Mirpur - Dhanmondi">
-                        Mirpur - Dhanmondi
-                      </option>
-                      <option value="Gulshan - Banani">Gulshan - Banani</option>
-                      <option value="Uttara - Mohakhali">
-                        Uttara - Mohakhali
-                      </option>
-                    </select>
-                  )}
-                </div>
-
-                <div className="p-5 rounded-2xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2 text-emerald-700">
-                      <Home className="w-5 h-5" />
-                      <span className="font-bold">Hostel Service</span>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={student.hostel.required}
-                        onChange={(e) =>
-                          handleStudentChange(
-                            index,
-                            "required",
-                            e.target.checked,
-                            "hostel"
-                          )
-                        }
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00bd7f]"></div>
-                    </label>
-                  </div>
-                  {student.hostel.required && (
-                    <select
-                      value={student.hostel.roomType}
-                      onChange={(e) =>
-                        handleStudentChange(
-                          index,
-                          "roomType",
-                          e.target.value,
-                          "hostel"
-                        )
-                      }
-                      className="w-full px-4 py-2.5 bg-[#e6f4ef] border-2 border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
-                    >
-                      <option value="">Select Room Type</option>
-                      <option value="Single Room">Single Room</option>
-                      <option value="Shared Room">Shared Room</option>
-                      <option value="Dormitory">Dormitory</option>
-                    </select>
-                  )}
-                </div>
+              <div className="grid-cols-1 sm:col-span-2 lg:col-span-3 mt-[20px]">
+                <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+                  Note <span className="text-[#00bd7f]">*</span>
+                </label>
+                <textarea
+                  required
+                  rows="3"
+                  value={student.note}
+                  onChange={(e) => handleStudentChange(index, "note", e.target.value)}
+                  className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-1 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                  placeholder="Enter full Detals in Student"
+                />
               </div>
             </div>
           ))}
@@ -1084,7 +731,7 @@ const CreateAdmission = () => {
             className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-4 text-base font-black bg-[#00bd7f] text-white rounded-2xl hover:bg-[#009b68] transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-1"
           >
             <CheckCircle2 className="w-6 h-6" />
-            Complete Admission
+            Save
           </button>
         </div>
       </form>
@@ -1109,22 +756,23 @@ const VoucherModal = ({ formData, onClose }) => {
     window.print();
   };
 
-  const totalAdmission = formData.students.reduce(
-    (acc, s) => acc + (Number(s.financial.admissionFee) || 0),
-    0
+  // Extract all unique fee names present in the current students
+  const activeFeeNames = Array.from(
+    new Set(
+      formData.students.flatMap((s) => Object.keys(s.fees || {}))
+    )
   );
-  const totalMonthly = formData.students.reduce(
-    (acc, s) => acc + (Number(s.financial.monthlyFee) || 0),
-    0
-  );
-  const totalHostel = formData.students.reduce(
-    (acc, s) => acc + (Number(s.financial.hostelFee) || 0),
-    0
-  );
-  const totalTransport = formData.students.reduce(
-    (acc, s) => acc + (Number(s.financial.transportFee) || 0),
-    0
-  );
+
+  // Grouped subtotals for the breakdown
+  const feeSubtotals = activeFeeNames.reduce((acc, feeName) => {
+    acc[feeName] = formData.students.reduce(
+      (sum, s) => sum + (Number(s.fees?.[feeName]) || 0),
+      0
+    );
+    return acc;
+  }, {});
+
+  const totalPayable = Object.values(feeSubtotals).reduce((a, b) => a + b, 0);
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
@@ -1132,7 +780,7 @@ const VoucherModal = ({ formData, onClose }) => {
         {/* Modal Header */}
         <div className="p-6 border-b-2 border-slate-100 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#00bd7f] flex items-center justify-center">
               <Printer className="w-6 h-6 text-white" />
             </div>
             <h2 className="text-xl font-black text-slate-800">
@@ -1142,14 +790,14 @@ const VoucherModal = ({ formData, onClose }) => {
           <div className="flex items-center gap-3">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 text-white font-black rounded-xl hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/20"
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#00bd7f] text-white font-black rounded-xl hover:bg-[#009b68] transition-all shadow-lg shadow-emerald-500/20 shadow-[#00bd7f]/20 cursor-pointer"
             >
               <Printer className="w-4 h-4" />
               Print Voucher
             </button>
             <button
               onClick={onClose}
-              className="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all"
+              className="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -1177,9 +825,9 @@ const VoucherModal = ({ formData, onClose }) => {
           </style>
 
           {/* Institutional Header */}
-          <div className="flex justify-between items-start border-b-4 border-emerald-500 pb-8 mb-8">
+          <div className="flex justify-between items-start border-b-4 border-[#00bd7f] pb-8 mb-8">
             <div>
-              <h1 className="text-4xl font-black text-emerald-700 tracking-tighter mb-2">
+              <h1 className="text-4xl font-black text-[#00bd7f] tracking-tighter mb-2">
                 MADRASA MANAGEMENT SYSTEM
               </h1>
               <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">
@@ -1187,7 +835,7 @@ const VoucherModal = ({ formData, onClose }) => {
               </p>
             </div>
             <div className="text-right">
-              <div className="text-emerald-700 font-black text-lg mb-1">
+              <div className="text-[#00bd7f] font-black text-lg mb-1">
                 VOICE NO: {Date.now().toString().slice(-6)}
               </div>
               <div className="text-slate-500 font-bold">
@@ -1261,36 +909,45 @@ const VoucherModal = ({ formData, onClose }) => {
                     <th className="p-4 text-xs font-black text-slate-500 uppercase">
                       Class
                     </th>
-                    <th className="p-4 text-xs font-black text-slate-500 uppercase text-right">
-                      Adm. Fee
+                    <th className="p-4 text-xs font-black text-slate-500 uppercase">
+                      Fee Details
                     </th>
                     <th className="p-4 text-xs font-black text-slate-500 uppercase text-right">
-                      Monthly
+                      Subtotal
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y-2 divide-slate-100">
-                  {formData.students.map((s, idx) => (
-                    <tr key={idx}>
-                      <td className="p-4">
-                        <p className="font-black text-slate-800">
-                          {s.firstName}
-                        </p>
-                        <p className="text-[10px] font-bold text-slate-400">
-                          ID: {Date.now().toString().slice(-4)}
-                        </p>
-                      </td>
-                      <td className="p-4 font-bold text-slate-600">
-                        {s.class} ({s.section})
-                      </td>
-                      <td className="p-4 font-black text-slate-800 text-right">
-                        ৳{s.financial.admissionFee}
-                      </td>
-                      <td className="p-4 font-black text-slate-800 text-right">
-                        ৳{s.financial.monthlyFee}
-                      </td>
-                    </tr>
-                  ))}
+                  {formData.students.map((s, idx) => {
+                    const studentTotal = Object.values(s.fees || {}).reduce((sum, val) => sum + (Number(val) || 0), 0);
+                    return (
+                      <tr key={idx}>
+                        <td className="p-4">
+                          <p className="font-black text-slate-800">
+                            {s.firstName}
+                          </p>
+                          <p className="text-[10px] font-bold text-slate-400">
+                            ID: {Date.now().toString().slice(-4)}
+                          </p>
+                        </td>
+                        <td className="p-4 font-bold text-slate-600">
+                          {s.class} ({s.section})
+                        </td>
+                        <td className="p-4">
+                          <div className="flex flex-wrap gap-2 text-[10px]">
+                            {Object.entries(s.fees || {}).map(([name, val]) => (
+                              <span key={name} className="px-2 py-1 bg-slate-50 rounded-lg font-bold text-slate-500 border border-slate-100">
+                                {name}: ৳{val}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="p-4 font-black text-slate-800 text-right">
+                          ৳{studentTotal}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -1299,31 +956,16 @@ const VoucherModal = ({ formData, onClose }) => {
           {/* Financial Breakdown */}
           <div className="flex justify-end gap-12">
             <div className="w-80 space-y-4">
-              <div className="flex justify-between items-center text-slate-600 font-bold">
-                <span>Subtotal Admission</span>
-                <span>৳{totalAdmission}</span>
-              </div>
-              <div className="flex justify-between items-center text-slate-600 font-bold">
-                <span>Subtotal Monthly</span>
-                <span>৳{totalMonthly}</span>
-              </div>
-              {totalHostel > 0 && (
-                <div className="flex justify-between items-center text-slate-600 font-bold">
-                  <span>Subtotal Hostel</span>
-                  <span>৳{totalHostel}</span>
+              {Object.entries(feeSubtotals).map(([feeName, amount]) => (
+                <div key={feeName} className="flex justify-between items-center text-slate-600 font-bold">
+                  <span>Subtotal {feeName}</span>
+                  <span>৳{amount}</span>
                 </div>
-              )}
-              {totalTransport > 0 && (
-                <div className="flex justify-between items-center text-slate-600 font-bold">
-                  <span>Subtotal Transport</span>
-                  <span>৳{totalTransport}</span>
-                </div>
-              )}
-              <div className="pt-4 border-t-2 border-emerald-500 flex justify-between items-center text-emerald-700">
+              ))}
+              <div className="pt-4 border-t-2 border-[#00bd7f] flex justify-between items-center text-[#00bd7f]">
                 <span className="text-xl font-black">Total Payable</span>
                 <span className="text-2xl font-black">
-                  ৳
-                  {totalAdmission + totalMonthly + totalHostel + totalTransport}
+                  ৳{totalPayable}
                 </span>
               </div>
             </div>
@@ -1339,8 +981,8 @@ const VoucherModal = ({ formData, onClose }) => {
                 Guardian Signature
               </p>
             </div>
-            <div className="text-center w-48 pt-4 border-t-2 border-emerald-500">
-              <p className="text-sm font-black text-emerald-700">Principal</p>
+            <div className="text-center w-48 pt-4 border-t-2 border-[#00bd7f]">
+              <p className="text-sm font-black text-[#00bd7f]">Principal</p>
             </div>
           </div>
         </div>

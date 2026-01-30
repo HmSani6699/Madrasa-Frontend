@@ -8,45 +8,44 @@ import ProtectedRoute from "./ProtectedRoute";
 import SuperAdminDashboard from "../Pages/SuperAdmin/Dashboard";
 import MadrasaList from "../Pages/SuperAdmin/MadrasaList";
 import Settings from "../Pages/SuperAdmin/Settings";
-import AdminDashboard from "../pages/Admin/Dashboard";
-import Placeholder from "../pages/Admin/Placeholder";
+import AdminDashboard from "../Pages/Admin/Dashboard";
+import Placeholder from "../Pages/Admin/Placeholder";
 import { adminNavigation } from "../navigation/adminNavigation";
 import { teacherNavigation } from "../navigation/teacherNavigation";
 import { studentNavigation } from "../navigation/studentNavigation";
 import { guardianNavigation } from "../navigation/guardianNavigation";
 import { talimatNavigation } from "../navigation/talimatNavigation";
 import { accountingNavigation } from "../navigation/accountingNavigation";
-import TalimatDashboard from "../pages/Talimat/Dashboard";
-import AccountingDashboard from "../pages/Accounting/Dashboard";
-import TeachersDashboard from "../pages/Teachers/Dashboard";
-import StudentsDashboard from "../pages/Students/Dashboard";
-import StaffDashboard from "../pages/Staff/Dashboard";
-import MySchedule from "../pages/Teachers/MySchedule";
-import MarkAttendance from "../pages/Teachers/MarkAttendance";
-import HomeworkManager from "../pages/Teachers/HomeworkManager";
-import Gradebook from "../pages/Teachers/Gradebook";
-import MySubjects from "../pages/Teachers/MySubjects";
-import TeacherStudentList from "../pages/Teachers/StudentList";
-import NoticeBoard from "../pages/Teachers/NoticeBoard";
-import TeacherProfile from "../pages/Teachers/Profile";
-import TeacherExamSchedule from "../pages/Teachers/ExamSchedule";
-import TeacherAttendanceReport from "../pages/Teachers/AttendanceReport";
-import FrontendManager from "../pages/Admin/FrontendManager";
-import OnlineAdmissionList from "../pages/Admin/OnlineAdmissionList";
-import CreateAdmission from "../pages/Admin/CreateAdmission";
-import StudentList from "../pages/Admin/StudentList";
-import StudentProfile from "../pages/Admin/StudentProfile";
-import DeactivatedStudentList from "../pages/Admin/DeactivatedStudentList";
-import ParentList from "../pages/Admin/ParentList";
-import DeactivatedParentList from "../pages/Admin/DeactivatedParentList";
-import EmployeeList from "../pages/Admin/EmployeeList";
-import DepartmentList from "../pages/Admin/DepartmentList";
-import DesignationList from "../pages/Admin/DesignationList";
-import DeactivatedEmployeeList from "../pages/Admin/DeactivatedEmployeeList";
-import CreateEmployee from "../pages/Admin/CreateEmployee";
+import TalimatDashboard from "../Pages/Talimat/Dashboard";
+import AccountingDashboard from "../Pages/Accounting/Dashboard";
+import TeachersDashboard from "../Pages/Teachers/Dashboard";
+import StudentsDashboard from "../Pages/Students/Dashboard";
+import StaffDashboard from "../Pages/Staff/Dashboard";
+import MySchedule from "../Pages/Teachers/MySchedule";
+import MarkAttendance from "../Pages/Teachers/MarkAttendance";
+import HomeworkManager from "../Pages/Teachers/HomeworkManager";
+import Gradebook from "../Pages/Teachers/Gradebook";
+import MySubjects from "../Pages/Teachers/MySubjects";
+import TeacherStudentList from "../Pages/Teachers/StudentList";
+import NoticeBoard from "../Pages/Teachers/NoticeBoard";
+import TeacherProfile from "../Pages/Teachers/Profile";
+import TeacherExamSchedule from "../Pages/Teachers/ExamSchedule";
+import TeacherAttendanceReport from "../Pages/Teachers/AttendanceReport";
+import FrontendManager from "../Pages/Admin/FrontendManager";
+import OnlineAdmissionList from "../Pages/Admin/OnlineAdmissionList";
+import CreateAdmission from "../Pages/Admin/CreateAdmission";
+import StudentList from "../Pages/Admin/StudentList";
+import StudentProfile from "../Pages/Admin/StudentProfile";
+import DeactivatedStudentList from "../Pages/Admin/DeactivatedStudentList";
+import ParentList from "../Pages/Admin/ParentList";
+import DeactivatedParentList from "../Pages/Admin/DeactivatedParentList";
+import EmployeeList from "../Pages/Admin/EmployeeList";
+import DepartmentList from "../Pages/Admin/DepartmentList";
+import DesignationList from "../Pages/Admin/DesignationList";
+import DeactivatedEmployeeList from "../Pages/Admin/DeactivatedEmployeeList";
+import CreateEmployee from "../Pages/Admin/CreateEmployee";
 import StudentAttendance from "../Pages/Admin/StudentAttendance";
 import EmployeeAttendance from "../Pages/Admin/EmployeeAttendance";
-import SubjectWiseAttendance from "../Pages/Admin/SubjectWiseAttendance";
 import ExamAttendance from "../Pages/Admin/ExamAttendance";
 import AssignTeacher from "../Pages/Admin/AssignTeacher";
 import SubjectList from "../Pages/Admin/SubjectList";
@@ -95,10 +94,18 @@ import DonationEntry from "../Pages/Accounting/DonationEntry";
 import FeeCollection from "../Pages/Accounting/FeeCollection";
 import PayrollProcess from "../Pages/Accounting/PayrollProcess";
 import FeeSetup from "../Pages/Accounting/FeeSetup";
-import SMS from "../Pages/Admin/SMS";
 import DuesPending from "../Pages/Admin/DuesPending";
 import DonationHistory from "../Pages/Accounting/DonationHistory";
 import SalaryHistory from "../Pages/Accounting/SalaryHistory";
+import MadrasaPortal from "../Pages/Portal/MadrasaPortal";
+import AboutUs from "../Pages/Portal/AboutUs";
+import AdmissionGuidelines from "../Pages/Portal/AdmissionGuidelines";
+import OnlineAdmissionForm from "../Pages/Portal/OnlineAdmissionForm";
+import Login from "../Pages/Auth/Login";
+import AccountDeactivated from "../Pages/Auth/AccountDeactivated";
+import DepartmentSectionList from "../Pages/Admin/DepartmentSectionList";
+import PaySalary from "../Pages/Accounting/PaySalary";
+import PortalLayout from "../layouts/PortalLayout";
 
 // Guardian Pages
 import ChildSelection from "../Pages/Guardian/ChildSelection";
@@ -175,9 +182,7 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/attendance/employee") {
         element = <EmployeeAttendance />;
       }
-      if (item.path === "/admin/attendance/subject") {
-        element = <SubjectWiseAttendance />;
-      }
+
       if (item.path === "/admin/attendance/exam") {
         element = <ExamAttendance />;
       }
@@ -291,9 +296,6 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/message") {
         element = <MessageCenter />;
-      }
-      if (item.path === "/admin/sms") {
-        element = <SMS />;
       }
 
       // Accounting Routes Mapping
@@ -437,16 +439,6 @@ const flattenRoutes = (navItems) => {
   });
   return routes;
 };
-
-import MadrasaPortal from "../Pages/Portal/MadrasaPortal";
-import AboutUs from "../Pages/Portal/AboutUs";
-import AdmissionGuidelines from "../Pages/Portal/AdmissionGuidelines";
-import OnlineAdmissionForm from "../Pages/Portal/OnlineAdmissionForm";
-import PortalLayout from "../layouts/PortalLayout";
-import Login from "../pages/Auth/Login";
-import AccountDeactivated from "../pages/Auth/AccountDeactivated";
-import DepartmentSectionList from "../Pages/Admin/DepartmentSectionList";
-import PaySalary from "../Pages/Accounting/PaySalary";
 
 const adminRoutes = flattenRoutes(adminNavigation);
 const teacherRoutes = flattenRoutes(teacherNavigation);

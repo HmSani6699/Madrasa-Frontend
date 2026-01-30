@@ -97,7 +97,7 @@ const EmployeeList = () => {
     else if (label === "Change Status") {
       const newStatus = emp.status === "active" ? "inactive" : "active";
       setEmployees((prev) =>
-        prev.map((p) => (p.id === emp.id ? { ...p, status: newStatus } : p))
+        prev.map((p) => (p.id === emp.id ? { ...p, status: newStatus } : p)),
       );
       setShowToast(`${emp.name}'s status changed to ${newStatus}`);
       setTimeout(() => setShowToast(null), 3000);
@@ -140,7 +140,7 @@ const EmployeeList = () => {
 
   const handleUpdate = (data) => {
     setEmployees((prev) =>
-      prev.map((p) => (p.id === data.id ? { ...p, ...data } : p))
+      prev.map((p) => (p.id === data.id ? { ...p, ...data } : p)),
     );
     setEditEmp(null);
     setShowToast(`${data.name}'s record updated!`);
@@ -183,7 +183,7 @@ const EmployeeList = () => {
         <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10">
           <button
             onClick={() => navigate("/admin/employee/create")}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
             <Plus className="w-5 h-5" /> Add New Staff
           </button>
@@ -385,7 +385,7 @@ const EmployeeList = () => {
                           onClick={(e) => {
                             e.stopPropagation();
                             setOpenMenuId(
-                              openMenuId === emp.id ? null : emp.id
+                              openMenuId === emp.id ? null : emp.id,
                             );
                           }}
                           className={`p-2.5 rounded-xl transition-all ${
@@ -550,7 +550,7 @@ const EmployeeFormModal = ({ emp, onClose, onSave, title, departments }) => {
       ifscCode: "",
       accountNo: "",
       skipBank: false,
-    }
+    },
   );
 
   const [activeSection, setActiveSection] = useState("Academic");

@@ -32,9 +32,9 @@
     "parents": "অভিভাবক",
     "parent_list": "অভিভাবক তালিকা",
 
-    "employee": "কর্মচারী",
-    "add_new_employee": "নতুন কর্মী যোগ করুন",
-    "employee_list": "কর্মী তালিকা",
+    "employee": "স্টাফ",
+    "add_new_employee": "নতুন স্টাফ যোগ করুন",
+    "employee_list": "স্টাফ তালিকা",
     "add_department": "বিভাগ যোগ করুন",
     "add_designation": "পদবী যোগ করুন",
 
