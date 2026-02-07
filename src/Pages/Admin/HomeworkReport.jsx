@@ -114,51 +114,70 @@ const HomeworkReport = () => {
       </div>
 
       {/* Evaluation Table */}
-      <div className="bg-white rounded-[2.5rem] border-2 border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-[3rem] border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50/50">
-              <tr>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Roll</th>
-                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Student</th>
-                <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Submission Date</th>
-                <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Marks</th>
-                <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Action</th>
+            <thead>
+              <tr className="bg-slate-50/50">
+                <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Roll No</th>
+                <th className="px-10 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Student Identity</th>
+                <th className="px-10 py-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Submission Status</th>
+                <th className="px-10 py-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Evaluated Date</th>
+                <th className="px-10 py-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Score Range</th>
+                <th className="px-10 py-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y-2 divide-slate-50">
+            <tbody className="divide-y divide-slate-50">
               {evaluations.map((ev) => (
-                <tr key={ev.id} className="group hover:bg-slate-50/50 transition-colors">
-                  <td className="px-8 py-6">
-                    <span className="text-sm font-black text-rose-600">#{ev.roll}</span>
+                <tr key={ev.id} className="group hover:bg-slate-50/30 transition-all">
+                  <td className="px-10 py-6">
+                    <span className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-xs font-black text-slate-400 group-hover:bg-rose-50 group-hover:text-rose-600 transition-all">#{ev.roll}</span>
                   </td>
-                  <td className="px-8 py-6">
-                    <span className="text-sm font-bold text-slate-800">{ev.studentName}</span>
+                  <td className="px-10 py-6">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-black text-slate-800 tracking-tight">{ev.studentName}</span>
+                      <span className="text-[10px] font-bold text-slate-400 tracking-widest">REG: 2026B{ev.id}</span>
+                    </div>
                   </td>
-                  <td className="px-8 py-6 text-center">
-                    <span className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${
+                  <td className="px-10 py-6 text-center">
+                    <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
                       ev.status === 'graded' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                       ev.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
                       'bg-rose-50 text-rose-600 border-rose-100'
                     }`}>
-                      {ev.status === 'graded' ? <CheckCircle2 className="w-3 h-3" /> : 
-                       ev.status === 'pending' ? <Clock className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
+                      <div className={`w-1.5 h-1.5 rounded-full ${
+                        ev.status === 'graded' ? 'bg-emerald-500' : 
+                        ev.status === 'pending' ? 'bg-amber-500' : 'bg-rose-500'
+                      }`} />
                       {ev.status}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-center text-xs font-bold text-slate-500">
-                    {ev.date}
-                  </td>
-                  <td className="px-8 py-6 text-center">
-                    <span className={`text-sm font-black ${ev.status === 'graded' ? 'text-slate-800' : 'text-slate-300'}`}>
-                      {ev.marks}
+                  <td className="px-10 py-6 text-center">
+                    <span className="text-xs font-bold text-slate-500 font-mono italic">
+                      {ev.status === 'graded' ? ev.date : '--/--/----'}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-right">
-                    <button className="p-2.5 bg-white border-2 border-slate-100 text-slate-400 hover:text-rose-600 hover:border-rose-200 rounded-xl transition-all shadow-sm">
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
+                  <td className="px-10 py-6 text-center">
+                    <div className="flex flex-col items-center">
+                      <span className={`text-sm font-black ${ev.status === 'graded' ? 'text-slate-800' : 'text-slate-300'}`}>
+                        {ev.marks}
+                      </span>
+                      {ev.status === 'graded' && (
+                        <div className="w-16 h-1 bg-slate-100 rounded-full mt-1.5 overflow-hidden">
+                           <div className="h-full bg-emerald-400" style={{ width: '85%' }} />
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-10 py-6 text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                      <button className="p-2.5 bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 rounded-xl transition-all shadow-sm">
+                        <FileCheck className="w-4 h-4" />
+                      </button>
+                      <button className="p-2.5 bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 rounded-xl transition-all shadow-sm">
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

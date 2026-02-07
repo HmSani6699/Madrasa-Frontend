@@ -8,7 +8,8 @@ import {
   Youtube,
   Instagram,
   Menu,
-  X
+  X,
+  LogInIcon
 } from "lucide-react";
 import { usePortalSettings } from "../context/PortalSettingsContext";
 
@@ -51,32 +52,16 @@ const PortalLayout = () => {
 
   const navItems = [
     { id: "hero", label: "হোম" },
-    { id: "about", label: "আমাদের সম্পর্কে" },
     { id: "academic", label: "ক্লাস কারিকুলাম" },
     { id: "students", label: "শিক্ষার্থী" },
     { id: "teachers", label: "শিক্ষক" },
-    { id: "gallery", label: "ভিডিও" },
-    { id: "photos", label: "ফটো গ্যালারি" },
   ];
 
   return (
     <div className="min-h-screen bg-white transition-colors duration-300 font-sans">
       {/* Navigation Group (Top Bar + Header) */}
       <div className="relative z-[100]">
-        {/* 1. Top Bar (Dark Teal) */}
-        <div className="bg-[#042f2c] text-white py-2 text-[11px] font-medium border-b border-white/5">
-          <div className="max-w-[1400px] mx-auto px-6 flex justify-between items-center">
-            <div className="flex gap-6 opacity-90">
-              <span className="flex items-center gap-1.5"><Phone className="w-3 h-3 text-emerald-400" /> {settings.contact.phone}</span>
-              <span className="flex items-center gap-1.5 hidden sm:flex"><Mail className="w-3 h-3 text-emerald-400" /> {settings.contact.email}</span>
-            </div>
-            <div className="flex gap-4 opacity-80">
-              <a href={settings.contact.social.facebook} target="_blank" rel="noopener noreferrer"><Facebook className="w-3.5 h-3.5 hover:text-emerald-400 cursor-pointer transition-colors" /></a>
-              <a href={settings.contact.social.twitter} target="_blank" rel="noopener noreferrer"><Twitter className="w-3.5 h-3.5 hover:text-emerald-400 cursor-pointer transition-colors" /></a>
-              <a href={settings.contact.social.youtube} target="_blank" rel="noopener noreferrer"><Youtube className="w-3.5 h-3.5 hover:text-emerald-400 cursor-pointer transition-colors" /></a>
-            </div>
-          </div>
-        </div>
+      
 
         {/* 2. Header / Navigation (White) - Sticky */}
         <header className="bg-white py-4 shadow-md sticky top-0 z-[100] border-b border-slate-100">
@@ -98,12 +83,12 @@ const PortalLayout = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-6 text-[11px] font-black text-slate-700 uppercase tracking-widest leading-loose">
+            <nav className="hidden lg:flex items-center gap-6 text-[14px] font-black text-slate-700 uppercase tracking-widest leading-loose">
                {navItems.map((item) => (
                   <a 
                     key={item.id}
                     href={`#${item.id}`} 
-                    className={`transition-all whitespace-nowrap pb-1 ${
+                    className={`transition-all whitespace-nowrap  ${
                       activeSection === item.id 
                         ? "text-[#059669] border-b-2 border-[#059669]" 
                         : "hover:text-[#059669] border-b-2 border-transparent"
@@ -112,6 +97,18 @@ const PortalLayout = () => {
                     {item.label}
                   </a>
                ))}
+              <Link to={'/portal/global-international/online-admission'}>অনলাইন ভর্তি</Link>
+
+               
+           
+          <Link to={'/login'}> <button 
+             
+             className="flex items-center gap-2 px-6 py-2 text-sm font-bold bg-primary text-white rounded-[8px] shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all"
+           >
+             <LogInIcon className="w-4 h-4" />
+          Login
+           </button></Link>
+      
             </nav>
 
             {/* Mobile Menu Button */}
@@ -147,53 +144,36 @@ const PortalLayout = () => {
       </main>
 
       {/* 3. Custom Footer (Dark Teal) */}
-      <footer className="bg-[#042f2c] text-slate-400 py-20 border-t border-white/5">
+      <footer className="bg-[#042f2c] text-slate-400 py-10 border-t border-white/5">
+       
+
+
         <div className="max-w-[1200px] mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-20 mb-20 text-center md:text-left">
-            <div className="col-span-1 md:col-span-1">
-               <div className="w-16 h-16 bg-[#059669] rounded-2xl flex items-center justify-center text-white text-3xl font-black italic mx-auto md:mx-0 mb-8 shadow-xl">{settings.branding.logoText}</div>
-               <p className="text-sm font-medium leading-[2] italic">
-                 {settings.footer.aboutText}
-               </p>
-               <div className="flex gap-4 justify-center md:justify-start mt-8">
+
+          <div className="text-center flex flex-col items-center justify-center">
+  <div className="w-16 h-16 bg-[#059669] rounded-full flex items-center justify-center text-white text-3xl font-black italic mx-auto md:mx-0 mb-4 shadow-xl">{settings.branding.logoText}</div>
+               <p className="text-[25px] font-medium leading-[2] ">
+                আল কুরআনুল কারীম একাডেমি
+              </p>
+             
+              
+              <div className="lg:flex items-center gap-5">  <p className="text-[14px] font-medium leading-[2] ">
+                Dhaka, Bangladesh
+              </p>
+ <p>{settings.contact.phone}</p>
+            </div>
+             <div className="flex  gap-4 items-center justify-center  mt-5">
                   <a href={settings.contact.social.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-[#059669] hover:text-white transition-all cursor-pointer"><Facebook className="w-4 h-4" /></a>
                   <a href={settings.contact.social.twitter} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-[#059669] hover:text-white transition-all cursor-pointer"><Twitter className="w-4 h-4" /></a>
                   <a href={settings.contact.social.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-300 hover:bg-[#059669] hover:text-white transition-all cursor-pointer"><Instagram className="w-4 h-4" /></a>
                </div>
-            </div>
-            
-            <div>
-              <h4 className="font-black text-white mb-10 text-xl italic underline decoration-[#059669] underline-offset-8">Quick Info</h4>
-              <ul className="space-y-6 text-sm font-bold opacity-70 italic tracking-wide">
-                <li><Link to="online-admission" className="hover:text-white transition-colors">Admission</Link></li>
-                <li><a href="#" className="hover:text-white transition-colors">Our History</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Portfolio</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Career</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-black text-white mb-10 text-xl italic underline decoration-[#059669] underline-offset-8">Services</h4>
-              <ul className="space-y-6 text-sm font-bold opacity-70 italic tracking-wide">
-                <li><a href="#" className="hover:text-white transition-colors">Online Education</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Institutional Care</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">E-Commerce</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">MMS System</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-black text-white mb-10 text-xl italic underline decoration-[#059669] underline-offset-8">Contact with us</h4>
-              <ul className="space-y-6 text-[13px] font-bold opacity-70 italic tracking-wide">
-                <li>{settings.contact.address}</li>
-                <li>{settings.contact.email}</li>
-                <li>{settings.contact.phone}</li>
-              </ul>
-            </div>
           </div>
+
+
+        
           
-          <div className="pt-10 border-t border-white/5 text-center">
-            <p className="text-[11px] font-black uppercase tracking-[0.3em] opacity-30">{settings.footer.copyright}</p>
+          <div className="pt-8 mt-8  border-t border-white/5 text-center">
+            <p className="text-[14px] font-black   opacity-30">© 2026 Talim Soft. All rights reserved.</p>
           </div>
         </div>
       </footer>

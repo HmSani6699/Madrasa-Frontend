@@ -41,6 +41,7 @@ import {
   Save,
   ChevronDown,
 } from "lucide-react";
+import SelectInputField from "../../components/SelectInputField";
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([
@@ -163,27 +164,25 @@ const EmployeeList = () => {
   ];
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-6 lg:p-8 overflow-hidden">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4 overflow-hidden">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border-2 border-slate-200 shadow-sm relative overflow-hidden">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[20px] border-2 border-slate-200 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full -mr-32 -mt-32 opacity-40" />
         <div className="flex items-center gap-5 relative z-10">
-          <div className="w-16 h-16 bg-[#e6f4ef] rounded-2xl flex items-center justify-center shadow-inner">
+          <div className="w-8 h-8 bg-[#e6f4ef] rounded-2xl flex items-center justify-center shadow-inner">
             <Briefcase className="w-8 h-8 text-[#00bd7f]" />
           </div>
           <div>
             <h1 className="text-2xl sm:text-4xl font-black text-slate-800 tracking-tight">
-              Employee
+              Employee List
             </h1>
-            <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mt-1">
-              Manage institutional staff & faculty
-            </p>
+            
           </div>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10">
           <button
             onClick={() => navigate("/admin/employee/create")}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 text-sm font-black bg-[#00bd7f] text-white rounded-[8px] shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
           >
             <Plus className="w-5 h-5" /> Add New Staff
           </button>
@@ -191,7 +190,7 @@ const EmployeeList = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
           {
             label: "Total Staff",
@@ -214,13 +213,7 @@ const EmployeeList = () => {
             color: "text-rose-600",
             bg: "bg-rose-50",
           },
-          {
-            label: "On Leave",
-            value: 0,
-            icon: Calendar,
-            color: "text-amber-600",
-            bg: "bg-amber-50",
-          },
+        
         ].map((stat, idx) => (
           <div
             key={idx}
@@ -242,7 +235,7 @@ const EmployeeList = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-[2rem] border-2 border-slate-100 p-6 shadow-sm">
+      <div className="bg-white rounded-[20px] border-2 border-slate-100 p-6 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -251,26 +244,17 @@ const EmployeeList = () => {
               placeholder="Search by ID or Name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent focus:border-emerald-500 focus:bg-white rounded-2xl outline-none transition-all font-bold text-slate-800"
+              className="w-full pl-12 pr-4 py-4 bg-[#e6f4ef] border-2 border-transparent focus:border-emerald-500 focus:bg-white rounded-2xl outline-none transition-all font-bold text-slate-800"
             />
           </div>
-          <select
-            value={deptFilter}
-            onChange={(e) => setDeptFilter(e.target.value)}
-            className="w-full px-4 py-4 bg-slate-50 border-2 border-transparent focus:border-emerald-500 focus:bg-white rounded-2xl outline-none transition-all font-black text-slate-800 appearance-none cursor-pointer"
-          >
-            <option value="all">All Departments</option>
-            {departments.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
+          <SelectInputField options={[
+            {value:"Teacher"}
+          ]} />
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-[2.5rem] border-2 border-slate-100 shadow-sm min-h-[400px] flex flex-col overflow-visible">
+      <div className="bg-white rounded-[20px] border-2 border-slate-100 shadow-sm min-h-[400px] flex flex-col overflow-visible">
         <div className="overflow-x-auto overflow-visible">
           <table className="w-full border-collapse">
             <thead>
@@ -342,10 +326,10 @@ const EmployeeList = () => {
                         <Phone className="w-3 h-3 text-emerald-500" />{" "}
                         {emp.phone}
                       </div>
-                      <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
+                      {/* <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
                         <Mail className="w-3 h-3 text-emerald-500" />{" "}
                         {emp.email}
-                      </div>
+                      </div> */}
                     </div>
                   </td>
 

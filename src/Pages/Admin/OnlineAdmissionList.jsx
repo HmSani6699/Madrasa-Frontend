@@ -17,6 +17,7 @@ import {
   FileText,
   X,
 } from "lucide-react";
+import SelectInputField from "../../components/SelectInputField";
 
 const OnlineAdmissionList = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -181,88 +182,28 @@ const OnlineAdmissionList = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6 p-4 animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-extrabold ">
             Online Admission Applications
           </h1>
-          <p className="text-slate-500 text-sm font-medium">
-            Review and manage student admission requests
-          </p>
+         
         </div>
-        <button className="flex items-center gap-2 px-6 py-2 text-sm font-bold bg-primary text-white rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
-          <Download className="w-4 h-4" />
-          Export to Excel
-        </button>
+        
       </div>
 
-      {/* Filters */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Search */}
-          <div className="md:col-span-2">
-            <label className="text-xs font-bold text-slate-500 uppercase mb-2 block">
-              Search
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search by name, phone..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-          </div>
 
-          {/* Status Filter */}
-          <div>
-            <label className="text-xs font-bold text-slate-500 uppercase mb-2 block">
-              Status
-            </label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20"
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-
-          {/* Class Filter */}
-          <div>
-            <label className="text-xs font-bold text-slate-500 uppercase mb-2 block">
-              Class
-            </label>
-            <select
-              value={classFilter}
-              onChange={(e) => setClassFilter(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-primary/20"
-            >
-              <option value="all">All Classes</option>
-              <option value="Class 4">Class 4</option>
-              <option value="Class 5">Class 5</option>
-              <option value="Class 6">Class 6</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
+       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6">
+        <div className="bg-white rounded-2xl border-1 border-gray-100 shadow-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
                 Total Applications
               </p>
-              <p className="text-3xl font-black text-slate-900 dark:text-white">
+              <p className="text-3xl font-black text-slate-900 ">
                 {applications.length}
               </p>
             </div>
@@ -272,7 +213,7 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6">
+        <div className="bg-white rounded-2xl border-1 border-gray-100 shadow-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
@@ -288,7 +229,7 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6">
+         <div className="bg-white rounded-2xl border-1 border-gray-100 shadow-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
@@ -304,7 +245,7 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6">
+         <div className="bg-white rounded-2xl border-1 border-gray-100 shadow-lg p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
@@ -321,11 +262,52 @@ const OnlineAdmissionList = () => {
         </div>
       </div>
 
+      {/* Filters */}
+      <div className="bg-white  rounded-2xl border border-gray-200 p-4 shadow-lg">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Search */}
+          <div className="">
+            <label className="text-sm font-bold text-slate-700 mb-2 block">
+              Quick Search
+            </label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search by ID, Name or Phone..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-[#e6f4ef] border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Status Filter */}
+          <SelectInputField title={"Class"} options={[
+            {value:"Class One"},
+            {value:"Class Two"}
+          ]}/>
+          <SelectInputField title={"Group"} options={[
+            {value:"A"},
+            {value:"B"}
+          ]}/>
+          <SelectInputField title={"Status"} options={[
+            {value:"Approved"},
+            {value:"Pending"},
+            {value:"Rejected"}
+          ]}/>
+
+         
+        </div>
+      </div>
+
+     
+
       {/* Applications List */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+      <div className="bg-white  rounded-2xl border border-gray-100 shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50 dark:bg-slate-900 border-b border-slate-100 dark:border-slate-700">
+            <thead className=" bg-[#e6f4ef]  border-gray-100 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
                   Student
@@ -345,16 +327,16 @@ const OnlineAdmissionList = () => {
                 <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider text-center">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
+            <tbody className="">
               {filteredApplications.map((app) => (
                 <tr
                   key={app.id}
-                  className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors"
+                  className=" dark:hover:bg-gray-100 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
@@ -364,7 +346,7 @@ const OnlineAdmissionList = () => {
                         className="w-10 h-10 rounded-full"
                       />
                       <div>
-                        <p className="font-bold text-slate-900 dark:text-white">
+                        <p className="font-bold">
                           {app.student.firstName} {app.student.lastName}
                         </p>
                         <p className="text-xs text-slate-500">
@@ -379,7 +361,7 @@ const OnlineAdmissionList = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="font-bold text-slate-900 dark:text-white text-sm">
+                    <p className="font-bold">
                       {app.guardian.fatherName}
                     </p>
                     <p className="text-xs text-slate-500 whitespace-nowrap">
@@ -408,7 +390,7 @@ const OnlineAdmissionList = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => setSelectedApplication(app)}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                      className="flex items-center gap-2 bg-[#00bd7f] text-white px-5 py-2 rounded-lg"
                     >
                       <Eye className="w-3 h-3" />
                       View Details
@@ -450,7 +432,7 @@ const OnlineAdmissionList = () => {
               </div>
               <button
                 onClick={() => setSelectedApplication(null)}
-                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors"
+                className="p-2   rounded-xl transition-colors bg-white cursor-pointer hover:bg-red-500 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -513,14 +495,7 @@ const OnlineAdmissionList = () => {
                       {selectedApplication.student.phone}
                     </p>
                   </div>
-                  <div className="md:col-span-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Email
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.student.email}
-                    </p>
-                  </div>
+                 
                 </div>
               </div>
 
@@ -565,7 +540,7 @@ const OnlineAdmissionList = () => {
                   </div>
                   <div>
                     <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Contact
+                     Father's Contact
                     </label>
                     <p className="font-bold text-slate-900 dark:text-white">
                       {selectedApplication.guardian.contact}
@@ -573,12 +548,13 @@ const OnlineAdmissionList = () => {
                   </div>
                   <div>
                     <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Email
+                     Mother's Contact
                     </label>
                     <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.guardian.email}
+                      {selectedApplication.guardian.contact}
                     </p>
                   </div>
+                 
                   <div className="md:col-span-2">
                     <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
                       Address
@@ -590,60 +566,7 @@ const OnlineAdmissionList = () => {
                 </div>
               </div>
 
-              {/* Additional Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Transport */}
-                <div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-primary" />
-                    Transport Details
-                  </h3>
-                  <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                      Transport Required:
-                    </p>
-                    <p className="font-bold text-slate-900 dark:text-white mb-4">
-                      {selectedApplication.transport.required ? "Yes" : "No"}
-                    </p>
-                    {selectedApplication.transport.required && (
-                      <>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                          Route:
-                        </p>
-                        <p className="font-bold text-slate-900 dark:text-white">
-                          {selectedApplication.transport.route}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                {/* Hostel */}
-                <div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-primary" />
-                    Hostel Details
-                  </h3>
-                  <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                      Hostel Required:
-                    </p>
-                    <p className="font-bold text-slate-900 dark:text-white mb-4">
-                      {selectedApplication.hostel.required ? "Yes" : "No"}
-                    </p>
-                    {selectedApplication.hostel.required && (
-                      <>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                          Room Type:
-                        </p>
-                        <p className="font-bold text-slate-900 dark:text-white">
-                          {selectedApplication.hostel.roomType}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
+             
 
               {/* Status Actions */}
               <div>
@@ -676,15 +599,7 @@ const OnlineAdmissionList = () => {
                       <XCircle className="w-4 h-4" />
                       Reject
                     </button>
-                    <button
-                      onClick={() =>
-                        handleStatusChange(selectedApplication.id, "pending")
-                      }
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-yellow-500 text-white font-bold rounded-xl hover:bg-yellow-600 transition-colors"
-                    >
-                      <Clock className="w-4 h-4" />
-                      Mark Pending
-                    </button>
+                   
                   </div>
                 </div>
               </div>

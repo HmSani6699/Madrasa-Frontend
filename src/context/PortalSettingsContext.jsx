@@ -101,13 +101,39 @@ const defaultSettings = {
   footer: {
     aboutText: "আল-কুরআনুল কারীম একাডেমি একটি উত্তর আধুনিক দ্বীনি প্রতিষ্ঠান। যেখানে সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান করা হয়।",
     copyright: `© ${new Date().getFullYear()} AL-QORANUL KAREEM ACADEMY. All rights reserved.`
+  },
+  sms: {
+    admission: false,
+    fees: false,
+    attendance: false
+  },
+  profile: {
+    institutionName: "আল কুরআনুল কারীম একাডেমি",
+    slogan: "Madrasha, Education, Management",
+    address: "Dhaka, Bangladesh",
+    email: "info@mms-it.com",
+    phone: "+8801755-111111",
+    adminName: "Muhtamim",
+    designation: "Principal"
   }
 };
 
 export const PortalSettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem("portal_settings");
-    return saved ? JSON.parse(saved) : defaultSettings;
+    if (!saved) return defaultSettings;
+    
+    const parsed = JSON.parse(saved);
+    // Merge saved settings with defaultSettings to ensure new keys exist
+    return {
+      ...defaultSettings,
+      ...parsed,
+      sms: parsed.sms || defaultSettings.sms,
+      profile: parsed.profile || defaultSettings.profile,
+      branding: { ...defaultSettings.branding, ...parsed.branding },
+      contact: { ...defaultSettings.contact, ...parsed.contact },
+      footer: { ...defaultSettings.footer, ...parsed.footer }
+    };
   });
 
   const updateSettings = (newSettings) => {

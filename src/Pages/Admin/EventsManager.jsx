@@ -36,7 +36,7 @@ const EventsManager = () => {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Events Management</h1>
-              <p className="text-slate-500 font-bold mt-1">Schedule and monitor institutional events, holidays, and competitions</p>
+             
             </div>
           </div>
 

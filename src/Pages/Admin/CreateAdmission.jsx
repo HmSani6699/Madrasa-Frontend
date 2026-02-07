@@ -98,8 +98,9 @@ const CreateAdmission = () => {
       contact: "",
       email: "",
       address: "",
-      fatherDocument: "",
-      motherDocument: "",
+      fatherPhoto: "",
+      motherPhoto: "",
+      guardianNID: "",
     },
   });
 
@@ -174,6 +175,9 @@ const CreateAdmission = () => {
         contact: guardian.contact,
         email: guardian.email,
         address: guardian.address,
+        fatherPhoto: guardian.fatherPhoto || "",
+        motherPhoto: guardian.motherPhoto || "",
+        guardianNID: guardian.guardianNID || "",
       },
     }));
     setUseExistingGuardian(false);
@@ -208,8 +212,9 @@ const CreateAdmission = () => {
           contact: "",
           email: "",
           address: "",
-          fatherDocument: "",
-          motherDocument: "",
+          fatherPhoto: "",
+          motherPhoto: "",
+          guardianNID: "",
         },
       });
     }
@@ -225,22 +230,22 @@ const CreateAdmission = () => {
   ];
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-6 lg:p-8">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-white p-6 rounded-3xl border-2 border-slate-200 dark:border-slate-200 shadow-sm text-center md:text-left">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-white p-6 rounded-[20px] border-2 border-slate-200 dark:border-slate-200 shadow-sm text-center md:text-left">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-800 mb-1">
             Create New Admission
           </h1>
-          <p className="text-slate-600 dark:text-slate-600 text-sm font-semibold">
+          {/* <p className="text-slate-600 dark:text-slate-600 text-sm font-semibold">
             Add new students to the system under a single guardian
-          </p>
+          </p> */}
         </div>
         <div className="flex items-center gap-3">
           <Link to={"/admin/student/list"}>
             <button
               type="button"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-xl hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
             >
               <User2 className="w-4 h-4" />
               All Student
@@ -251,7 +256,7 @@ const CreateAdmission = () => {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Academic Year & Admission Date */}
-        <div className="bg-white dark:bg-white rounded-3xl border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-white rounded-[20px] border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
             <div className="w-10 h-10 rounded-xl bg-[#e6f4ef] flex items-center justify-center">
               <Calendar className="w-5 h-5 text-[#00bd7f]" />
@@ -289,7 +294,7 @@ const CreateAdmission = () => {
         </div>
 
         {/* Guardian Information */}
-        <div className="bg-white dark:bg-white rounded-3xl border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-white rounded-[20px] border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#e6f4ef] flex items-center justify-center">
@@ -302,7 +307,7 @@ const CreateAdmission = () => {
             <button
               type="button"
               onClick={() => setUseExistingGuardian(!useExistingGuardian)}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-xl transition-all bg-[#00bd7f] text-white shadow-lg shadow-emerald-500/30 cursor-pointer`}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-[8px] ransition-all bg-[#00bd7f] text-white shadow-lg shadow-emerald-500/30 cursor-pointer`}
             >
               {useExistingGuardian ? (
                 <>
@@ -444,6 +449,114 @@ const CreateAdmission = () => {
               placeholder={"Address"}
             />
           </div>
+
+          {/* Guardian Photos and NID */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 p-6 bg-slate-50 rounded-3xl border-2 border-slate-100">
+            {/* Father's Photo */}
+            <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+              <div className="relative">
+                {formData.guardian.fatherPhoto ? (
+                  <img
+                    src={formData.guardian.fatherPhoto}
+                    alt="Father"
+                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
+                    <ImageIcon className="w-10 h-10 text-emerald-300" />
+                  </div>
+                )}
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                  <Upload className="w-4 h-4" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleImageUpload(
+                        e.target.files?.[0],
+                        "guardian",
+                        "fatherPhoto"
+                      )
+                    }
+                  />
+                </label>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-slate-800 text-sm">Father's  NID Card</p>
+                <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Required for ID</p>
+              </div>
+            </div>
+
+            {/* Mother's Photo */}
+            <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+              <div className="relative">
+                {formData.guardian.motherPhoto ? (
+                  <img
+                    src={formData.guardian.motherPhoto}
+                    alt="Mother"
+                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
+                    <ImageIcon className="w-10 h-10 text-emerald-300" />
+                  </div>
+                )}
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                  <Upload className="w-4 h-4" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleImageUpload(
+                        e.target.files?.[0],
+                        "guardian",
+                        "motherPhoto"
+                      )
+                    }
+                  />
+                </label>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-slate-800 text-sm">Mother's  NID Card</p>
+                <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Required for ID</p>
+              </div>
+            </div>
+
+            {/* Guardian NID */}
+            <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+              <div className="relative">
+                {formData.guardian.guardianNID ? (
+                  <img
+                    src={formData.guardian.guardianNID}
+                    alt="NID"
+                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
+                    <UserCheck className="w-10 h-10 text-emerald-300" />
+                  </div>
+                )}
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                  <Upload className="w-4 h-4" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleImageUpload(
+                        e.target.files?.[0],
+                        "guardian",
+                        "guardianNID"
+                      )
+                    }
+                  />
+                </label>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-slate-800 text-sm">Guardian NID Card</p>
+                <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Or Birth Certificate</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Students Section */}
@@ -456,7 +569,7 @@ const CreateAdmission = () => {
             <button
               type="button"
               onClick={addStudent}
-              className="flex items-center gap-2 px-6 py-3 bg-[#00bd7f] text-white font-black rounded-2xl hover:bg-[#009b68] transition-all shadow-lg shadow-emerald-500/20"
+              className="flex items-center gap-2 px-6 py-2.5 bg-[#00bd7f] text-white font-black rounded-[8px] hover:bg-[#009b68] transition-all shadow-lg shadow-emerald-500/20"
             >
               <Plus className="w-5 h-5" />
               Add Another Student
@@ -478,23 +591,21 @@ const CreateAdmission = () => {
                 </button>
               )}
               <div className="flex items-center gap-3 mb-8 pb-4 border-b-2 border-slate-100 dark:border-slate-100">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-500/30">
+                <div className="w-12 h-12 rounded-[8px] bg-emerald-500 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-500/30">
                   {index + 1}
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-emerald-800">
                     Student #{index + 1} Setup
                   </h3>
-                  <p className="text-sm font-bold text-slate-500">
-                    Personal and Financial Details
-                  </p>
+                
                 </div>
               </div>
               {/* Student Bio */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Full Name <span className="text-[#00bd7f]">*</span>
+                    Full Name  <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -510,7 +621,7 @@ const CreateAdmission = () => {
 
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Gender <span className="text-[#00bd7f]">*</span>
+                    Gender  <span className="text-red-500">*</span>
                   </label>
                   <select
                     required
@@ -526,7 +637,7 @@ const CreateAdmission = () => {
                 </div>
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Date of Birth <span className="text-[#00bd7f]">*</span>
+                    Date of Birth <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -562,7 +673,7 @@ const CreateAdmission = () => {
                 </div>
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Assigned Class <span className="text-[#00bd7f]">*</span>
+                    Assigned Class <span className="text-red-500">*</span>
                   </label>
                   <select
                     required
@@ -584,7 +695,7 @@ const CreateAdmission = () => {
                 </div>
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Section
+                    Group
                   </label>
                   <select
                     value={student.section}
@@ -649,10 +760,10 @@ const CreateAdmission = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {allFeeType?.map((type, i) => (
-                  <div key={i} className="p-5 rounded-3xl border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all duration-300">
+                  <div key={i} className="p-5 rounded-[20px] border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3 text-emerald-700">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-[8px] bg-emerald-50 flex items-center justify-center">
                           <Home className="w-4 h-4 text-[#00bd7f]" />
                         </div>
                         <span className="font-bold text-slate-700">{type?.name}</span>
@@ -701,10 +812,10 @@ const CreateAdmission = () => {
 
               <div className="grid-cols-1 sm:col-span-2 lg:col-span-3 mt-[20px]">
                 <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                  Note <span className="text-[#00bd7f]">*</span>
+                  Note 
                 </label>
                 <textarea
-                  required
+                 
                   rows="3"
                   value={student.note}
                   onChange={(e) => handleStudentChange(index, "note", e.target.value)}
@@ -717,18 +828,18 @@ const CreateAdmission = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-4 border-t-2 border-slate-100">
+        <div className="flex flex-col sm:flex-row items-center justify-end gap-4  border-t-2 border-slate-100">
           <button
             type="button"
             onClick={handleReset}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 text-sm font-black bg-slate-100 text-slate-600 rounded-2xl hover:bg-slate-200 transition-all border-2 border-slate-200 shadow-sm"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-red-500 text-white rounded-[8px] hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
           >
             <X className="w-5 h-5" />
             Reset Form
           </button>
           <button
             type="submit"
-            className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-4 text-base font-black bg-[#00bd7f] text-white rounded-2xl hover:bg-[#009b68] transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-1"
+           className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
           >
             <CheckCircle2 className="w-6 h-6" />
             Save

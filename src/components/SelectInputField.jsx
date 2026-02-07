@@ -9,8 +9,8 @@ const SelectInputField = ({
   type,
 }) => {
   return (
-    <div>
-      <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+    <div className="w-full">
+      <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block ">
         {title} {required && <span className="text-red-500">*</span>}
       </label>
       <select

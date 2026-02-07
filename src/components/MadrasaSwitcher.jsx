@@ -47,7 +47,7 @@ const MadrasaSwitcher = () => {
   }
 
   return (
-    <div className="relative w-full" ref={dropdownRef}>
+    <div className="relative w-full hidden" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`

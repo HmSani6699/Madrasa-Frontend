@@ -5,8 +5,11 @@ import {
   Clock,
   XCircle,
 } from "lucide-react";
+import { Link } from "react-router";
+import { useTranslation } from "react-i18next";
 
 const RecentAdmissions = () => {
+  const { t } = useTranslation();
   // Mock Data
   const students = [
     {
@@ -55,14 +58,14 @@ const RecentAdmissions = () => {
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       <div className="p-6 border-b border-gray-50 flex items-center justify-between">
         <div>
-          <h3 className="font-bold text-gray-800">Recent Admissions</h3>
+          <h3 className="font-bold text-gray-800">{t("dashboard.recent_admissions")}</h3>
           <p className="text-sm text-gray-500">
-            Latest student registration requests.
+            {t("dashboard.recent_admissions_desc")}
           </p>
         </div>
-        <button className="text-sm text-primary font-medium hover:underline">
-          View All
-        </button>
+        <Link to={'/admin/student/list'}><button className="text-sm text-primary font-medium hover:underline">
+          {t("common.view_all")}
+        </button></Link>
       </div>
 
       <div className="overflow-x-auto">
@@ -70,16 +73,16 @@ const RecentAdmissions = () => {
           <thead className="bg-gray-50/50">
             <tr>
               <th className="text-left py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Student Name
+                {t("common.student_name")}
               </th>
               <th className="text-left py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Class Info
+                {t("dashboard.class_info")}
               </th>
               <th className="text-left py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Date
+                {t("common.date")}
               </th>
               <th className="text-center py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Status
+                {t("common.status")}
               </th>
               {/* <th className="text-right py-3 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 Action
@@ -129,7 +132,7 @@ const RecentAdmissions = () => {
                     {student.status === "Rejected" && (
                       <XCircle className="w-3 h-3" />
                     )}
-                    {student.status}
+                    {t(`common.${student.status.toLowerCase()}`)}
                   </span>
                 </td>
                 {/* <td className="py-3 px-6 text-right">

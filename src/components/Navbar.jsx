@@ -143,8 +143,8 @@ const Navbar = ({ onMenuClick }) => {
              {activeDropdown === 'notifications' && (
                <div className="absolute right-0 mt-3 w-80 bg-surface rounded-2xl shadow-xl border border-border py-4 animate-fade-in-down origin-top-right overflow-hidden z-50">
                   <div className="px-5 pb-3 border-b border-border flex items-center justify-between">
-                    <h3 className="font-bold text-fg-main">Notifications</h3>
-                    <span className="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full">3 New</span>
+                    <h3 className="font-bold text-fg-main">{t("navbar.notifications")}</h3>
+                    <span className="text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full">3 {t("navbar.new")}</span>
                   </div>
                   <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
                     {notifications.map((n, i) => (
@@ -158,7 +158,7 @@ const Navbar = ({ onMenuClick }) => {
                     ))}
                   </div>
                   <div className="px-5 pt-3 mt-1 text-center border-t border-border">
-                    <button className="text-xs font-bold text-primary hover:underline">View All Notifications</button>
+                    <button className="text-xs font-bold text-primary hover:underline">{t("navbar.view_all_notifications")}</button>
                   </div>
                </div>
              )}
@@ -176,8 +176,8 @@ const Navbar = ({ onMenuClick }) => {
              {activeDropdown === 'messages' && (
                <div className="absolute right-0 mt-3 w-80 bg-surface rounded-2xl shadow-xl border border-border py-4 animate-fade-in-down origin-top-right overflow-hidden z-50">
                   <div className="px-5 pb-3 border-b border-border flex items-center justify-between">
-                    <h3 className="font-bold text-fg-main">Messages</h3>
-                    <span className="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">2 New</span>
+                    <h3 className="font-bold text-fg-main">{t("navbar.messages")}</h3>
+                    <span className="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">2 {t("navbar.new")}</span>
                   </div>
                   <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
                     {messages.map((m, i) => (
@@ -198,7 +198,7 @@ const Navbar = ({ onMenuClick }) => {
                     ))}
                   </div>
                   <div className="px-5 pt-3 mt-1 text-center border-t border-border">
-                    <button className="text-xs font-bold text-primary hover:underline">See All Messages</button>
+                    <button className="text-xs font-bold text-primary hover:underline">{t("navbar.see_all_messages")}</button>
                   </div>
                </div>
              )}
@@ -243,15 +243,15 @@ const Navbar = ({ onMenuClick }) => {
             {activeDropdown === 'profile' && (
                <div className="absolute right-0 top-full mt-3 w-56 bg-surface rounded-2xl shadow-xl border border-border py-3 animate-fade-in-down origin-top-right overflow-hidden z-50">
                   <div className="px-4 py-2 border-b border-border mb-2">
-                    <p className="text-xs font-semibold text-fg-muted uppercase tracking-wider">Account</p>
+                    <p className="text-xs font-semibold text-fg-muted uppercase tracking-wider">{t("navbar.account")}</p>
                   </div>
                   <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-fg-muted hover:bg-gray-50 dark:hover:bg-slate-700/50 hover:text-primary transition-all">
                     <User className="w-4 h-4" />
-                    <span>My Profile</span>
+                    <span>{t("navbar.profile")}</span>
                   </button>
                   <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-fg-muted hover:bg-gray-50 dark:hover:bg-slate-700/50 hover:text-primary transition-all">
                     <Settings className="w-4 h-4" />
-                    <span>Settings</span>
+                    <span>{t("navbar.settings")}</span>
                   </button>
                   <div className="h-[1px] bg-border my-2 mx-4" />
                   <button 
@@ -259,7 +259,7 @@ const Navbar = ({ onMenuClick }) => {
                     className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all font-medium"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span>Sign Out</span>
+                    <span>{t("navbar.sign_out")}</span>
                   </button>
                  </div>
             )}

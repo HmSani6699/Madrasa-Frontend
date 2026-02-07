@@ -49,6 +49,12 @@ import {
         { name: "Hall Management", path: "/admin/exam/hall", icon: Users },
         { name: "Marks Entry", path: "/teacher/exam/marks", icon: PenTool }, // Can enter marks
         { name: "Result Cards", path: "/admin/exam/marks/position", icon: Award },
+      ]
+    },
+    {
+      name: "Reports",
+      icon: FileText,
+      children: [
         { name: "Tabulation Sheet", path: "/admin/reports/exam", icon: FileText },
       ]
     },

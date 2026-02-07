@@ -89,6 +89,11 @@ import FinancialReports from "../Pages/Admin/FinancialReports";
 import AttendanceReports from "../Pages/Admin/AttendanceReports";
 import ExamReports from "../Pages/Admin/ExamReports";
 import InventoryReports from "../Pages/Admin/InventoryReports";
+import AdmissionReports from "../Pages/Admin/AdmissionReports";
+import StudentAcademicReport from "../Pages/Admin/StudentAcademicReport";
+import StudentAttendanceReport from "../Pages/Admin/StudentAttendanceReport";
+import StaffAttendanceReport from "../Pages/Admin/StaffAttendanceReport";
+import ExamAttendanceReport from "../Pages/Admin/ExamAttendanceReport";
 import SettingsPage from "../Pages/Admin/SettingsPage";
 import DonationEntry from "../Pages/Accounting/DonationEntry";
 import FeeCollection from "../Pages/Accounting/FeeCollection";
@@ -105,6 +110,12 @@ import Login from "../Pages/Auth/Login";
 import AccountDeactivated from "../Pages/Auth/AccountDeactivated";
 import DepartmentSectionList from "../Pages/Admin/DepartmentSectionList";
 import PaySalary from "../Pages/Accounting/PaySalary";
+import FreeCollectionReport from "../Pages/Accounting/FreeCollectionReport";
+import SalaryReport from "../Pages/Accounting/SalaryReport";
+import DonationReport from "../Pages/Accounting/DonationReport";
+import IncomeExpenseReport from "../Pages/Accounting/IncomeExpenseReport";
+import IncomeEntry from "../Pages/Accounting/IncomeEntry";
+import ExpenseEntry from "../Pages/Accounting/ExpenseEntry";
 import PortalLayout from "../layouts/PortalLayout";
 
 // Guardian Pages
@@ -145,6 +156,9 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/admission/create") {
         element = <CreateAdmission />;
+      }
+      if (item.path === "/admin/admission/report") {
+        element = <AdmissionReports />;
       }
       if (item.path.startsWith("/admin/student/profile/")) {
         element = <StudentProfile />;
@@ -203,6 +217,9 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/academic/schedule/teacher") {
         element = <TeacherSchedule />;
+      }
+      if (item.path === "/admin/academic/student-academic-report") {
+        element = <StudentAcademicReport />;
       }
       if (item.path === "/admin/homework/list") {
         element = <HomeworkList />;
@@ -323,6 +340,12 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/accounting/fees/dues") {
         element = <DuesPending />;
       }
+      if (item.path === "/admin/accounting/income/create") {
+        element = <IncomeEntry />;
+      }
+      if (item.path === "/admin/accounting/expense/create") {
+        element = <ExpenseEntry />;
+      }
 
       // Reports
       if (item.path?.startsWith("/admin/reports/student")) {
@@ -334,6 +357,15 @@ const flattenRoutes = (navItems) => {
       if (item.path?.startsWith("/admin/reports/finance")) {
         element = <FinancialReports />;
       }
+      if (item.path === "/admin/attendance/report/student") {
+        element = <StudentAttendanceReport />;
+      }
+      if (item.path === "/admin/attendance/report/staff") {
+        element = <StaffAttendanceReport />;
+      }
+      if (item.path === "/admin/attendance/report/exam") {
+        element = <ExamAttendanceReport />;
+      }
       if (item.path?.startsWith("/admin/reports/attendance")) {
         element = <AttendanceReports />;
       }
@@ -342,6 +374,18 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path?.startsWith("/admin/reports/inventory")) {
         element = <InventoryReports />;
+      }
+      if (item.path === "/admin/accounting/report/free-collection") {
+        element = <FreeCollectionReport />;
+      }
+      if (item.path === "/admin/accounting/report/salary") {
+        element = <SalaryReport />;
+      }
+      if (item.path === "/admin/accounting/report/donation") {
+        element = <DonationReport />;
+      }
+      if (item.path === "/admin/accounting/report/income-expense") {
+        element = <IncomeExpenseReport />;
       }
 
       // Settings

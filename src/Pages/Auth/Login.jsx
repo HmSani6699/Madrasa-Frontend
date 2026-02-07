@@ -7,7 +7,7 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    identifier: "",
+    identifier: "muhtamim@mms.com",
     password: "password",
   });
   const [loading, setLoading] = useState(false);

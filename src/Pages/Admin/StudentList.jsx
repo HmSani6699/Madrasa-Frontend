@@ -25,6 +25,7 @@ import {
   ChevronRight,
   User,
 } from "lucide-react";
+import SelectInputField from "../../components/SelectInputField";
 // Header Container Component Removed Duplicate Link Import
 
 const StudentList = () => {
@@ -422,22 +423,17 @@ const StudentList = () => {
   }, [searchTerm, classFilter, sectionFilter]);
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-6 lg:p-8">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-sm text-center md:text-left">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-800 mb-1">
             Student Records
           </h1>
-          <p className="text-slate-600 text-sm font-semibold">
-            Manage and view all registered students
-          </p>
+         
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-all border border-slate-200">
-            <Download className="w-4 h-4" />
-            Export List
-          </button>
+         
           <Link to="/admin/admission/create" className="w-full sm:w-auto">
             <button className="w-full flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all">
               <Plus className="w-4 h-4" />
@@ -448,15 +444,9 @@ const StudentList = () => {
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
-          {
-            label: "Showing",
-            value: `${currentStudents.length} of ${filteredStudents.length}`,
-            icon: Users,
-            color: "text-amber-600",
-            bg: "bg-amber-100",
-          },
+         
           {
             label: "Total Student",
             value: students.length,
@@ -501,7 +491,7 @@ const StudentList = () => {
       {/* Filters Area */}
       <div className="bg-white rounded-3xl border-2 border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="md:col-span-2">
+          <div className="">
             <label className="text-sm font-bold text-slate-700 mb-2 block">
               Quick Search
             </label>
@@ -512,40 +502,21 @@ const StudentList = () => {
                 placeholder="Search by ID, Name or Phone..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-[#e6f4ef] border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#e6f4ef] border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
               />
             </div>
           </div>
-          <div>
-            <label className="text-sm font-bold text-slate-700 mb-2 block">
-              Class
-            </label>
-            <select
-              value={classFilter}
-              onChange={(e) => setClassFilter(e.target.value)}
-              className="w-full px-4 py-3 bg-[#e6f4ef] border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all appearance-none"
-            >
-              <option value="all">All Classes</option>
-              <option value="Class 4">Class 4</option>
-              <option value="Class 5">Class 5</option>
-              <option value="Class 6">Class 6</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-sm font-bold text-slate-700 mb-2 block">
-              Section
-            </label>
-            <select
-              value={sectionFilter}
-              onChange={(e) => setSectionFilter(e.target.value)}
-              className="w-full px-4 py-3 bg-[#e6f4ef] border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
-            >
-              <option value="all">All Sections</option>
-              <option value="Section A">Section A</option>
-              <option value="Section B">Section B</option>
-              <option value="Section C">Section C</option>
-            </select>
-          </div>
+         
+
+            <SelectInputField title={'Class'} options={[{value:"Class One"},{value:"Class Two"},{value:"Class Three"}]}/>
+            <SelectInputField title={'Groupe'} options={[{value:"A"},{value:"B"},{value:"C"}]}/>
+         
+          <div className="lg:mt-[25px]">
+              <button className="w-full flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all">
+              <Plus className="w-4 h-4" />
+              Filter
+            </button>
+      </div>
         </div>
       </div>
 
@@ -629,10 +600,10 @@ const StudentList = () => {
                         <Phone className="w-3.5 h-3.5 text-emerald-500" />
                         {student.phone}
                       </div>
-                      <div className="flex items-center gap-1.5">
+                      {/* <div className="flex items-center gap-1.5">
                         <Mail className="w-3.5 h-3.5 text-emerald-500" />
                         {student.email}
-                      </div>
+                      </div> */}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

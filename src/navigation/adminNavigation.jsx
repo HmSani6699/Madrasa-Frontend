@@ -31,6 +31,18 @@ import {
   HeartHandshake,
   Smartphone,
   ClipboardList,
+  Globe,
+  User,
+  LayoutGrid,
+  Clock,
+  Building2,
+  Calendar,
+  CalendarPlus,
+  Edit,
+  Table,
+  Printer,
+  FileCheck,
+  List,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -43,45 +55,62 @@ export const adminNavigation = [
     name: "Admission",
     icon: UserPlus,
     children: [
-      { name: "Student List", path: "/admin/student/list" },
-      { name: "Create Admission", path: "/admin/admission/create" },
-      { name: "Online Admission", path: "/admin/admissions/online" },
+      { name: "Student List", path: "/admin/student/list", icon: Users },
+      { name: "Create Admission", path: "/admin/admission/create", icon: UserPlus },
+      { name: "Online Admission", path: "/admin/admissions/online", icon: Globe },
+      { name: "Admission Report", path: "/admin/admission/report", icon: FileText },
     ],
   },
-  // {
-  //   name: "Student Details",
-  //   icon: Users,
-  //   children: [
-  //     { name: "Student List", path: "/admin/student/list" },
-  //     { name: "Login Deactive", path: "/admin/student/deactive" },
-  //   ],
-  // },
   {
     name: "Parents",
     icon: Contact,
     children: [
-      { name: "Parent List", path: "/admin/parents/list" },
-      // { name: "Login Deactive", path: "/admin/parents/deactive" },
+      { name: "Parent List", path: "/admin/parents/list", icon: Users },
     ],
   },
   {
     name: "Employee",
     icon: Briefcase,
     children: [
-      { name: "Employee List", path: "/admin/employee/list" },
-      { name: "Add New Employee", path: "/admin/employee/create" },
-      { name: "Add Designation", path: "/admin/employee/designation" },
-      // { name: "Add Department", path: "/admin/employee/department" },
-      // { name: "Login Deactive", path: "/admin/employee/deactive" },
+      { name: "Employee List", path: "/admin/employee/list", icon: Users },
+      { name: "Add New Employee", path: "/admin/employee/create", icon: UserPlus },
+      { name: "Add Designation", path: "/admin/employee/designation", icon: Award },
     ],
   },
   {
     name: "Attendance",
     icon: CalendarCheck,
     children: [
-      { name: "Student", path: "/admin/attendance/student" },
-      { name: "Employee", path: "/admin/attendance/employee" },
-      { name: "Exam", path: "/admin/attendance/exam" },
+      {
+        name: "Mark Attendance",
+        icon: UserCheck,
+        children: [
+          { name: "Student", path: "/admin/attendance/student", icon: User },
+          { name: "Employee", path: "/admin/attendance/employee", icon: Briefcase },
+          { name: "Exam", path: "/admin/attendance/exam", icon: GraduationCap },
+        ],
+      },
+      {
+        name: "Attendance Report",
+        icon: FileBarChart,
+        children: [
+          {
+            name: "Student Attendance Report",
+            path: "/admin/attendance/report/student",
+            icon: FilePieChart,
+          },
+          {
+            name: "Staff Attendance Report",
+            path: "/admin/attendance/report/staff",
+            icon: FilePieChart,
+          },
+          {
+            name: "Exam Attendant Report",
+            path: "/admin/attendance/report/exam",
+            icon: FilePieChart,
+          },
+        ],
+      },
     ],
   },
   {
@@ -91,49 +120,53 @@ export const adminNavigation = [
       {
         name: "Department & Section",
         path: "/admin/academic/department-section",
+        icon: LayoutGrid,
       },
-      { name: "Subject", path: "/admin/academic/subject" },
-      { name: "Class Assign", path: "/admin/academic/class-assign" },
-      { name: "Class Schedule", path: "/admin/academic/schedule/class" },
-      { name: "Assign Class Teacher", path: "/admin/academic/assign-teacher" },
-      { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher" },
+      { name: "Subject", path: "/admin/academic/subject", icon: BookOpen },
+      { name: "Class Assign", path: "/admin/academic/class-assign", icon: ClipboardList },
+      { name: "Class Schedule", path: "/admin/academic/schedule/class", icon: Clock },
+      { name: "Assign Class Teacher", path: "/admin/academic/assign-teacher", icon: UserCheck },
+      { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher", icon: Clock },
+      {
+        name: "Student Academic Report",
+        path: "/admin/academic/student-academic-report",
+        icon: FileBarChart,
+      },
     ],
   },
   {
     name: "Homework",
     icon: BookOpen,
-    children: [
-      { name: "Home Work", path: "/admin/homework/list" },
-      { name: "Evaluation Report", path: "/admin/homework/report" },
-    ],
+    children: [{ name: "Home Work", path: "/admin/homework/list", icon: BookOpen }],
   },
   {
-    name: "Exam Master",
+    name: "Examination",
     icon: GraduationCap,
     children: [
       {
         name: "Exam",
+        icon: FileCheck,
         children: [
-          { name: "Exam Name", path: "/admin/exam/term" },
-          { name: "Exam Hall", path: "/admin/exam/hall" },
-          // { name: "Distribution", path: "/admin/exam/distribution" },
-          { name: "Exam Setup", path: "/admin/exam/setup" },
-          // { name: "Marksheet Template", path: "/admin/exam/template" },
+          { name: "Exam Name", path: "/admin/exam/term", icon: FileText },
+          { name: "Exam Hall", path: "/admin/exam/hall", icon: Building2 },
+          { name: "Exam Setup", path: "/admin/exam/setup", icon: Settings },
         ],
       },
       {
         name: "Exam Schedule",
+        icon: Calendar,
         children: [
-          { name: "Schedule", path: "/admin/exam/schedule/list" },
-          { name: "Add Schedule", path: "/admin/exam/schedule/add" },
+          { name: "Schedule", path: "/admin/exam/schedule/list", icon: List },
+          { name: "Add Schedule", path: "/admin/exam/schedule/add", icon: CalendarPlus },
         ],
       },
       {
         name: "Marks",
+        icon: TrendingUp,
         children: [
-          { name: "Mark Entries", path: "/admin/exam/marks/entry" },
-          { name: "Generate Position", path: "/admin/exam/marks/position" },
-          { name: "Grades Range", path: "/admin/exam/marks/grades" },
+          { name: "Mark Entries", path: "/admin/exam/marks/entry", icon: Edit },
+          { name: "Grades Range", path: "/admin/exam/marks/grades", icon: Award },
+          { name: "Tabulation Sheet", path: "/admin/reports/exam/tabulation", icon: Table },
         ],
       },
     ],
@@ -156,16 +189,6 @@ export const adminNavigation = [
             path: "/admin/accounting/fees/setup",
             icon: Settings,
           },
-          {
-            name: "Dues Pending",
-            path: "/admin/accounting/fees/dues",
-            icon: Receipt,
-          },
-          {
-            name: "Fee Reports",
-            path: "/admin/reports/fees",
-            icon: FilePieChart,
-          },
         ],
       },
       {
@@ -173,15 +196,16 @@ export const adminNavigation = [
         icon: Banknote,
         children: [
           {
-            name: "Process Salary",
-            path: "/admin/accounting/payroll/process",
-            icon: Calculator,
-          },
-          {
             name: "Pay Salary",
             path: "/admin/accounting/payroll/pay",
             icon: DollarSign,
           },
+          {
+            name: "Process Salary",
+            path: "/admin/accounting/payroll/process",
+            icon: Calculator,
+          },
+        
           {
             name: "Salary History",
             path: "/admin/accounting/payroll/history",
@@ -214,11 +238,6 @@ export const adminNavigation = [
             path: "/admin/accounting/expense/create",
             icon: CreditCard,
           },
-          {
-            name: "Expense Report",
-            path: "/admin/reports/finance",
-            icon: FilePieChart,
-          },
         ],
       },
       {
@@ -226,107 +245,36 @@ export const adminNavigation = [
         icon: TrendingUp,
         children: [
           {
-            name: "Other Income",
-            path: "/admin/inventory/sales",
+            name: "Add Income",
+            path: "/admin/accounting/income/create",
             icon: DollarSign,
           },
-          {
-            name: "Income Report",
-            path: "/admin/reports/finance",
-            icon: FilePieChart,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "Reports",
-    icon: FileBarChart,
-    children: [
-      {
-        name: "Student Reports",
-        children: [
-          { name: "Login Credential", path: "/admin/reports/student/login" },
-          {
-            name: "Admission Report",
-            path: "/admin/reports/student/admission",
-          },
-          {
-            name: "Department & Section Report",
-            path: "/admin/reports/student/department-section",
-          },
-          { name: "Sibling Report", path: "/admin/reports/student/sibling" },
         ],
       },
       {
-        name: "Fees Reports",
-        children: [
-          { name: "Fees Report", path: "/admin/reports/fees/general" },
-          { name: "Receipts Report", path: "/admin/reports/fees/receipts" },
-          { name: "Due Fees Report", path: "/admin/reports/fees/due" },
-          { name: "Fine Report", path: "/admin/reports/fees/fine" },
-        ],
-      },
-      {
-        name: "Financial Reports",
+        name: "Accounting Report",
+        icon: FileBarChart,
         children: [
           {
-            name: "Account Statement",
-            path: "/admin/reports/finance/statement",
-          },
-          { name: "Income Reports", path: "/admin/reports/finance/income" },
-          { name: "Expense Reports", path: "/admin/reports/finance/expense" },
-          {
-            name: "Transaction Reports",
-            path: "/admin/reports/finance/transactions",
-          },
-          { name: "Balance Sheet", path: "/admin/reports/finance/balance" },
-          {
-            name: "Income Vs Expense",
-            path: "/admin/reports/finance/income-vs-expense",
-          },
-        ],
-      },
-      {
-        name: "Attendance Reports",
-        children: [
-          {
-            name: "Student Reports",
-            path: "/admin/reports/attendance/student",
-          }, // ambiguous in request, handled as sub-cat
-          {
-            name: "Student Daily Reports",
-            path: "/admin/reports/attendance/student-daily",
+            name: "Free Collection Report",
+            path: "/admin/accounting/report/free-collection",
+            icon: FileText,
           },
           {
-            name: "Student Overview",
-            path: "/admin/reports/attendance/student-overview",
+            name: "Salary Report",
+            path: "/admin/accounting/report/salary",
+            icon: FileText,
           },
           {
-            name: "Employee Reports",
-            path: "/admin/reports/attendance/employee",
+            name: "Donation Report",
+            path: "/admin/accounting/report/donation",
+            icon: FileText,
           },
-        ],
-      },
-      {
-        name: "Exam Reports",
-        children: [
-          { name: "Examination", path: "/admin/reports/exam/list" },
-          { name: "Report Card", path: "/admin/reports/exam/card" },
-          { name: "Tabulation Sheet", path: "/admin/reports/exam/tabulation" },
-          { name: "Progress Reports", path: "/admin/reports/exam/progress" },
-        ],
-      },
-      {
-        name: "Inventory Reports",
-        children: [
-          { name: "Stock Report", path: "/admin/reports/inventory/stock" },
           {
-            name: "Purchase Report",
-            path: "/admin/reports/inventory/purchase",
+            name: "Income & Expense Report",
+            path: "/admin/accounting/report/income-expense",
+            icon: FileText,
           },
-          { name: "Sales Report", path: "/admin/reports/inventory/sales" },
-          { name: "Issue Report", path: "/admin/reports/inventory/issue" },
         ],
       },
     ],
@@ -335,20 +283,20 @@ export const adminNavigation = [
     name: "Card Management",
     icon: CreditCard,
     children: [
-      { name: "ID Card Template", path: "/admin/card/template" },
-      { name: "Student ID Card", path: "/admin/card/student" },
-      { name: "Employee ID Card", path: "/admin/card/employee" },
-      { name: "Admit Card Template", path: "/admin/card/admit-template" },
-      { name: "Generate Admit Card", path: "/admin/card/admit-generate" },
+      { name: "ID Card Template", path: "/admin/card/template", icon: LayoutTemplate },
+      { name: "Student ID Card", path: "/admin/card/student", icon: Contact },
+      { name: "Employee ID Card", path: "/admin/card/employee", icon: Contact },
+      { name: "Admit Card Template", path: "/admin/card/admit-template", icon: FileText },
+      { name: "Generate Admit Card", path: "/admin/card/admit-generate", icon: Printer },
     ],
   },
   {
     name: "Certificate Management",
     icon: Award,
     children: [
-      { name: "Certificate Template", path: "/admin/certificate/template" },
-      { name: "Generate Student", path: "/admin/certificate/student" },
-      { name: "Generate Employee", path: "/admin/certificate/employee" },
+      { name: "Certificate Template", path: "/admin/certificate/template", icon: Award },
+      { name: "Generate Student", path: "/admin/certificate/student", icon: Users },
+      { name: "Generate Employee", path: "/admin/certificate/employee", icon: Users },
     ],
   },
   {
@@ -372,20 +320,6 @@ export const adminNavigation = [
     path: "/admin/frontend",
   },
 
-  {
-    name: "Inventory",
-    icon: Package,
-    children: [
-      { name: "Product", path: "/admin/inventory/product" },
-      { name: "Category", path: "/admin/inventory/category" },
-      { name: "Store", path: "/admin/inventory/store" },
-      { name: "Supplier", path: "/admin/inventory/supplier" },
-      { name: "Unit", path: "/admin/inventory/unit" },
-      { name: "Purchase", path: "/admin/inventory/purchase" },
-      { name: "Sales", path: "/admin/inventory/sales" },
-      { name: "Issue", path: "/admin/inventory/issue" },
-    ],
-  },
   {
     name: "Settings",
     icon: Settings,

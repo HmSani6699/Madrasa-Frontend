@@ -9,7 +9,8 @@ import {
     Users,
     CreditCard,
     DollarSign,
-    Settings
+    Settings,
+    FileText
   } from "lucide-react";
   
   export const accountingNavigation = [
@@ -23,8 +24,6 @@ import {
       icon: Wallet,
       children: [
         { name: "Collect Fees", path: "/admin/reports/fees", icon: DollarSign }, // Using admin path as placeholder for now, ideally needs a collection page
-        { name: "Dues Pending", path: "/guardian/finance/fees", icon: Receipt }, // Specific view for tracking
-        { name: "Fee Reports", path: "/admin/reports/fees", icon: FilePieChart },
       ]
     },
     {
@@ -40,7 +39,6 @@ import {
       icon: TrendingDown,
       children: [
         { name: "Add Expense", path: "/admin/inventory/purchase", icon: CreditCard },
-        { name: "Expense Report", path: "/admin/reports/finance", icon: FilePieChart },
       ]
     },
     {
@@ -48,7 +46,18 @@ import {
       icon: TrendingUp,
       children: [
         { name: "Other Income", path: "/admin/inventory/sales", icon: DollarSign },
+      ]
+    },
+    {
+      name: "Reports",
+      icon: FilePieChart,
+      children: [
+        { name: "Fee Reports", path: "/admin/reports/fees", icon: FilePieChart },
+        { name: "Expense Report", path: "/admin/reports/finance", icon: FilePieChart },
         { name: "Income Report", path: "/admin/reports/finance", icon: FilePieChart },
+        { name: "Salary Report", path: "/admin/accounting/report/salary", icon: FileText },
+        { name: "Donation Report", path: "/admin/accounting/report/donation", icon: FileText },
+        { name: "Income & Expense Report", path: "/admin/accounting/report/income-expense", icon: FileText },
       ]
     },
     {

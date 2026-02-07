@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import { CheckCircle2, Loader2, Save, Settings, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
       <div className="p-8 border-b-2 border-slate-50  sticky top-0 bg-white backdrop-blur-md z-10 rounded-[20px]">
@@ -10,7 +13,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
           <div>
             <h2 className="text-2xl font-black text-slate-800 tracking-tight flex items-center">
               <Settings className="w-8 h-8 text-primary" />
-              Salary Setup
+              {t('salary_setup.title')}
             </h2>
           </div>
           <button
@@ -26,7 +29,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
             <label className=" font-bold text-slate-700 dark:text-slate-700  block">
-              Employee <span className="text-red-500">*</span>
+              {t('salary_setup.employee')} <span className="text-red-500">*</span>
             </label>
             <select
               required
@@ -38,7 +41,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
           </div>
           <div>
             <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-              Basic Salary
+              {t('salary_setup.basic_salary')}
             </label>
             <input
               type="number"
@@ -47,7 +50,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
           </div>
           <div>
             <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-              House Rent
+              {t('salary_setup.house_rent')}
             </label>
             <input
               type="number"
@@ -56,7 +59,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
           </div>
           <div>
             <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-              Medical
+              {t('salary_setup.medical')}
             </label>
             <input
               type="number"
@@ -65,7 +68,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
           </div>
           <div>
             <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-              Transport
+              {t('salary_setup.transport')}
             </label>
             <input
               type="number"
@@ -74,7 +77,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
           </div>
           <div>
             <label className="text-xs font-black text-slate-500 uppercase mb-2 block">
-              Bonus
+              {t('salary_setup.bonus')}
             </label>
             <input
               type="number"
@@ -91,7 +94,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
             onClick={() => onClose(false)}
           >
             <X className="w-5 h-5" />
-            Cancel
+            {t('salary_setup.cancel')}
           </button>
           <button
             onClick={() => onClose(false)}
@@ -99,7 +102,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
             className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-4 text-base font-black bg-[#00bd7f] text-white rounded-2xl hover:bg-[#009b68] transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-1 cursor-pointer"
           >
             <CheckCircle2 className="w-6 h-6" />
-            Save
+            {t('salary_setup.save')}
           </button>
         </div>
       </div>

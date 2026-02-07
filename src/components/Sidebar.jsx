@@ -136,8 +136,8 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
 
   const adminLinks = [
     { title: "Main", links: adminNavigation.slice(0, 1) },
-    { title: "Academic", links: adminNavigation.slice(1, 10) },
-    { title: "Management", links: adminNavigation.slice(10) }
+    { title: "Academic", links: adminNavigation.slice(1, 9) },
+    { title: "Management", links: adminNavigation.slice(9) }
   ];
 
   const teacherLinks = [

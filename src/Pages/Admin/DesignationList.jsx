@@ -98,7 +98,7 @@ const DesignationList = () => {
   return (
     <div className="p-3 sm:p-4 md:p-6 lg:p-8 space-y-8 animate-in fade-in duration-500">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border-2 border-slate-100 shadow-sm relative overflow-hidden">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[20px] border-2 border-slate-100 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full -mr-32 -mt-32 opacity-40" />
         <div className="flex items-center gap-5 relative z-10">
           <div className="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center shadow-inner">
@@ -108,21 +108,19 @@ const DesignationList = () => {
             <h1 className="text-2xl sm:text-4xl font-black text-slate-800 tracking-tight">
               Designations
             </h1>
-            <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mt-1">
-              Define professional roles & ranks
-            </p>
+           
           </div>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all relative z-10 cursor-pointer"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-[8px] shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all relative z-10 cursor-pointer"
         >
           <Plus className="w-5 h-5" /> Add Designation
         </button>
       </div>
 
       {/* Table-style List */}
-      <div className="bg-white rounded-[2.5rem] border-2 border-slate-50 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-[20px] border-2 border-slate-50 shadow-sm overflow-hidden">
         <div className="p-6 border-b-2 border-slate-50 bg-slate-50/30">
           <div className="relative max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
@@ -139,16 +137,16 @@ const DesignationList = () => {
           <table className="w-full">
             <thead>
               <tr className="text-left bg-slate-50/50">
-                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <th className="px-10 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                   Role Title
                 </th>
-                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
+                <th className="px-10 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
                   Hierarchy Level
                 </th>
-                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
+                <th className="px-10 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
                   Active Staff
                 </th>
-                <th className="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
+                <th className="px-10 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
                   Actions
                 </th>
               </tr>
@@ -159,7 +157,7 @@ const DesignationList = () => {
                   key={desg.id}
                   className="hover:bg-purple-50/30 transition-colors group"
                 >
-                  <td className="px-10 py-6">
+                  <td className="px-10 py-4">
                     <div className="flex items-center gap-4">
                       <div
                         className={`w-12 h-12 ${desg.bg} rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}
@@ -171,15 +169,15 @@ const DesignationList = () => {
                       </p>
                     </div>
                   </td>
-                  <td className="px-10 py-6 text-center">
+                  <td className="px-10 py-4 text-center">
                     <span className="px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase tracking-widest group-hover:bg-white group-hover:shadow-sm transition-all border-2 border-transparent group-hover:border-purple-100">
                       {desg.level}
                     </span>
                   </td>
-                  <td className="px-10 py-6 text-center font-black text-slate-800">
+                  <td className="px-10 py-4 text-center font-black text-slate-800">
                     {desg.employeeCount}
                   </td>
-                  <td className="px-10 py-6 text-right">
+                  <td className="px-10 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => {

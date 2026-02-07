@@ -36,7 +36,7 @@ const LibraryManager = () => {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Library Catalog</h1>
-              <p className="text-slate-500 font-bold mt-1">Manage institutional books, periodicals, and borrowing history</p>
+            
             </div>
           </div>
 

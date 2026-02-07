@@ -8,7 +8,10 @@ import {
   Check
 } from 'lucide-react';
 
+import { useTranslation } from 'react-i18next';
+
 const FeeSetup = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('heads'); // heads | assign
 
   // Mock Fee Heads
@@ -44,9 +47,9 @@ const FeeSetup = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
           <Settings className="w-8 h-8 text-primary" />
-          Fee Configuration
+          {t('fee_setup.title')}
         </h1>
-        <p className="text-slate-500 mt-1">Manage fee types and set amounts for each class.</p>
+        <p className="text-slate-500 mt-1">{t('fee_setup.subtitle')}</p>
       </div>
 
       {/* Tabs */}
@@ -55,42 +58,42 @@ const FeeSetup = () => {
             onClick={() => setActiveTab('heads')}
             className={`pb-3 px-4 text-sm font-bold transition-all ${activeTab === 'heads' ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-slate-700'}`}
           >
-              1. Fee Heads
+              {t('fee_setup.heads_tab')}
           </button>
            <button 
             onClick={() => setActiveTab('assign')}
             className={`pb-3 px-4 text-sm font-bold transition-all ${activeTab === 'assign' ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-slate-700'}`}
           >
-              2. Assign Amounts
+              {t('fee_setup.assign_tab')}
           </button>
       </div>
 
       {activeTab === 'heads' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
-                  <h3 className="font-bold text-slate-700 mb-4">Add New Fee Type</h3>
+                  <h3 className="font-bold text-slate-700 mb-4">{t('fee_setup.add_header')}</h3>
                   <div className="space-y-4">
                       <div>
-                          <label className="text-xs font-bold text-slate-500 uppercase">Fee Name</label>
-                          <input type="text" placeholder="e.g. Lab Fee" className="w-full mt-1 p-2 border border-slate-200 rounded-lg focus:outline-none focus:border-primary" />
+                          <label className="text-xs font-bold text-slate-500 uppercase">{t('fee_setup.fee_name')}</label>
+                          <input type="text" placeholder={t('fee_setup.name_placeholder')} className="w-full mt-1 p-2 border border-slate-200 rounded-lg focus:outline-none focus:border-primary" />
                       </div>
                       <div>
-                          <label className="text-xs font-bold text-slate-500 uppercase">Frequency</label>
+                          <label className="text-xs font-bold text-slate-500 uppercase">{t('fee_setup.frequency')}</label>
                           <select className="w-full mt-1 p-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-primary">
-                              <option>Monthly</option>
-                              <option>One-time</option>
-                              <option>Annual</option>
+                              <option>{t('common.months.monthly') || 'Monthly'}</option>
+                              <option>{t('common.one_time') || 'One-time'}</option>
+                              <option>{t('common.annual') || 'Annual'}</option>
                           </select>
                       </div>
-                      <button className="w-full py-2 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-900 transition-all flex items-center justify-center gap-2">
-                          <Plus className="w-4 h-4" /> Create Fee Head
+                      <button className="w-full py-2 bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-900 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                          <Plus className="w-4 h-4" /> {t('fee_setup.create_btn')}
                       </button>
                   </div>
               </div>
 
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                    <div className="p-4 bg-slate-50 border-b border-slate-200">
-                       <h3 className="font-bold text-slate-700">Existing Fee Heads</h3>
+                       <h3 className="font-bold text-slate-700">{t('fee_setup.existing_heads')}</h3>
                    </div>
                    <div className="divide-y divide-slate-100">
                        {feeHeads.map(head => (
@@ -113,7 +116,7 @@ const FeeSetup = () => {
       {activeTab === 'assign' && (
           <div className="space-y-6">
               <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                  <span className="font-bold text-slate-500 text-sm uppercase">Select Fee Head:</span>
+                  <span className="font-bold text-slate-500 text-sm uppercase">{t('fee_setup.select_head')}</span>
                   <div className="flex gap-2 overflow-x-auto pb-1">
                       {feeHeads.map(head => (
                           <button 
@@ -130,11 +133,11 @@ const FeeSetup = () => {
               <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                   <div className="flex justify-between items-center mb-6">
                       <div>
-                          <h3 className="font-bold text-lg text-slate-800">Set Amounts for {selectedHead.name}</h3>
-                          <p className="text-sm text-slate-500">Enter the amount applicable for each class. Use 0 if not applicable.</p>
+                          <h3 className="font-bold text-lg text-slate-800">{t('fee_setup.set_amounts_for', { name: selectedHead.name })}</h3>
+                          <p className="text-sm text-slate-500">{t('fee_setup.set_amounts_desc')}</p>
                       </div>
-                      <button className="px-6 py-2.5 bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all flex items-center gap-2">
-                          <Save className="w-4 h-4" /> Save Changes
+                      <button className="px-6 py-2.5 bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all flex items-center gap-2 cursor-pointer">
+                          <Save className="w-4 h-4" /> {t('fee_setup.save_changes')}
                       </button>
                   </div>
 

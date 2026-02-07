@@ -24,8 +24,11 @@ import {
   TrendingUp,
   CreditCard,
   X,
-  CheckCircle2
+  CheckCircle2,
+  File,
+  DownloadIcon
 } from "lucide-react";
+import SelectInputField from "../../components/SelectInputField";
 
 const StudentProfile = () => {
   const { id } = useParams();
@@ -121,13 +124,13 @@ const StudentProfile = () => {
           </div>
         </div>
         <div className="flex items-center gap-2 no-print">
-          <button 
+          {/* <button 
             onClick={handlePrint}
             className="flex items-center gap-2 px-5 py-2.5 bg-white text-slate-700 font-bold rounded-xl border-2 border-slate-100 hover:bg-slate-50 transition-all shadow-sm"
           >
             <Printer className="w-4 h-4" />
             Print Profile
-          </button>
+          </button> */}
           <button 
             onClick={() => setShowEditModal(true)}
             className="flex items-center gap-2 px-5 py-2.5 bg-[#00bd7f] text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:scale-[1.02] transition-all"
@@ -382,7 +385,17 @@ const StudentProfile = () => {
               <div className="bg-white rounded-[2rem] border-2 border-slate-200 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                   <h3 className="text-lg font-black text-slate-800">Transaction History</h3>
-                  <button className="text-xs font-black text-[#00bd7f] uppercase tracking-widest hover:underline">Download Statement</button>
+                  
+                <div className="lg:w-[300px]">
+                   <SelectInputField options={[
+                  {value:"Last 7 day"},
+                  {value:"Last 30 day"},
+                  {value:"Last 90 day"},
+                  {value:"Last 180 day"},
+                  {value:"Last 365 day"},
+                  
+                ]} />
+               </div>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -393,6 +406,7 @@ const StudentProfile = () => {
                         <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase">Description</th>
                         <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase">Amount</th>
                         <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase">Status</th>
+                        <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase">Invoice</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y-2 divide-slate-50">
@@ -406,6 +420,12 @@ const StudentProfile = () => {
                             <span className={`px-3 py-1 rounded-full text-[10px] uppercase ${inv.status === 'Paid' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                               {inv.status}
                             </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-5">
+                              <FileText className="text-[14px]" />
+                            <DownloadIcon className="text-[14px] text-[#00bd7f]"/>
+                            </div>
                           </td>
                         </tr>
                       ))}

@@ -28,7 +28,7 @@ const AdminDashboard = () => {
       bg: "bg-blue-50",
     },
     {
-      title: t("dashboard.active_staff"),
+      title: t("dashboard.total_staff"),
       value: "48",
       icon: GraduationCap,
       color: "text-purple-600",
@@ -41,13 +41,7 @@ const AdminDashboard = () => {
       color: "text-amber-600",
       bg: "bg-amber-50",
     },
-    {
-      title: t("dashboard.daily_collection"),
-      value: "৳ 25,400",
-      icon: Wallet,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-    },
+    
   ];
 
   // Mock Notices
@@ -68,44 +62,28 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="p-4 md:p-8 space-y-8 animate-in fade-in duration-500">
-      {/* 1. Dashboard Header */}
-      {/* <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
-            {currentMadrasa?.name || "Admin Dashboard"}
-          </h1>
-          <p className="text-slate-500 text-sm font-medium mt-1">
-            Welcome back, {user?.name}
-          </p>
-        </div> */}
-      {/* <div className="flex items-center gap-3">
-            <span className="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-semibold text-slate-600 shadow-sm">
-                Academic Year: 2025-26
-            </span>
-            <button className="p-2 bg-white border border-slate-200 rounded-lg text-slate-500 hover:text-primary hover:border-primary/30 transition-all shadow-sm">
-                <Bell className="w-5 h-5" />
-            </button>
-        </div> */}
-      {/* </div> */}
+    <div className="p-4 md:p-4 space-y-8 animate-in fade-in duration-500">
+  
 
       {/* 2. Key Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between"
           >
-            <div className="flex items-start justify-between mb-4">
-              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
-                <stat.icon className="w-6 h-6" />
-              </div>
-            </div>
+            
             <div>
               <h3 className="text-3xl font-bold text-slate-800 tracking-tight mb-1">
                 {stat.value}
               </h3>
               <p className="text-sm font-medium text-slate-500">{stat.title}</p>
+            </div>
+
+            <div className="flex items-start justify-between mb-4">
+              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                <stat.icon className="w-6 h-6" />
+              </div>
             </div>
           </div>
         ))}
@@ -119,17 +97,19 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-slate-800">
-                Fees Overview
+                {t("dashboard.fees_overview")}
               </h2>
-              <button className="text-primary text-sm font-semibold hover:underline flex items-center gap-1">
-                View Report <ArrowUpRight className="w-4 h-4" />
-              </button>
+             
+
+              <Link to={'/admin/accounting/report/free-collection'}> <button className="text-primary text-sm font-semibold hover:underline flex items-center gap-1">
+                {t("dashboard.view_report")} <ArrowUpRight className="w-4 h-4" />
+              </button></Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100/50">
                 <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">
-                  Collected Today
+                  {t("dashboard.collected_today")}
                 </p>
                 <p className="text-2xl font-bold text-slate-800">৳ 25,400</p>
                 <div className="flex items-center gap-1 mt-2 text-xs font-semibold text-emerald-600">
@@ -138,7 +118,7 @@ const AdminDashboard = () => {
               </div>
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  Monthly Target
+                  {t("dashboard.monthly_target")}
                 </p>
                 <p className="text-2xl font-bold text-slate-800">৳ 450,000</p>
                 <div className="w-full bg-slate-200 h-1.5 rounded-full mt-3 overflow-hidden">
@@ -148,16 +128,16 @@ const AdminDashboard = () => {
                   ></div>
                 </div>
                 <p className="text-[10px] text-slate-400 mt-1 font-medium">
-                  65% Achieved
+                  65% {t("dashboard.achieved")}
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-rose-50 border border-rose-100/50">
                 <p className="text-xs font-bold text-rose-600 uppercase tracking-wider mb-2">
-                  Pending Dues
+                  {t("dashboard.pending_dues")}
                 </p>
                 <p className="text-2xl font-bold text-slate-800">৳ 120,500</p>
                 <p className="text-[10px] text-rose-500/80 mt-2 font-medium">
-                  42 Students
+                  42 {t("sidebar.students")}
                 </p>
               </div>
             </div>
@@ -175,7 +155,7 @@ const AdminDashboard = () => {
           {/* Notice Board */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-slate-800">Notice Board</h2>
+              <h2 className="text-lg font-bold text-slate-800">{t("dashboard.notice_board")}</h2>
               <button className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
                 <MoreHorizontal className="w-5 h-5 text-slate-400" />
               </button>
@@ -205,7 +185,7 @@ const AdminDashboard = () => {
 
             <Link to={"/admin/events"} className="cursor-pointer">
               <button className="w-full mt-6 py-2.5 text-sm font-semibold text-primary border border-primary/20 rounded-xl hover:bg-primary/5 transition-all cursor-pointer">
-                View All Notices
+                {t("dashboard.view_all_notices")}
               </button>
             </Link>
           </div>
@@ -218,7 +198,7 @@ const AdminDashboard = () => {
               </div>
               <div>
                 <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  Upcoming
+                  {t("dashboard.upcoming")}
                 </p>
                 <p className="font-bold">Annual Sports Day</p>
               </div>
@@ -226,11 +206,11 @@ const AdminDashboard = () => {
             <div className="flex items-end gap-2 mb-6">
               <span className="text-4xl font-bold">12</span>
               <span className="text-sm font-medium text-slate-400 mb-1">
-                Days remaining
+                {t("dashboard.days_remaining")}
               </span>
             </div>
             <button className="w-full py-2 bg-white text-slate-900 text-sm font-bold rounded-lg hover:bg-indigo-50 transition-colors">
-              View Calendar
+              {t("dashboard.view_calendar")}
             </button>
           </div>
         </div>

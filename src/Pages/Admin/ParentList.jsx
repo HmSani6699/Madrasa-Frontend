@@ -26,6 +26,7 @@ import {
   AlertTriangle,
   FileText,
 } from "lucide-react";
+import SelectInputField from "../../components/SelectInputField";
 
 const ParentList = () => {
   const [parents, setParents] = useState([
@@ -305,33 +306,25 @@ const ParentList = () => {
   }, [searchTerm, statusFilter]);
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-6 lg:p-8">
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-white p-6 rounded-3xl border-2 border-slate-200 shadow-sm text-center md:text-left">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-white p-5 rounded-[20px] border-2 border-slate-200 shadow-sm text-center md:text-left">
         <div className="flex items-center gap-4 justify-center md:justify-start">
-          <div className="w-14 h-14 bg-[#e6f4ef] rounded-2xl flex items-center justify-center">
+          <div className="w-14 h-14 bg-[#e6f4ef] rounded-[8px] flex items-center justify-center">
             <Contact className="w-7 h-7 text-[#00bd7f]" />
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-800 mb-1">
               Parent Directory
             </h1>
-            <p className="text-slate-600 text-sm font-semibold">
-              Manage and communicate with all guardians
-            </p>
+           
           </div>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          <button
-            onClick={handleExport}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-all border border-slate-200 whitespace-nowrap"
-          >
-            <Download className="w-4 h-4" />
-            Export Data
-          </button>
+         
           <button
             onClick={() => setShowAddModal(true)}
-            className="w-full flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all"
+            className="w-full flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Add Parent
@@ -340,7 +333,7 @@ const ParentList = () => {
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
           {
             label: "Total Parents",
@@ -363,16 +356,7 @@ const ParentList = () => {
             color: "text-rose-600",
             bg: "bg-rose-100",
           },
-          {
-            label: "Avg Children",
-            value: (
-              parents.reduce((acc, p) => acc + p.childrenCount, 0) /
-              parents.length
-            ).toFixed(1),
-            icon: Users,
-            color: "text-amber-600",
-            bg: "bg-amber-100",
-          },
+         
         ].map((stat, idx) => (
           <div
             key={idx}
@@ -412,18 +396,11 @@ const ParentList = () => {
             </div>
           </div>
           <div>
-            <label className="text-sm font-bold text-slate-700 mb-2 block">
-              Portal Status
-            </label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-3 bg-[#e6f4ef] border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all appearance-none"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
+            <SelectInputField title={'Class'} options={[
+              {value:"Onte"},
+              {value:"Two"},
+              {value:"Three"}
+            ]}/>
           </div>
         </div>
       </div>
@@ -505,10 +482,7 @@ const ParentList = () => {
                         <Phone className="w-3.5 h-3.5 text-emerald-500" />
                         {parent.phone}
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5 text-emerald-500" />
-                        {parent.email}
-                      </div>
+                     
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -570,12 +544,12 @@ const ParentList = () => {
                                 color: "text-slate-600",
                                 hover: "hover:bg-slate-50",
                               },
-                              {
-                                label: "Change Status",
-                                icon: UserCheck,
-                                color: "text-slate-600",
-                                hover: "hover:bg-slate-50",
-                              },
+                              // {
+                              //   label: "Change Status",
+                              //   icon: UserCheck,
+                              //   color: "text-slate-600",
+                              //   hover: "hover:bg-slate-50",
+                              // },
                               {
                                 label: "Delete Record",
                                 icon: Trash2,
@@ -680,11 +654,11 @@ const ParentList = () => {
 
       {deleteParent && (
         <div
-          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4"
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex p-4 overflow-y-auto"
           onClick={() => setDeleteParent(null)}
         >
           <div
-            className="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl animate-in zoom-in duration-300"
+            className="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl animate-in zoom-in duration-300 m-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -748,12 +722,12 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex p-4 overflow-y-auto"
       onClick={onClose}
     >
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-[2.5rem] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden relative"
+        className="bg-white rounded-[2.5rem] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden relative m-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-8 border-b-2 border-slate-50 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10">
@@ -761,9 +735,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
               {title}
             </h2>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
-              Provide detailed guardian credentials
-            </p>
+            
           </div>
           <button
             type="button"
@@ -907,11 +879,11 @@ const ParentViewModal = ({ parent, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex p-4 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-[3rem] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden relative"
+        className="bg-white rounded-[3rem] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden relative m-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Profile Banner */}

@@ -29,6 +29,13 @@ const MessageCenter = () => {
 
   // Mock Data
   const stats = [
+   {
+      label: "Today's Volume",
+      value: "142",
+      icon: Zap,
+      color: "text-amber-600",
+      bg: "bg-amber-100",
+    },,
     {
       label: "SMS Sent",
       value: "1,284",
@@ -37,26 +44,14 @@ const MessageCenter = () => {
       bg: "bg-blue-100",
     },
     {
-      label: "Available Credits",
+      label: "Balance",
       value: "8,716",
       icon: Hash,
       color: "text-emerald-600",
       bg: "bg-emerald-100",
     },
-    {
-      label: "Delivery Rate",
-      value: "98.5%",
-      icon: ShieldCheck,
-      color: "text-purple-600",
-      bg: "bg-purple-100",
-    },
-    {
-      label: "Today's Volume",
-      value: "142",
-      icon: Zap,
-      color: "text-amber-600",
-      bg: "bg-amber-100",
-    },
+   
+   
   ];
 
   const smsHistory = [
@@ -106,30 +101,30 @@ const MessageCenter = () => {
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 animate-in fade-in duration-500">
       <div className="max-w-[1600px] mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[20px] border border-slate-200 shadow-sm">
           <div>
             <h1 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
               <Smartphone className="w-8 h-8 text-indigo-600" />
               SMS Management
             </h1>
-            <p className="text-slate-500 font-bold mt-1 uppercase tracking-widest text-[10px]">
-              Send and manage institutional communications
-            </p>
+          
           </div>
           <div className="flex gap-4">
-            <button className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all">
+            <button className="flex items-center gap-2 px-6 py-3 bg-primary text-white font-black rounded-[8px] shadow-xl shadow-indigo-100  hover:scale-[1.02] active:scale-95 transition-all">
               <Plus className="w-5 h-5" />
               Add Credits
             </button>
+
+           
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {stats.map((stat, idx) => (
             <div
               key={idx}
-              className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center gap-5 group hover:border-indigo-200 transition-all"
+              className="bg-white p-6 rounded-[20px] border border-slate-200 shadow-sm flex items-center gap-5 group hover:border-indigo-200 transition-all"
             >
               <div
                 className={`w-14 h-14 ${stat.bg} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform`}
@@ -149,10 +144,10 @@ const MessageCenter = () => {
         </div>
 
         {/* Main Content Areas */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
+        <div className="">
           {/* Left Column: Form */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
+          <div className="">
+            <div className="bg-white rounded-[20px] border border-slate-200 shadow-sm overflow-hidden flex flex-col h-full">
               <div className="flex border-b border-slate-100 bg-slate-50/50">
                 <button
                   onClick={() => setActiveTab("send")}
@@ -271,96 +266,7 @@ const MessageCenter = () => {
             </div>
           </div>
 
-          {/* Right Column: History & Tips */}
-          <div className="space-y-8">
-            {/* SMS History Sidebar */}
-            <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col h-full max-h-[700px]">
-              <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 shadow-sm">
-                    <History className="w-5 h-5 text-indigo-600" />
-                  </div>
-                  <h3 className="text-lg font-black text-slate-800 tracking-tight">
-                    Recent History
-                  </h3>
-                </div>
-                <button className="text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:underline">
-                  View All
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-4">
-                {smsHistory.map((log) => (
-                  <div
-                    key={log.id}
-                    className="p-5 bg-slate-50/50 border border-slate-100 rounded-3xl hover:bg-white hover:border-indigo-100 hover:shadow-lg hover:shadow-indigo-50 transition-all group cursor-pointer relative overflow-hidden"
-                  >
-                    <div
-                      className={`absolute top-0 left-0 w-1 h-full ${log.status === "delivered" ? "bg-emerald-500" : "bg-rose-500"}`}
-                    ></div>
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter shrink-0">
-                        {log.type}
-                      </span>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase">
-                        {log.time}
-                      </span>
-                    </div>
-                    <h4 className="text-sm font-black text-slate-800 truncate mb-1 pr-4">
-                      {log.recipient}
-                    </h4>
-                    <p className="text-xs text-slate-500 font-medium line-clamp-2 leading-relaxed mb-3">
-                      {log.message}
-                    </p>
-                    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                      <div className="flex items-center gap-1.5">
-                        {log.status === "delivered" ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                        ) : (
-                          <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
-                        )}
-                        <span
-                          className={`text-[10px] font-black uppercase tracking-tight ${log.status === "delivered" ? "text-emerald-600" : "text-rose-600"}`}
-                        >
-                          {log.status}
-                        </span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick Tips Card */}
-            <div className="bg-gradient-to-br from-indigo-700 to-violet-800 rounded-[2.5rem] p-8 text-white shadow-xl shadow-indigo-100 relative overflow-hidden group">
-              <MessageSquare className="absolute -right-8 -bottom-8 w-44 h-44 text-white opacity-10 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-700" />
-              <div className="relative z-10">
-                <h3 className="text-xl font-black tracking-tight mb-4 flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5 text-indigo-200" />
-                  SMS Protocol
-                </h3>
-                <ul className="space-y-4">
-                  {[
-                    "Character limit per SMS is 160 chars.",
-                    "Unicode characters (Bangla) reduce limit.",
-                    "Do not send sensitive credentials via SMS.",
-                    "Credits are non-refundable after use.",
-                  ].map((tip, i) => (
-                    <li
-                      key={i}
-                      className="flex gap-3 text-sm font-bold text-indigo-100 items-start"
-                    >
-                      <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-0.5 mt-0.5">
-                        <span className="text-[10px] text-white">{i + 1}</span>
-                      </div>
-                      {tip}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
+        
         </div>
       </div>
 
