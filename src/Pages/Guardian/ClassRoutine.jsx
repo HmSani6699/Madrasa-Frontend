@@ -5,13 +5,14 @@ import {
   MapPin, 
   Download, 
   BookOpen, 
-  X
+  X,
+  User
 } from "lucide-react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { useTranslation } from "react-i18next";
 
-const MySchedule = () => {
+const GuardianClassRoutine = () => {
   const [selectedPeriod, setSelectedPeriod] = useState(null);
   const { t } = useTranslation();
 
@@ -146,9 +147,9 @@ const MySchedule = () => {
                                   <span className="truncate">{period.class}</span>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#00bd7f] bg-white px-2 py-1 rounded-md w-fit border border-[#00bd7f]/20">
-                                <MapPin className="w-3 h-3" />
-                                {period.room}
+                              <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#00bd7f] bg-white px-2 py-1 rounded-md w-fit border border-[#00bd7f]/20 w-full">
+                                      <User />
+                                      <p>Sadiqur</p>
                               </div>
                             </div>
                           ) : (
@@ -242,4 +243,4 @@ const MySchedule = () => {
   );
 };
 
-export default MySchedule;
+export default GuardianClassRoutine;

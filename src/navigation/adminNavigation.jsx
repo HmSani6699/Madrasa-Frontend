@@ -141,34 +141,13 @@ export const adminNavigation = [
   },
   {
     name: "Examination",
-    icon: GraduationCap,
+   icon: GraduationCap,
     children: [
-      {
-        name: "Exam",
-        icon: FileCheck,
-        children: [
-          { name: "Exam Name", path: "/admin/exam/term", icon: FileText },
-          { name: "Exam Hall", path: "/admin/exam/hall", icon: Building2 },
-          { name: "Exam Setup", path: "/admin/exam/setup", icon: Settings },
-        ],
-      },
-      {
-        name: "Exam Schedule",
-        icon: Calendar,
-        children: [
-          { name: "Schedule", path: "/admin/exam/schedule/list", icon: List },
-          { name: "Add Schedule", path: "/admin/exam/schedule/add", icon: CalendarPlus },
-        ],
-      },
-      {
-        name: "Marks",
-        icon: TrendingUp,
-        children: [
-          { name: "Mark Entries", path: "/admin/exam/marks/entry", icon: Edit },
-          { name: "Grades Range", path: "/admin/exam/marks/grades", icon: Award },
-          { name: "Tabulation Sheet", path: "/admin/reports/exam/tabulation", icon: Table },
-        ],
-      },
+      { name: "Exam Name", path: "/admin/exam/term", icon: FileText },
+      { name: "Exam Schedule", path: "/admin/exam/schedule", icon: CalendarDays },
+      { name: "Grade", path: "/admin/exam/grade", icon: Award },
+      { name: "Mark Entries", path: "/admin/exam/marks/entry", icon: Edit },
+      { name: "Tabulation Sheet", path: "/admin/exam/tabulation", icon: Table },
     ],
   },
   {

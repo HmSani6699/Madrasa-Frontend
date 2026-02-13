@@ -6,7 +6,10 @@ import {
   CalendarCheck,
   Bell,
   UserCircle,
-  MessageSquare
+  MessageSquare,
+  FileText,
+  GraduationCap,
+  ClipboardList
 } from "lucide-react";
 
 export const guardianNavigation = [
@@ -16,11 +19,19 @@ export const guardianNavigation = [
     icon: LayoutDashboard,
   },
   {
-    name: "My Children",
-    icon: Users,
+    name: "Academic",
+    icon: GraduationCap,
     children: [
-      { name: "Switch Child", path: "/guardian/children/selection" },
-      { name: "Academic Summary", path: "/guardian/children/summary" },
+      { name: "Subject List", path: "/guardian/academic/subjects" },
+      { name: "Class Routine", path: "/guardian/academic/routine" },
+    ],
+  },
+  {
+    name: "Examination",
+    icon: ClipboardList,
+    children: [
+      { name: "Exam Schedule", path: "/guardian/examination/schedule" },
+      { name: "Exam Result", path: "/guardian/examination/results" },
     ],
   },
   {
@@ -32,17 +43,14 @@ export const guardianNavigation = [
     ],
   },
   {
-    name: "Performance",
-    icon: BarChart3,
-    children: [
-      { name: "Exam Results", path: "/guardian/performance/results" },
-      { name: "Progress Analytics", path: "/guardian/performance/analytics" },
-    ],
-  },
-  {
     name: "Attendance",
     icon: CalendarCheck,
     path: "/guardian/attendance",
+  },
+  {
+    name: "Leave Application",
+    icon: FileText,
+    path: "/guardian/leave-application",
   },
   {
     name: "Communication",

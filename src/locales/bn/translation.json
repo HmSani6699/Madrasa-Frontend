@@ -30,7 +30,7 @@
     "online_admission": "অনলাইন ভর্তি",
 
     "student_details": "ছাত্রদের বিবরণ",
-    "student_list": "ছাত্র তালিকা",
+    "student_list": "ছাত্র-ছাত্রী তালিকা",
     "login_deactive": "লগইন নিষ্ক্রিয় করুন",
 
     "parents": "অভিভাবক",
@@ -59,6 +59,10 @@
     "class_assign": "ক্লাস অ্যাসাইন",
     "class_schedule": "ক্লাস রুটিন",
     "teacher_schedule": "শিক্ষক রুটিন",
+    "my_academic": "আমার একাডেমিক",
+    "my_schedule": "আমার রুটিন",
+    "my_subjects": "আমার বিষয়সমূহ",
+    "daily_attendance": "দৈনিক উপস্থিতি",
 
     "homework": "বাড়ির কাজ",
     "home_work": "বাড়ির কাজ",
@@ -669,6 +673,60 @@
       "paid": "পরিশোধিত",
       "partial": "আংশিক",
       "unpaid": "অপরিশোধিত"
+    }
+  },
+  "teacher": {
+    "dashboard": {
+      "title": "শিক্ষক ড্যাশবোর্ড",
+      "total_class": "মোট ক্লাস",
+      "total_subject": "মোট বিষয়",
+      "my_students": "আমার ছাত্ররা",
+      "todays_class": "আজকের ক্লাস",
+      "weekly_overview": "সাপ্তাহিক ওভারভিউ",
+      "period": "পিরিয়ড",
+      "notices": "নোটিশ",
+      "view_all_notifications": "সব নোটিফিকেশন দেখুন"
+    },
+    "schedule": {
+      "my_class_routine": "আমার ক্লাস রুটিন",
+      "academic_weekly_schedule": "একাডেমিক সাপ্তাহিক সময়সূচী",
+      "download_pdf": "পিডিএফ ডাউনলোড",
+      "period_details": "পিরিয়ড বিস্তারিত",
+      "time": "সময়",
+      "subject": "বিষয়",
+      "class": "ক্লাস",
+      "room": "রুম",
+      "topic": "টপিক",
+      "close": "বন্ধ করুন"
+    },
+    "exam": {
+      "examination_routine": "পরীক্ষার রুটিন",
+      "annual_exam_schedule": "বার্ষিক পরীক্ষার সময়সূচী",
+      "download_pdf": "পিডিএফ ডাউনলোড",
+      "important_instructions": "গুরুত্বপূর্ণ নির্দেশনা",
+      "principals_signature": "অধ্যক্ষের স্বাক্ষর",
+      "class_date": "ক্লাস / তারিখ",
+      "exam_time": "পরীক্ষার সময়",
+      "instruction_1": "শিক্ষার্থীদের নির্ধারিত সময়ের অন্তত ১৫ মিনিট আগে পরীক্ষার হলে প্রবেশ করতে হবে।",
+      "instruction_2": "শিক্ষা উপকরণ (কলম, স্কেল, জ্যামিতি বক্স) অনুমোদিত। হলে ব্যাগ ও বই সম্পূর্ণ নিষিদ্ধ।",
+      "instruction_3": "প্রবেশের জন্য প্রবেশপত্র বাধ্যতামূলক। বৈধ প্রবেশপত্র ছাড়া কোনো শিক্ষার্থীকে অনুমতি দেওয়া হবে না।",
+      "instruction_4": "সমস্ত বকেয়া পরিশোধ করতে হবে এর আগে"
+    },
+    "students": {
+      "student_directory": "ছাত্র-ছাত্রী তালিকা",
+      "search_students": "ছাত্র খুঁজুন...",
+      "all_classes": "সব ক্লাস",
+      "id": "আইডি",
+      "student_name": "ছাত্রের নাম",
+      "class_section": "ক্লাস / সেকশন",
+      "roll_no": "রোল",
+      "guardian_phone": "অভিভাবক / ফোন",
+      "status": "অবস্থা",
+      "actions": "অ্যাকশন",
+      "view_profile": "প্রোফাইল দেখুন",
+      "message_guardian": "অভিভাবককে মেসেজ দিন",
+      "active": "সক্রিয়",
+      "inactive": "নিষ্ক্রিয়"
     }
   }
 }

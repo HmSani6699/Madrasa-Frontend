@@ -31,7 +31,7 @@ export const teacherNavigation = [
     icon: UserCheck,
     children: [
       { name: "Daily Attendance", path: "/teacher/attendance/daily" },
-      { name: "Subject Wise", path: "/teacher/attendance/subject" },
+
       { name: "Attendance Report", path: "/teacher/attendance/report" },
     ],
   },
@@ -40,7 +40,7 @@ export const teacherNavigation = [
     icon: BookOpen,
     children: [
       { name: "Add Homework", path: "/teacher/homework/add" },
-      { name: "Homework List", path: "/teacher/homework/list" },
+
       { name: "Evaluation", path: "/teacher/homework/evaluation" },
     ],
   },
@@ -64,16 +64,16 @@ export const teacherNavigation = [
     icon: MessageSquare,
     children: [
       { name: "Notice Board", path: "/teacher/notice" },
-      { name: "Message Center", path: "/teacher/message" },
     ],
   },
   {
-    name: "Utility",
-    icon: Library,
+    name: "Finance",
+    icon: ClipboardCheck,
     children: [
-      { name: "Library", path: "/teacher/library" },
+       { name: "My Salary", path: "/teacher/finance/salary" },
     ],
   },
+
   {
     name: "My Profile",
     path: "/teacher/profile",

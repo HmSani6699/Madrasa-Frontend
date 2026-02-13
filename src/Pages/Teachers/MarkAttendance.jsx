@@ -71,13 +71,13 @@ const MarkAttendance = () => {
       <div className="max-w-[1600px] mx-auto space-y-6 md:space-y-8 pb-32">
         
         {/* Header */}
-        <div className="bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-200 p-6 md:p-10 shadow-sm flex flex-col xl:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-4 md:gap-8">
-            <div className="w-12 h-12 md:w-20 md:h-20 bg-emerald-50 rounded-xl md:rounded-3xl flex items-center justify-center border border-emerald-100 shadow-inner shrink-0 leading-none">
+        <div className="bg-white rounded-[20px] border border-slate-200 p-4 md:p-5 shadow-sm flex flex-col xl:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-5">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-emerald-50 rounded-[20px]  flex items-center justify-center border border-emerald-100 shadow-inner shrink-0 leading-none">
               <UserCheck className="w-6 h-6 md:w-10 md:h-10 text-emerald-600" />
             </div>
             <div>
-              <h1 className="text-xl md:text-3xl font-black text-slate-800 tracking-tight uppercase leading-none mb-2 md:mb-3">Student Attendance</h1>
+              <h1 className="text-xl md:text-[20px] font-black text-slate-800 tracking-tight uppercase leading-none mb-2 md:mb-3">Student Attendance</h1>
               <div className="flex flex-wrap items-center gap-3 md:gap-6">
                  <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-200">
                     <Users className="w-3 h-3" /> Hifz - Section A
@@ -89,29 +89,17 @@ const MarkAttendance = () => {
             </div>
           </div>
 
-          <div className="flex gap-4 w-full xl:w-auto">
-            <button className="flex-1 xl:flex-none px-6 md:px-10 py-3.5 md:py-5 bg-slate-100 text-slate-600 rounded-xl md:rounded-2xl font-black hover:bg-slate-200 transition-all flex items-center justify-center gap-3 border border-slate-200 text-[10px] md:text-[11px] uppercase tracking-widest">
-               History
-            </button>
-            <button 
-               onClick={() => setShowConfirm(true)}
-               disabled={isSubmitting || Object.keys(attendance).length === 0}
-               className="flex-[2] xl:flex-none px-8 md:px-12 py-3.5 md:py-5 bg-emerald-600 text-white rounded-xl md:rounded-2xl font-black shadow-xl shadow-emerald-100 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[10px] md:text-[11px]"
-            >
-              {isSubmitting ? <RotateCcw className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-              {isSubmitting ? "Submitting..." : "Save Roll Call"}
-            </button>
-          </div>
+        
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-[1.5rem] md:rounded-[3rem] border border-slate-200 p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
-           <div className="relative w-full md:w-[400px]">
+        <div className="bg-white rounded-[20px] border border-slate-200 p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+           <div className="relative w-full md:w-[400px]  bg-[#e6f4ef]">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
               <input 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl pl-10 pr-6 py-3 md:py-4 text-sm font-bold focus:border-emerald-500 outline-none transition-all" 
+                className="w-full bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl pl-10 pr-6 py-3 md:py-4 text-sm font-bold focus:border-emerald-500 outline-none transition-all  bg-[#e6f4ef]" 
                 placeholder="Find student by name or roll..." 
               />
            </div>
@@ -119,7 +107,7 @@ const MarkAttendance = () => {
            <div className="flex items-center gap-3 w-full md:w-auto">
               <button 
                 onClick={() => handleBatchAction('present')}
-                className="flex-1 md:flex-none px-6 py-3.5 bg-emerald-50 text-emerald-600 rounded-xl md:rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-100 transition-all border border-emerald-100"
+                className="flex-1 md:flex-none px-6 py-3.5 bg-emerald-500 text-white rounded-[8px] font-black text-[10px] uppercase tracking-widest transition-all border border-emerald-100"
               >
                  Mark All Present
               </button>
@@ -136,7 +124,7 @@ const MarkAttendance = () => {
         {/* Attendance Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
            {filteredStudents.map((student) => (
-             <div key={student.id} className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 border border-slate-200 shadow-sm transition-all hover:border-emerald-200 group relative overflow-hidden">
+             <div key={student.id} className="bg-white rounded-[20px] p-5 md:p-5 border border-slate-200 shadow-sm transition-all hover:border-emerald-200 group relative overflow-hidden">
                 <div className={`absolute top-0 right-0 w-2 h-full transition-all ${
                    attendance[student.id] === 'present' ? 'bg-emerald-500' : 
                    attendance[student.id] === 'absent' ? 'bg-rose-500' : 
@@ -193,8 +181,8 @@ const MarkAttendance = () => {
         </div>
 
         {/* Global Summary & Quick Submission Bar */}
-        <div className="fixed bottom-6 left-4 right-4 md:left-8 md:right-8 lg:left-[calc(260px+2rem)] lg:right-8 z-40">
-           <div className="bg-slate-900 rounded-[2rem] md:rounded-[3rem] p-4 md:p-6 lg:p-8 text-white shadow-2xl flex flex-col sm:flex-row justify-between items-center gap-6 border border-white/10 backdrop-blur-xl relative overflow-hidden group">
+        <div className="fixed bottom-6 left-4 right-4 md:left-8 md:right-8 lg:left-[calc(300px+2rem)] lg:right-8 z-40">
+           <div className="bg-slate-900 rounded-[20px] p-4 md:p-6 lg:p-8 text-white shadow-2xl flex flex-col sm:flex-row justify-between items-center gap-6 border border-white/10 backdrop-blur-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-64 h-full bg-emerald-500/10 rounded-bl-[5rem] -mr-10 -mt-10 blur-3xl group-hover:bg-emerald-500/20 transition-all duration-1000"></div>
               
               <div className="flex items-center gap-6 md:gap-12 relative z-10">

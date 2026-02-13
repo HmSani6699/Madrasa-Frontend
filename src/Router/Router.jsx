@@ -30,6 +30,7 @@ import TeacherStudentList from "../Pages/Teachers/StudentList";
 import NoticeBoard from "../Pages/Teachers/NoticeBoard";
 import TeacherProfile from "../Pages/Teachers/Profile";
 import TeacherExamSchedule from "../Pages/Teachers/ExamSchedule";
+import TeacherPayroll from "../Pages/Teachers/TeacherPayroll";
 import TeacherAttendanceReport from "../Pages/Teachers/AttendanceReport";
 import FrontendManager from "../Pages/Admin/FrontendManager";
 import OnlineAdmissionList from "../Pages/Admin/OnlineAdmissionList";
@@ -54,16 +55,11 @@ import ClassSchedule from "../Pages/Admin/ClassSchedule";
 import TeacherSchedule from "../Pages/Admin/TeacherSchedule";
 import HomeworkList from "../Pages/Admin/HomeworkList";
 import HomeworkReport from "../Pages/Admin/HomeworkReport";
-import ExamTerm from "../Pages/Admin/ExamTerm";
-import ExamHall from "../Pages/Admin/ExamHall";
-import ExamDistribution from "../Pages/Admin/ExamDistribution";
-import ExamSetup from "../Pages/Admin/ExamSetup";
-import MarksheetTemplate from "../Pages/Admin/MarksheetTemplate";
+import TabulationSheet from "../Pages/Admin/TabulationSheet";
 import ExamScheduleList from "../Pages/Admin/ExamScheduleList";
-import AddExamSchedule from "../Pages/Admin/AddExamSchedule";
 import MarkEntries from "../Pages/Admin/MarkEntries";
-import GeneratePosition from "../Pages/Admin/GeneratePosition";
 import GradesRange from "../Pages/Admin/GradesRange";
+import ExamTerm from "../Pages/Admin/ExamTerm";
 import IdCardTemplate from "../Pages/Admin/IdCardTemplate";
 import StudentIdCard from "../Pages/Admin/StudentIdCard";
 import EmployeeIdCard from "../Pages/Admin/EmployeeIdCard";
@@ -119,15 +115,18 @@ import ExpenseEntry from "../Pages/Accounting/ExpenseEntry";
 import PortalLayout from "../layouts/PortalLayout";
 
 // Guardian Pages
-import ChildSelection from "../Pages/Guardian/ChildSelection";
-import AcademicSummary from "../Pages/Guardian/AcademicSummary";
 import FeesAndDues from "../Pages/Guardian/FeesAndDues";
 import PaymentHistory from "../Pages/Guardian/PaymentHistory";
-import ExamResults from "../Pages/Guardian/ExamResults";
-import ProgressAnalytics from "../Pages/Guardian/ProgressAnalytics";
 import GuardianAttendance from "../Pages/Guardian/Attendance";
 import GuardianProfile from "../Pages/Guardian/Profile";
 import GuardianDashboard from "../Pages/Guardian/Dashboard";
+import LeaveApplication from "../Pages/Guardian/LeaveApplication";
+import GuardianNoticeBoard from "../Pages/Guardian/NoticeBoard";
+import GuardianCommunication from "../Pages/Guardian/Communication";
+import GuardianSubjectList from "../Pages/Guardian/SubjectList";
+import GuardianClassRoutine from "../Pages/Guardian/ClassRoutine";
+import GuardianExamSchedule from "../Pages/Guardian/ExamSchedule";
+import GuardianExamResults from "../Pages/Guardian/ExamResults";
 
 // Student Pages
 import StudentSchedule from "../Pages/Students/Schedule";
@@ -221,6 +220,7 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/academic/student-academic-report") {
         element = <StudentAcademicReport />;
       }
+
       if (item.path === "/admin/homework/list") {
         element = <HomeworkList />;
       }
@@ -230,32 +230,17 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/exam/term") {
         element = <ExamTerm />;
       }
-      if (item.path === "/admin/exam/hall") {
-        element = <ExamHall />;
-      }
-      if (item.path === "/admin/exam/distribution") {
-        element = <ExamDistribution />;
-      }
-      if (item.path === "/admin/exam/setup") {
-        element = <ExamSetup />;
-      }
-      if (item.path === "/admin/exam/template") {
-        element = <MarksheetTemplate />;
-      }
-      if (item.path === "/admin/exam/schedule/list") {
+      if (item.path === "/admin/exam/schedule") {
         element = <ExamScheduleList />;
       }
-      if (item.path === "/admin/exam/schedule/add") {
-        element = <AddExamSchedule />;
+      if (item.path === "/admin/exam/grade") {
+        element = <GradesRange />;
       }
       if (item.path === "/admin/exam/marks/entry") {
         element = <MarkEntries />;
       }
-      if (item.path === "/admin/exam/marks/position") {
-        element = <GeneratePosition />;
-      }
-      if (item.path === "/admin/exam/marks/grades") {
-        element = <GradesRange />;
+      if (item.path === "/admin/exam/tabulation") {
+        element = <TabulationSheet />;
       }
       if (item.path === "/admin/card/template") {
         element = <IdCardTemplate />;
@@ -397,10 +382,7 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/teacher/academic/schedule") {
         element = <MySchedule />;
       }
-      if (
-        item.path === "/teacher/attendance/daily" ||
-        item.path === "/teacher/attendance/subject"
-      ) {
+      if (item.path === "/teacher/attendance/daily") {
         element = <MarkAttendance />;
       }
       if (item.path?.startsWith("/teacher/homework")) {
@@ -431,31 +413,33 @@ const flattenRoutes = (navItems) => {
       if (item.path?.startsWith("/teacher/message")) {
         element = <MessageCenter />;
       }
-      if (item.path?.startsWith("/teacher/library")) {
-        element = <LibraryManager />;
+      
+      if (item.path === "/teacher/finance/salary") {
+        element = <TeacherPayroll />;
       }
+
       if (item.path === "/teacher/profile") {
         element = <TeacherProfile />;
       }
 
       // Guardian Routes Mapping
       if (item.path === "/guardian/dashboard") element = <GuardianDashboard />;
-      if (item.path === "/guardian/children/selection")
-        element = <ChildSelection />;
-      if (item.path === "/guardian/children/summary")
-        element = <AcademicSummary />;
       if (item.path === "/guardian/finance/fees") element = <FeesAndDues />;
       if (item.path === "/guardian/finance/history")
         element = <PaymentHistory />;
-      if (item.path === "/guardian/performance/results")
-        element = <ExamResults />;
-      if (item.path === "/guardian/performance/analytics")
-        element = <ProgressAnalytics />;
       if (item.path === "/guardian/attendance")
         element = <GuardianAttendance />;
-      if (item.path === "/guardian/notice") element = <NoticeBoard />;
-      if (item.path === "/guardian/message") element = <MessageCenter />;
+      if (item.path === "/guardian/leave-application")
+        element = <LeaveApplication />;
+      if (item.path === "/guardian/notice") element = <GuardianNoticeBoard />;
+      if (item.path === "/guardian/message") element = <GuardianCommunication />;
       if (item.path === "/guardian/profile") element = <GuardianProfile />;
+      
+      // New Academic & Examination Routes
+      if (item.path === "/guardian/academic/subjects") element = <GuardianSubjectList />;
+      if (item.path === "/guardian/academic/routine") element = <GuardianClassRoutine />;
+      if (item.path === "/guardian/examination/schedule") element = <GuardianExamSchedule />;
+      if (item.path === "/guardian/examination/results") element = <GuardianExamResults />;
 
       // Student Routes Mapping
       if (item.path === "/student/dashboard") element = <StudentsDashboard />;

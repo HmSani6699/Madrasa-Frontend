@@ -1,196 +1,202 @@
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { 
-  Users, 
-  ChevronRight, 
-  CreditCard, 
-  GraduationCap, 
-  Bell, 
-  Calendar, 
+import {
+  Users,
+  CreditCard,
+  GraduationCap,
+  Bell,
+  Calendar,
   MessageSquare,
   ArrowUpRight,
   UserCheck,
   Activity,
-  UserPlus
+  Edit2,
+  Phone,
+  MapPin,
+  Briefcase,
+  ChevronRight,
+  TrendingUp,
+  FileText,
+  ShieldCheck,
+  LogOut,
+  Plus
 } from "lucide-react";
 
 const GuardianDashboard = () => {
-  const { guardianChildren, activeChild, selectChild } = useAuth();
+  const { user, guardianChildren, activeChild, selectChild } = useAuth();
+  
+  // Handlers for mock navigation/actions
+  const handleEditProfile = () => console.log("Edit Profile Clicked");
 
-  // Fallback if no children (shouldn't happen with correct login flow)
+  // Fallback if no children
   if (!activeChild || guardianChildren.length === 0) {
-      return <div className="p-8 text-center text-slate-500">No student records linked. Please contact administration.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200">
+        <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+          <Users className="w-10 h-10 text-slate-300" />
+        </div>
+        <h2 className="text-2xl font-black text-slate-800">No Students Linked</h2>
+        <p className="text-slate-500 max-w-md mt-2">
+          We couldn't find any student records linked to your account. Please contact the madrasa administration for assistance.
+        </p>
+      </div>
+    );
   }
 
   const currentChild = activeChild;
-  const children = guardianChildren;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 animate-in fade-in duration-500">
-      <div className="max-w-[1600px] mx-auto space-y-6 md:space-y-10">
-        
-        {/* Header with Child Selector */}
-        <div className="bg-white rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-200 shadow-sm">
-           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
-              <div className="flex items-center gap-4 md:gap-8">
-                <div className="w-12 h-12 md:w-20 md:h-20 bg-slate-900 rounded-xl md:rounded-3xl flex items-center justify-center border border-slate-800 shadow-inner shrink-0">
-                  <Users className="w-6 h-6 md:w-10 md:h-10 text-white" />
+    <div className="space-y-8 pb-12 animate-in fade-in duration-700">
+      {/* Welcome & Parent Profile Quick View */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[20px] p-6  text-white shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
+          <div className="relative z-10">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-center gap-6">
+                <div className="relative">
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-[2rem] border-4 border-white/20 overflow-hidden bg-white/10 flex items-center justify-center">
+                    {user?.photo ? (
+                      <img src={user.photo} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <Users className="w-10 h-10 text-white/40" />
+                    )}
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-emerald-400 border-4 border-emerald-700 rounded-full flex items-center justify-center">
+                    <ShieldCheck className="w-4 h-4 text-white" />
+                  </div>
                 </div>
                 <div>
-                  <h1 className="text-xl md:text-3xl font-black text-slate-800 tracking-tight uppercase leading-none mb-1 md:mb-3">Guardian Control Panel</h1>
-                  <p className="text-slate-500 font-bold mt-1 text-xs md:text-base">Managing institutional progress for <span className="text-indigo-600 underline decoration-2 underline-offset-4">{children.length} enrolled children</span></p>
+                  <h1 className="text-2xl md:text-4xl font-black tracking-tight mb-1">
+                   {user?.name || "Parent"}
+                  </h1>
+                
                 </div>
               </div>
-
-              {/* Child Switcher Chips */}
-              <div className="flex flex-wrap gap-3 w-full lg:w-auto">
-                 {children.map((child, idx) => (
-                    <button 
-                       key={child.id}
-                       onClick={() => selectChild(child)}
-                       className={`flex items-center gap-3 px-6 py-3 rounded-2xl md:rounded-3xl transition-all border ${
-                          activeChild.id === child.id 
-                          ? 'bg-slate-900 text-white border-slate-900 shadow-xl shadow-slate-200 scale-105' 
-                          : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300 hover:text-slate-600'
-                       }`}
-                    >
-                       <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black ${
-                          activeChild.id === child.id ? 'bg-white/20' : 'bg-slate-100'
-                       }`}>
-                          {child.initials}
-                       </div>
-                       <span className="text-xs font-black uppercase tracking-widest">{child.name}</span>
-                       {activeChild.id === child.id && <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>}
-                    </button>
-                 ))}
-                 <button className="flex items-center justify-center w-12 h-12 rounded-2xl border border-dashed border-slate-300 text-slate-300 hover:border-indigo-500 hover:text-indigo-500 transition-all">
-                    <UserPlus className="w-5 h-5" />
-                  </button>
-              </div>
-           </div>
-        </div>
-
-        {/* Selected Child Summary Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-           <div className="bg-white p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-200 shadow-sm group hover:border-emerald-200 transition-all cursor-pointer">
-              <div className="flex justify-between items-start mb-6">
-                 <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 shadow-inner">
-                    <UserCheck className="w-6 h-6" />
-                 </div>
-                 <div className="text-right">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Today's Status</p>
-                    <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase rounded-lg">PRESENT</span>
-                 </div>
-              </div>
-              <p className="text-sm font-black text-slate-800 uppercase tracking-tight mb-1">Attendance Trend</p>
-              <h4 className="text-3xl font-black text-slate-900">{currentChild.attendance}</h4>
-           </div>
-
-           <div className="bg-white p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-200 shadow-sm group hover:border-rose-200 transition-all cursor-pointer">
-              <div className="flex justify-between items-start mb-6">
-                 <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-600 shadow-inner">
-                    <CreditCard className="w-6 h-6" />
-                 </div>
-                 <ArrowUpRight className="w-5 h-5 text-slate-200 group-hover:text-rose-400" />
-              </div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Pending Dues</p>
-              <h4 className="text-3xl font-black text-rose-600 tracking-tight">{currentChild.dues}</h4>
-              <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase">Due by Jan 10, 2026</p>
-           </div>
-
-           <div className="bg-white p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-200 shadow-sm group hover:border-indigo-200 transition-all cursor-pointer">
-              <div className="flex justify-between items-start mb-6">
-                 <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shadow-inner">
-                    <GraduationCap className="w-6 h-6" />
-                 </div>
-                 <ArrowUpRight className="w-5 h-5 text-slate-200 group-hover:text-indigo-400" />
-              </div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Recent Performance</p>
-              <h4 className="text-3xl font-black text-slate-900 tracking-tight">88.5%</h4>
-              <p className="text-[10px] font-bold text-indigo-500 mt-2 uppercase tracking-widest">TOP 5% OF CLASS</p>
-           </div>
-
-           <div className="bg-slate-900 p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl shadow-slate-200 group flex flex-col justify-between overflow-hidden relative">
-              <Activity className="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 rotate-12" />
-              <div>
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Latest Interaction</p>
-                 <div className="space-y-3 relative z-10">
-                    <p className="text-sm font-black text-white uppercase tracking-tight leading-tight">{currentChild.lastActivity}</p>
-                    <p className="text-[9px] font-bold text-slate-500 uppercase">2 Hours Ago</p>
-                 </div>
-              </div>
-              <button className="w-full mt-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-white/5 backdrop-blur-sm">
-                 Full Timeline
+              <button 
+                onClick={handleEditProfile}
+                className="flex items-center gap-3 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-[8px] transition-all font-bold text-sm backdrop-blur-md self-start md:self-center"
+              >
+                <Edit2 className="w-4 h-4" />
+                Edit Profile
               </button>
-           </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mt-10">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-200/60 mb-1">Phone</p>
+                <p className="text-sm font-bold truncate">{user?.phone || "01XXXXXXXXX"}</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-200/60 mb-1">Occupation</p>
+                <p className="text-sm font-bold truncate">{user?.occupation || "Business"}</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 col-span-2">
+                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-200/60 mb-1">Address</p>
+                <p className="text-sm font-bold truncate">{user?.address || "Dhaka, Bangladesh"}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-           {/* Schedule & Daily Pulse */}
-           <div className="lg:col-span-2 space-y-8">
-              <div className="bg-white rounded-[1.5rem] md:rounded-[3rem] p-8 md:p-12 border border-slate-200 shadow-sm">
-                 <div className="flex items-center justify-between mb-10">
-                    <div className="flex items-center gap-4">
-                       <Calendar className="w-6 h-6 text-slate-400" />
-                       <h3 className="text-xl md:text-2xl font-black text-slate-800 uppercase tracking-tight leading-none">Current Week Schedule</h3>
-                    </div>
-                    <button className="text-[10px] font-black text-indigo-500 uppercase tracking-widest hover:underline">Download Timetable</button>
-                 </div>
-                 
-                 <div className="space-y-4">
-                    {currentChild.schedule.map((item, idx) => (
-                       <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between p-6 bg-slate-50/50 rounded-2xl md:rounded-[2rem] border border-slate-50 hover:bg-slate-50 transition-all group">
-                          <div className="flex items-center gap-6 mb-4 sm:mb-0">
-                             <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center font-black text-slate-400 text-xs shadow-sm border border-slate-100 group-hover:border-indigo-100 group-hover:text-indigo-600 transition-all">
-                                {item.period.split(' ')[0]}
-                             </div>
-                             <div>
-                                <h4 className="text-base font-black text-slate-800 uppercase tracking-tight">{item.subject}</h4>
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.teacher}</p>
-                             </div>
-                          </div>
-                          <div className="flex items-center gap-4 sm:justify-end">
-                             <span className="px-4 py-1.5 bg-white border border-slate-100 rounded-lg text-[10px] font-black text-slate-500 uppercase tracking-widest">{item.room}</span>
-                             <button className="p-3 bg-white text-slate-300 rounded-xl hover:text-indigo-600 hover:border-indigo-100 border border-slate-100 transition-all">
-                                <ChevronRight className="w-4 h-4" />
-                             </button>
-                          </div>
-                       </div>
-                    ))}
-                 </div>
+        {/* New Notices Card */}
+        <div className="bg-white rounded-[20px] p-6 border-2 border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-slate-50 rounded-full blur-2xl"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-8">
+              <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-500 border border-amber-100">
+                <Bell className="w-6 h-6" />
               </div>
-           </div>
-
-           {/* Communication Hub */}
-           <div className="lg:col-span-1 space-y-8">
-              <div className="bg-slate-900 rounded-[2rem] md:rounded-[3rem] p-8 md:p-10 text-white shadow-2xl relative overflow-hidden">
-                 <Bell className="absolute -right-4 -top-4 w-32 h-32 text-white/5 -rotate-12" />
-                 <h3 className="text-xl font-black uppercase tracking-tight mb-8 relative z-10">Institutional Notices</h3>
-                 <div className="space-y-6 relative z-10 mb-10">
-                    <div className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
-                       <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-2">Academic • Jan 08</p>
-                       <p className="text-xs font-bold text-slate-200 leading-relaxed group-hover:text-white transition-colors">Mid-term results will be published on coming Saturday.</p>
-                    </div>
-                    <div className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
-                       <p className="text-[9px] font-black text-amber-400 uppercase tracking-widest mb-2">Event • Jan 05</p>
-                       <p className="text-xs font-bold text-slate-200 leading-relaxed group-hover:text-white transition-colors">Annual Jalsa scheduled for Feb 15. All parents invited.</p>
-                    </div>
-                 </div>
-                 <button className="w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-3xl font-black text-[10px] uppercase tracking-widest transition-all shadow-xl shadow-indigo-900/20 active:scale-95 leading-none">
-                    View Notice Board
-                 </button>
+              <span className="px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-black uppercase rounded-lg">3 New</span>
+            </div>
+            <h3 className="text-xl font-black text-slate-800 mb-4 tracking-tight uppercase">Latest Notices</h3>
+            <div className="space-y-4">
+              <div className="flex gap-4 items-start p-3 hover:bg-slate-50 rounded-xl transition-all cursor-pointer group">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0 group-hover:scale-125 transition-transform"></div>
+                <div>
+                  <p className="text-xs font-bold text-slate-700 leading-snug">Annual Jalsa date announced for Feb 25, 2026.</p>
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">2 Hours Ago</p>
+                </div>
               </div>
-
-              <div className="bg-white rounded-[2rem] md:rounded-[3rem] p-8 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center group cursor-pointer hover:border-slate-300 transition-all">
-                 <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 group-hover:text-indigo-600 group-hover:scale-110 transition-all mb-6">
-                    <MessageSquare className="w-8 h-8" />
-                 </div>
-                 <h4 className="text-lg font-black text-slate-800 uppercase tracking-tight mb-2">Contact Classroom</h4>
-                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed px-4">Direct communication line with {currentChild.name.split(' ')[0]}'s teachers</p>
+              <div className="flex gap-4 items-start p-3 hover:bg-slate-50 rounded-xl transition-all cursor-pointer group">
+                <div className="w-2 h-2 rounded-full bg-slate-300 mt-1.5 shrink-0"></div>
+                <div>
+                  <p className="text-xs font-bold text-slate-700 leading-snug">Mid-term results will be published on Saturday.</p>
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-1">Yesterday</p>
+                </div>
               </div>
-           </div>
+            </div>
+          </div>
+          <button className="relative z-10 w-full mt-6 py-4 bg-slate-900 text-white rounded-[8px] text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95">
+            View All Notices
+          </button>
         </div>
-
       </div>
+
+    
+
+      {/* Linked Students & Quick Links */}
+      <div className="lg:col-span-3 space-y-8">
+          <div className="bg-white rounded-[20px] p-6  border-2 border-slate-50 shadow-sm overflow-hidden relative group">
+             <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-4">
+                   <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-[#00bd7f]">
+                      <Users className="w-5 h-5" />
+                   </div>
+                   <h2 className="text-2xl font-black text-slate-800 tracking-tight ">My Children</h2>
+                </div>
+               
+             </div>
+
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {guardianChildren.map((child) => (
+                   <div 
+                      key={child.id}
+                      onClick={() => selectChild(child)}
+                      className={`relative group/card cursor-pointer p-6 rounded-3xl border-2 transition-all duration-300 ${
+                         activeChild.id === child.id 
+                         ? 'bg-slate-900 border-slate-900 shadow-2xl scale-[1.02] -translate-y-1' 
+                         : 'bg-slate-50/50 border-slate-100 hover:border-emerald-200 hover:bg-white'
+                      }`}
+                   >
+                      <div className="flex items-center gap-6">
+                         <div className={`w-20 h-20 rounded-2xl flex items-center justify-center font-black text-2xl shadow-inner ${
+                            activeChild.id === child.id ? 'bg-white/10 text-white' : 'bg-white text-slate-400 border border-slate-100'
+                         }`}>
+                           {child.initials || child.name.charAt(0)}
+                         </div>
+                         <div>
+                            <h4 className={`text-xl font-black mb-1 ${activeChild.id === child.id ? 'text-white' : 'text-slate-800'}`}>
+                               {child.name}
+                            </h4>
+                            <p className={`text-[10px] font-black uppercase tracking-widest ${activeChild.id === child.id ? 'text-emerald-400' : 'text-[#00bd7f]'}`}>
+                               Class {child.class || "Top"} • Roll {child.roll || "01"}
+                            </p>
+                            <div className="flex items-center gap-2 mt-3">
+                               <button className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-tight transition-all ${
+                                  activeChild.id === child.id ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-white text-slate-500 border border-slate-100'
+                               }`}>
+                                  View Details
+                                  <ChevronRight className="w-3 h-3" />
+                               </button>
+                            </div>
+                         </div>
+                      </div>
+                      {activeChild.id === child.id && (
+                        <div className="absolute top-4 right-4">
+                           <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500 rounded-full shadow-lg shadow-emerald-500/30">
+                              <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                              <span className="text-[8px] font-black text-white uppercase tracking-widest">Active</span>
+                           </div>
+                        </div>
+                      )}
+                   </div>
+                ))}
+             </div>
+          </div>
+
+        
+        </div>
     </div>
   );
 };

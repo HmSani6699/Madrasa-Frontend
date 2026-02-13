@@ -59,6 +59,10 @@
     "class_assign": "Class Assign",
     "class_schedule": "Class Schedule",
     "teacher_schedule": "Teacher Schedule",
+    "my_academic": "My Academic",
+    "my_schedule": "My Schedule",
+    "my_subjects": "My Subjects",
+    "daily_attendance": "Daily Attendance",
 
     "homework": "Homework",
     "home_work": "Home Work",
@@ -669,6 +673,76 @@
       "paid": "Paid",
       "partial": "Partial",
       "unpaid": "Unpaid"
+    }
+  },
+  "teacher": {
+    "dashboard": {
+      "title": "Teacher Dashboard",
+      "total_class": "Total Class",
+      "total_subject": "Total Subject",
+      "my_students": "My Students",
+      "todays_class": "Today's Class",
+      "weekly_overview": "Weekly Overview",
+      "period": "Period",
+      "notices": "Notices",
+      "view_all_notifications": "View All Notifications"
+    },
+    "schedule": {
+      "my_class_routine": "My Class Routine",
+      "academic_weekly_schedule": "Academic Weekly Schedule",
+      "download_pdf": "Download PDF",
+      "period_details": "Period Details",
+      "time": "Time",
+      "subject": "Subject",
+      "class": "Class",
+      "room": "Room",
+      "topic": "Topic",
+      "close": "Close"
+    },
+    "exam": {
+      "examination_routine": "Examination Routine",
+      "annual_exam_schedule": "Annual Examination Schedule",
+      "download_pdf": "Download PDF",
+      "important_instructions": "Important Instructions",
+      "principals_signature": "Principal's Signature",
+      "class_date": "Class / Date",
+      "exam_time": "Exam Time",
+      "instruction_1": "Students must enter the exam hall at least 15 minutes before the scheduled time.",
+      "instruction_2": "Educational instruments (pen, scale, geometry box) are allowed. Bags and books are strictly prohibited inside the hall.",
+      "instruction_3": "Admit card is mandatory for entry. No student will be allowed without a valid admit card.",
+      "instruction_4": "All outstanding dues must be cleared before"
+    },
+    "students": {
+      "student_directory": "Student Directory",
+      "institutional_records": "Institutional records for students in your assigned academic sections",
+      "search_students": "Search students...",
+      "all_classes": "All Classes",
+      "id": "ID",
+      "student_name": "Student Name",
+      "class_section": "Class / Section",
+      "roll_no": "Roll No",
+      "guardian_phone": "Guardian / Phone",
+      "status": "Status",
+      "actions": "Actions",
+      "view_profile": "View Profile",
+      "message_guardian": "Message Guardian",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "payroll": {
+        "title": "My Payroll History",
+        "subtitle": "Track your monthly salary, bonuses, and payment status",
+        "status_active": "Payroll Active",
+        "net_salary": "Net Salary",
+        "total_earned": "Total Earned",
+        "last_payment": "Last Payment",
+        "payment_history": "Payment History",
+        "month": "Month",
+        "date": "Payment Date",
+        "amount": "Amount",
+        "method": "Method",
+        "p_status": "Status",
+        "actions": "Actions"
     }
   }
 }

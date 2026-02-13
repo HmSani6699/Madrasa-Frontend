@@ -8,7 +8,10 @@ import {
   CheckCircle2,
   FileText,
   Clock,
-  ExternalLink
+  ExternalLink,
+  ShieldCheck,
+  CreditCard,
+  Receipt
 } from "lucide-react";
 
 const PaymentHistory = () => {
@@ -21,90 +24,102 @@ const PaymentHistory = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 animate-in fade-in duration-500">
-      <div className="max-w-[1600px] mx-auto space-y-6 md:space-y-10">
-        
-        {/* Header */}
-        <div className="bg-white rounded-[1.5rem] md:rounded-[3rem] p-6 md:p-10 border border-slate-200 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-4 md:gap-8">
-            <div className="w-12 h-12 md:w-20 md:h-20 bg-slate-900 rounded-xl md:rounded-3xl flex items-center justify-center border border-slate-800 shadow-inner shrink-0 text-white">
-              <History className="w-6 h-6 md:w-10 md:h-10" />
-            </div>
-            <div>
-              <h1 className="text-xl md:text-3xl font-black text-slate-800 tracking-tight uppercase leading-none mb-1 md:mb-3">Transaction Archive</h1>
-              <p className="text-slate-500 font-bold mt-1 text-xs md:text-base">Comprehensive history of all institutional payments and digital receipts</p>
-            </div>
+    <div className="space-y-8 pb-12 animate-in fade-in duration-700">
+      {/* Header Section */}
+      <div className="bg-white rounded-[20px] p-6  border-2 border-slate-50 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-8 relative overflow-hidden">
+        <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl opacity-50"></div>
+        <div className="flex items-center gap-6 relative z-10">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-slate-900 rounded-2xl md:rounded-3xl flex items-center justify-center border-2 border-slate-800 shadow-xl text-white">
+            <History className="w-8 h-8 md:w-10 md:h-10" />
           </div>
-
-          <div className="flex gap-4 w-full lg:w-auto">
-             <button className="flex-1 lg:flex-none px-8 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black hover:bg-slate-200 transition-all border border-slate-200 text-[10px] uppercase tracking-widest flex items-center justify-center gap-3">
-               <FileText className="w-4 h-4" /> Export Statement
-            </button>
+          <div>
+            <h1 className="text-2xl md:text-4xl font-black text-slate-800 tracking-tight leading-none mb-2 md:mb-3">Payment History</h1>
+          
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-4">
-           <div className="relative flex-1">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
-              <input className="w-full bg-white border border-slate-200 rounded-[1.5rem] md:rounded-2xl pl-16 pr-8 py-4 text-sm font-bold shadow-sm focus:border-slate-900 outline-none transition-all" placeholder="Search by Transaction ID or Category..." />
-           </div>
-           <div className="flex gap-4">
-              <button className="px-6 py-4 bg-white border border-slate-200 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-sm hover:border-slate-900 transition-colors flex items-center gap-3">
-                 <Filter className="w-4 h-4" /> Filter Date
-              </button>
-           </div>
+        <div className="flex gap-4 relative z-10 w-full lg:w-auto">
+           <button className="flex-1 lg:flex-none px-8 py-5 bg-slate-900 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3">
+             <FileText className="w-4 h-4" /> Export Statement
+          </button>
         </div>
-
-        {/* History Table */}
-        <div className="bg-white rounded-[1.5rem] md:rounded-[3.5rem] border border-slate-200 shadow-sm overflow-hidden animate-in slide-in-from-bottom duration-700">
-           <div className="overflow-x-auto">
-              <table className="w-full border-collapse min-w-[900px]">
-                 <thead>
-                    <tr className="border-b border-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50/10">
-                       <th className="px-10 py-6 text-left">Reference ID</th>
-                       <th className="px-10 py-6 text-left">Payment Date</th>
-                       <th className="px-10 py-6 text-left">Account / Method</th>
-                       <th className="px-10 py-6 text-center">Category</th>
-                       <th className="px-10 py-6 text-center">Amount</th>
-                       <th className="px-10 py-6 text-right">Receipt</th>
-                    </tr>
-                 </thead>
-                 <tbody className="divide-y divide-slate-50">
-                    {transactions.map((txn) => (
-                       <tr key={txn.id} className="group hover:bg-slate-50/40 transition-all">
-                          <td className="px-10 py-8">
-                             <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 group-hover:text-indigo-600 transition-colors">
-                                   <Clock className="w-5 h-5" />
-                                </div>
-                                <div>
-                                   <p className="text-sm font-black text-slate-800 uppercase tracking-tight">{txn.id}</p>
-                                   <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase tracking-widest mt-1">
-                                      <CheckCircle2 className="w-3 h-3" /> {txn.status}
-                                   </div>
-                                </div>
-                             </div>
-                          </td>
-                          <td className="px-10 py-8 text-xs font-bold text-slate-500">{txn.date}</td>
-                          <td className="px-10 py-8 text-xs font-black text-slate-800 uppercase tracking-tight">{txn.method}</td>
-                          <td className="px-10 py-8 text-center">
-                             <span className="px-3 py-1 bg-slate-50 text-[9px] font-black text-slate-400 uppercase tracking-[2px] border border-slate-100 rounded-lg">{txn.category}</span>
-                          </td>
-                          <td className="px-10 py-8 text-center text-lg font-black text-slate-800">{txn.amount}</td>
-                          <td className="px-10 py-8 text-right">
-                             <button className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-100 text-slate-400 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm active:scale-95 group/btn">
-                                Download <ExternalLink className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                             </button>
-                          </td>
-                       </tr>
-                    ))}
-                 </tbody>
-              </table>
-           </div>
-        </div>
-
       </div>
+
+      {/* Filters & Control Matrix */}
+      <div className="flex flex-col md:flex-row gap-6">
+         <div className="relative flex-1 group">
+            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-slate-900 transition-colors" />
+            <input 
+              className="w-full bg-white border-2 border-slate-50 rounded-[2.5rem] pl-16 pr-8 py-5 text-sm font-bold shadow-sm focus:border-slate-900 outline-none transition-all placeholder:text-slate-300" 
+              placeholder="Search by Transaction ID or Category..." 
+            />
+         </div>
+         <div className="flex gap-4">
+            <button className="px-10 py-5 bg-white border-2 border-slate-50 rounded-[2rem] font-black text-[10px] uppercase tracking-widest shadow-sm hover:border-slate-900 transition-colors flex items-center gap-3">
+               <Filter className="w-4 h-4" /> Advanced Filter
+            </button>
+         </div>
+      </div>
+
+      {/* History Infrastructure */}
+      <div className="bg-white rounded-[20px] border-2 border-slate-50 shadow-xl overflow-hidden relative">
+         <div className="overflow-x-auto overflow-y-hidden">
+            <table className="w-full border-collapse min-w-[1000px]">
+               <thead>
+                  <tr className="border-b-2 border-slate-50 text-[10px] font-black text-slate-400 whitespace-nowrap tracking-widest bg-slate-50/20">
+                     <th className="px-12 py-3 text-left">Reference Vector</th>
+                     <th className="px-10 py-3 text-left">Timestamp</th>
+                     <th className="px-10 py-3 text-left">Account Method</th>
+                     <th className="px-10 py-3 text-center">Designation</th>
+                     <th className="px-10 py-3 text-center">Quantifiable Amount</th>
+                     <th className="px-10 py-3 text-right">Verification</th>
+                  </tr>
+               </thead>
+               <tbody className="divide-y-2 divide-slate-50">
+                  {transactions.map((txn) => (
+                     <tr key={txn.id} className="group hover:bg-slate-50/50 transition-all cursor-default whitespace-nowrap">
+                        <td className="px-12 py-3">
+                           <div className="flex items-center gap-5">
+                              <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
+                                 <Clock className="w-6 h-6" />
+                              </div>
+                              <div>
+                                 <p className="text-sm font-black text-slate-800 uppercase tracking-tight mb-1">{txn.id}</p>
+                                 <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase tracking-widest">
+                                    <div className="w-1 h-1 bg-emerald-500 rounded-full"></div> {txn.status}
+                                 </div>
+                              </div>
+                           </div>
+                        </td>
+                        <td className="px-10 py-4">
+                           <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">{txn.date}</p>
+                        </td>
+                        <td className="px-10 py-4">
+                           <div className="flex items-center gap-3">
+                              <CreditCard className="w-4 h-4 text-slate-300" />
+                              <p className="text-xs font-black text-slate-800 uppercase tracking-tight">{txn.method}</p>
+                           </div>
+                        </td>
+                        <td className="px-10 py-4 text-center">
+                           <span className="px-4 py-1.5 bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-100 rounded-xl group-hover:bg-white group-hover:text-slate-800 transition-colors">{txn.category}</span>
+                        </td>
+                        <td className="px-10 py-4 text-center">
+                           <p className="text-xl font-black text-slate-900 tracking-tighter">{txn.amount}</p>
+                        </td>
+                        <td className="px-10 py-4 text-right">
+                           <button className="inline-flex items-center gap-2 px-6 py-4 bg-white border border-slate-100 text-slate-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm active:scale-95 group/btn">
+                              Access Receipt <Receipt className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
+                           </button>
+                        </td>
+                     </tr>
+                  ))}
+               </tbody>
+            </table>
+         </div>
+      </div>
+
+    
+
     </div>
   );
 };

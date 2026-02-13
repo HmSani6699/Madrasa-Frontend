@@ -12,7 +12,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { useTranslation } from "react-i18next";
 
-const TeacherExamSchedule = () => {
+const GuardianExamSchedule = () => {
    const { t } = useTranslation();
    
    // Data derived from the reference image (approximate dates)
@@ -162,7 +162,7 @@ const TeacherExamSchedule = () => {
       doc.save("Exam_Routine_2025.pdf");
    };
 
-   return (
+  return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 animate-in fade-in duration-500">
       <div className="max-w-[1600px] mx-auto space-y-6 md:space-y-8">
         
@@ -285,4 +285,4 @@ const TeacherExamSchedule = () => {
   );
 };
 
-export default TeacherExamSchedule;
+export default GuardianExamSchedule;
