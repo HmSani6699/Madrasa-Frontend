@@ -14,6 +14,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import SelectInputField from '../../components/SelectInputField';
 import InputField from '../../components/InputField';
+import Voucher from '../../components/Voucher';
 
 const DonationEntry = () => {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ const DonationEntry = () => {
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showVoucher, setShowVoucher] = useState(false);
   const [newFundName, setNewFundName] = useState('');
 
   const handleAddFundType = (e) => {
@@ -218,12 +220,30 @@ const DonationEntry = () => {
                  <div className="absolute -right-3 top-1/2 w-6 h-6 bg-slate-50 rounded-full"></div>
              </div>
 
-             <button className="w-full py-3 bg-slate-800 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 hover:bg-slate-900 transition-all">
+             <button 
+                onClick={() => setShowVoucher(true)}
+                className="w-full py-3 bg-slate-800 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 hover:bg-slate-900 transition-all cursor-pointer"
+             >
                  <Printer className="w-5 h-5" />
                  {t('donation_page.print')}
              </button>
          </div>
       </div>
+
+      {/* Voucher Modal */}
+      {showVoucher && (
+        <Voucher 
+          data={{
+            receiptNo: `DON-${Math.floor(Math.random() * 9000) + 1000}`,
+            date: formData.date,
+            donorName: formData.donorName || "Guest Donor",
+            amount: formData.amount,
+            purpose: `${getFundLabel(formData.type)} donation`,
+            amountInWords: "" // Component will handle placeholder
+          }}
+          onClose={() => setShowVoucher(false)}
+        />
+      )}
 
       {/* Add Donation Type Modal */}
       {isModalOpen && (

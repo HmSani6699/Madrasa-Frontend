@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 
 import { useTranslation } from 'react-i18next';
+import Voucher from '../../components/Voucher';
 
 const FeeCollection = () => {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ const FeeCollection = () => {
   const [selectedFeeIds, setSelectedFeeIds] = useState([]);
   const [discount, setDiscount] = useState("");
   const [paidAmount, setPaidAmount] = useState("");
+  const [showVoucher, setShowVoucher] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -239,15 +241,33 @@ const FeeCollection = () => {
                          </div>
                     </div>
 
-                    <button className="w-full py-4 bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer">
-                        <CheckCircle className="w-5 h-5" />
-                        {paidVal < grandTotal ? t('fee_collection.confirm_partial') : t('fee_collection.confirm_payment')}
-                    </button>
+            <button 
+                onClick={() => setShowVoucher(true)}
+                className="w-full py-4 bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+                <CheckCircle className="w-5 h-5" />
+                {paidVal < grandTotal ? t('fee_collection.confirm_partial') : t('fee_collection.confirm_payment')}
+            </button>
                     
                 </div>
             </div>
 
         </div>
+      )}
+
+      {/* Voucher Modal */}
+      {showVoucher && (
+        <Voucher 
+          data={{
+            receiptNo: `FEE-${Math.floor(Math.random() * 9000) + 1000}`,
+            date: new Date().toLocaleDateString(),
+            studentName: selectedStudent.name,
+            amount: paidAmount || grandTotal,
+            purpose: selectedFees.map(f => f.head).join(', '),
+            amountInWords: "" // Component will handle placeholder
+          }}
+          onClose={() => setShowVoucher(false)}
+        />
       )}
 
     </div>
