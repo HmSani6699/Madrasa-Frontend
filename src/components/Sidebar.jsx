@@ -151,6 +151,7 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
       case "super_admin":
         return superAdminLinks;
       case "admin":
+      case "mohtamim":
         return adminLinks;
       case "teacher":
         return teacherLinks;

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import authService from "../services/authService";
 
 const AuthContext = createContext();
 
@@ -14,55 +15,65 @@ export const AuthProvider = ({ children }) => {
   const [activeChild, setActiveChild] = useState(null);
 
   useEffect(() => {
-    // Check for stored user/token on mount
-    const storedUser = localStorage.getItem("user");
-    const storedMadrasas = localStorage.getItem("madrasas");
-    const storedCurrentMadrasa = localStorage.getItem("currentMadrasa");
-    
-    // Guardian stored data
-    const storedChildren = localStorage.getItem("guardianChildren");
-    const storedActiveChild = localStorage.getItem("activeChild");
+    const initializeAuth = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const storedUser = localStorage.getItem("user");
+      
+      if (accessToken && storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else if (refreshToken) {
+        // Optionally try to refresh if only refresh token exists
+        try {
+           const data = await authService.refreshToken(refreshToken);
+           if (data.success) {
+              const freshUser = localStorage.getItem("user");
+              if (freshUser) setUser(JSON.parse(freshUser));
+           }
+        } catch (err) {
+           logout();
+        }
+      }
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    if (storedMadrasas) {
-      setMadrasas(JSON.parse(storedMadrasas));
-    }
-    if (storedCurrentMadrasa) {
-      setCurrentMadrasa(JSON.parse(storedCurrentMadrasa));
-    }
-    
-    // Restore Guardian State
-    if (storedChildren) {
-       setGuardianChildren(JSON.parse(storedChildren));
-    }
-    if (storedActiveChild) {
-       setActiveChild(JSON.parse(storedActiveChild));
-    }
+      const storedMadrasas = localStorage.getItem("madrasas");
+      const storedCurrentMadrasa = localStorage.getItem("currentMadrasa");
+      const storedChildren = localStorage.getItem("guardianChildren");
+      const storedActiveChild = localStorage.getItem("activeChild");
 
-    setLoading(false);
+      if (storedMadrasas) setMadrasas(JSON.parse(storedMadrasas));
+      if (storedCurrentMadrasa) setCurrentMadrasa(JSON.parse(storedCurrentMadrasa));
+      if (storedChildren) setGuardianChildren(JSON.parse(storedChildren));
+      if (storedActiveChild) setActiveChild(JSON.parse(storedActiveChild));
+
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
-  const login = (userData, madrasaList = [], childrenList = []) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+  const login = async (identifier, password) => {
+    try {
+      const response = await authService.login(identifier, password);
+      if (response.success) {
+        const { user: userData } = response.data;
+        setUser(userData);
+        // Handling madrasas and guardian children if they are in the login response
+        // If not, they might be fetched separately. Based on backend, data.user is returned.
+        return userData;
+      }
+      throw new Error(response.message || "Login failed");
+    } catch (error) {
+      throw error;
+    }
+  };
 
-    if (madrasaList.length > 0) {
-      setMadrasas(madrasaList);
-      localStorage.setItem("madrasas", JSON.stringify(madrasaList));
-      // Default to first madrasa if none selected
-      setCurrentMadrasa(madrasaList[0]);
-      localStorage.setItem("currentMadrasa", JSON.stringify(madrasaList[0]));
-    }
-    
-    // Guardian Login Handling
-    if (userData.role === 'guardian' && childrenList.length > 0) {
-       setGuardianChildren(childrenList);
-       localStorage.setItem("guardianChildren", JSON.stringify(childrenList));
-       setActiveChild(childrenList[0]);
-       localStorage.setItem("activeChild", JSON.stringify(childrenList[0]));
-    }
+  const logout = async () => {
+    await authService.logout();
+    setUser(null);
+    setMadrasas([]);
+    setCurrentMadrasa(null);
+    setGuardianChildren([]);
+    setActiveChild(null);
   };
 
   const selectMadrasa = (madrasa) => {
@@ -73,19 +84,6 @@ export const AuthProvider = ({ children }) => {
   const selectChild = (child) => {
      setActiveChild(child);
      localStorage.setItem("activeChild", JSON.stringify(child));
-  };
-
-  const logout = () => {
-    setUser(null);
-    setMadrasas([]);
-    setCurrentMadrasa(null);
-    setGuardianChildren([]);
-    setActiveChild(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("madrasas");
-    localStorage.removeItem("currentMadrasa");
-    localStorage.removeItem("guardianChildren");
-    localStorage.removeItem("activeChild");
   };
 
   return (

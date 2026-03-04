@@ -63,7 +63,11 @@ const Navbar = ({ onMenuClick }) => {
    const messages = [
      { from: "Principal Office", time: "10:30 AM", msg: "Meeting at 2:00 PM today." },
      { from: "Accounts", time: "Yesterday", msg: "Monthly budget needs review." },
-   ];
+  ];
+  
+
+console.log(user);
+
  
    return (
      <header className="h-[73px] bg-surface/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 md:px-6 fixed top-0 right-0 left-0 md:left-72 z-30 transition-all duration-300">
@@ -76,7 +80,7 @@ const Navbar = ({ onMenuClick }) => {
          </button>
          
          <Link 
-           to="/portal/global-international" 
+           to={`/${user?.madrasa_slug}`} 
            target="_blank"
            className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-primary/5 text-primary hover:bg-primary/10 rounded-xl transition-all border border-primary/10"
          >

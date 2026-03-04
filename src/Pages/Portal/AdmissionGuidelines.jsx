@@ -55,7 +55,7 @@ const AdmissionGuidelines = () => {
         
         <div className="relative z-10 text-center px-6">
           <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold mb-4 animate-in slide-in-from-top duration-700">
-             <Link to="/portal/global-international" className="hover:text-white transition-colors flex items-center gap-1">
+             <Link to="/global-international" className="hover:text-white transition-colors flex items-center gap-1">
                 <ArrowLeft className="w-4 h-4" /> Home
              </Link>
              <span>/</span>

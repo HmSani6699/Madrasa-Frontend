@@ -43,6 +43,7 @@ import {
   Printer,
   FileCheck,
   List,
+  Shapes,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -75,6 +76,8 @@ export const adminNavigation = [
       { name: "Employee List", path: "/admin/employee/list", icon: Users },
       { name: "Add New Employee", path: "/admin/employee/create", icon: UserPlus },
       { name: "Add Designation", path: "/admin/employee/designation", icon: Award },
+      { name: "Salary Setup", path: "/admin/employee/salary-setup", icon: DollarSign },
+      { name: "Salary Payment", path: "/admin/employee/salary-payment", icon: Banknote },
     ],
   },
   {
@@ -117,15 +120,11 @@ export const adminNavigation = [
     name: "Academic",
     icon: School,
     children: [
-      {
-        name: "Department & Section",
-        path: "/admin/academic/department-section",
-        icon: LayoutGrid,
-      },
+      { name: "Class List", path: "/admin/academic/class", icon: LayoutGrid },
+      { name: "Section List", path: "/admin/academic/section", icon: Shapes },
       { name: "Subject", path: "/admin/academic/subject", icon: BookOpen },
-      { name: "Class Assign", path: "/admin/academic/class-assign", icon: ClipboardList },
       { name: "Class Schedule", path: "/admin/academic/schedule/class", icon: Clock },
-      { name: "Assign Class Teacher", path: "/admin/academic/assign-teacher", icon: UserCheck },
+      { name: "Class Syllabus", path: "/admin/academic/syllabus", icon: ClipboardList },
       { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher", icon: Clock },
       {
         name: "Student Academic Report",
@@ -164,8 +163,8 @@ export const adminNavigation = [
             icon: DollarSign,
           },
           {
-            name: "Fee Setup",
-            path: "/admin/accounting/fees/setup",
+            name: "Fee Type",
+            path: "/admin/accounting/fees/type",
             icon: Settings,
           },
         ],

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Users,
   GraduationCap,
@@ -8,43 +9,69 @@ import {
   MoreHorizontal,
   CalendarDays,
   Bell,
+  Loader2,
 } from "lucide-react";
 import RecentAdmissions from "../../components/RecentAdmissions";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import portalService from "../../services/portalService";
 
 const AdminDashboard = () => {
   const { user, currentMadrasa } = useAuth();
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState({
+    studentStats: null,
+    financialOverview: null,
+  });
 
-  // Mock Stats Data
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const [studentStats, financialOverview] = await Promise.all([
+        portalService.getStudentStats(),
+        portalService.getFinancialOverview(),
+      ]);
+      setDashboardData({
+        studentStats: studentStats.data,
+        financialOverview: financialOverview.data,
+      });
+    } catch (err) {
+      console.error("Failed to fetch dashboard data", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const stats = [
     {
       title: t("dashboard.total_students"),
-      value: "1,250",
+      value: dashboardData.studentStats?.totalStudents || "0",
       icon: Users,
       color: "text-blue-600",
       bg: "bg-blue-50",
     },
     {
       title: t("dashboard.total_staff"),
-      value: "48",
+      value: dashboardData.studentStats?.totalStaff || "0",
       icon: GraduationCap,
       color: "text-purple-600",
       bg: "bg-purple-50",
     },
     {
       title: t("dashboard.total_subjects"),
-      value: "16",
+      value: dashboardData.studentStats?.totalSubjects || "0",
       icon: CalendarCheck,
       color: "text-amber-600",
       bg: "bg-amber-50",
     },
-    
   ];
 
-  // Mock Notices
   const notices = [
     { id: 1, title: "Staff Meeting", date: "Today, 2:00 PM", type: "Urgent" },
     {
@@ -111,33 +138,33 @@ const AdminDashboard = () => {
                 <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">
                   {t("dashboard.collected_today")}
                 </p>
-                <p className="text-2xl font-bold text-slate-800">৳ 25,400</p>
+                <p className="text-2xl font-bold text-slate-800">৳ {dashboardData.financialOverview?.collectedToday || "0"}</p>
                 <div className="flex items-center gap-1 mt-2 text-xs font-semibold text-emerald-600">
-                  <TrendingUp className="w-3 h-3" /> +12% from yesterday
+                  <TrendingUp className="w-3 h-3" /> +{dashboardData.financialOverview?.growth || "0"}% from yesterday
                 </div>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                   {t("dashboard.monthly_target")}
                 </p>
-                <p className="text-2xl font-bold text-slate-800">৳ 450,000</p>
+                <p className="text-2xl font-bold text-slate-800">৳ {dashboardData.financialOverview?.monthlyTarget || "0"}</p>
                 <div className="w-full bg-slate-200 h-1.5 rounded-full mt-3 overflow-hidden">
                   <div
                     className="bg-primary h-full rounded-full"
-                    style={{ width: "65%" }}
+                    style={{ width: `${dashboardData.financialOverview?.achievementPercentage || 0}%` }}
                   ></div>
                 </div>
                 <p className="text-[10px] text-slate-400 mt-1 font-medium">
-                  65% {t("dashboard.achieved")}
+                  {dashboardData.financialOverview?.achievementPercentage || 0}% {t("dashboard.achieved")}
                 </p>
               </div>
               <div className="p-4 rounded-xl bg-rose-50 border border-rose-100/50">
                 <p className="text-xs font-bold text-rose-600 uppercase tracking-wider mb-2">
                   {t("dashboard.pending_dues")}
                 </p>
-                <p className="text-2xl font-bold text-slate-800">৳ 120,500</p>
+                <p className="text-2xl font-bold text-slate-800">৳ {dashboardData.financialOverview?.pendingDues || "0"}</p>
                 <p className="text-[10px] text-rose-500/80 mt-2 font-medium">
-                  42 {t("sidebar.students")}
+                  {dashboardData.financialOverview?.pendingStudents || 0} {t("sidebar.students")}
                 </p>
               </div>
             </div>

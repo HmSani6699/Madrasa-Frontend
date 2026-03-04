@@ -126,11 +126,11 @@ const DepartmentSectionList = () => {
     setSelectedClass(null);
   };
 
-  const filteredClasses = classes.filter(
+  const filteredClasses = Array.isArray(classes) ? classes.filter(
     (c) =>
       c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.level.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  ) : [];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 p-4 md:p-8">

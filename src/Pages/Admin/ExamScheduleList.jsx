@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus,
   Search,
@@ -15,46 +15,32 @@ import {
   Edit,
   Trash2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from "lucide-react";
+import talimatService from "../../services/talimatService";
 
 const ExamScheduleList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [schedules, setSchedules] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Sample Data: Exam Schedule
-  const [schedules, setSchedules] = useState([
-    {
-      id: 1,
-      subject: "Arabic Grammar",
-      date: "2026-03-01",
-      startTime: "09:00 AM",
-      endTime: "12:00 PM",
-      room: "Room 101",
-      maxMarks: 100,
-      minMarks: 40,
-    },
-    {
-      id: 2,
-      subject: "Fiqh",
-      date: "2026-03-02",
-      startTime: "09:00 AM",
-      endTime: "12:00 PM",
-      room: "Auditorium",
-      maxMarks: 100,
-      minMarks: 40,
-    },
-    {
-      id: 3,
-      subject: "Mathematics",
-      date: "2026-03-03",
-      startTime: "09:00 AM",
-      endTime: "12:00 PM",
-      room: "Room 102",
-      maxMarks: 100,
-      minMarks: 33,
-    },
-  ]);
+  useEffect(() => {
+    fetchSchedules();
+  }, []);
+
+  const fetchSchedules = async () => {
+    try {
+      setLoading(true);
+      const data = await talimatService.getExams();
+      setSchedules(data.data || []);
+    } catch (err) {
+      console.error("Failed to fetch exams", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 font-sans">
@@ -155,51 +141,66 @@ const ExamScheduleList = () => {
                 <th className="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
-              {schedules.map((schedule) => (
-                <tr key={schedule.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4">
-                    <input type="checkbox" className="rounded border-slate-300 text-[#00bd7f] focus:ring-[#00bd7f]" />
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                         <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#00bd7f]">
-                            <BookOpen className="w-4 h-4" />
-                         </div>
-                         <span className="text-slate-700 font-semibold text-sm">{schedule.subject}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-slate-600 text-sm">{schedule.date}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-slate-600 text-sm">{schedule.startTime}</span>
-                  </td>
-                   <td className="px-6 py-4">
-                    <span className="text-slate-600 text-sm">{schedule.endTime}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                     <div className="flex items-center gap-2 text-slate-600 text-sm">
-                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                        {schedule.room}
-                     </div>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold">{schedule.maxMarks}</span>
-                  </td>
-                   <td className="px-6 py-4 text-center">
-                     <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold">{schedule.minMarks}</span>
-                  </td>
-                  <td className="px-6 py-4 flex justify-end gap-2">
-                     <button className="p-1.5 text-slate-400 hover:text-[#00bd7f] hover:bg-emerald-50 rounded-lg transition-colors">
-                        <Edit className="w-4 h-4" />
-                    </button>
-                    <button className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors">
-                        <Trash2 className="w-4 h-4" />
-                    </button>
+             <tbody className="divide-y divide-slate-100">
+              {loading ? (
+                <tr>
+                  <td colSpan="9" className="px-6 py-10 text-center">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-emerald-500" />
+                    <p className="mt-2 text-slate-500 font-medium">Loading schedules...</p>
                   </td>
                 </tr>
-              ))}
+              ) : schedules.length === 0 ? (
+                <tr>
+                  <td colSpan="9" className="px-6 py-10 text-center text-slate-500">
+                    No exam schedules found.
+                  </td>
+                </tr>
+              ) : (
+                schedules.map((schedule) => (
+                  <tr key={schedule._id || schedule.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <input type="checkbox" className="rounded border-slate-300 text-[#00bd7f] focus:ring-[#00bd7f]" />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-[#00bd7f]">
+                          <BookOpen className="w-4 h-4" />
+                        </div>
+                        <span className="text-slate-700 font-semibold text-sm">{schedule.subject}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-slate-600 text-sm">{schedule.date}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-slate-600 text-sm">{schedule.startTime}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-slate-600 text-sm">{schedule.endTime}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-slate-600 text-sm">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                        {schedule.room}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold">{schedule.maxMarks}</span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs font-bold">{schedule.minMarks}</span>
+                    </td>
+                    <td className="px-6 py-4 flex justify-end gap-2">
+                      <button className="p-1.5 text-slate-400 hover:text-[#00bd7f] hover:bg-emerald-50 rounded-lg transition-colors">
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

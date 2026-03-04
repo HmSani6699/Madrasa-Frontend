@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   Filter,
@@ -18,124 +19,37 @@ import {
   X,
 } from "lucide-react";
 import SelectInputField from "../../components/SelectInputField";
+import { useEffect } from "react";
+import axiosInstance from "../../api/axiosInstance";
 
 const OnlineAdmissionList = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [classFilter, setClassFilter] = useState("all");
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
 
-  // Sample data - in production this would come from an API
-  const applications = [
-    {
-      id: 1,
-      applicationDate: "2026-01-08",
-      academicYear: "2025-2026",
-      student: {
-        firstName: "মোহাম্মদ",
-        lastName: "রহমান",
-        gender: "Male",
-        dateOfBirth: "2015-05-15",
-        class: "Class 5",
-        subject: "General",
-        phone: "01712345678",
-        email: "rahman@example.com",
-        photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=1",
-      },
-      guardian: {
-        fatherName: "আব্দুল করিম",
-        motherName: "ফাতেমা বেগম",
-        fatherOccupation: "Business",
-        motherOccupation: "Housewife",
-        contact: "01712345678",
-        email: "karim@example.com",
-        address: "Dhaka, Bangladesh",
-        photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=father1",
-      },
-      transport: {
-        required: true,
-        route: "Mirpur - Dhanmondi",
-      },
-      hostel: {
-        required: false,
-        roomType: "",
-      },
-      status: "pending",
-      remarks: "",
-    },
-    {
-      id: 2,
-      applicationDate: "2026-01-07",
-      academicYear: "2025-2026",
-      student: {
-        firstName: "আয়েশা",
-        lastName: "খাতুন",
-        gender: "Female",
-        dateOfBirth: "2014-08-20",
-        class: "Class 6",
-        subject: "Science",
-        phone: "01823456789",
-        email: "ayesha@example.com",
-        photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=2",
-      },
-      guardian: {
-        fatherName: "মোহাম্মদ আলী",
-        motherName: "সালমা বেগম",
-        fatherOccupation: "Teacher",
-        motherOccupation: "Doctor",
-        contact: "01823456789",
-        email: "ali@example.com",
-        address: "Chittagong, Bangladesh",
-        photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=father2",
-      },
-      transport: {
-        required: false,
-        route: "",
-      },
-      hostel: {
-        required: true,
-        roomType: "Shared Room",
-      },
-      status: "approved",
-      remarks: "Excellent academic record",
-    },
-    {
-      id: 3,
-      applicationDate: "2026-01-06",
-      academicYear: "2025-2026",
-      student: {
-        firstName: "ইউসুফ",
-        lastName: "হোসেন",
-        gender: "Male",
-        dateOfBirth: "2016-03-10",
-        class: "Class 4",
-        subject: "General",
-        phone: "01934567890",
-        email: "yusuf@example.com",
-        photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=3",
-      },
-      guardian: {
-        fatherName: "হোসেন আহমেদ",
-        motherName: "রুবিনা আক্তার",
-        fatherOccupation: "Engineer",
-        motherOccupation: "Housewife",
-        contact: "01934567890",
-        email: "hosen@example.com",
-        address: "Sylhet, Bangladesh",
-        photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=father3",
-      },
-      transport: {
-        required: true,
-        route: "Gulshan - Banani",
-      },
-      hostel: {
-        required: false,
-        roomType: "",
-      },
-      status: "rejected",
-      remarks: "Age requirement not met",
-    },
-  ];
+  const fetchApplications = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(`/v1/online-admission?searchTerm=${searchTerm}&status=${statusFilter}&class_id=${classFilter}`);
+      if (response.data.success) {
+        setApplications(response.data.data);
+        setTotal(response.data.total);
+      }
+    } catch (error) {
+      console.error("Fetch Applications Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApplications();
+  }, [searchTerm, statusFilter, classFilter]);
 
   const getStatusBadge = (status) => {
     const styles = {
@@ -160,25 +74,51 @@ const OnlineAdmissionList = () => {
   };
 
   const filteredApplications = applications.filter((app) => {
+    // Safety check for guardian
+    const guardian = app.guardian || {};
+    const students = app.students || (app.student ? [app.student] : []);
+
     const matchesSearch =
-      app.student.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.student.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.guardian.fatherName
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      app.student.phone.includes(searchTerm);
+      students.some(s => 
+        (s.name || `${s.firstName || ""} ${s.lastName || ""}`).toLowerCase().includes(searchTerm.toLowerCase())
+      ) ||
+      (guardian.fatherName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (guardian.fatherContact || app.student?.phone || "").includes(searchTerm);
 
     const matchesStatus = statusFilter === "all" || app.status === statusFilter;
+    
     const matchesClass =
-      classFilter === "all" || app.student.class === classFilter;
+      classFilter === "all" || 
+      students.some(s => (s.appliedClass || s.class) === classFilter);
 
     return matchesSearch && matchesStatus && matchesClass;
   });
 
-  const handleStatusChange = (id, newStatus) => {
-    // In production, this would make an API call
-    console.log(`Changing status of application ${id} to ${newStatus}`);
-    alert(`Application ${id} status changed to ${newStatus}`);
+  const handleStatusChange = async (id, newStatus, application) => {
+    if (newStatus === "approved") {
+      // For approval, redirect to the official admission form with pre-filled data
+      navigate("/admin/admission/create", {
+        state: {
+          preFill: true,
+          applicationData: application
+        }
+      });
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.put(`/v1/online-admission/${id}/status`, { status: newStatus });
+      if (response.data.success) {
+        alert(`Application ${newStatus} successfully!`);
+        fetchApplications();
+        setSelectedApplication(null);
+      } else {
+        alert(response.data.message || "Failed to update status");
+      }
+    } catch (error) {
+      console.error("Status Update Error:", error);
+      alert("An error occurred while updating status");
+    }
   };
 
   return (
@@ -308,7 +248,7 @@ const OnlineAdmissionList = () => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className=" bg-[#e6f4ef]  border-gray-100 dark:border-slate-700">
-              <tr>
+              <tr className="cursor-pointer whitespace-nowrap">
                 <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
                   Student
                 </th>
@@ -335,62 +275,63 @@ const OnlineAdmissionList = () => {
             <tbody className="">
               {filteredApplications.map((app) => (
                 <tr
-                  key={app.id}
-                  className=" dark:hover:bg-gray-100 transition-colors"
+                  key={app._id || app.id}
+                  className=" dark:hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={app.student.photo}
-                        alt={app.student.firstName}
-                        className="w-10 h-10 rounded-full"
-                      />
+                      <div className="w-10 h-10 bg-[#e6f4ef] text-primary rounded-full flex items-center justify-center font-black">
+                         <img
+                          src={app.students?.[0]?.photo || app.student?.photo || ""}
+                          alt={app.students?.[0]?.name || app.student?.firstName || "N/A"}
+                          className="w-14 h-14 object-cover"
+                        />
+                      </div>
                       <div>
+                       
                         <p className="font-bold">
-                          {app.student.firstName} {app.student.lastName}
+                          {app.students?.[0]?.name || app.student?.firstName || "N/A"}
+                          {app.students?.length > 1 && <span className="text-xs text-primary ml-1">(+{app.students.length - 1} more)</span>}
                         </p>
                         <p className="text-xs text-slate-500">
-                          {app.student.gender}
+                          {app.students?.[0]?.gender || app.student?.gender || ""}
                         </p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-lg">
-                      {app.student.class}
+                      {app.students?.[0]?.appliedClass || app.student?.class || "N/A"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <p className="font-bold">
-                      {app.guardian.fatherName}
+                      {app.guardian?.fatherName || "N/A"}
                     </p>
                     <p className="text-xs text-slate-500 whitespace-nowrap">
-                      {app.guardian.fatherOccupation}
+                      {app.guardian?.fatherOccupation || "Guardian"}
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="space-y-1">
                       <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
                         <Phone className="w-3 h-3" />
-                        {app.student.phone}
+                        {app.guardian?.fatherContact || app.student?.phone || "N/A"}
                       </p>
-                      <p className="text-xs text-slate-500 flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
-                        {app.student.email}
-                      </p>
+                    
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      {app.applicationDate}
+                      {app.created_at ? new Date(app.created_at).toLocaleDateString() : (app.applicationDate || "N/A")}
                     </p>
                   </td>
                   <td className="px-6 py-4">{getStatusBadge(app.status)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
                     <button
                       onClick={() => setSelectedApplication(app)}
-                      className="flex items-center gap-2 bg-[#00bd7f] text-white px-5 py-2 rounded-lg"
+                      className="inline-flex items-center gap-2 bg-[#00bd7f] text-white px-5 py-2 rounded-lg hover:bg-[#009b68] transition-all"
                     >
                       <Eye className="w-3 h-3" />
                       View Details
@@ -417,17 +358,17 @@ const OnlineAdmissionList = () => {
           onClick={() => setSelectedApplication(null)}
         >
           <div
-            className="bg-white dark:bg-slate-800 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-[8px] max-w-4xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 px-8 py-6 flex items-center justify-between">
+            <div className="sticky top-0 bg-white  border-b border-gray-100  px-8 py-6 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-black text-slate-900 dark:text-white">
+                <h2 className="text-2xl font-black text-slate-900 ">
                   Application Details
                 </h2>
                 <p className="text-sm text-slate-500">
-                  Application ID: #{selectedApplication.id}
+                  Application ID: #{selectedApplication._id || selectedApplication.id}
                 </p>
               </div>
               <button
@@ -440,131 +381,117 @@ const OnlineAdmissionList = () => {
 
             {/* Modal Content */}
             <div className="p-8 space-y-8">
-              {/* Student Information */}
-              <div>
-                <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                  <User className="w-5 h-5 text-primary" />
-                  Student Information
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 dark:bg-slate-900 rounded-2xl p-6">
-                  <div className="md:col-span-2 flex items-center gap-4">
-                    <img
-                      src={selectedApplication.student.photo}
-                      alt="Student"
-                      className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
-                    />
-                    <div>
-                      <p className="text-xl font-black text-slate-900 dark:text-white">
-                        {selectedApplication.student.firstName}{" "}
-                        {selectedApplication.student.lastName}
-                      </p>
-                      <p className="text-sm text-slate-500">
-                        {selectedApplication.student.gender}
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Date of Birth
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.student.dateOfBirth}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Class
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.student.class}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Subject
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.student.subject}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Phone
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.student.phone}
-                    </p>
-                  </div>
-                 
-                </div>
-              </div>
-
               {/* Guardian Information */}
               <div>
-                <h3 className="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-black text-slate-900  mb-4 flex items-center gap-2">
                   <Users className="w-5 h-5 text-primary" />
                   Guardian Information
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 dark:bg-slate-900 rounded-2xl p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50  rounded-2xl p-6">
                   <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Father's Name
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.guardian.fatherName}
-                    </p>
+                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Father's Name</label>
+                    <p className="font-bold">{selectedApplication.guardian?.fatherName || "N/A"}</p>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Mother's Name
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.guardian.motherName}
-                    </p>
+                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Mother's Name</label>
+                    <p className="font-bold">{selectedApplication.guardian?.motherName || "N/A"}</p>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Father's Occupation
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.guardian.fatherOccupation}
-                    </p>
+                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Phone ( Father )</label>
+                    <p className="font-bold">{selectedApplication.guardian?.fatherContact || "N/A"}</p>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Mother's Occupation
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.guardian.motherOccupation}
-                    </p>
+                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Phone ( Mother )</label>
+                    <p className="font-bold">{selectedApplication.guardian?.motherContact || "N/A"}</p>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                     Father's Contact
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.guardian.contact}
-                    </p>
+                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Email</label>
+                    <p className="font-bold">{selectedApplication.guardian?.email || "N/A"}</p>
                   </div>
-                  <div>
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                     Mother's Contact
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.guardian.contact}
-                    </p>
+                  <div className="">
+                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Address (Present)</label>
+                    <p className="font-bold">{selectedApplication.guardian?.address || "N/A"}</p>
                   </div>
-                 
-                  <div className="md:col-span-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase block mb-1">
-                      Address
-                    </label>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      {selectedApplication.guardian.address}
-                    </p>
+                </div>
+
+                {/* Guardian Documents */}
+                <div className="mt-6">
+                   <h4 className="text-sm font-black text-slate-900 mb-4 flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-primary" />
+                    Uploaded Documents
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[
+                      { label: "Father's NID", key: "fatherNID" },
+                      { label: "Mother's NID", key: "motherNID" },
+                      { label: "Guardian's NID", key: "guardianNID" }
+                    ].map((doc) => (
+                      <div key={doc.key} className="bg-slate-50 border-2 border-slate-100 rounded-xl p-3 flex flex-col items-center justify-center min-h-[140px] relative group overflow-hidden">
+                        {selectedApplication.guardian?.[doc.key] ? (
+                          <>
+                            <img 
+                              src={selectedApplication.guardian[doc.key]} 
+                              alt={doc.label} 
+                              className="w-full h-full object-contain transition-transform group-hover:scale-110 cursor-zoom-in"
+                              onClick={() => window.open(selectedApplication.guardian[doc.key], '_blank')}
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <span className="text-[10px] text-white font-bold bg-primary px-3 py-1 rounded-full">View Large</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center gap-2 text-slate-300">
+                            <FileText size={32} />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">{doc.label}</span>
+                            <span className="text-[8px] italic">Not Uploaded</span>
+                          </div>
+                        )}
+                        {selectedApplication.guardian?.[doc.key] && (
+                           <div className="absolute bottom-2 left-2 right-2 bg-white/80 backdrop-blur-sm rounded-lg p-1 text-center">
+                              <span className="text-[10px] font-black text-slate-700">{doc.label}</span>
+                           </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
+
+              {/* Students Information */}
+              <div>
+                <h3 className="text-lg font-black text-slate-900  mb-4 flex items-center gap-2">
+                  <User className="w-5 h-5 text-primary" />
+                  Students ({selectedApplication.students?.length || (selectedApplication.student ? 1 : 0)})
+                </h3>
+                <div className="space-y-4">
+                  {(selectedApplication.students || [selectedApplication.student]).filter(Boolean).map((student, idx) => (
+                    <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50  rounded-2xl p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-black shadow-sm border border-slate-100">
+                           <img
+                          src={student.photo || ""}
+                          alt={student.name || student.firstName || "N/A"}
+                          className="w-10 h-10 object-cover"
+                        />
+                        </div>
+                        <div>
+                          <p className="font-bold">{student.name || student.firstName || "N/A"}</p>
+                          <p className="text-xs text-slate-500">{student.gender || "N/A"}</p>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Date of Birth</label>
+                        <p className="font-bold">{student.dob || student.dateOfBirth || "N/A"}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Applied Class</label>
+                        <p className="font-bold">{student.appliedClass || student.class || "N/A"}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
 
              
 
@@ -583,7 +510,7 @@ const OnlineAdmissionList = () => {
                   <div className="flex gap-3">
                     <button
                       onClick={() =>
-                        handleStatusChange(selectedApplication.id, "approved")
+                        handleStatusChange(selectedApplication._id || selectedApplication.id, "approved", selectedApplication)
                       }
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-colors"
                     >
@@ -592,7 +519,7 @@ const OnlineAdmissionList = () => {
                     </button>
                     <button
                       onClick={() =>
-                        handleStatusChange(selectedApplication.id, "rejected")
+                        handleStatusChange(selectedApplication._id || selectedApplication.id, "rejected")
                       }
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors"
                     >

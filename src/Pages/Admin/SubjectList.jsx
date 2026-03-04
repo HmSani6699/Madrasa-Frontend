@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus,
   Search,
@@ -16,7 +16,13 @@ import {
   ShieldCheck,
   Shapes,
   ChevronDown,
+  File,
+  SquarePen
 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
+import InputField from "../../components/InputField";
+import SelectInputField from "../../components/SelectInputField";
 
 const SubjectList = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,66 +36,97 @@ const SubjectList = () => {
   // Focus States
   const [selectedSubject, setSelectedSubject] = useState(null);
 
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
   // Form States
   const [formData, setFormData] = useState({
     name: "",
     code: "",
-    level: "Primary",
-    type: "Religious",
+    class_id: "",
+    section_id: "",
     status: "active",
   });
 
-  // Sample Data: Subjects
-  const [subjects, setSubjects] = useState([
-    {
-      id: 1,
-      name: "Arabic Grammar (Sarf)",
-      code: "ARB101",
-      level: "Primary",
-      type: "Religious",
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Arabic Literature (Adab)",
-      code: "ARB102",
-      level: "Secondary",
-      type: "Religious",
-      status: "active",
-    },
-    {
-      id: 3,
-      name: "Fiqh (Jurisprudence)",
-      code: "FIQ201",
-      level: "Secondary",
-      type: "Religious",
-      status: "active",
-    },
-    {
-      id: 4,
-      name: "Mathematics",
-      code: "MAT001",
-      level: "Primary",
-      type: "General",
-      status: "active",
-    },
-    {
-      id: 5,
-      name: "English Foundation",
-      code: "ENG001",
-      level: "Primary",
-      type: "General",
-      status: "active",
-    },
-    {
-      id: 6,
-      name: "Hadith Studies",
-      code: "HAD301",
-      level: "Kitab",
-      type: "Religious",
-      status: "active",
-    },
-  ]);
+  const [subjects, setSubjects] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Filter States
+  const [filters, setFilters] = useState({
+    class_id: "",
+    section_id: "",
+    status: "",
+  });
+
+  const fetchClasses = async () => {
+    try {
+      const response = await axiosInstance.get("/v1/classes");
+      if (response.data.success) {
+        setClasses(response.data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching classes:", err);
+    }
+  };
+
+  const fetchSections = async (classId) => {
+    if (!classId) {
+      setSections([]);
+      return;
+    }
+    try {
+      const response = await axiosInstance.get(`/v1/sections?class_id=${classId}`);
+      if (response.data.success) {
+        setSections(response.data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching sections:", err);
+    }
+  };
+
+  const fetchSubjects = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (searchTerm) params.append("search", searchTerm);
+      if (filters.class_id) params.append("class_id", filters.class_id);
+      if (filters.section_id) params.append("section_id", filters.section_id);
+      if (filters.status) params.append("status", filters.status);
+
+      const response = await axiosInstance.get(`/v1/subjects?${params.toString()}`);
+      if (response.data.success) {
+        setSubjects(response.data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching subjects:", err);
+      toast.error("Failed to fetch subjects");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubjects();
+    fetchClasses();
+  }, [searchTerm, filters]);
+
+  // Handle Class change in Filters
+  useEffect(() => {
+    if (filters.class_id) {
+      fetchSections(filters.class_id);
+    }
+  }, [filters.class_id]);
+
+  // Handle Class change in Form
+  useEffect(() => {
+    if (formData.class_id) {
+      fetchSections(formData.class_id);
+    } else {
+      setSections([]);
+    }
+  }, [formData.class_id]);
 
   const levels = ["All", "Primary", "Secondary", "Hifz", "Kitab"];
 
@@ -105,8 +142,8 @@ const SubjectList = () => {
     setFormData({
       name: subject.name,
       code: subject.code,
-      level: subject.level,
-      type: subject.type,
+      class_id: subject.class_id,
+      section_id: subject.section_id || "",
       status: subject.status,
     });
     setModalType("edit");
@@ -118,255 +155,356 @@ const SubjectList = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const handleAction = () => {
-    if (modalType === "add") {
-      const newSubject = {
-        id: Date.now(),
-        ...formData,
-      };
-      setSubjects([...subjects, newSubject]);
-    } else {
-      setSubjects(
-        subjects.map((s) =>
-          s.id === selectedSubject.id ? { ...s, ...formData } : s,
-        ),
-      );
+  const handleAction = async () => {
+    setLoading(true);
+    try {
+      if (modalType === "add") {
+        const response = await axiosInstance.post("/v1/subjects", formData);
+        if (response.data.success) {
+          toast.success("Subject added successfully!");
+          fetchSubjects();
+        }
+      } else {
+        const response = await axiosInstance.put(`/v1/subjects/${selectedSubject._id}`, formData);
+        if (response.data.success) {
+          toast.success("Subject updated successfully!");
+          fetchSubjects();
+        }
+      }
+      setIsModalOpen(false);
+      resetForm();
+    } catch (err) {
+      console.error("Action error:", err);
+      toast.error("Operation failed");
+    } finally {
+      setLoading(false);
     }
-    setIsModalOpen(false);
-    resetForm();
   };
 
-  const handleDelete = () => {
-    setSubjects(subjects.filter((s) => s.id !== selectedSubject.id));
-    setIsDeleteModalOpen(false);
-    setSelectedSubject(null);
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.delete(`/v1/subjects/${selectedSubject._id}`);
+      if (response.data.success) {
+        toast.success("Subject deleted!");
+        fetchSubjects();
+      }
+      setIsDeleteModalOpen(false);
+      setSelectedSubject(null);
+    } catch (err) {
+      console.error("Delete error:", err);
+      toast.error("Failed to delete");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const resetForm = () => {
     setFormData({
       name: "",
       code: "",
-      level: "Primary",
-      type: "Religious",
+      class_id: "",
+      section_id: "",
       status: "active",
     });
     setSelectedSubject(null);
   };
 
-  const filteredSubjects = subjects.filter((s) => {
-    const matchesSearch =
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.code.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLevel = levelFilter === "All" || s.level === levelFilter;
-    return matchesSearch && matchesLevel;
-  });
-
   const [openFilter, setOpenFilter] = useState(false);
 
+
+  console.log(sections);
+  
+
   return (
-    <div className="space-y-10 animate-in fade-in duration-500 p-6 md:p-5">
+    <div className="animate-in fade-in duration-500">
       {/* Header */}
-      <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
+    <div className="flex items-center justify-between mb-5 w-full">
         <div>
-          <h1 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
-            <BookMarked className="w-8 h-8 text-[#00bd7f]" />
-            Subject List
+          <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
+            <Layers className="w-8 h-8 text-[#00bd7f]" />
+            Subjects
           </h1>
-          <p className="text-slate-500 font-bold mt-1">
-            Curated curriculum and academic standards
+          <p className=" text-[14px] text-slate-500 font-bold mt-1">
+            Manage academic subjects
           </p>
         </div>
 
         <div className="flex gap-3 w-full md:w-auto">
+          <div className="relative">
+             <button
+                onClick={()=>setIsExportModalOpen(!isExportModalOpen)}
+                className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
+          >
+            <File className="h-4 w-4"/>
+                Export
+            </button>
+            
+            {
+              isExportModalOpen && <div className="absolute top-[50px] right-0 z-[100]  whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg"> 
+                <button 
+                  onClick={() => {
+                    toast.success("Exporting as PDF...");
+                    setIsExportModalOpen(false);
+                  }}
+                  className="hover:text-[#00bd7f] transition-colors cursor-pointer text-left"
+                >  
+                  Export as PDF
+                </button>
+                <button 
+                  onClick={() => {
+                    toast.success("Exporting as Excel...");
+                    setIsExportModalOpen(false);
+                  }}
+                  className="hover:text-[#00bd7f] transition-colors cursor-pointer text-left"
+                >
+                  Export as Excel
+                </button>
+              </div>
+            }
+          </div>
           <button
             onClick={openAddModal}
-            className="flex-1 md:flex-none px-6 py-3 bg-[#00bd7f] text-white rounded-2xl font-black shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+           className="w-full px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4" />
             Add Subject
           </button>
         </div>
       </div>
 
-      {/* Subject List Table - Enhanced Padding & Spacing */}
-      <div className="bg-white rounded-[20px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50/50">
-              <tr>
-                <th className="px-10 py-2 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Name
-                </th>
+{/* Subject List Table - Enhanced Padding & Spacing */}
+ <div className="bg-white rounded-[8px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative">
+        {loading ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-20">
+            <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-slate-500 font-bold">Loading Subjects...</p>
+          </div>
+        ) : (
+            <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
+              <div className="p-4 flex items-center justify-between border-b border-b-gray-200">
+                <h2 className="text-[18px] font-semibold">Subject Name List</h2>
 
-                <th className="px-10 py-2 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Deployment
-                </th>
-                <th className="px-10 py-2 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Management
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y-2 divide-slate-50">
-              {filteredSubjects.map((subject) => (
-                <tr
-                  key={subject.id}
-                  className="group hover:bg-amber-50/10 transition-all duration-300"
-                >
-                  <td className="px-10 py-4">
-                    <div className="flex items-center gap-5">
-                      <div className="w-14 h-14 bg-white border-2 border-slate-50 rounded-[1.25rem] flex items-center justify-center shadow-md group-hover:border-amber-200 group-hover:scale-105 transition-all shrink-0">
-                        <Shapes className="w-6 h-6 text-amber-500 animate-pulse" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-base font-black text-slate-800 tracking-tight whitespace-nowrap">
-                          {subject.name}
-                        </span>
-                        <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest mt-1 px-2 py-0.5 bg-amber-50 rounded w-fit">
-                          ID: {subject.code}
-                        </span>
-                      </div>
+                <div>
+                   <div className="flex items-center gap-4">
+          
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search by Name or Code..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
+              />
                     </div>
-                  </td>
+                    <div className="relative">
+                       <button
+                        onClick={()=>setIsFilterModalOpen(!isFilterModalOpen)}
+                        className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
+                      >
+                      <Filter className="h-4 w-4"/>  Filter
+                      </button>
+                      {
+              isFilterModalOpen && <div className="absolute top-[50px] right-0 z-[100]  whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full"> 
+                          <div className="flex flex-col gap-4">
+                            <SelectInputField 
+                                title={'Class'}
+                                options={classes.map(c => ({ value: c._id, label: c.name }))}
+                                value={filters.class_id}
+                                setValue={(val) => setFilters({ ...filters, class_id: val, section_id: "" })}
+                            />
+                            <SelectInputField 
+                                title={'Section'}
+                                options={sections.map(s => ({ value: s._id, label: s.name }))}
+                                value={filters.section_id}
+                                setValue={(val) => setFilters({ ...filters, section_id: val })}
+                            />
+                            <SelectInputField 
+                                title={'Status'}
+                                options={[{ value: "active", label: "Active" }, { value: "inactive", label: "Inactive" }]}
+                                value={filters.status}
+                                setValue={(val) => setFilters({ ...filters, status: val })}
+                            />
+                          </div>
+                          <div className="flex items-end justify-end gap-4 mt-2.5">
+                            <button
+                                onClick={() => {
+                                    setFilters({ class_id: "", section_id: "", status: "" });
+                                    setIsFilterModalOpen(false);
+                                }}
+                                className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer"
+                            >
+                                Reset
+                            </button>
 
-                  <td className="px-10 py-4 text-center">
-                    <div
-                      className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 transition-all ${
-                        subject.status === "active"
-                          ? "bg-emerald-50 border-emerald-100/50 text-emerald-600"
-                          : "bg-slate-50 border-slate-100 text-slate-400"
-                      }`}
-                    >
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">
-                        Active
-                      </span>
+                            <button
+                                onClick={() => setIsFilterModalOpen(false)}
+                                className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
+                            >
+                                Apply
+                            </button>
+                        </div>
+              </div>
+            }
                     </div>
-                  </td>
-                  <td className="px-10 py-4 text-right">
-                    <div className="flex items-center justify-end gap-3  transition-all translate-x-4 group-hover:translate-x-0">
-                      <button
-                        onClick={() => openEditModal(subject)}
-                        className="p-3 bg-white border-2 border-slate-100 text-slate-400 hover:text-amber-500 hover:border-amber-200 rounded-2xl transition-all shadow-lg hover:shadow-amber-100"
-                      >
-                        <Edit3 className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(subject)}
-                        className="p-3 bg-white border-2 border-slate-100 text-slate-400 hover:text-rose-500 hover:border-rose-200 rounded-2xl transition-all shadow-lg hover:shadow-rose-100"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </td>
+          </div>
+                </div>
+              </div>
+            <table className="w-full">
+              <thead className="bg-[#e6f4ef]">
+                <tr>
+                  <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                 Class
+                  </th>
+                   <th className="px-10 py-3.5 text-center text-[12px] font-black">
+                  Section
+                  </th>
+                
+                  <th className="px-10 py-3.5 text-center text-[12px] font-black">
+                  Subject
+                  </th>
+                  <th className="px-10 py-3.5 text-center text-[12px] font-black">
+                  Status
+                  </th>
+                  <th className="px-10 py-3.5 text-center text-[12px] font-black">
+                  Action
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                
+              <tbody className="divide-y-2 divide-slate-50">
+                {subjects.map((sub) => (
+                  <tr
+                    key={sub._id}
+                    className="group hover:bg-amber-50/10 transition-all duration-300"
+                  >
+                    <td className="px-10 py-3.5">
+                      <span 
+                        onClick={() => openEditModal(sub)}
+                     className="text-sm font-bold text-slate-500"
+                      >
+                        {sub.className || "N/A"}
+                      </span>
+                    </td>
+                   
+                    <td className="px-10 py-3.5 text-center">
+                      <span className="text-sm font-bold text-slate-500">
+                        {sub.sectionName || "N/A"}
+                      </span>
+                    </td>
+                    <td className="px-10 py-3.5 text-center">
+                      <span className="text-sm font-bold text-slate-500">
+                       {sub.name} <span className="text-xs text-slate-400">({sub.code})</span>
+                      </span>
+                    </td>
+                    
+                   
+                    <td className="px-10 py-3.5 text-center">
+                      <div
+                        className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg border transition-all ${
+                          sub.status === "active"
+                            ? "bg-emerald-50 border-emerald-100 text-emerald-600"
+                            : "bg-slate-50 border-slate-100 text-slate-400"
+                        }`}
+                      >
+                        <span className="text-[10px] font-black uppercase tracking-widest">
+                          {sub.status}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-3 justify-center">
+                        <button className="cursor-pointer" onClick={() => openEditModal(sub)}>
+                         <SquarePen className="w-4 w-4  text-[#00bd7f]" />
+                        </button>
+                        <button className="cursor-pointer" onClick={() => openDeleteModal(sub)}>
+                         <Trash2 className="w-4 w-4 text-red-500" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
+
 
       {/* Add/Edit Modal - Unified & Styled */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-6 sm:p-10">
-          <div className="bg-white rounded-[3rem] w-full max-w-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] animate-in fade-in zoom-in duration-300 overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-10 border-b-2 border-slate-50 flex items-center justify-between bg-gradient-to-r from-white to-slate-50/50">
-              <div className="flex items-center gap-5">
-                <div className="w-14 h-14 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center border-2 border-amber-100/50 shadow-inner">
-                  <ShieldCheck className="w-8 h-8" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                    {modalType === "add" ? "Add New Subject" : "Update Subject"}
-                  </h2>
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">
-                    Core Academic Definition
-                  </p>
-                </div>
-              </div>
+          <div className="bg-white rounded-[8px] w-full max-w-lg shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] animate-in fade-in zoom-in duration-300 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b-2 border-slate-50 flex items-center justify-between bg-gradient-to-r from-white to-slate-50/50">
+              <h2 className="text-[20px] font-black text-slate-800 tracking-tight">
+                {modalType === "add" ? "Add Subject" : "Update Subject"}
+              </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-4 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-2xl transition-all active:scale-90"
+                className="p-[2px] bg-slate-100 hover:bg-red-500 text-slate-500 hover:text-white rounded-2xl transition-all active:scale-90 cursor-pointer"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-10 space-y-10 overflow-y-auto">
-              <div className="grid grid-cols-2 gap-8">
-                <div className="space-y-3 col-span-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
-                    Subject Name
-                  </label>
-                  <input
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-base font-black focus:border-[#00bd7f] focus:bg-white outline-none transition-all shadow-inner"
-                    placeholder="e.g. Higher Arabic Literature"
-                  />
-                </div>
-                <div className="space-y-3 col-span-2 sm:col-span-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
-                    Academic Code
-                  </label>
-                  <input
-                    value={formData.code}
-                    onChange={(e) =>
-                      setFormData({ ...formData, code: e.target.value })
-                    }
-                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black focus:border-[#00bd7f] focus:bg-white outline-none transition-all"
-                    placeholder="e.g. ARB701"
-                  />
-                </div>
-                <div className="space-y-3 col-span-2 sm:col-span-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
-                    Status
-                  </label>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        setFormData({ ...formData, status: "active" })
-                      }
-                      className={`flex-1 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 transition-all ${
-                        formData.status === "active"
-                          ? "bg-emerald-50 border-emerald-500 text-emerald-600"
-                          : "bg-slate-50 border-slate-100 text-slate-400"
-                      }`}
-                    >
-                      Active
-                    </button>
-                    <button
-                      onClick={() =>
-                        setFormData({ ...formData, status: "inactive" })
-                      }
-                      className={`flex-1 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest border-2 transition-all ${
-                        formData.status === "inactive"
-                          ? "bg-rose-50 border-rose-500 text-rose-600"
-                          : "bg-slate-50 border-slate-100 text-slate-400"
-                      }`}
-                    >
-                      Inactive
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <div className="p-5 ">
 
-              <div className="flex gap-6 pt-5">
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-5 text-slate-400 font-black rounded-2xl hover:bg-slate-100 transition-all text-sm uppercase tracking-widest"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleAction}
-                  className="flex-1 py-5 bg-[#00bd7f] text-white font-black rounded-2xl shadow-2xl shadow-amber-100 hover:bg-amber-600 active:scale-95 transition-all text-sm uppercase tracking-widest flex items-center justify-center gap-3"
-                >
-                  <CheckCircle2 className="w-5 h-5" />{" "}
-                  {modalType === "add" ? "Add Subject" : "Push Update"}
-                </button>
+            
+            
+              <div  className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <SelectInputField 
+                    title={'Class'} 
+                    options={classes.map(c => ({ value: c._id, label: c.name }))}
+                    value={formData.class_id}
+                    setValue={(val) => setFormData({ ...formData, class_id: val, section_id: "" })}
+                />
+                <SelectInputField 
+                    title={'Section'} 
+                    options={sections.map(s => ({ value: s._id, label: s.name }))}
+                    value={formData.section_id}
+                    setValue={(val) => setFormData({ ...formData, section_id: val })}
+                />
+             
+                  <div className="col-span-2">
+                    <InputField 
+                    title={'Subject Name'} 
+                    placeholder={'Enter subject name'} 
+                    value={formData.name}
+               setValue={(val) => setFormData({ ...formData, name: val })}
+                   />
+                  </div>
+
+                  <InputField 
+                    title={'Subject Code'} 
+                    placeholder={'Enter subject code'} 
+                    value={formData.code}
+                           setValue={(val) => setFormData({ ...formData, code: val })}
+                   />
+                
+              
+               <SelectInputField 
+                title={'Status'} 
+                options={[{value:"active", label: "Active"},{value:"inactive", label: "Inactive"}]}
+                value={formData.status}
+                setValue={(val) => setFormData({ ...formData, status: val })}
+               />
               </div>
+              <div className="flex items-end justify-end gap-4 mt-6">
+  <button
+                onClick={() => setIsModalOpen(false)}
+                className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer"
+              >
+                Cancel
+                </button>
+
+                   <button
+                onClick={handleAction}
+              className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
+              >
+                {modalType === "add" ? "Add Subject" : "Update Subject"}
+                </button>
+         </div>
             </div>
           </div>
         </div>

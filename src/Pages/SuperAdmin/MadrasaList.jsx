@@ -1,22 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Filter, MoreHorizontal, Eye, Edit, Trash2, ShieldCheck, ShieldAlert, Plus } from "lucide-react";
 import AddMadrasaModal from "../../components/AddMadrasaModal";
 import ViewMadrasaModal from "../../components/ViewMadrasaModal";
 import EditMadrasaModal from "../../components/EditMadrasaModal";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
-
-// Mock Data
-const allMadrasas = [
-  { id: 1, name: "Jamia Islamia Dhaka", address: "Mirpur-10, Dhaka", admin: "Mufti Rahman", email: "info@jamia.com", phone: "+8801711223344", students: 1250, status: "Active", plan: "Premium", location: "Dhaka" },
-  { id: 2, name: "Darul Uloom Chittagong", address: "Hathazari, Chittagong", admin: "Moulana Ahmed", email: "contact@darululoom.com", phone: "+8801811223344", students: 850, status: "Active", plan: "Standard", location: "Chittagong" },
-  { id: 3, name: "Madrasa Ayesha Siddiqa", address: "Zindabazar, Sylhet", admin: "Hafiz Karim", email: "admin@ayesha.com", phone: "+8801911223344", students: 320, status: "Pending", plan: "Basic", location: "Sylhet" },
-  { id: 4, name: "Al-Huda Institute", address: "Boalia, Rajshahi", admin: "Mufti Solaiman", email: "support@alhuda.com", phone: "+8801611223344", students: 450, status: "Active", plan: "Standard", location: "Rajshahi" },
-  { id: 5, name: "Nurul Quran Academy", address: "Mohammadpur, Dhaka", admin: "Moulana Yusuf", email: "info@nurulquran.com", phone: "+8801511223344", students: 120, status: "Suspended", plan: "Basic", location: "Dhaka" },
-  { id: 6, name: "Tamirul Millat", address: "Jatrabari, Dhaka", admin: "Dr. Abu Bakr", email: "admin@tamirul.com", phone: "+8801311223344", students: 2500, status: "Active", plan: "Premium", location: "Dhaka" },
-  { id: 7, name: "Jamia Hussainia", address: "Kandirpar, Comilla", admin: "Mufti Ilyas", email: "contact@hussainia.com", phone: "+8801411223344", students: 600, status: "Active", plan: "Standard", location: "Comilla" },
-];
+import adminService from "../../services/adminService";
 
 const MadrasaList = () => {
+  const [allMadrasas, setAllMadrasas] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,10 +19,26 @@ const MadrasaList = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  useEffect(() => {
+    fetchMadrasas();
+  }, []);
+
+  const fetchMadrasas = async () => {
+    try {
+      setLoading(true);
+      const data = await adminService.getMadrasas();
+      setAllMadrasas(data.data || []);
+    } catch (err) {
+      console.error("Failed to fetch madrasas", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Filter Logic
   const filteredMadrasas = allMadrasas.filter(madrasa => {
-    const matchesSearch = madrasa.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          madrasa.admin.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (madrasa.name?.toLowerCase().includes(searchTerm.toLowerCase())) || 
+                           (madrasa.admin?.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStatus = statusFilter === "All" || madrasa.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -160,7 +168,13 @@ const MadrasaList = () => {
       </div>
       
       {/* Modals */}
-      <AddMadrasaModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AddMadrasaModal 
+        isOpen={isModalOpen} 
+        onClose={() => {
+          setIsModalOpen(false);
+          fetchMadrasas();
+        }} 
+      />
       
       <ViewMadrasaModal 
         isOpen={isViewOpen} 
@@ -170,16 +184,24 @@ const MadrasaList = () => {
 
       <EditMadrasaModal 
         isOpen={isEditOpen} 
-        onClose={() => setIsEditOpen(false)} 
+        onClose={() => {
+          setIsEditOpen(false);
+          fetchMadrasas();
+        }} 
         madrasa={selectedMadrasa} 
       />
 
       <DeleteConfirmationModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        onDelete={() => {
-            // Mock Deletion logic
-            return new Promise(resolve => setTimeout(resolve, 1000));
+        onDelete={async () => {
+            try {
+                await adminService.deleteMadrasa(selectedMadrasa._id);
+                alert("Madrasa deleted successfully!");
+                fetchMadrasas();
+            } catch (err) {
+                alert(err.response?.data?.message || "Failed to delete madrasa.");
+            }
         }}
         itemName={selectedMadrasa?.name}
       />

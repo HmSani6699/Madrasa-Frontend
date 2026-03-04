@@ -58,10 +58,8 @@
     "subject": "Subject",
     "class_assign": "Class Assign",
     "class_schedule": "Class Schedule",
+    "class_syllabus": "Class Syllabus",
     "teacher_schedule": "Teacher Schedule",
-    "my_academic": "My Academic",
-    "my_schedule": "My Schedule",
-    "my_subjects": "My Subjects",
     "daily_attendance": "Daily Attendance",
 
     "homework": "Homework",
@@ -653,6 +651,7 @@
     "select_head": "Select Fee Head:",
     "set_amounts_for": "Set Amounts for {{name}}",
     "set_amounts_desc": "Enter the amount applicable for each class. Use 0 if not applicable.",
+    "per_exam": "Per Exam",
     "save_changes": "Save Changes"
   },
   "fee_report": {

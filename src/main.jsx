@@ -8,11 +8,14 @@ import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { PortalSettingsProvider } from "./context/PortalSettingsContext";
 
+import { Toaster } from "react-hot-toast";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
       <ThemeProvider>
         <PortalSettingsProvider>
+          <Toaster position="top-right" reverseOrder={false} />
           <RouterProvider router={router} />
         </PortalSettingsProvider>
       </ThemeProvider>

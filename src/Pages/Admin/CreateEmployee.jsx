@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   User,
@@ -28,6 +28,10 @@ import {
   Upload,
   Image as ImageIcon,
 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
+import SelectInputField from "../../components/SelectInputField";
+import InputField from "../../components/InputField";
 
 /**
  * CreateEmployee Component
@@ -36,13 +40,47 @@ import {
  */
 const CreateEmployee = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [designations, setDesignations] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const  desigsRes = await axiosInstance.get("/v1/designations")
+        if (desigsRes?.data?.success) setDesignations(desigsRes?.data?.data);
+      } catch (err) {
+        console.error("Error fetching dynamic data:", err);
+      }
+    };
+    fetchData();
+  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [deptsRes, desigsRes] = await Promise.all([
+  //         // axiosInstance.get("/v1/departments"),
+  //         axiosInstance.get("/v1/designations")
+  //       ]);
+
+  //       console.log(desigsRes);
+        
+
+  //       // if (deptsRes.data.success) setDepartments(deptsRes.data.data);
+  //       if (desigsRes?.data?.success) setDesignations(desigsRes?.data?.data);
+  //     } catch (err) {
+  //       console.error("Error fetching dynamic data:", err);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
   const [formData, setFormData] = useState({
     // Academic Details
     role: "Admin",
     joinDate: "2026-01-08",
     designation: "",
     department: "Administrator",
-    qualification: "",
     qualification: "",
     totalExperience: "",
 
@@ -91,13 +129,102 @@ const CreateEmployee = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const [params, setParams] = useState(new URLSearchParams(window.location.search));
+  const editId = params.get("id");
+
+  useEffect(() => {
+    const fetchEmployee = async () => {
+        if (!editId) return;
+        setLoading(true);
+        try {
+            const response = await axiosInstance.get(`/v1/staff/${editId}`);
+            if (response.data.success) {
+                const emp = response.data.data;
+                setFormData({
+                    role: emp.userId?.role ? emp.userId.role.charAt(0).toUpperCase() + emp.userId.role.slice(1) : "Staff",
+                    joinDate: emp.joinDate ? new Date(emp.joinDate).toISOString().split('T')[0] : "",
+                    designation: emp.designation,
+                    department: emp.department,
+                    qualification: emp.qualification || "",
+                    totalExperience: emp.totalExperience || "",
+                    name: emp.name,
+                    gender: emp.gender,
+                    bloodGroup: emp.bloodGroup,
+                    dob: emp.dob ? new Date(emp.dob).toISOString().split('T')[0] : "",
+                    phone: emp.phone,
+                    email: emp.userId?.email || "",
+                    address: emp.address,
+                    photo: emp.photo,
+                    password: "", // Don't pre-fill password
+                    confirmPassword: "",
+                    facebook: emp.socialLinks?.facebook || "",
+                    twitter: emp.socialLinks?.twitter || "",
+                    linkedin: emp.socialLinks?.linkedin || "",
+                    paymentMethod: emp.paymentDetails?.paymentMethod || "None",
+                    bankName: emp.paymentDetails?.bankName || "",
+                    holderName: emp.paymentDetails?.holderName || "",
+                    bankBranch: emp.paymentDetails?.bankBranch || "",
+                    bankAddress: emp.paymentDetails?.bankAddress || "",
+                    ifscCode: emp.paymentDetails?.ifscCode || "",
+                    accountNo: emp.paymentDetails?.accountNo || "",
+                    mobileMethods: emp.paymentDetails?.mobileMethods || [],
+                    mobileNumber: emp.paymentDetails?.mobileNumber || ""
+                });
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to fetch employee details");
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchEmployee();
+  }, [editId]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting Employee Data:", formData);
-    // In a real app, this would be an API call
-    alert("Employee created successfully!");
-    navigate("/admin/employee/list");
+    if (!editId && formData.password !== formData.confirmPassword) {
+      return toast.error("Passwords do not match");
+    }
+    setLoading(true);
+
+    try {
+      const payload = {
+        ...formData,
+        paymentMethod: formData.paymentMethod,
+        bankDetails: {
+          bankName: formData.bankName,
+          holderName: formData.holderName,
+          bankBranch: formData.bankBranch,
+          bankAddress: formData.bankAddress,
+          ifscCode: formData.ifscCode,
+          accountNo: formData.accountNo
+        }
+      };
+      
+      let response;
+      if (editId) {
+          response = await axiosInstance.put(`/v1/staff/${editId}`, payload);
+      } else {
+          response = await axiosInstance.post("/v1/staff", payload);
+      }
+
+      if (response.data.success) {
+        toast.success(editId ? "Employee updated successfully!" : "Employee created successfully!");
+        navigate("/admin/employee/list");
+      }
+    } catch (err) {
+      console.error("Employee save error:", err);
+      toast.error(err.response?.data?.message || err.response?.data?.error || "Failed to save employee");
+    } finally {
+      setLoading(false);
+    }
   };
+
+
+
+  console.log(designations);
+  
 
   return (
     <div className="min-h-screen bg-slate-50 p-5 animate-in fade-in duration-700">
@@ -144,12 +271,13 @@ const CreateEmployee = () => {
             <FormSelect
               label="Role"
               field="role"
-              options={["Teacher", "Talimat", "Accountant", "Staff"]}
+              options={["Select", "Teacher", "Talimat", "Accountant", "Staff"]}
               data={formData}
               setter={handleInputChange}
               required
-              icon={ShieldCheck}
+              icon={Briefcase}
             />
+
             <FormInput
               label="Joining Date"
               field="joinDate"
@@ -159,40 +287,44 @@ const CreateEmployee = () => {
               required
               icon={Calendar}
             />
+
             <FormSelect
               label="Designation"
               field="designation"
-              options={["Select", "Head Teacher", "Accountant", "Clerk"]}
+              options={["Select", ...designations.map(d => d.title || d.name || d._id)]}
               data={formData}
               setter={handleInputChange}
               required
               icon={Briefcase}
             />
-            {/* <FormSelect
+            
+            <FormSelect
               label="Department"
               field="department"
-              options={["Administrator", "Academic", "Maintenance"]}
+              options={["Select", ...departments.map(d => d.name || d.title || d._id)]}
               data={formData}
               setter={handleInputChange}
-              required
+             
               icon={Building2}
-            /> */}
+            />
+
             <FormInput
               label="Qualification"
               field="qualification"
               data={formData}
               setter={handleInputChange}
-              icon={FileText}
-              placeholder={"Enter qualification"}
+              icon={GraduationCap}
+              placeholder="Enter Qualification"
             />
-            {/* <FormInput
+            
+            <FormInput
               label="Total Experience"
               field="totalExperience"
               data={formData}
               setter={handleInputChange}
               icon={Briefcase}
-              placeholder={"Enter Total Experience"}
-            /> */}
+              placeholder="e.g., 5 years"
+            />
           </div>
         </SectionContainer>
 

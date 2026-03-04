@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useParams, Link } from "react-router";
+import { useState, useMemo, useEffect } from "react";
+import { useParams, Link, useNavigate } from "react-router";
 import {
   User,
   Shield,
@@ -14,6 +14,7 @@ import {
   Printer,
   Edit2,
   CheckCircle,
+  CheckCircle2,
   Clock,
   AlertCircle,
   GraduationCap,
@@ -24,81 +25,59 @@ import {
   TrendingUp,
   CreditCard,
   X,
-  CheckCircle2,
   File,
-  DownloadIcon
+  DownloadIcon,
+  Loader2
 } from "lucide-react";
 import SelectInputField from "../../components/SelectInputField";
+import portalService from "../../services/portalService";
 
 const StudentProfile = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("summary");
   const [showEditModal, setShowEditModal] = useState(false);
   const [showToast, setShowToast] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [student, setStudent] = useState(null);
+
+  useEffect(() => {
+    fetchStudentProfile();
+  }, [id]);
+
+  const fetchStudentProfile = async () => {
+    try {
+      setLoading(true);
+      const data = await portalService.getStudentPortalData(id);
+      setStudent(data.data);
+    } catch (err) {
+      console.error("Failed to fetch student profile", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePrint = () => {
     window.print();
   };
 
-  // Sample Data (In a real app, this would be fetched based on :id)
-  const student = {
-    id: id || "STU2025001",
-    firstName: "মোহাম্মদ",
-    lastName: "রহমান",
-    gender: "Male",
-    class: "Class 5",
-    section: "Section A",
-    rollNo: "01",
-    phone: "01712345678",
-    email: "student1@example.com",
-    status: "active",
-    photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=STU1",
-    admissionDate: "2025-01-10",
-    bloodGroup: "A+",
-    religion: "Islam",
-    nationality: "Bangladeshi",
-    address: "House 12, Road 5, Dhanmondi, Dhaka",
-    guardian: {
-      father: {
-        name: "আব্দুল করিম",
-        phone: "01700000001",
-        occupation: "Businessman",
-        photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=Father1"
-      },
-      mother: {
-        name: "সালেহা বেগম",
-        phone: "01700000002",
-        occupation: "Housewife",
-        photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mother1"
-      }
-    },
-    academic: {
-      attendance: 94,
-      totalExams: 3,
-      avgGrade: "A+",
-      lastExam: "Mid-Term 2024",
-      lastGPA: "5.00",
-      marks: [
-        { subject: "Quran", marks: 98, grade: "A+" },
-        { subject: "Arabic", marks: 92, grade: "A+" },
-        { subject: "Hadith", marks: 95, grade: "A+" },
-        { subject: "Fiqh", marks: 88, grade: "A" },
-        { subject: "Math", marks: 85, grade: "A" }
-      ]
-    },
-    financial: {
-      totalFees: 24000,
-      paidFees: 18000,
-      pendingFees: 6000,
-      hangingStatus: "Partially Paid",
-      history: [
-        { id: "INV-001", date: "2025-01-05", amount: 6000, type: "Admission Fee", status: "Paid" },
-        { id: "INV-002", date: "2025-02-05", amount: 6000, type: "Monthly Fee (Jan)", status: "Paid" },
-        { id: "INV-003", date: "2025-03-05", amount: 6000, type: "Monthly Fee (Feb)", status: "Paid" },
-        { id: "INV-004", date: "2025-04-05", amount: 6000, type: "Monthly Fee (Mar)", status: "Pending" }
-      ]
-    }
-  };
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-10 h-10 animate-spin text-[#00bd7f]" />
+      </div>
+    );
+  }
+
+  if (!student) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
+        <AlertCircle className="w-12 h-12 text-rose-500" />
+        <h2 className="text-xl font-bold text-slate-800">Student Profile Not Found</h2>
+        <Link to="/admin/student/list" className="text-[#00bd7f] font-bold hover:underline">Back to Student List</Link>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: "summary", label: "Dashboard", icon: TrendingUp },
@@ -114,12 +93,12 @@ const StudentProfile = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link to="/admin/student/list">
-            <button className="p-2.5 bg-white border-2 border-slate-200 rounded-2xl hover:bg-slate-50 transition-all shadow-sm">
+            <button className="p-2.5 bg-white border-2 border-slate-200 rounded-[8px] hover:bg-slate-50 transition-all shadow-sm">
               <ChevronLeft className="w-5 h-5 text-slate-600" />
             </button>
           </Link>
           <div>
-            <h1 className="text-2xl font-black text-slate-800 tracking-tight">Student 360 View</h1>
+            <h1 className="text-2xl font-black text-slate-800 tracking-tight">Student Profile</h1>
             <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">ID: {student.id}</p>
           </div>
         </div>
@@ -132,17 +111,17 @@ const StudentProfile = () => {
             Print Profile
           </button> */}
           <button 
-            onClick={() => setShowEditModal(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#00bd7f] text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:scale-[1.02] transition-all"
+            onClick={() => navigate(`/admin/student/list`)}
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#00bd7f] text-white font-bold rounded-[8px] shadow-lg shadow-emerald-500/20 hover:scale-[1.02] transition-all cursor-pointer"
           >
-            <Edit2 className="w-4 h-4" />
-            Edit Profile
+            <User className="w-4 h-4" />
+            Student List
           </button>
         </div>
       </div>
 
       {/* Profile Header Card */}
-      <div className="bg-white rounded-[2rem] border-2 border-slate-200 p-6 sm:p-8 shadow-sm overflow-hidden relative">
+      <div className="bg-white rounded-[8px]  p-5 border-1 border-gray-200 sm:p-8 shadow-sm overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#e6f4ef] rounded-full -mr-32 -mt-32 opacity-50" />
         <div className="relative flex flex-col lg:flex-row items-center lg:items-start gap-8">
           <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-[2.5rem] border-4 border-white shadow-2xl overflow-hidden bg-slate-100 ring-8 ring-[#e6f4ef]">

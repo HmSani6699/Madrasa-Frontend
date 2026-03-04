@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import { Loader2, Save } from "lucide-react";
+import adminService from "../services/adminService";
 
 const EditMadrasaModal = ({ isOpen, onClose, madrasa }) => {
   const [formData, setFormData] = useState({
@@ -28,16 +29,19 @@ const EditMadrasaModal = ({ isOpen, onClose, madrasa }) => {
     }
   }, [madrasa]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API Create/Update
-    setTimeout(() => {
+    try {
+      await adminService.updateMadrasa(madrasa._id, formData);
       setLoading(false);
+      alert("Madrasa updated successfully!");
       onClose();
-      alert("Madrasa updated successfully (Simulated)");
-    }, 1500);
+    } catch (err) {
+      setLoading(false);
+      alert(err.response?.data?.message || "Failed to update madrasa.");
+    }
   };
 
   return (

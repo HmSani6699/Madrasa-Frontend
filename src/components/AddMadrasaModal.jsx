@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { Loader2, Plus } from "lucide-react";
+import adminService from "../services/adminService";
 
 const AddMadrasaModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -8,23 +9,49 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
     address: "",
     adminName: "",
     email: "",
+    adminPassword: "",
     phone: "",
-    plan: "standard" // basic, standard, premium
+    plan: "standard", // basic, standard, premium
+ 
   });
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Map frontend fields to backend expected names
+      const payload = {
+        madrasaName: formData.name,
+        address: formData.address,
+        adminName: formData.adminName,
+        adminEmail: formData.email,
+        adminPassword: formData.adminPassword,
+        phone: formData.phone,
+        plan: formData.plan,
+      
+      };
+
+      await adminService.createMadrasa(payload);
       setLoading(false);
       onClose();
       // Reset form
-      setFormData({ name: "", address: "", adminName: "", email: "", phone: "", plan: "standard" });
-      alert("Madrasa created successfully (Simulated)");
-    }, 1500);
+      setFormData({ 
+        name: "", 
+        address: "", 
+        adminName: "", 
+        email: "", 
+        adminPassword: "",
+        phone: "", 
+        plan: "standard",
+       
+      });
+      alert("Madrasa created successfully!");
+    } catch (err) {
+      setLoading(false);
+      alert(err.response?.data?.message || "Failed to create madrasa.");
+    }
   };
 
   return (
@@ -90,6 +117,18 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
             onChange={(e) => setFormData({...formData, email: e.target.value})}
           />
         </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Admin Password</label>
+          <input
+            type="password"
+            required
+            className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+            placeholder="Set a password for the admin"
+            value={formData.adminPassword}
+            onChange={(e) => setFormData({...formData, adminPassword: e.target.value})}
+          />
+        </div>
         
         <div>
            <label className="block text-sm font-medium text-gray-700 mb-1">Subscription Plan</label>
@@ -103,6 +142,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
                <option value="premium">Premium (Enterprise)</option>
            </select>
         </div>
+      
 
         <div className="pt-4 flex gap-3">
             <button 

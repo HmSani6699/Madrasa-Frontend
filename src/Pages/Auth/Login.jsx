@@ -7,8 +7,8 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    identifier: "muhtamim@mms.com",
-    password: "password",
+    identifier: "admin@gmail.com",
+    password: "123456",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,185 +18,29 @@ const Login = () => {
     setLoading(true);
     setError("");
 
-    // Simulate API Call
-    setTimeout(() => {
+    try {
       const { identifier, password } = formData;
+      const userData = await login(identifier, password);
 
-      if (
-        (identifier === "admin@mms.com" || identifier === "01700000000") &&
-        password === "password"
-      ) {
-        login({
-          name: "Super Admin",
-          email: "admin@mms.com",
-          phone: "01700000000",
-          role: "super_admin",
-        });
-        navigate("/super-admin");
-      } else if (
-        (identifier === "muhtamim@mms.com" || identifier === "01711111111") &&
-        password === "password"
-      ) {
-        const mockMadrasas = [
-          {
-            id: 1,
-            name: "Jamia Islamia Dhaka",
-            role: "admin",
-            logo: "https://ui-avatars.com/api/?name=JI&background=0D8ABC&color=fff",
-          },
-          {
-            id: 2,
-            name: "Al-Madina Institute",
-            role: "admin",
-            logo: "https://ui-avatars.com/api/?name=AM&background=22c55e&color=fff",
-          },
-        ];
-        login(
-          {
-            name: "Muhtamim",
-            email: "muhtamim@mms.com",
-            phone: "01711111111",
-            role: "admin",
-          },
-          mockMadrasas,
-        );
-        navigate("/admin");
-      } else if (
-        (identifier === "teacher@mms.com" || identifier === "01722222222") &&
-        password === "password"
-      ) {
-        login({
-          name: "Sheikh Abdullah",
-          email: "teacher@mms.com",
-          phone: "01722222222",
-          role: "teacher",
-        });
-        navigate("/teacher");
-      } else if (
-        (identifier === "student@mms.com" || identifier === "01733333333") &&
-        password === "password"
-      ) {
-        login({
-          name: "Abdullah Mamun",
-          email: "student@mms.com",
-          phone: "01733333333",
-          role: "student",
-        });
-        navigate("/student/dashboard");
-      } else if (
-        (identifier === "parent@mms.com" || identifier === "01744444444") &&
-        password === "password"
-      ) {
-        const mockChildren = [
-          {
-            id: 1,
-            name: "Abdullah Mamun",
-            class: "Mishkat (Sec A)",
-            attendance: "94%",
-            status: "Present",
-            dues: "৳ 2,500",
-            initials: "AM",
-            gender: "Male",
-            section: "Sec A",
-            roll: "042",
-            color: "bg-indigo-600",
-            lastActivity: "Submitted Homework: Arabic Nahw",
-            classTeacher: "Sheikh Abdullah",
-            schedule: [
-              {
-                period: "08:30 AM",
-                subject: "Al-Quran (Hifz)",
-                teacher: "Sheikh Abdullah",
-                room: "Hall 01",
-              },
-              {
-                period: "10:00 AM",
-                subject: "Arabic Nahw",
-                teacher: "Ustad Junaid",
-                room: "Room 105",
-              },
-              {
-                period: "12:00 PM",
-                subject: "Fiqh Basics",
-                teacher: "Mufti Omar",
-                room: "Main Room",
-              },
-            ],
-          },
-          {
-            id: 2,
-            name: "Zaid Bin Harith",
-            class: "Hifz (Sec B)",
-            attendance: "98%",
-            status: "Present",
-            dues: "৳ 1,200",
-            initials: "ZH",
-            gender: "Male",
-            section: "Sec B",
-            roll: "012",
-            color: "bg-emerald-600",
-            lastActivity: "New Grade Posted: Tajweed",
-            classTeacher: "Hafiz Kareem",
-            schedule: [
-              {
-                period: "07:00 AM",
-                subject: "Morning Hifz",
-                teacher: "Hafiz Kareem",
-                room: "Hall 02",
-              },
-              {
-                period: "09:30 AM",
-                subject: "Tajweed Rule",
-                teacher: "Qari Basit",
-                room: "Room 105",
-              },
-              {
-                period: "11:00 AM",
-                subject: "Islamic Manners",
-                teacher: "Ustad Ahmed",
-                room: "Hall 02",
-              },
-            ],
-          },
-        ];
-        login(
-          {
-            name: "Abdur Rahman",
-            email: "parent@mms.com",
-            phone: "01744444444",
-            role: "guardian",
-          },
-          [],
-          mockChildren,
-        );
-        navigate("/guardian/dashboard");
-      } else if (
-        (identifier === "accountant@mms.com" || identifier === "01755555555") &&
-        password === "password"
-      ) {
-        login({
-          name: "Accountant",
-          email: "accountant@mms.com",
-          phone: "01755555555",
-          role: "accountant",
-        });
-        navigate("/accounting");
-      } else if (
-        (identifier === "talimat@mms.com" || identifier === "01766666666") &&
-        password === "password"
-      ) {
-        login({
-          name: "Education Secretary",
-          email: "talimat@mms.com",
-          phone: "01766666666",
-          role: "talimat",
-        });
-        navigate("/talimat");
-      } else {
-        setError("Invalid credentials (try admin@mms.com or 01700000000)");
-        setLoading(false);
-      }
-    }, 1500);
+      // Redirect based on role
+      const roleRedirects = {
+        super_admin: "/super-admin",
+        admin: "/admin",
+        teacher: "/teacher",
+        student: "/student/dashboard",
+        guardian: "/guardian/dashboard",
+        accountant: "/accounting",
+        talimat: "/talimat",
+        mohtamim: "/admin", // Assuming mohtamim uses admin panel
+      };
+
+      const redirectPath = roleRedirects[userData.role] || "/";
+      navigate(redirectPath);
+    } catch (err) {
+      setError(err.response?.data?.message || err.response?.data?.error || "Login failed. Please check your credentials.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

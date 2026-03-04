@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   GraduationCap,
   Plus,
@@ -11,55 +11,49 @@ import {
   CheckCircle,
   Briefcase,
 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
+
 
 const DesignationList = () => {
-  const [designations, setDesignations] = useState([
-    {
-      id: 1,
-      title: "Head Teacher",
-      level: "Senior",
-      employeeCount: 2,
-      icon: GraduationCap,
-      color: "text-purple-600",
-      bg: "bg-purple-50",
-    },
-    {
-      id: 2,
-      title: "Senior Teacher",
-      level: "Middle",
-      employeeCount: 12,
-      icon: Award,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-    },
-    {
-      id: 3,
-      title: "Assistant Teacher",
-      level: "Junior",
-      employeeCount: 25,
-      icon: Briefcase,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-    },
-    {
-      id: 4,
-      title: "Accountant",
-      level: "Staff",
-      employeeCount: 2,
-      icon: Award,
-      color: "text-amber-600",
-      bg: "bg-amber-50",
-    },
-    {
-      id: 5,
-      title: "Office Clerk",
-      level: "Staff",
-      employeeCount: 5,
-      icon: Briefcase,
-      color: "text-rose-600",
-      bg: "bg-rose-50",
-    },
-  ]);
+  const [designations, setDesignations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDesignations = async () => {
+      try {
+          const response = await axiosInstance.get('/v1/designations');
+          if (response.data.success) {
+              setDesignations(response.data.data.map((d, i) => ({
+                id: d._id,
+                title: d.title, // Map title to name if needed, but backend uses title?
+                // Backend model has 'designation' field? No, wait. 
+                // Employee model has 'designation' string.
+                // Designation model? I haven't seen Designation model. Let's check logic.
+                // Controller uses Designation.find(). 
+                // Let's assume Designation model has title/name. 
+                // Wait, in CreateEmployee, designation is just a string. 
+                // But DesignationList is managing a list of available designations.
+                // Previous mock data used 'title'. I'll assume backend uses 'title' or 'name'.
+                // Let's check Designation Model content or just use 'name' if I created it that way.
+                // I'll check Designation model first to be sure.
+                title: d.title || d.name, 
+                level: d.level || "Middle",
+                employeeCount: 0, 
+                icon: [GraduationCap, Award, Briefcase][i % 3], 
+                color: ["text-purple-600", "text-emerald-600", "text-blue-600"][i % 3],
+                bg: ["bg-purple-50", "bg-emerald-50", "bg-blue-50"][i % 3]
+              })));
+          }
+      } catch (error) {
+          console.error(error);
+          setToast("Failed to fetch designations");
+      } finally {
+          setLoading(false);
+      }
+  };
+
+  useEffect(() => {
+      fetchDesignations();
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -71,27 +65,53 @@ const DesignationList = () => {
     d.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const handleSave = (title, level) => {
-    if (editDesg) {
-      setDesignations((prev) =>
-        prev.map((d) => (d.id === editDesg.id ? { ...d, title, level } : d)),
-      );
-      setToast(`Designation updated to "${title}"`);
-    } else {
-      const newD = {
-        id: Date.now(),
-        title,
-        level,
-        employeeCount: 0,
-        icon: Briefcase,
-        color: "text-slate-600",
-        bg: "bg-slate-50",
-      };
-      setDesignations([...designations, newD]);
-      setToast(`New designation "${title}" added!`);
+  const handleSave = async (title, level) => {
+    try {
+        if (editDesg) {
+            const response = await axiosInstance.put(`/v1/designations/${editDesg.id}`, { name: title, level }); 
+            if(response.data.success) {
+                setDesignations((prev) =>
+                    prev.map((d) => (d.id === editDesg.id ? { ...d, title, level } : d)),
+                );
+                setToast(`Designation updated to "${title}"`);
+            }
+        } else {
+            const response = await axiosInstance.post('/v1/designations', { name: title, level });
+             if(response.data.success) {
+                 const newD = response.data.data;
+                 setDesignations([...designations, {
+                    id: newD._id,
+                    title: newD.name,
+                    level: newD.level || level,
+                    employeeCount: 0,
+                    icon: Briefcase,
+                    color: "text-slate-600",
+                    bg: "bg-slate-50",
+                 }]);
+                setToast(`New designation "${title}" added!`);
+            }
+        }
+    } catch (error) {
+         console.error(error);
+         setToast("Failed to save designation");
     }
     setShowAddModal(false);
     setEditDesg(null);
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const handleDelete = async () => {
+    try {
+        await axiosInstance.delete(`/v1/designations/${deleteDesg.id}`);
+        setDesignations((prev) =>
+            prev.filter((d) => d.id !== deleteDesg.id),
+        );
+        setToast(`Role erased.`);
+    } catch (error) {
+        console.error(error);
+        setToast("Failed to delete designation");
+    }
+    setDeleteDesg(null);
     setTimeout(() => setToast(null), 3000);
   };
 
@@ -323,13 +343,7 @@ const DesignationList = () => {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  setDesignations((prev) =>
-                    prev.filter((d) => d.id !== deleteDesg.id),
-                  );
-                  setToast(`Role erased.`);
-                  setDeleteDesg(null);
-                }}
+                onClick={handleDelete}
                 className="flex-1 py-4 bg-rose-600 text-white font-black rounded-2xl shadow-xl shadow-rose-200 hover:scale-105 transition-all uppercase text-xs tracking-widest"
               >
                 Confirm

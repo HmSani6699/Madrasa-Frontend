@@ -3,14 +3,12 @@ import {
   Plus,
   Search,
   UserPlus,
-  Users,
   School,
   Edit3,
   Trash2,
   UserCheck,
   Mail,
   Phone,
-  ArrowRight,
   MoreHorizontal,
   X,
   AlertCircle,
@@ -19,9 +17,18 @@ import {
   CheckCircle2,
   Filter,
 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const AssignTeacher = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // Data States
+  const [assignments, setAssignments] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [teachers, setTeachers] = useState([]);
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,47 +44,57 @@ const AssignTeacher = () => {
 
   // Form States
   const [formData, setFormData] = useState({
-    className: "Class 5",
-    section: "Section A",
-    teacherName: "মাওলানা আব্দুল করিম",
-    email: "",
-    phone: "",
-    experience: "5 Years",
+    classId: "",
+    sectionId: "",
+    teacherId: "",
   });
 
-  // Sample Data: Teacher Assignments
-  const [assignments, setAssignments] = useState([
-    {
-      id: 1,
-      className: "Class 5",
-      section: "Section A",
-      teacherName: "মাওলানা আব্দুল করিম",
-      email: "karim@mms.edu",
-      phone: "01712345678",
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP1",
-      experience: "12 Years",
-    },
-    {
-      id: 2,
-      className: "Class 6",
-      section: "Section B",
-      teacherName: "হাফেজ মোহাম্মদ আলী",
-      email: "ali@mms.edu",
-      phone: "01823456789",
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP2",
-      experience: "8 Years",
-    },
-    {
-      id: 3,
-      className: "Hifz Class",
-      section: "Evening",
-      teacherName: "মাওলানা ইউসুফ আলী",
-      email: "yusuf@mms.edu",
-      phone: "01934567890",
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP3",
-      experience: "15 Years",
-    },
-  ]);
+  // Fetch Data
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [classesRes, sectionsRes, teachersRes] = await Promise.all([
+        axiosInstance.get("/v1/classes"),
+        axiosInstance.get("/v1/sections"),
+        axiosInstance.get("/v1/staff?role=teacher"), 
+      ]);
+
+      if (classesRes.data.success) setClasses(classesRes.data.data);
+      if (teachersRes.data.success) setTeachers(teachersRes.data.data);
+      
+      if (sectionsRes.data.success) {
+        const allSections = sectionsRes.data.data;
+        setSections(allSections);
+        // Filter sections that have a classTeacher assigned for the list
+        const assignedSections = allSections.filter(s => s.classTeacher);
+        setAssignments(assignedSections.map(s => ({
+          id: s._id,
+          className: s.classId?.name || "Unknown Class",
+          section: s.name,
+          teacherName: s.classTeacher?.name,
+          email: s.classTeacher?.email,
+          phone: s.classTeacher?.phone || s.classTeacher?.mobile,
+          photo: s.classTeacher?.photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${s.classTeacher?._id}`,
+          experience: s.classTeacher?.designation || "Teacher", // Using designation as fallback
+          teacherId: s.classTeacher?._id,
+          classId: s.classId?._id,
+          sectionId: s._id
+        })));
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      toast.error("Failed to fetch data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Filter sections based on selected class in form
+  const filteredSections = sections.filter(s => s.classId?._id === formData.classId);
 
   // Click Outside for menu
   useEffect(() => {
@@ -100,12 +117,9 @@ const AssignTeacher = () => {
   const openEditModal = (as) => {
     setSelectedAssignment(as);
     setFormData({
-      className: as.className,
-      section: as.section,
-      teacherName: as.teacherName,
-      email: as.email,
-      phone: as.phone,
-      experience: as.experience,
+      classId: as.classId,
+      sectionId: as.sectionId,
+      teacherId: as.teacherId,
     });
     setModalType("edit");
     setIsModalOpen(true);
@@ -118,47 +132,62 @@ const AssignTeacher = () => {
     setActiveMenuId(null);
   };
 
-  const handleAction = () => {
-    if (modalType === "add") {
-      const newAs = {
-        id: Date.now(),
-        ...formData,
-        photo: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Date.now()}`,
-      };
-      setAssignments([...assignments, newAs]);
-    } else {
-      setAssignments(
-        assignments.map((a) =>
-          a.id === selectedAssignment.id ? { ...a, ...formData } : a,
-        ),
-      );
+  const handleAction = async () => {
+    try {
+        if (!formData.sectionId || !formData.teacherId) {
+            toast.error("Please select section and teacher");
+            return;
+        }
+
+        // We are updating the SECTION to add the classTeacher
+        const response = await axiosInstance.put(`/v1/sections/${formData.sectionId}`, {
+            classTeacher: formData.teacherId
+        });
+
+        if (response.data.success) {
+            toast.success(modalType === "add" ? "Teacher Assigned Successfully" : "Assignment Updated");
+            fetchData();
+            setIsModalOpen(false);
+            resetForm();
+        }
+    } catch (err) {
+        console.error("Error saving assignment:", err);
+        toast.error("Failed to save assignment");
     }
-    setIsModalOpen(false);
-    resetForm();
   };
 
-  const handleDelete = () => {
-    setAssignments(assignments.filter((a) => a.id !== selectedAssignment.id));
-    setIsDeleteModalOpen(false);
-    setSelectedAssignment(null);
+  const handleDelete = async () => {
+    try {
+        // Unassign teacher (set classTeacher to null)
+        const response = await axiosInstance.put(`/v1/sections/${selectedAssignment.sectionId}`, {
+            classTeacher: null
+        });
+
+        if (response.data.success) {
+            toast.success("Teacher Unassigned Successfully");
+            fetchData();
+            setIsDeleteModalOpen(false);
+            setSelectedAssignment(null);
+        }
+    } catch (err) {
+        console.error("Error removing assignment:", err);
+        toast.error("Failed to remove assignment");
+    }
   };
 
   const resetForm = () => {
     setFormData({
-      className: "Class 5",
-      section: "Section A",
-      teacherName: "মাওলানা আব্দুল করিম",
-      email: "",
-      phone: "",
-      experience: "5 Years",
+      classId: "",
+      sectionId: "",
+      teacherId: "",
     });
     setSelectedAssignment(null);
   };
 
   const filteredAssignments = assignments.filter(
     (as) =>
-      as.teacherName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      as.className.toLowerCase().includes(searchTerm.toLowerCase()),
+      as.teacherName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      as.className?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -181,7 +210,7 @@ const AssignTeacher = () => {
 
         <button
           onClick={openAddModal}
-          className="w-full md:w-auto px-8 py-4 bg-[#00bd7f] text-white rounded-2xl font-blackshadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02]  active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer"
+          className="w-full md:w-auto px-8 py-4 bg-[#00bd7f] text-white rounded-2xl font-black shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer"
         >
           <UserPlus className="w-5 h-5" />
           New Assignment
@@ -227,6 +256,12 @@ const AssignTeacher = () => {
       </div>
 
       {/* Assignment Grid */}
+      {loading ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-20">
+            <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-slate-500 font-bold">Loading assignments...</p>
+          </div>
+      ) : (
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
         {filteredAssignments.map((as) => (
           <div
@@ -286,7 +321,7 @@ const AssignTeacher = () => {
                   </h3>
                   <div className="flex items-center gap-2 mt-2">
                     <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest rounded-full border border-emerald-100">
-                      {as.experience} Exp
+                      {as.experience}
                     </span>
                     <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[9px] font-black uppercase tracking-widest rounded-full border border-blue-100">
                       Top Rated
@@ -358,6 +393,7 @@ const AssignTeacher = () => {
           </p>
         </button>
       </div>
+      )}
 
       {/* Add/Edit Modal */}
       {isModalOpen && (
@@ -387,16 +423,16 @@ const AssignTeacher = () => {
                     Target Class
                   </label>
                   <select
-                    value={formData.className}
+                    value={formData.classId}
                     onChange={(e) =>
-                      setFormData({ ...formData, className: e.target.value })
+                      setFormData({ ...formData, classId: e.target.value })
                     }
                     className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none appearance-none"
                   >
-                    <option>Class 5</option>
-                    <option>Class 6</option>
-                    <option>Class 7</option>
-                    <option>Hifz Class</option>
+                    <option value="">Select Class</option>
+                    {classes.map(c => (
+                        <option key={c._id} value={c._id}>{c.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -404,16 +440,17 @@ const AssignTeacher = () => {
                     Academic Section
                   </label>
                   <select
-                    value={formData.section}
+                    value={formData.sectionId}
                     onChange={(e) =>
-                      setFormData({ ...formData, section: e.target.value })
+                      setFormData({ ...formData, sectionId: e.target.value })
                     }
                     className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none appearance-none"
+                    disabled={!formData.classId}
                   >
-                    <option>Section A</option>
-                    <option>Section B</option>
-                    <option>Morning</option>
-                    <option>Evening</option>
+                    <option value="">Select Section</option>
+                    {filteredSections.map(s => (
+                        <option key={s._id} value={s._id}>{s.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="space-y-2 col-span-2">
@@ -421,15 +458,16 @@ const AssignTeacher = () => {
                     Designated Teacher
                   </label>
                   <select
-                    value={formData.teacherName}
+                    value={formData.teacherId}
                     onChange={(e) =>
-                      setFormData({ ...formData, teacherName: e.target.value })
+                      setFormData({ ...formData, teacherId: e.target.value })
                     }
                     className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-blue-500 outline-none appearance-none"
                   >
-                    <option>মাওলানা আব্দুল করিম</option>
-                    <option>হাফেজ মোহাম্মদ আলী</option>
-                    <option>মাওলানা ইউসুফ আলী</option>
+                    <option value="">Select Teacher</option>
+                    {teachers.map(t => (
+                        <option key={t._id} value={t._id}>{t.name} ({t.employeeID})</option>
+                    ))}
                   </select>
                 </div>
               </div>

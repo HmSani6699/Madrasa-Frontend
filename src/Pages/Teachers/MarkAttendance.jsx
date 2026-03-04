@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   UserCheck, 
   Search, 
@@ -14,8 +14,10 @@ import {
   X,
   FileCheck,
   MoreVertical,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from "lucide-react";
+import teacherService from "../../services/teacherService";
 
 const MarkAttendance = () => {
   const [attendance, setAttendance] = useState({});
@@ -23,16 +25,24 @@ const MarkAttendance = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const students = [
-    { id: 101, name: "Abdullah Al Mamun", roll: 1, avatar: "AM" },
-    { id: 102, name: "Zaid Bin Harith", roll: 2, avatar: "ZH" },
-    { id: 103, name: "Omar Faruk", roll: 3, avatar: "OF" },
-    { id: 104, name: "Saeed Mohsen", roll: 4, avatar: "SM" },
-    { id: 105, name: "Hamza Bin Abdul Mutattalib", roll: 5, avatar: "HB" },
-    { id: 106, name: "Usman Ghani", roll: 6, avatar: "UG" },
-    { id: 107, name: "Ali Ibn Abi Talib", roll: 7, avatar: "AT" },
-  ];
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const fetchStudents = async () => {
+    try {
+      setLoading(true);
+      const data = await teacherService.getStudents();
+      setStudents(data.data || []);
+    } catch (err) {
+      console.error("Failed to fetch students", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleStatusChange = (studentId, status) => {
     setAttendance(prev => ({ ...prev, [studentId]: status }));
@@ -41,25 +51,39 @@ const MarkAttendance = () => {
   const handleBatchAction = (status) => {
     const newAttendance = {};
     students.forEach(s => {
-      newAttendance[s.id] = status;
+      newAttendance[s._id || s.id] = status;
     });
     setAttendance(newAttendance);
   };
 
-  const handleFinalSubmit = () => {
+  const handleFinalSubmit = async () => {
     setShowConfirm(false);
     setIsSubmitting(true);
-    // Simulate API delay
-    setTimeout(() => {
-       setIsSubmitting(false);
-       setIsSuccess(true);
-       setTimeout(() => setIsSuccess(false), 3000);
-    }, 2000);
+    
+    try {
+      // Prepare attendance data
+      const attendanceData = Object.entries(attendance).map(([studentId, status]) => ({
+        student: studentId,
+        status: status,
+        date: new Date().toISOString().split('T')[0]
+      }));
+
+      // In a real app, we might send them all together or loop
+      // Assuming teacherService.markAttendance handles the array or single
+      await teacherService.markAttendance({ records: attendanceData });
+      
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      setTimeout(() => setIsSuccess(false), 3000);
+    } catch (err) {
+      setIsSubmitting(false);
+      alert(err.response?.data?.error || "Failed to submit attendance.");
+    }
   };
 
   const filteredStudents = students.filter(s => 
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    s.roll.toString().includes(searchQuery)
+    (s.roll && s.roll.toString().includes(searchQuery))
   );
 
   const presentCount = Object.values(attendance).filter(v => v === 'present').length;
@@ -123,29 +147,29 @@ const MarkAttendance = () => {
 
         {/* Attendance Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
-           {filteredStudents.map((student) => (
-             <div key={student.id} className="bg-white rounded-[20px] p-5 md:p-5 border border-slate-200 shadow-sm transition-all hover:border-emerald-200 group relative overflow-hidden">
+       {filteredStudents.map((student) => (
+             <div key={student._id || student.id} className="bg-white rounded-[20px] p-5 md:p-5 border border-slate-200 shadow-sm transition-all hover:border-emerald-200 group relative overflow-hidden">
                 <div className={`absolute top-0 right-0 w-2 h-full transition-all ${
-                   attendance[student.id] === 'present' ? 'bg-emerald-500' : 
-                   attendance[student.id] === 'absent' ? 'bg-rose-500' : 
-                   attendance[student.id] === 'late' ? 'bg-amber-500' : 'bg-transparent'
+                   attendance[student._id || student.id] === 'present' ? 'bg-emerald-500' : 
+                   attendance[student._id || student.id] === 'absent' ? 'bg-rose-500' : 
+                   attendance[student._id || student.id] === 'late' ? 'bg-amber-500' : 'bg-transparent'
                 }`}></div>
 
                 <div className="flex items-center gap-4 md:gap-6 mb-8">
                    <div className="w-12 h-12 md:w-16 md:h-16 bg-slate-100 rounded-xl md:rounded-3xl flex items-center justify-center font-black text-slate-400 text-lg md:text-xl border-4 border-white shadow-lg group-hover:scale-110 transition-transform uppercase shrink-0">
-                      {student.avatar}
+                      {student.avatar || student.name?.charAt(0)}
                    </div>
                    <div className="min-w-0">
                       <h4 className="text-base md:text-lg font-black text-slate-800 uppercase tracking-tight leading-none mb-1 md:mb-2 truncate">{student.name}</h4>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">Roll: {student.roll} | ID: {student.id}</p>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">Roll: {student.roll || 'N/A'} | ID: {student.studentId || (student._id || student.id).slice(-5)}</p>
                    </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2 md:gap-3">
                    <button 
-                     onClick={() => handleStatusChange(student.id, 'present')}
+                     onClick={() => handleStatusChange(student._id || student.id, 'present')}
                      className={`flex flex-col items-center gap-2 py-3 md:py-4 rounded-xl md:rounded-2xl border transition-all ${
-                       attendance[student.id] === 'present' 
+                       attendance[student._id || student.id] === 'present' 
                          ? 'bg-emerald-500 text-white border-emerald-600 shadow-lg shadow-emerald-100' 
                          : 'bg-slate-50 text-slate-400 border-slate-50 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100'
                      }`}
@@ -154,9 +178,9 @@ const MarkAttendance = () => {
                       <span className="text-[9px] font-black uppercase tracking-widest">Present</span>
                    </button>
                    <button 
-                     onClick={() => handleStatusChange(student.id, 'absent')}
+                     onClick={() => handleStatusChange(student._id || student.id, 'absent')}
                      className={`flex flex-col items-center gap-2 py-3 md:py-4 rounded-xl md:rounded-2xl border transition-all ${
-                       attendance[student.id] === 'absent' 
+                       attendance[student._id || student.id] === 'absent' 
                          ? 'bg-rose-500 text-white border-rose-600 shadow-lg shadow-rose-100' 
                          : 'bg-slate-50 text-slate-400 border-slate-50 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-100'
                      }`}
@@ -165,9 +189,9 @@ const MarkAttendance = () => {
                       <span className="text-[9px] font-black uppercase tracking-widest">Absent</span>
                    </button>
                    <button 
-                     onClick={() => handleStatusChange(student.id, 'late')}
+                     onClick={() => handleStatusChange(student._id || student.id, 'late')}
                      className={`flex flex-col items-center gap-2 py-3 md:py-4 rounded-xl md:rounded-2xl border transition-all ${
-                       attendance[student.id] === 'late' 
+                       attendance[student._id || student.id] === 'late' 
                          ? 'bg-amber-500 text-white border-amber-600 shadow-lg shadow-amber-100' 
                          : 'bg-slate-50 text-slate-400 border-slate-50 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-100'
                      }`}
@@ -207,13 +231,13 @@ const MarkAttendance = () => {
               </div>
 
               <div className="flex gap-4 w-full sm:w-auto relative z-10">
-                 <button 
-                  onClick={() => setShowConfirm(true)}
-                  disabled={Object.keys(attendance).length === 0}
-                  className="flex-1 sm:flex-none px-10 py-4 bg-emerald-500 text-white rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-[2px] hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 hover:scale-[1.05] active:scale-95 disabled:opacity-50 disabled:grayscale disabled:scale-100"
-                 >
-                    Confirm Submission
-                 </button>
+                  <button 
+                   onClick={() => setShowConfirm(true)}
+                   disabled={Object.keys(attendance).length === 0 || isSubmitting}
+                   className="flex-1 sm:flex-none px-10 py-4 bg-emerald-500 text-white rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-[2px] hover:bg-emerald-600 transition-all shadow-xl shadow-emerald-500/20 hover:scale-[1.05] active:scale-95 disabled:opacity-50 disabled:grayscale disabled:scale-100 flex items-center gap-2"
+                  >
+                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm Submission"}
+                  </button>
               </div>
            </div>
         </div>

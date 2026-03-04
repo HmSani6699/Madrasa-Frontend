@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { 
   Search, 
   Filter, 
@@ -16,26 +16,134 @@ import {
   Save,
   Info
 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const StudentAttendance = () => {
   const [attendanceMode, setAttendanceMode] = useState("manual"); // "manual" or "biometric"
-  const [selectedClass, setSelectedClass] = useState("Class 5");
-  const [selectedSection, setSelectedSection] = useState("Section A");
+  const [selectedClassId, setSelectedClassId] = useState("");
+  const [selectedSectionId, setSelectedSectionId] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [searchTerm, setSearchTerm] = useState("");
+  
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [attendanceData, setAttendanceData] = useState({});
 
-  // Sample Data
-  const students = [
-    { id: "STU2025001", name: "মোহাম্মদ রহমান", roll: "01", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=STU1" },
-    { id: "STU2025002", name: "আয়েশা খাতুন", roll: "02", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=STU2" },
-    { id: "STU2025003", name: "ইউসুফ হোসেন", roll: "03", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=STU3" },
-    { id: "STU2025004", name: "ফাতিমা জোহরা", roll: "04", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=STU4" },
-    { id: "STU2025005", name: "আব্দুল্লাহ মামুন", roll: "05", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=STU5" },
-  ];
+  // Fetch Classes and Sections on mount
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const [classesRes, sectionsRes] = await Promise.all([
+          axiosInstance.get("/v1/classes"),
+          axiosInstance.get("/v1/sections")
+        ]);
+        if (classesRes.data.success) {
+            setClasses(classesRes.data.data);
+            if (classesRes.data.data.length > 0) {
+                setSelectedClassId(classesRes.data.data[0]._id);
+            }
+        }
+        if (sectionsRes.data.success) setSections(sectionsRes.data.data);
+      } catch (err) {
+        console.error("Error fetching initial data:", err);
+        toast.error("Failed to load classes/sections");
+      }
+    };
+    fetchInitialData();
+  }, []);
 
-  const [attendanceData, setAttendanceData] = useState(
-    students.reduce((acc, student) => ({ ...acc, [student.id]: "present" }), {})
-  );
+  // Filter sections by class
+  const filteredSections = useMemo(() => {
+      if (!selectedClassId) return [];
+      return sections.filter(s => s.classId?._id === selectedClassId || s.classId === selectedClassId);
+  }, [sections, selectedClassId]);
+
+  // Auto-select first section when class changes
+  useEffect(() => {
+      if (filteredSections.length > 0 && !filteredSections.find(s => s._id === selectedSectionId)) {
+          setSelectedSectionId(filteredSections[0]._id);
+      }
+  }, [filteredSections]);
+
+  const fetchData = async () => {
+    if (!selectedClassId || !selectedSectionId) return;
+
+    setLoading(true);
+    try {
+      // 1. Fetch Students
+      const studentsRes = await axiosInstance.get("/v1/students", {
+        params: {
+          class: selectedClassId,  // backend expects ID usually, if passing name need to check controller
+          section: selectedSectionId
+        }
+      });
+
+      // 2. Fetch Existing Attendance
+      const attendanceRes = await axiosInstance.get("/v1/attendance/report", {
+          params: {
+              date: selectedDate,
+              class_id: selectedClassId,
+              section_id: selectedSectionId,
+              type: "student"
+          }
+      });
+
+      if (studentsRes.data.success) {
+        const studentList = studentsRes.data.data;
+        setStudents(studentList);
+        
+        // Default: Mark everyone present if no record exists
+        let newAttendanceData = {};
+        
+        // If attendance exists, map it
+        if (attendanceRes.data.success && attendanceRes.data.data.length > 0) {
+            // Assuming backend returns array of { studentId, status, ... }
+            // Or maybe it returns a single document with an array of records? 
+            // Let's assume the controller returns a list of attendance records for that day/class/section
+            // We need to map it carefully.
+            
+            // Wait, looking at common patterns, likely it returns a list of records where each record is specific to a student?
+            // OR one record for the class? 
+            // Let's assume it returns a list of students with their attendance status appended, OR a list of attendance documents.
+            // If the backend `getStudentAttendance` returns the Attendance document(s).
+            
+            // If I look at `attendanceController.js` (I haven't viewed it, but I can guess or assume standard behavior). 
+            // Standard behavior: returns list of { studentId, status }
+            
+            // Let's handle the case where we get a list of records.
+            const records = attendanceRes.data.data;
+            // Create a lookup
+            const statusMap = {};
+            records.forEach(r => {
+                if (r.student_id) statusMap[r.student_id._id || r.student_id] = r.status.toLowerCase();
+            });
+            
+            studentList.forEach(s => {
+                newAttendanceData[s._id] = statusMap[s._id] || "present"; // Default to present if student exists but no record (maybe new student)
+            });
+            
+        } else {
+             studentList.forEach(s => {
+                newAttendanceData[s._id] = "present";
+            });
+        }
+        setAttendanceData(newAttendanceData);
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      toast.error("Failed to fetch data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [selectedClassId, selectedSectionId, selectedDate]);
+
 
   const stats = {
     total: students.length,
@@ -49,11 +157,43 @@ const StudentAttendance = () => {
     setAttendanceData(prev => ({ ...prev, [studentId]: status }));
   };
 
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const formattedData = Object.entries(attendanceData).map(([student_id, status]) => ({
+        student_id,
+        status: status.charAt(0).toUpperCase() + status.slice(1) // Backend expects "Present", "Absent", etc.
+      }));
+
+      const response = await axiosInstance.post("/v1/attendance/student", {
+        date: selectedDate,
+        class_id: selectedClassId,
+        section_id: selectedSectionId,
+        records: formattedData,
+      });
+
+      if (response.data.success) {
+        toast.success("Attendance saved successfully!");
+        fetchData(); // Refetch to ensure sync
+      }
+    } catch (err) {
+      console.error("Error saving attendance:", err);
+      toast.error("Failed to save attendance");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const markAllAs = (status) => {
     const newData = { ...attendanceData };
-    students.forEach(s => newData[s.id] = status);
+    students.forEach(s => newData[s._id] = status);
     setAttendanceData(newData);
   };
+
+  const filteredStudents = students.filter(s => 
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    s.studentId?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 p-4 md:p-8">
@@ -103,13 +243,13 @@ const StudentAttendance = () => {
                 <Users className="w-3.5 h-3.5" /> Class
               </label>
               <select 
-                value={selectedClass} 
-                onChange={(e) => setSelectedClass(e.target.value)}
+                value={selectedClassId} 
+                onChange={(e) => setSelectedClassId(e.target.value)}
                 className="w-full bg-[#e6f4ef] border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all"
               >
-                <option>Class 4</option>
-                <option>Class 5</option>
-                <option>Class 6</option>
+                {classes.map(c => (
+                    <option key={c._id} value={c._id}>{c.name}</option>
+                ))}
               </select>
             </div>
             <div className="space-y-2">
@@ -117,13 +257,13 @@ const StudentAttendance = () => {
                 <Filter className="w-3.5 h-3.5" /> Section
               </label>
               <select 
-                value={selectedSection} 
-                onChange={(e) => setSelectedSection(e.target.value)}
+                value={selectedSectionId} 
+                onChange={(e) => setSelectedSectionId(e.target.value)}
                 className="w-full bg-[#e6f4ef] border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all"
               >
-                <option>Section A</option>
-                <option>Section B</option>
-                <option>Section C</option>
+                {filteredSections.map(s => (
+                    <option key={s._id} value={s._id}>{s.name}</option>
+                ))}
               </select>
             </div>
             <div className="space-y-2">
@@ -179,11 +319,19 @@ const StudentAttendance = () => {
             </div>
 
             <div className="flex gap-2 w-full md:w-auto">
-              <button onClick={() => markAllAs("present")} className="flex-1 md:flex-none px-4 py-2 text-xs font-black bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200">
+              <button 
+                onClick={() => markAllAs("present")} 
+                className="flex-1 md:flex-none px-4 py-2 text-xs font-black bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200"
+              >
                 Mark All Present
               </button>
-              <button className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-200 flex items-center justify-center gap-2">
-                <Save className="w-3.5 h-3.5" /> Save Attendance
+              <button 
+                onClick={handleSave}
+                disabled={loading}
+                className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-200 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <Save className="w-3.5 h-3.5" /> 
+                {loading ? "Saving..." : "Save Attendance"}
               </button>
             </div>
           </div>
@@ -200,18 +348,18 @@ const StudentAttendance = () => {
                 </tr>
               </thead>
               <tbody className="divide-y-2 divide-slate-50">
-                {students.map((student) => (
-                  <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
+                {filteredStudents.map((student) => (
+                  <tr key={student._id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-4">
-                      <span className="text-sm font-black text-slate-700">{student.roll}</span>
+                      <span className="text-sm font-black text-slate-700">{student.rollNo}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={student.photo} className="w-8 h-8 rounded-full bg-emerald-100 p-0.5" />
+                        <img src={student.photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${student._id}`} className="w-8 h-8 rounded-full bg-emerald-100 p-0.5" />
                         <span className="text-sm font-bold text-slate-800">{student.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm font-black text-emerald-600">{student.id}</td>
+                    <td className="px-6 py-4 text-sm font-black text-emerald-600">{student.studentId}</td>
                     <td className="px-6 py-4">
                       <div className="flex justify-center gap-1.5">
                         {[
@@ -222,9 +370,9 @@ const StudentAttendance = () => {
                         ].map(status => (
                           <button
                             key={status.key}
-                            onClick={() => handleStatusChange(student.id, status.key)}
+                            onClick={() => handleStatusChange(student._id, status.key)}
                             className={`w-10 h-10 rounded-xl text-xs font-black border-2 transition-all flex items-center justify-center ${
-                              attendanceData[student.id] === status.key 
+                              attendanceData[student._id] === status.key 
                                 ? `${status.color} border-transparent text-white shadow-lg` 
                                 : `border-slate-100 text-slate-400 ${status.bg} hover:border-slate-300`
                             }`}

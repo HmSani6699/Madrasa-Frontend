@@ -42,38 +42,15 @@ import {
   ChevronDown,
 } from "lucide-react";
 import SelectInputField from "../../components/SelectInputField";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const EmployeeList = () => {
-  const [employees, setEmployees] = useState([
-    {
-      id: "EMP1001",
-      name: "মাওলানা আব্দুল হাই",
-      designation: "Head Teacher",
-      department: "Academic",
-      phone: "01711122233",
-      email: "hai@mms.com",
-      joinDate: "2020-01-01",
-      status: "active",
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP1",
-      gender: "Male",
-      religion: "Islam",
-      bloodGroup: "A+",
-      dob: "1985-05-20",
-      presentAddress: "Dhanmondi, Dhaka",
-      permanentAddress: "Sylhet, Bangladesh",
-      qualification: "M.A in Arabic",
-      experience: "15 Years",
-      branch: "Main Branch",
-      role: "Admin/Teacher",
-      username: "abdulhai_mms",
-      facebook: "https://facebook.com/abdulhai",
-      bankName: "Islami Bank",
-      accountNo: "1234567890",
-    },
-  ]);
-
-  const [searchTerm, setSearchTerm] = useState("");
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [deptFilter, setDeptFilter] = useState("all");
+   const [searchTerm, setSearchTerm] = useState("");
+  
   const [openMenuId, setOpenMenuId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -85,6 +62,27 @@ const EmployeeList = () => {
   const [deleteEmp, setDeleteEmp] = useState(null);
   const [showToast, setShowToast] = useState(null);
 
+  const fetchEmployees = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get("/v1/staff");
+      if (response.data.success) {
+        setEmployees(response.data.data);
+      }
+    } catch (err) {
+      console.error("Error fetching employees:", err);
+      toast.error("Failed to fetch employees");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, [deptFilter, searchTerm]);
+
+ 
+
   const handleClickOutside = () => setOpenMenuId(null);
   useEffect(() => {
     window.addEventListener("click", handleClickOutside);
@@ -93,7 +91,7 @@ const EmployeeList = () => {
 
   const handleAction = (label, emp) => {
     setOpenMenuId(null);
-    if (label === "Edit Info") navigate(`/admin/employee/create?id=${emp.id}`);
+    if (label === "Edit Info") navigate(`/admin/employee/create?id=${emp._id}`);
     else if (label === "Delete Record") setDeleteEmp(emp);
     else if (label === "Change Status") {
       const newStatus = emp.status === "active" ? "inactive" : "active";
@@ -148,9 +146,17 @@ const EmployeeList = () => {
     setTimeout(() => setShowToast(null), 3000);
   };
 
-  const handleDelete = () => {
-    setEmployees((prev) => prev.filter((p) => p.id !== deleteEmp.id));
-    setShowToast(`${deleteEmp.name} removed from system.`);
+  const handleDelete = async () => {
+    try {
+        const response = await axiosInstance.delete(`/v1/staff/${deleteEmp._id}`);
+        if(response.data.success) {
+            setEmployees((prev) => prev.filter((p) => p._id !== deleteEmp._id));
+            setShowToast(`${deleteEmp.name} removed from system.`);
+        }
+    } catch (err) {
+        console.error(err);
+        toast.error("Failed to delete employee");
+    }
     setDeleteEmp(null);
     setTimeout(() => setShowToast(null), 3000);
   };
@@ -254,8 +260,14 @@ const EmployeeList = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-[20px] border-2 border-slate-100 shadow-sm min-h-[400px] flex flex-col overflow-visible">
-        <div className="overflow-x-auto overflow-visible">
+      <div className="bg-white rounded-[20px] border-2 border-slate-100 shadow-sm min-h-[400px] flex flex-col overflow-visible relative">
+        {loading ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-20">
+            <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="text-slate-500 font-bold">Loading staff data...</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto overflow-visible">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-slate-50/50 border-b-2 border-slate-100">
@@ -283,7 +295,7 @@ const EmployeeList = () => {
             <tbody className="divide-y-2 divide-slate-50">
               {currentItems.map((emp) => (
                 <tr
-                  key={emp.id}
+                  key={emp._id}
                   className="hover:bg-emerald-50/30 transition-colors group"
                 >
                   {/* Employee */}
@@ -297,7 +309,7 @@ const EmployeeList = () => {
                     </div>
                     <div>
                       <p className="text-[10px] font-black text-emerald-600 mb-0.5 uppercase tracking-tighter">
-                        {emp.id}
+                        {emp.employeeID || emp.id}
                       </p>
                       <p className="text-sm font-black text-slate-800 whitespace-nowrap">
                         {emp.name}
@@ -369,11 +381,11 @@ const EmployeeList = () => {
                           onClick={(e) => {
                             e.stopPropagation();
                             setOpenMenuId(
-                              openMenuId === emp.id ? null : emp.id,
+                              openMenuId === emp._id ? null : emp._id,
                             );
                           }}
                           className={`p-2.5 rounded-xl transition-all ${
-                            openMenuId === emp.id
+                            openMenuId === emp._id
                               ? "bg-[#00bd7f] text-white shadow-lg"
                               : "bg-slate-50 text-slate-400"
                           }`}
@@ -426,6 +438,7 @@ const EmployeeList = () => {
             </tbody>
           </table>
         </div>
+        )}
       </div>
 
       {/* Modals & Toasts */}

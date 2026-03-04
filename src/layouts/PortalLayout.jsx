@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Outlet, Link, useLocation } from "react-router";
+import { Outlet, Link, useLocation, useParams } from "react-router";
 import { 
   Phone, 
   Mail, 
@@ -51,11 +51,16 @@ const PortalLayout = () => {
   }, [location.pathname]);
 
   const navItems = [
-    { id: "hero", label: "হোম" },
+    // { id: "hero", label: "হোম" },
     { id: "academic", label: "ক্লাস কারিকুলাম" },
     { id: "students", label: "শিক্ষার্থী" },
     { id: "teachers", label: "শিক্ষক" },
   ];
+
+const { slug } = useParams();
+  
+  
+
 
   return (
     <div className="min-h-screen bg-white transition-colors duration-300 font-sans">
@@ -68,7 +73,7 @@ const PortalLayout = () => {
           <div className="max-w-[1440px] mx-auto px-6 flex items-center justify-between">
             {/* Left Column (Branding) */}
             <div className="flex items-center">
-               <Link to="/portal/global-international" className="flex items-center gap-3 md:gap-5 group">
+               <Link to={`/${slug}`} className="flex items-center gap-3 md:gap-5 group">
                   {/* Larger Logo */}
                   <div className="w-10 h-10 md:w-14 md:h-14 bg-white rounded-full p-1 border border-slate-200 shadow-sm group-hover:border-[#059669] transition-all">
                      <div className="w-full h-full bg-[#059669] rounded-full flex items-center justify-center text-white text-[10px] md:text-sm font-black italic shadow-inner">{settings.branding.logoText}</div>
@@ -82,8 +87,11 @@ const PortalLayout = () => {
                </Link>
             </div>
 
+            
+
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-6 text-[14px] font-black text-slate-700 uppercase tracking-widest leading-loose">
+               <Link to={`/${slug}`}>হোম </Link>
                {navItems.map((item) => (
                   <a 
                     key={item.id}
@@ -97,9 +105,9 @@ const PortalLayout = () => {
                     {item.label}
                   </a>
                ))}
-              <Link to={'/portal/global-international/online-admission'}>অনলাইন ভর্তি</Link>
+              <Link to={`/${slug}/online-admission`}>অনলাইন ভর্তি</Link>
 
-               
+            
            
           <Link to={'/login'}> <button 
              

@@ -1,58 +1,41 @@
+import { useState, useEffect } from "react";
 import {
   MoreHorizontal,
   User,
   CheckCircle,
   Clock,
   XCircle,
+  Loader2,
 } from "lucide-react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
+import teacherService from "../services/teacherService";
 
 const RecentAdmissions = () => {
   const { t } = useTranslation();
-  // Mock Data
-  const students = [
-    {
-      id: 1,
-      name: "Abdullah Al Mamun",
-      class: "Hifz",
-      section: "A",
-      date: "2024-01-05",
-      status: "Approved",
-    },
-    {
-      id: 2,
-      name: "Fatima Zuhra",
-      class: "Kitab",
-      section: "B",
-      date: "2024-01-06",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      name: "Omar Faruk",
-      class: "Nurani",
-      section: "A",
-      date: "2024-01-06",
-      status: "Rejected",
-    },
-    {
-      id: 4,
-      name: "Ayesha Siddiqa",
-      class: "Hifz",
-      section: "C",
-      date: "2024-01-07",
-      status: "Approved",
-    },
-    {
-      id: 5,
-      name: "Ismail Hossain",
-      class: "Kitab",
-      section: "A",
-      date: "2024-01-07",
-      status: "Pending",
-    },
-  ];
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRecentStudents();
+  }, []);
+
+  const fetchRecentStudents = async () => {
+    try {
+      setLoading(true);
+      const data = await teacherService.getStudents();
+      const allStudents = data.data || [];
+      // Sort by admission date (newest first) and take top 5
+      const sorted = allStudents
+        .sort((a, b) => new Date(b.admissionDate || b.createdAt) - new Date(a.admissionDate || a.createdAt))
+        .slice(0, 5);
+      setStudents(sorted);
+    } catch (err) {
+      console.error("Failed to fetch recent students", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -90,58 +73,68 @@ const RecentAdmissions = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {students.map((student) => (
-              <tr
-                key={student.id}
-                className="hover:bg-gray-50/50 transition-colors group whitespace-nowrap"
-              >
-                <td className="py-3 px-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
-                      {student.name.charAt(0)}
-                    </div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {student.name}
-                    </p>
-                  </div>
+            {loading ? (
+              <tr>
+                <td colSpan="4" className="py-10 text-center">
+                  <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+                  <p className="mt-2 text-gray-500 text-sm">{t('common.loading') || 'Loading...'}</p>
                 </td>
-                <td className="py-3 px-6">
-                  <p className="text-sm text-gray-600">
-                    {student.class} - {student.section}
-                  </p>
-                </td>
-                <td className="py-3 px-6">
-                  <p className="text-sm text-gray-500">{student.date}</p>
-                </td>
-                <td className="py-3 px-6 text-center">
-                  <span
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                      student.status === "Approved"
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                        : student.status === "Pending"
-                        ? "bg-amber-50 text-amber-700 border-amber-100"
-                        : "bg-rose-50 text-rose-700 border-rose-100"
-                    }`}
-                  >
-                    {student.status === "Approved" && (
-                      <CheckCircle className="w-3 h-3" />
-                    )}
-                    {student.status === "Pending" && (
-                      <Clock className="w-3 h-3" />
-                    )}
-                    {student.status === "Rejected" && (
-                      <XCircle className="w-3 h-3" />
-                    )}
-                    {t(`common.${student.status.toLowerCase()}`)}
-                  </span>
-                </td>
-                {/* <td className="py-3 px-6 text-right">
-                  <button className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                    <MoreHorizontal className="w-4 h-4" />
-                  </button>
-                </td> */}
               </tr>
-            ))}
+            ) : students.length === 0 ? (
+              <tr>
+                <td colSpan="4" className="py-10 text-center text-gray-500 text-sm">
+                  {t('dashboard.no_recent_admissions') || 'No recent admissions found.'}
+                </td>
+              </tr>
+            ) : (
+              students.map((student) => (
+                <tr
+                  key={student._id || student.id}
+                  className="hover:bg-gray-50/50 transition-colors group whitespace-nowrap"
+                >
+                  <td className="py-3 px-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
+                        {student.name?.charAt(0)}
+                      </div>
+                      <p className="text-sm font-medium text-gray-900">
+                        {student.name}
+                      </p>
+                    </div>
+                  </td>
+                  <td className="py-3 px-6">
+                    <p className="text-sm text-gray-600">
+                      {student.class} - {student.section}
+                    </p>
+                  </td>
+                  <td className="py-3 px-6">
+                    <p className="text-sm text-gray-500">{student.admissionDate || student.date}</p>
+                  </td>
+                  <td className="py-3 px-6 text-center">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border ${
+                        (student.status || "Approved") === "Approved"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                          : student.status === "Pending"
+                          ? "bg-amber-50 text-amber-700 border-amber-100"
+                          : "bg-rose-50 text-rose-700 border-rose-100"
+                      }`}
+                    >
+                      {(student.status || "Approved") === "Approved" && (
+                        <CheckCircle className="w-3 h-3" />
+                      )}
+                      {student.status === "Pending" && (
+                        <Clock className="w-3 h-3" />
+                      )}
+                      {student.status === "Rejected" && (
+                        <XCircle className="w-3 h-3" />
+                      )}
+                      {t(`common.${(student.status || "Approved").toLowerCase()}`)}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

@@ -1,26 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Calendar,
   Clock,
-  MapPin,
   User,
-  BookOpen,
   Plus,
-  ChevronLeft,
-  ChevronRight,
   Download,
   Briefcase,
   Search,
   School,
   Edit2,
   Trash2,
-  MoreVertical,
 } from "lucide-react";
 import Modal from "../../components/Modal";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const TeacherSchedule = () => {
-  const [selectedTeacher, setSelectedTeacher] = useState("M. Abdul Karim");
+  const [loading, setLoading] = useState(true);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
+
+  // Data
+  const [teachers, setTeachers] = useState([]);
+  const [selectedTeacherId, setSelectedTeacherId] = useState("");
+  const [scheduleData, setScheduleData] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,23 +42,6 @@ const TeacherSchedule = () => {
     "Wednesday",
     "Thursday",
   ];
-  const classes = [
-    "Class 1",
-    "Class 2",
-    "Class 3",
-    "Class 4",
-    "Class 5",
-    "Class 6",
-    "Class 7",
-    "Class 8",
-  ];
-  const sections = ["Section A", "Section B", "Section C"];
-  const teachers = [
-    "M. Abdul Karim",
-    "M. Yusuf Ali",
-    "H. Kamal Uddin",
-    "Abdur Rashid",
-  ];
 
   const colors = [
     { name: "Blue", value: "bg-blue-50 border-blue-200 text-blue-700" },
@@ -63,61 +52,91 @@ const TeacherSchedule = () => {
     { name: "Teal", value: "bg-teal-50 border-teal-200 text-teal-700" },
   ];
 
-  // Sample Schedule Data
-  const [scheduleData, setScheduleData] = useState([
-    {
-      id: 1,
-      teacher: "M. Abdul Karim",
-      day: "Saturday",
-      time: "08:00 AM - 09:00 AM",
-      subject: "Arabic Grammar",
-      class: "Class 5",
-      section: "Section A",
-      room: "101",
-      color: "bg-blue-50 border-blue-200 text-blue-700",
-    },
-    {
-      id: 2,
-      teacher: "M. Abdul Karim",
-      day: "Saturday",
-      time: "10:00 AM - 11:00 AM",
-      subject: "Hadith Studies",
-      class: "Class 7",
-      section: "Section B",
-      room: "203",
-      color: "bg-indigo-50 border-indigo-200 text-indigo-700",
-    },
-    {
-      id: 3,
-      teacher: "M. Yusuf Ali",
-      day: "Sunday",
-      time: "09:00 AM - 10:00 AM",
-      subject: "Fiqh",
-      class: "Class 6",
-      section: "Section C",
-      room: "105",
-      color: "bg-purple-50 border-purple-200 text-purple-700",
-    },
-  ]);
+  // Fetch Initial Data (Teachers, Classes, Sections, Subjects)
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const [teachersRes, classesRes, sectionsRes, subjectsRes] = await Promise.all([
+          axiosInstance.get("/v1/staff?role=teacher"),
+          axiosInstance.get("/v1/classes"),
+          axiosInstance.get("/v1/sections"),
+          axiosInstance.get("/v1/subjects"),
+        ]);
+
+        if (teachersRes.data.success) {
+            setTeachers(teachersRes.data.data);
+            if (teachersRes.data.data.length > 0) {
+                setSelectedTeacherId(teachersRes.data.data[0]._id);
+            }
+        }
+        if (classesRes.data.success) setClasses(classesRes.data.data);
+        if (sectionsRes.data.success) setSections(sectionsRes.data.data);
+        if (subjectsRes.data.success) setSubjects(subjectsRes.data.data);
+
+      } catch (err) {
+        console.error("Error fetching initial data:", err);
+        toast.error("Failed to load data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
+  // Fetch Schedule when teacher changes
+  useEffect(() => {
+    if (selectedTeacherId) {
+        fetchSchedule(selectedTeacherId);
+    }
+  }, [selectedTeacherId]);
+
+  const fetchSchedule = async (teacherId) => {
+    setScheduleLoading(true);
+    try {
+        const res = await axiosInstance.get(`/v1/class-routines?teacher_id=${teacherId}`);
+        if (res.data.success) {
+            setScheduleData(res.data.data);
+        }
+    } catch (err) {
+        console.error("Error fetching schedule:", err);
+        toast.error("Failed to load schedule");
+    } finally {
+        setScheduleLoading(false);
+    }
+  };
 
   // Handlers
-  const handleAddSlot = () => {
+  const handleAddSlot = (day = "Saturday") => {
     setCurrentSlot({
       id: null,
-      teacher: selectedTeacher,
-      day: "Saturday",
-      time: "08:00 AM - 09:00 AM",
-      subject: "",
-      class: classes[0],
-      section: sections[0],
-      room: "",
+      teacherId: selectedTeacherId,
+      day: day,
+      startTime: "08:00",
+      endTime: "09:00",
+      subjectId: "",
+      classId: "",
+      sectionId: "",
+      roomNo: "",
       color: colors[0].value,
     });
     setIsModalOpen(true);
   };
 
   const handleEditSlot = (slot) => {
-    setCurrentSlot({ ...slot });
+    // Map backend data to form state
+    setCurrentSlot({
+      id: slot._id,
+      teacherId: slot.teacherId._id || slot.teacherId,
+      day: slot.day,
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+      subjectId: slot.subjectId?._id || slot.subjectId,
+      classId: slot.classId?._id || slot.classId,
+      sectionId: slot.sectionId?._id || slot.sectionId,
+      roomNo: slot.roomNo,
+      color: slot.color || colors[0].value,
+    });
     setIsModalOpen(true);
   };
 
@@ -126,32 +145,49 @@ const TeacherSchedule = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDelete = () => {
-    setScheduleData((prev) =>
-      prev.filter((item) => item.id !== slotToDelete.id),
-    );
-    setIsDeleteModalOpen(false);
-    setSlotToDelete(null);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (currentSlot.id) {
-      setScheduleData((prev) =>
-        prev.map((item) => (item.id === currentSlot.id ? currentSlot : item)),
-      );
-    } else {
-      setScheduleData((prev) => [...prev, { ...currentSlot, id: Date.now() }]);
+  const confirmDelete = async () => {
+    try {
+        await axiosInstance.delete(`/v1/class-routines/${slotToDelete._id}`);
+        toast.success("Period removed successfully");
+        fetchSchedule(selectedTeacherId);
+        setIsDeleteModalOpen(false);
+        setSlotToDelete(null);
+    } catch (err) {
+        console.error("Error deleting period:", err);
+        toast.error("Failed to delete period");
     }
-    setIsModalOpen(false);
   };
 
-  // Filter Data
-  const getTeacherSchedule = () => {
-    return scheduleData.filter((item) => item.teacher === selectedTeacher);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const payload = {
+            ...currentSlot,
+            teacherId: selectedTeacherId, // Ensure we assign to currently selected teacher
+            timeRange: `${currentSlot.startTime} - ${currentSlot.endTime}`
+        };
+
+        if (currentSlot.id) {
+            await axiosInstance.put(`/v1/class-routines/${currentSlot.id}`, payload);
+            toast.success("Schedule updated successfully");
+        } else {
+            await axiosInstance.post("/v1/class-routines", payload);
+            toast.success("Period assigned successfully");
+        }
+        fetchSchedule(selectedTeacherId);
+        setIsModalOpen(false);
+    } catch (err) {
+        console.error("Error saving scheule:", err);
+        toast.error("Failed to save schedule");
+    }
   };
 
-  const filteredSchedule = getTeacherSchedule();
+  const getFilteredSections = () => {
+      if (!currentSlot?.classId) return [];
+      return sections.filter(s => s.classId?._id === currentSlot.classId || s.classId === currentSlot.classId);
+  };
+
+  const selectedTeacherObj = teachers.find(t => t._id === selectedTeacherId);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 p-4 md:p-8">
@@ -174,7 +210,7 @@ const TeacherSchedule = () => {
             PDF
           </button>
           <button
-            onClick={handleAddSlot}
+            onClick={() => handleAddSlot()}
             className="flex-1 md:flex-none px-6 py-3 bg-[#00bd7f] text-white rounded-2xl font-black shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
           >
             <Plus className="w-5 h-5" />
@@ -189,12 +225,12 @@ const TeacherSchedule = () => {
           <div className="relative flex-1 w-full">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
             <select
-              value={selectedTeacher}
-              onChange={(e) => setSelectedTeacher(e.target.value)}
+              value={selectedTeacherId}
+              onChange={(e) => setSelectedTeacherId(e.target.value)}
               className="w-full pl-14 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:border-blue-500 appearance-none"
             >
               {teachers.map((t) => (
-                <option key={t}>{t}</option>
+                <option key={t._id} value={t._id}>{t.name} ({t.employeeID})</option>
               ))}
             </select>
           </div>
@@ -207,7 +243,7 @@ const TeacherSchedule = () => {
                 Selected Teacher
               </p>
               <p className="text-sm font-black text-slate-800">
-                {selectedTeacher}
+                {selectedTeacherObj ? selectedTeacherObj.name : "Loading..."}
               </p>
             </div>
           </div>
@@ -215,11 +251,19 @@ const TeacherSchedule = () => {
       </div>
 
       {/* Schedule Column view for Teachers */}
+      {scheduleLoading ? (
+          <div className="flex justify-center py-20">
+              <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {days.map((day) => {
-          const daySchedule = filteredSchedule.filter(
+          const daySchedule = scheduleData.filter(
             (item) => item.day === day,
           );
+          // Sort by start time if possible
+          daySchedule.sort((a, b) => a.startTime?.localeCompare(b.startTime));
+
           return (
             <div
               key={day}
@@ -238,26 +282,26 @@ const TeacherSchedule = () => {
                 {daySchedule.length > 0 ? (
                   daySchedule.map((period, i) => (
                     <div
-                      key={i}
-                      className={`p-5 rounded-3xl border-2 transition-all hover:scale-[1.02] group relative ${period.color}`}
+                      key={period._id || i}
+                      className={`p-5 rounded-3xl border-2 transition-all hover:scale-[1.02] group relative ${period.color || "bg-slate-50 border-slate-200 text-slate-600"}`}
                     >
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2">
                           <Clock className="w-3.5 h-3.5 opacity-60" />
                           <span className="text-[10px] font-black uppercase tracking-tighter">
-                            {period.time}
+                            {period.timeRange}
                           </span>
                         </div>
                         <div className="px-2 py-0.5 bg-white/40 rounded text-[9px] font-black">
-                          ROOM {period.room}
+                          ROOM {period.roomNo}
                         </div>
                       </div>
                       <h4 className="text-sm font-black mb-1">
-                        {period.subject}
+                        {period.subjectId?.name || "Unknown Subject"}
                       </h4>
                       <p className="text-xs font-bold opacity-80 flex items-center gap-1.5">
-                        <School className="w-3 h-3" /> {period.class} (
-                        {period.section})
+                        <School className="w-3 h-3" /> {period.classId?.name} (
+                        {period.sectionId?.name})
                       </p>
 
                       <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
@@ -288,20 +332,7 @@ const TeacherSchedule = () => {
 
               <div className="p-6 bg-slate-50/50 border-t-2 border-slate-50 mt-auto">
                 <button
-                  onClick={() => {
-                    setCurrentSlot({
-                      id: null,
-                      teacher: selectedTeacher,
-                      day: day,
-                      time: "08:00 AM - 09:00 AM",
-                      subject: "",
-                      class: classes[0],
-                      section: sections[0],
-                      room: "",
-                      color: colors[0].value,
-                    });
-                    setIsModalOpen(true);
-                  }}
+                  onClick={() => handleAddSlot(day)}
                   className="w-full py-3 bg-white border-2 border-slate-100 rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm flex items-center justify-center gap-2"
                 >
                   <Plus className="w-3 h-3" /> Add Period
@@ -311,6 +342,7 @@ const TeacherSchedule = () => {
           );
         })}
       </div>
+      )}
 
       {/* Add/Edit Modal */}
       <Modal
@@ -342,13 +374,12 @@ const TeacherSchedule = () => {
                 Start Time
               </label>
               <input
-                type="text"
+                type="time"
                 required
-                value={currentSlot?.time}
+                value={currentSlot?.startTime}
                 onChange={(e) =>
-                  setCurrentSlot({ ...currentSlot, time: e.target.value })
+                  setCurrentSlot({ ...currentSlot, startTime: e.target.value })
                 }
-                placeholder="e.g. 09:00 AM - 10:00 AM"
                 className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-blue-500 outline-none"
               />
             </div>
@@ -357,13 +388,12 @@ const TeacherSchedule = () => {
                 End Time
               </label>
               <input
-                type="text"
+                type="time"
                 required
-                value={currentSlot?.time}
+                value={currentSlot?.endTime}
                 onChange={(e) =>
-                  setCurrentSlot({ ...currentSlot, time: e.target.value })
+                  setCurrentSlot({ ...currentSlot, endTime: e.target.value })
                 }
-                placeholder="e.g. 09:00 AM - 10:00 AM"
                 className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-blue-500 outline-none"
               />
             </div>
@@ -373,16 +403,19 @@ const TeacherSchedule = () => {
             <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase">
               Subject
             </label>
-            <input
-              type="text"
+            <select
               required
-              value={currentSlot?.subject}
+              value={currentSlot?.subjectId}
               onChange={(e) =>
-                setCurrentSlot({ ...currentSlot, subject: e.target.value })
+                setCurrentSlot({ ...currentSlot, subjectId: e.target.value })
               }
-              placeholder="e.g. Arabic Literature"
               className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-blue-500 outline-none"
-            />
+            >
+                <option value="">Select Subject</option>
+                {subjects.map(s => (
+                    <option key={s._id} value={s._id}>{s.name} ({s.code})</option>
+                ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -392,14 +425,15 @@ const TeacherSchedule = () => {
               </label>
               <select
                 required
-                value={currentSlot?.class}
+                value={currentSlot?.classId}
                 onChange={(e) =>
-                  setCurrentSlot({ ...currentSlot, class: e.target.value })
+                  setCurrentSlot({ ...currentSlot, classId: e.target.value, sectionId: "" })
                 }
                 className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-blue-500 outline-none"
               >
+                <option value="">Select Class</option>
                 {classes.map((c) => (
-                  <option key={c}>{c}</option>
+                  <option key={c._id} value={c._id}>{c.name}</option>
                 ))}
               </select>
             </div>
@@ -409,14 +443,16 @@ const TeacherSchedule = () => {
               </label>
               <select
                 required
-                value={currentSlot?.section}
+                value={currentSlot?.sectionId}
                 onChange={(e) =>
-                  setCurrentSlot({ ...currentSlot, section: e.target.value })
+                  setCurrentSlot({ ...currentSlot, sectionId: e.target.value })
                 }
                 className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-blue-500 outline-none"
+                disabled={!currentSlot?.classId}
               >
-                {sections.map((s) => (
-                  <option key={s}>{s}</option>
+                <option value="">Select Section</option>
+                {getFilteredSections().map((s) => (
+                  <option key={s._id} value={s._id}>{s.name}</option>
                 ))}
               </select>
             </div>
@@ -429,9 +465,9 @@ const TeacherSchedule = () => {
             <input
               type="text"
               required
-              value={currentSlot?.room}
+              value={currentSlot?.roomNo}
               onChange={(e) =>
-                setCurrentSlot({ ...currentSlot, room: e.target.value })
+                setCurrentSlot({ ...currentSlot, roomNo: e.target.value })
               }
               placeholder="e.g. 101"
               className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-blue-500 outline-none"

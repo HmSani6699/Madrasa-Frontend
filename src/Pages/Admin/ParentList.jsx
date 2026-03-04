@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
@@ -25,177 +25,18 @@ import {
   Briefcase,
   AlertTriangle,
   FileText,
+  Upload,
+  ImagePlus,
+  SquarePen,
 } from "lucide-react";
 import SelectInputField from "../../components/SelectInputField";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const ParentList = () => {
-  const [parents, setParents] = useState([
-    {
-      id: "PAR2025001",
-      name: "আব্দুল করিম",
-      occupation: "Businessman",
-      phone: "01700000001",
-      email: "karim@example.com",
-      address: "Dhanmondi, Dhaka",
-      status: "active",
-      childrenCount: 2,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR1",
-    },
-    {
-      id: "PAR2025002",
-      name: "মোহাম্মদ আলী",
-      occupation: "Teacher",
-      phone: "01800000002",
-      email: "ali@example.com",
-      address: "Mirpur, Dhaka",
-      status: "active",
-      childrenCount: 1,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR2",
-    },
-    {
-      id: "PAR2025003",
-      name: "হোসেন আহমেদ",
-      occupation: "Doctor",
-      phone: "01900000003",
-      email: "hossain@example.com",
-      address: "Uttara, Dhaka",
-      status: "inactive",
-      childrenCount: 1,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR3",
-    },
-    {
-      id: "PAR2025004",
-      name: "আব্দুল্লাহ মাহমুদ",
-      occupation: "Engineer",
-      phone: "01600000004",
-      email: "mahmud@example.com",
-      address: "Gulshan, Dhaka",
-      status: "active",
-      childrenCount: 3,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR4",
-    },
-    {
-      id: "PAR2025005",
-      name: "সাইফুল ইসলাম",
-      occupation: "Banker",
-      phone: "01500000005",
-      email: "saiful@example.com",
-      address: "Banani, Dhaka",
-      status: "active",
-      childrenCount: 1,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR5",
-    },
-    {
-      id: "PAR2025006",
-      name: "জসিম উদ্দিন",
-      occupation: "Farmer",
-      phone: "01400000006",
-      email: "jasim@example.com",
-      address: "Gazipur",
-      status: "active",
-      childrenCount: 2,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR6",
-    },
-    {
-      id: "PAR2025007",
-      name: "মনির হোসেন",
-      occupation: "Driver",
-      phone: "01300000007",
-      email: "monir@example.com",
-      address: "Narayanganj",
-      status: "active",
-      childrenCount: 1,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR7",
-    },
-    {
-      id: "PAR2025008",
-      name: "রেজাউল করিম",
-      occupation: "Lawyer",
-      phone: "01200000008",
-      email: "rezaul@example.com",
-      address: "Cumilla",
-      status: "inactive",
-      childrenCount: 2,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR8",
-    },
-    {
-      id: "PAR2025009",
-      name: "নুরুল ইসলাম",
-      occupation: "Imam",
-      phone: "01100000009",
-      email: "nurul@example.com",
-      address: "Sylhet",
-      status: "active",
-      childrenCount: 1,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR9",
-    },
-    {
-      id: "PAR2025010",
-      name: "শাহাদাত হোসেন",
-      occupation: "Clerk",
-      phone: "01000000010",
-      email: "shahadat@example.com",
-      address: "Rajshahi",
-      status: "active",
-      childrenCount: 2,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR10",
-    },
-    {
-      id: "PAR2025011",
-      name: "ফয়সাল আহমেদ",
-      occupation: "Pilot",
-      phone: "01720000011",
-      email: "faisal@example.com",
-      address: "Chittagong",
-      status: "active",
-      childrenCount: 1,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR11",
-    },
-    {
-      id: "PAR2025012",
-      name: "আরিফ রহমান",
-      occupation: "Chef",
-      phone: "01830000012",
-      email: "arif@example.com",
-      address: "Barishal",
-      status: "active",
-      childrenCount: 1,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR12",
-    },
-    {
-      id: "PAR2025013",
-      name: "মাহবুব আলম",
-      occupation: "Journalist",
-      phone: "01940000013",
-      email: "mahbub@example.com",
-      address: "Khulna",
-      status: "inactive",
-      childrenCount: 1,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR13",
-    },
-    {
-      id: "PAR2025014",
-      name: "হারুনুর রশিদ",
-      occupation: "Technician",
-      phone: "01650000014",
-      email: "harun@example.com",
-      address: "Rangpur",
-      status: "active",
-      childrenCount: 2,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR14",
-    },
-    {
-      id: "PAR2025015",
-      name: "মতিউর রহমান",
-      occupation: "Architect",
-      phone: "01560000015",
-      email: "motiur@example.com",
-      address: "Mymensingh",
-      status: "active",
-      childrenCount: 3,
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=PAR15",
-    },
-  ]);
+  const [parents, setParents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -247,58 +88,133 @@ const ParentList = () => {
     }, 2000);
   };
 
-  const handleSaveNew = (newParentData) => {
-    const newId = `PAR2025${String(parents.length + 1).padStart(3, "0")}`;
-    const newParent = {
-      ...newParentData,
-      id: newId,
-      status: "active",
-      childrenCount: 0,
-      photo: `https://api.dicebear.com/7.x/avataaars/svg?seed=${newId}`,
-    };
-    setParents([newParent, ...parents]);
-    setShowAddModal(false);
-    setShowStatusToast(`${newParent.name} added to directory!`);
-    setTimeout(() => setShowStatusToast(null), 3000);
+  const fetchParents = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(`/v1/parents?page=${currentPage}&limit=${itemsPerPage}&search=${searchTerm}`);
+      if (response.data.success) {
+        // Map backend fields to frontend table expectations cleanly
+        const mappedData = response.data.data.map(p => ({
+          ...p,
+          id: p._id,
+          name: p.fatherName || p.motherName || "N/A",
+          occupation: p.fatherOccupation || p.motherOccupation || "N/A",
+          phone: p.contact || "N/A",
+          email: p.email || "N/A",
+          address: p.address || "N/A",
+          status: p.status || "active",
+          childrenCount: p.childrenCount || 0,
+          children: p.children || [],
+          photo: p.fatherPhoto || p.motherPhoto || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p._id}`
+        }));
+        setParents(mappedData);
+        setTotalRecords(response.data.total || mappedData.length);
+      }
+    } catch (err) {
+      console.error("Failed to fetch parents:", err);
+      toast.error("Failed to fetch parents from server.");
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, searchTerm, itemsPerPage]);
+
+  useEffect(() => {
+    fetchParents();
+  }, [fetchParents]);
+
+  // Handle Search Debounce (Optional but good practice)
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
   };
 
-  const handleUpdate = (updatedData) => {
-    setParents((prev) =>
-      prev.map((p) => (p.id === updatedData.id ? { ...p, ...updatedData } : p))
-    );
-    setEditParent(null);
-    setShowStatusToast(`Record for ${updatedData.name} updated successfully!`);
-    setTimeout(() => setShowStatusToast(null), 3000);
+  const handleSaveNew = async (newParentData) => {
+    try {
+      setLoading(true);
+      const payload = {
+         fatherName: newParentData.fatherName,
+         motherName: newParentData.motherName || "Not Provided", // Assuming mother name might be required by backend sometimes
+         fatherOccupation: newParentData.fatherOccupation,
+         motherOccupation: newParentData.motherOccupation,
+         contact: newParentData.contact,
+         motherContact: newParentData.motherContact,
+         email: newParentData.email,
+         address: newParentData.address,
+         fatherPhoto: newParentData.fatherPhoto,
+         motherPhoto: newParentData.motherPhoto,
+         guardianNID: newParentData.guardianNID,
+      };
+      const response = await axiosInstance.post("/v1/parents", payload);
+      if (response.data.success) {
+        setShowAddModal(false);
+        toast.success("Parent added successfully!");
+        fetchParents();
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.response?.data?.error || "Failed to create parent");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = () => {
-    setParents((prev) => prev.filter((p) => p.id !== deleteParent.id));
-    setShowStatusToast(`${deleteParent.name}'s record has been removed.`);
-    setDeleteParent(null);
-    setTimeout(() => setShowStatusToast(null), 3000);
+  const handleUpdate = async (updatedData) => {
+    try {
+       setLoading(true);
+       const payload = {
+         fatherName: updatedData.fatherName,
+         motherName: updatedData.motherName || "Not Provided",
+         fatherOccupation: updatedData.fatherOccupation,
+         motherOccupation: updatedData.motherOccupation,
+         contact: updatedData.contact,
+         motherContact: updatedData.motherContact,
+         email: updatedData.email,
+         address: updatedData.address,
+         fatherPhoto: updatedData.fatherPhoto,
+         motherPhoto: updatedData.motherPhoto,
+         guardianNID: updatedData.guardianNID,
+      };
+      const response = await axiosInstance.put(`/v1/parents/${updatedData.id}`, payload);
+      if (response.data.success) {
+        setEditParent(null);
+        toast.success("Parent updated successfully!");
+        fetchParents();
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.response?.data?.error || "Failed to update parent");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.delete(`/v1/parents/${deleteParent.id}`);
+      if (response.data.success) {
+        setDeleteParent(null);
+        toast.success("Parent removed successfully!");
+        fetchParents();
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.response?.data?.error || "Failed to delete parent");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Filtered Results
   const filteredParents = useMemo(() => {
     return parents.filter((parent) => {
-      const matchesSearch =
-        parent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        parent.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        parent.phone.includes(searchTerm);
-
       const matchesStatus =
         statusFilter === "all" || parent.status === statusFilter;
 
-      return matchesSearch && matchesStatus;
+      return matchesStatus; // Search is handled by backend API now
     });
-  }, [searchTerm, statusFilter, parents]);
+  }, [statusFilter, parents]);
 
   // Pagination Logic
-  const totalPages = Math.ceil(filteredParents.length / itemsPerPage);
-  const currentParents = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredParents.slice(startIndex, startIndex + itemsPerPage);
-  }, [currentPage, filteredParents]);
+  const totalPages = Math.ceil(totalRecords / itemsPerPage);
+  const currentParents = filteredParents; // Items are already paginated by backend
 
   // Reset to page 1 on search/filter change
   useEffect(() => {
@@ -307,21 +223,20 @@ const ParentList = () => {
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-white p-5 rounded-[20px] border-2 border-slate-200 shadow-sm text-center md:text-left">
-        <div className="flex items-center gap-4 justify-center md:justify-start">
-          <div className="w-14 h-14 bg-[#e6f4ef] rounded-[8px] flex items-center justify-center">
-            <Contact className="w-7 h-7 text-[#00bd7f]" />
-          </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-800 mb-1">
-              Parent Directory
-            </h1>
-           
-          </div>
+    
+       {/* Header */}
+      <div className="flex items-center justify-between mb-5 w-full">
+        <div>
+          <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
+            <Users className="w-8 h-8 text-[#00bd7f]" />
+           Parents Management
+          </h1>
+          <p className=" text-[14px] text-slate-500 font-bold mt-1">
+            Manage all Parents records
+          </p>
         </div>
-        <div className="flex flex-col sm:flex-row items-center gap-3">
-         
+
+        <div className="flex gap-3 w-full md:w-auto">
           <button
             onClick={() => setShowAddModal(true)}
             className="w-full flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all cursor-pointer"
@@ -331,6 +246,9 @@ const ParentList = () => {
           </button>
         </div>
       </div>
+
+
+
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -360,7 +278,7 @@ const ParentList = () => {
         ].map((stat, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-2xl border-2 border-slate-200 p-6 flex items-center justify-between shadow-sm"
+            className="bg-white rounded-[8px]  p-5 flex items-center justify-between shadow-lg"
           >
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
@@ -377,10 +295,15 @@ const ParentList = () => {
         ))}
       </div>
 
-      {/* Filters Area */}
-      <div className="bg-white rounded-3xl border-2 border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2">
+
+      <div className="flex items-center justify-between">
+
+        <div>
+          <h2 className="text-[18px] font-semibold">Student List</h2>
+        </div>
+
+        <div className="flex items-center gap-4">
+            <div className="">
             <label className="text-sm font-bold text-slate-700 mb-2 block">
               Quick Search
             </label>
@@ -390,11 +313,11 @@ const ParentList = () => {
                 type="text"
                 placeholder="Search by ID, Name or Phone..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-[#e6f4ef] border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+                onChange={handleSearchChange}
+                className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border-1 border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
               />
             </div>
-          </div>
+        </div>
           <div>
             <SelectInputField title={'Class'} options={[
               {value:"Onte"},
@@ -402,11 +325,12 @@ const ParentList = () => {
               {value:"Three"}
             ]}/>
           </div>
-        </div>
+      </div>
+        
       </div>
 
       {/* Table Container */}
-      <div className="bg-white rounded-3xl border-2 border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-white rounded-[8px] border-1 border-slate-200 shadow-sm overflow-hidden flex flex-col">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-[#e6f4ef] border-b-2 border-slate-200">
@@ -435,14 +359,14 @@ const ParentList = () => {
               </tr>
             </thead>
             <tbody className="divide-y-2 divide-slate-100">
-              {currentParents.map((parent) => (
+              {currentParents.map((parent,i) => (
                 <tr
                   key={parent.id}
                   className="hover:bg-slate-50 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm font-black text-emerald-700">
-                      {parent.id}
+                      {i+1}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -503,76 +427,23 @@ const ParentList = () => {
                       {parent.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setViewParent(parent)}
-                        className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
-                        title="View Detailed Profile"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <div className="relative">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenMenuId(
-                              openMenuId === parent.id ? null : parent.id
-                            );
-                          }}
-                          className={`p-2 rounded-lg transition-all ${
-                            openMenuId === parent.id
-                              ? "bg-slate-100 text-[#00bd7f]"
-                              : "hover:bg-slate-100 text-slate-400"
-                          }`}
-                        >
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
 
-                        {openMenuId === parent.id && (
-                          <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border-2 border-slate-100 z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                            {[
-                              {
-                                label: "Edit Info",
-                                icon: Edit2,
-                                color: "text-slate-600",
-                                hover: "hover:bg-slate-50",
-                              },
-                              {
-                                label: "Message",
-                                icon: MessageCircle,
-                                color: "text-slate-600",
-                                hover: "hover:bg-slate-50",
-                              },
-                              // {
-                              //   label: "Change Status",
-                              //   icon: UserCheck,
-                              //   color: "text-slate-600",
-                              //   hover: "hover:bg-slate-50",
-                              // },
-                              {
-                                label: "Delete Record",
-                                icon: Trash2,
-                                color: "text-rose-500",
-                                hover: "hover:bg-rose-50",
-                              },
-                            ].map((action, i) => (
-                              <button
-                                key={i}
-                                onClick={() =>
-                                  handleAction(action.label, parent)
-                                }
-                                className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold ${action.color} ${action.hover} transition-colors first:rounded-t-xl last:rounded-b-xl`}
-                              >
-                                <action.icon className="w-4 h-4" />
-                                {action.label}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                                      <div className="flex items-center gap-4">
+                                        <button className="cursor-pointer"  onClick={() => setViewParent(parent)}>
+                                          <Eye className="w-5 h-5 text-[#00bd7f]"  />
+                                        </button>
+                                        <button className="cursor-pointer"  onClick={() =>
+                                  handleAction( "Edit Info", parent)
+                                }>
+                                           <SquarePen className="w-4 h-4 text-[#00bd7f]" />
+                                          </button>
+                                          <button className="cursor-pointer"  onClick={() =>
+                                  handleAction( "Delete Record", parent)}>
+                                           <Trash2 className="w-4 h-4 text-red-500" />
+                                          </button>
+                                      </div>
+                                    </td>
                 </tr>
               ))}
             </tbody>
@@ -588,9 +459,9 @@ const ParentList = () => {
             </span>{" "}
             to{" "}
             <span className="text-slate-900">
-              {Math.min(currentPage * itemsPerPage, filteredParents.length)}
+              {Math.min(currentPage * itemsPerPage, totalRecords)}
             </span>{" "}
-            of <span className="text-slate-900">{filteredParents.length}</span>{" "}
+            of <span className="text-slate-900">{totalRecords}</span>{" "}
             records
           </p>
           <div className="flex items-center gap-2">
@@ -707,13 +578,36 @@ const ParentList = () => {
 const ParentFormModal = ({ parent, onClose, onSave, title }) => {
   const [formData, setFormData] = useState(
     parent || {
-      name: "",
-      occupation: "",
-      phone: "",
+      fatherName: "",
+      motherName: "",
+      fatherOccupation: "",
+      motherOccupation: "",
+      contact: "",
+      motherContact: "",
       email: "",
       address: "",
+      fatherPhoto: "",
+      motherPhoto: "",
+      guardianNID: "",
     }
   );
+
+  const [uploadingField, setUploadingField] = useState(null);
+
+  const handleImageUpload = (file, field) => {
+    if (!file) return;
+
+    setUploadingField(field);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: reader.result,
+      }));
+      setUploadingField(null);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -727,7 +621,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
     >
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-[2.5rem] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden relative m-auto"
+        className="bg-white rounded-[8px] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden relative m-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-8 border-b-2 border-slate-50 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10">
@@ -746,98 +640,217 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
           </button>
         </div>
 
-        <div className="p-8 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Contact className="w-3 h-3 text-emerald-500" /> Full Name
+              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+               Father's Name <span className="text-red-500">*</span>
               </label>
               <input
                 required
-                value={formData.name}
+                value={formData.fatherName}
                 onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
+                  setFormData({ ...formData, fatherName: e.target.value })
                 }
-                placeholder="Enter full name"
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-emerald-500 transition-all font-bold text-sm"
+                placeholder="Enter father name"
+               className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Briefcase className="w-3 h-3 text-emerald-500" /> Occupation
+              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+               Mother's Name <span className="text-red-500">*</span>
               </label>
               <input
                 required
-                value={formData.occupation}
+                value={formData.motherName}
                 onChange={(e) =>
-                  setFormData({ ...formData, occupation: e.target.value })
+                  setFormData({ ...formData, motherName: e.target.value })
                 }
-                placeholder="e.g. Businessman"
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-emerald-500 transition-all font-bold text-sm"
+                placeholder="Enter Mother name"
+                className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Phone className="w-3 h-3 text-emerald-500" /> Phone Number
+              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+               Father's Occupation
+              </label>
+              <input
+                value={formData.fatherOccupation}
+                onChange={(e) =>
+                  setFormData({ ...formData, fatherOccupation: e.target.value })
+                }
+                placeholder="Father's Occupation"
+               className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+                Mother's Occupation
+              </label>
+              <input
+                value={formData.motherOccupation}
+                onChange={(e) =>
+                  setFormData({ ...formData, motherOccupation: e.target.value })
+                }
+                placeholder="Mother's Occupation"
+              className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+                Contact Number (Father's) <span className="text-red-500">*</span>
               </label>
               <input
                 required
-                value={formData.phone}
+                value={formData.contact}
                 onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
+                  setFormData({ ...formData, contact: e.target.value })
                 }
-                placeholder="017xxxxxxxx"
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-emerald-500 transition-all font-bold text-sm"
+                placeholder="019XXXXXXXX"
+                className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Mail className="w-3 h-3 text-emerald-500" /> Email Address
+              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+                Contact Number (Mother's)
+              </label>
+              <input
+                value={formData.motherContact}
+                onChange={(e) =>
+                  setFormData({ ...formData, motherContact: e.target.value })
+                }
+                placeholder="019XXXXXXXX"
+                 className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+              />
+            </div>
+            {/* <div className="space-y-2 md:col-span-3">
+              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+               Email Address
               </label>
               <input
                 type="email"
-                required
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
                 placeholder="example@mail.com"
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-emerald-500 transition-all font-bold text-sm"
+                 className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <MapPin className="w-3 h-3 text-emerald-500" /> Residential
-                Address
+            </div> */}
+            <div className="space-y-2 md:col-span-3">
+              <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+                Address <span className="text-red-500">*</span>
               </label>
-              <input
+              <textarea
                 required
+                rows={3}
                 value={formData.address}
                 onChange={(e) =>
                   setFormData({ ...formData, address: e.target.value })
                 }
-                placeholder="Sector, Area, City"
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-emerald-500 transition-all font-bold text-sm"
+                placeholder="Address"
+                className="w-full px-4 py-3 bg-emerald-50/50 border-2 border-slate-100 rounded-xl outline-none focus:border-emerald-500 transition-all font-bold text-sm text-slate-700 placeholder:text-slate-400 resize-none"
               />
             </div>
           </div>
 
-          {/* <div className="bg-amber-50 border-2 border-amber-100 rounded-2xl p-4 flex gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-xs font-black text-amber-800 uppercase tracking-tight mb-1">
-                Information Security
-              </p>
-              <p className="text-[11px] font-bold text-amber-700 leading-relaxed">
-                Guardian contact details are used for sensitive system
-                communications and authentication. Ensure all data is verified
-                before saving.
-              </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-slate-50/50 rounded-3xl border-2 border-slate-100">
+            {/* Father's Photo */}
+            <div className="flex flex-col items-center gap-4 bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm relative group overflow-hidden">
+              <div className="relative">
+                {formData.fatherPhoto ? (
+                  <img
+                    src={formData.fatherPhoto}
+                    alt="Father"
+                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl bg-emerald-50/50 flex items-center justify-center border-2 border-emerald-200 border-dashed">
+                    <ImagePlus className="w-8 h-8 text-emerald-400" />
+                  </div>
+                )}
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors z-10">
+                  <Upload className="w-4 h-4" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleImageUpload(e.target.files?.[0], "fatherPhoto")
+                    }
+                  />
+                </label>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-slate-800 text-sm">Father's NID Card</p>
+                <p className="text-[10px] text-slate-400 font-black mt-1 uppercase tracking-wider">Required for ID</p>
+              </div>
             </div>
-          </div> */}
+
+            {/* Mother's Photo */}
+            <div className="flex flex-col items-center gap-4 bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm relative group overflow-hidden">
+              <div className="relative">
+                {formData.motherPhoto ? (
+                  <img
+                    src={formData.motherPhoto}
+                    alt="Mother"
+                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl bg-emerald-50/50 flex items-center justify-center border-2 border-emerald-200 border-dashed">
+                    <ImagePlus className="w-8 h-8 text-emerald-400" />
+                  </div>
+                )}
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors z-10">
+                  <Upload className="w-4 h-4" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleImageUpload(e.target.files?.[0], "motherPhoto")
+                    }
+                  />
+                </label>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-slate-800 text-sm">Mother's NID Card</p>
+                <p className="text-[10px] text-slate-400 font-black mt-1 uppercase tracking-wider">Required for ID</p>
+              </div>
+            </div>
+
+            {/* Guardian NID */}
+            <div className="flex flex-col items-center gap-4 bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-sm relative group overflow-hidden">
+              <div className="relative">
+                {formData.guardianNID ? (
+                  <img
+                    src={formData.guardianNID}
+                    alt="Guardian NID"
+                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl bg-emerald-50/50 flex items-center justify-center border-2 border-emerald-200 border-dashed">
+                    <UserCheck className="w-8 h-8 text-emerald-400" />
+                  </div>
+                )}
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors z-10">
+                  <Upload className="w-4 h-4" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) =>
+                      handleImageUpload(e.target.files?.[0], "guardianNID")
+                    }
+                  />
+                </label>
+              </div>
+              <div className="text-center">
+                <p className="font-bold text-slate-800 text-sm">Guardian NID Card</p>
+                <p className="text-[10px] text-slate-400 font-black mt-1 uppercase tracking-wider">Or Birth Certificate</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="p-8 border-t-2 border-slate-50 flex items-center justify-end gap-3 bg-slate-50/50">
+        <div className="p-5 border-t-2 border-slate-50 flex items-center justify-end gap-3 bg-slate-50/50">
           <button
             type="button"
             onClick={onClose}
@@ -859,23 +872,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
 };
 
 const ParentViewModal = ({ parent, onClose }) => {
-  // Mock Linked Students for the view
-  const linkedStudents = [
-    {
-      id: "MMS2025001",
-      name: "আব্দুর রহমান",
-      class: "Hifz Section",
-      roll: "01",
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=ST1",
-    },
-    {
-      id: "MMS2025042",
-      name: "ফাতিমা আক্তার",
-      class: "Ibtidaiya",
-      roll: "12",
-      photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=ST2",
-    },
-  ].slice(0, parent.childrenCount || 1);
+  const linkedStudents = parent.children || [];
 
   return (
     <div
@@ -883,7 +880,7 @@ const ParentViewModal = ({ parent, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-[3rem] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden relative m-auto"
+        className="bg-white rounded-[8px] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden relative m-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Profile Banner */}
@@ -988,17 +985,17 @@ const ParentViewModal = ({ parent, onClose }) => {
                   className="flex items-center gap-4 p-3 border-2 border-slate-100 rounded-[1.5rem] hover:border-emerald-200 hover:bg-emerald-50/20 transition-all group"
                 >
                   <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm group-hover:scale-105 transition-transform">
-                    <img src={student.photo} alt={student.name} />
+                    <img src={student.photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${student._id}`} alt={student.nameInDeshi} />
                   </div>
                   <div>
                     <p className="text-[10px] font-black text-slate-400 tracking-tighter uppercase mb-0.5">
-                      {student.id}
+                      {student.studentId || student._id}
                     </p>
                     <p className="text-xs font-black text-slate-800">
-                      {student.name}
+                      {student.nameInDeshi || student.nameInEnglish}
                     </p>
                     <p className="text-[10px] font-bold text-emerald-600">
-                      {student.class} • Roll {student.roll}
+                      Class: {student.class || "N/A"} • Roll {student.rollNumber || "N/A"}
                     </p>
                   </div>
                 </div>
@@ -1012,7 +1009,7 @@ const ParentViewModal = ({ parent, onClose }) => {
           </div>
         </div>
 
-        <div className="p-8 bg-slate-50/50 border-t-2 border-slate-50 flex gap-4">
+        {/* <div className="p-8 bg-slate-50/50 border-t-2 border-slate-50 flex gap-4">
           <button
             onClick={() => alert("Opening bulk SMS gate...")}
             className="flex-1 py-4 bg-emerald-600 text-white font-black rounded-[1.5rem] shadow-xl shadow-emerald-200 flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all"
@@ -1025,7 +1022,7 @@ const ParentViewModal = ({ parent, onClose }) => {
           >
             Close
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

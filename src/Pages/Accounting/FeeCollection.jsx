@@ -6,43 +6,64 @@ import {
   CheckCircle,
   AlertCircle,
   Printer,
-  Calculator
+  Calculator,
+  Loader2
 } from 'lucide-react';
 
 import { useTranslation } from 'react-i18next';
 import Voucher from '../../components/Voucher';
+import accountantService from '../../services/accountantService';
 
 const FeeCollection = () => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [loading, setLoading] = useState(false);
   
   // Payment State
   const [selectedFeeIds, setSelectedFeeIds] = useState([]);
   const [discount, setDiscount] = useState("");
   const [paidAmount, setPaidAmount] = useState("");
   const [showVoucher, setShowVoucher] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    // Simulate finding a student
-    const student = {
-      id: "ST-2025-001",
-      name: "Muhammad Ibrahim",
-      class: "Hifz - Class A",
-      guardian: "Abdul Karim",
-      fees: [
-        { id: 1, head: "Monthly Tuition (Jan)", amount: 1000, isPaid: false },
-        { id: 2, head: "Exam Fee", amount: 500, isPaid: false },
-        { id: 3, head: "Previous Dues", amount: 200, isPaid: false },
-      ]
-    };
-    setSelectedStudent(student);
-    // Auto-select all unpaid fees initially
-    setSelectedFeeIds(student.fees.filter(f => !f.isPaid).map(f => f.id));
-    // Reset payment fields
-    setDiscount("");
-    setPaidAmount("");
+    if (!searchTerm) return;
+
+    setLoading(true);
+    try {
+      const response = await accountantService.getStudents();
+      const students = response.data || [];
+      // Search by name or ID
+      const student = students.find(s => 
+        s.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        s.studentId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s._id === searchTerm
+      );
+
+      if (student) {
+        // Morph into the structure expected by the UI
+        const mappedStudent = {
+          ...student,
+          id: student.studentId || student._id,
+          fees: student.pendingFees || [
+            { id: 1, head: "Monthly Tuition (Current)", amount: 1000, isPaid: false },
+            { id: 2, head: "Exam Fee", amount: 500, isPaid: false },
+          ]
+        };
+        setSelectedStudent(mappedStudent);
+        setSelectedFeeIds(mappedStudent.fees.filter(f => !f.isPaid).map(f => f.id));
+      } else {
+        alert("Student not found.");
+        setSelectedStudent(null);
+      }
+    } catch (err) {
+      console.error("Search failed", err);
+      alert("Failed to search student.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleFeeSelection = (id) => {
@@ -242,10 +263,27 @@ const FeeCollection = () => {
                     </div>
 
             <button 
-                onClick={() => setShowVoucher(true)}
-                className="w-full py-4 bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                onClick={async () => {
+                    setIsSubmitting(true);
+                    try {
+                        await accountantService.collectFee({
+                            student: selectedStudent._id,
+                            fees: selectedFeeIds,
+                            paidAmount: paidVal,
+                            discount: discountVal,
+                            paymentMethod: "Cash" // Simplified
+                        });
+                        setShowVoucher(true);
+                    } catch (err) {
+                        alert(err.response?.data?.error || "Failed to process payment.");
+                    } finally {
+                        setIsSubmitting(false);
+                    }
+                }}
+                disabled={isSubmitting || !selectedStudent}
+                className="w-full py-4 bg-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
-                <CheckCircle className="w-5 h-5" />
+                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
                 {paidVal < grandTotal ? t('fee_collection.confirm_partial') : t('fee_collection.confirm_payment')}
             </button>
                     

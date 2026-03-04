@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   User,
   Users,
@@ -11,7 +11,7 @@ import {
   Save,
   X,
   Upload,
-  Image as ImageIcon,
+  ImageIcon,
   Search,
   UserPlus,
   Smartphone,
@@ -25,52 +25,159 @@ import {
   CheckCircle2,
   Bus,
 } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useSearchParams, useNavigate, useLocation } from "react-router";
 import InputField from "../../components/InputField";
 import TextareaField from "../../components/TextareaField";
 import SelectInputField from "../../components/SelectInputField";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const CreateAdmission = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isEdit = searchParams.get("edit") === "true";
+  const editId = searchParams.get("id");
+  const guardianIdParam = searchParams.get("guardianId");
+
   const [useExistingGuardian, setUseExistingGuardian] = useState(false);
   const [guardianSearchTerm, setGuardianSearchTerm] = useState("");
 
-  // Sample existing guardians - in production this would come from API
-  const existingGuardians = [
-    {
-      id: 1,
-      fatherName: "আব্দুল করিম",
-      motherName: "ফাতেমা বেগম",
-      fatherOccupation: "Business",
-      motherOccupation: "Housewife",
-      contact: "01712345678",
-      email: "karim@example.com",
-      address: "Dhaka, Bangladesh",
-      children: ["মোহাম্মদ রহমান"],
-    },
-    {
-      id: 2,
-      fatherName: "মোহাম্মদ আলী",
-      motherName: "সালমা বেগম",
-      fatherOccupation: "Teacher",
-      motherOccupation: "Doctor",
-      contact: "01823456789",
-      email: "ali@example.com",
-      address: "Chittagong, Bangladesh",
-      children: ["আয়েশা খাতুন"],
-    },
-  ];
-
   const [showVoucher, setShowVoucher] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [guardians, setGuardians] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [allSections, setAllSections] = useState([]);
+  const [feeTypes, setFeeTypes] = useState([]);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [parentsRes, classesRes, sectionsRes, feeTypesRes] = await Promise.all([
+        axiosInstance.get("/v1/parents"),
+        axiosInstance.get("/v1/classes"),
+        axiosInstance.get("/v1/sections"), 
+        axiosInstance.get("/fee-type/v1")
+      ]);
+
+      if (parentsRes.data.success) {
+        console.log("Fetched guardians:", parentsRes.data.data);
+        setGuardians(parentsRes.data.data);
+      }
+      if (classesRes.data.success) setClasses(classesRes.data.data);
+      if (sectionsRes.data.success) setAllSections(sectionsRes.data.data);
+      if (feeTypesRes.data.success) setFeeTypes(feeTypesRes.data.data);
+    } catch (err) {
+      console.error("Error fetching admission data:", err);
+    }
+  }, []);
+
+  const fetchEditData = useCallback(async () => {
+    if (!isEdit || !editId) return;
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get(`/v1/students/${editId}`);
+      if (res.data.success) {
+        const studentData = res.data.data;
+        const guardianData = studentData.guardian;
+        
+        setFormData({
+          academicYear: studentData.academicYear || "2026",
+          admissionDate: studentData.admissionDate ? new Date(studentData.admissionDate).toISOString().split("T")[0] : "",
+          position: "Existing", // Assuming existing if editing
+          students: [{
+            _id: studentData._id,
+            firstName: studentData.firstName,
+            gender: studentData.gender,
+            dateOfBirth: studentData.dateOfBirth ? new Date(studentData.dateOfBirth).toISOString().split("T")[0] : "",
+            bloodGroup: studentData.bloodGroup,
+            class_id: studentData.class_id,
+            section_id: studentData.section_id,
+            photo: studentData.photo,
+            transport: studentData.transport || { required: false, route: "" },
+            hostel: studentData.hostel || { required: false, roomType: "" },
+            fees: studentData.fees || {},
+            note: studentData.note || "",
+            student_id: studentData.student_id
+          }],
+          guardian: {
+            fatherName: guardianData?.fatherName || "",
+            motherName: guardianData?.motherName || "",
+            fatherOccupation: guardianData?.fatherOccupation || "",
+            motherOccupation: guardianData?.motherOccupation || "",
+            contact: guardianData?.contact || "",
+            email: guardianData?.email || "",
+            address: guardianData?.address || "",
+            fatherPhoto: guardianData?.fatherPhoto || "",
+            motherPhoto: guardianData?.motherPhoto || "",
+            guardianNID: guardianData?.guardianNID || "",
+          }
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching edit data:", err);
+      toast.error("Failed to load admission details for editing");
+    } finally {
+      setLoading(false);
+    }
+  }, [isEdit, editId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (isEdit) fetchEditData();
+  }, [isEdit, fetchEditData]);
+
+  // Handle Pre-fill from Online Admission
+  useEffect(() => {
+    if (location.state?.preFill && location.state?.applicationData) {
+      const app = location.state.applicationData;
+      setFormData(prev => ({
+        ...prev,
+        guardian: {
+          ...prev.guardian,
+          fatherName: app.guardian?.fatherName || "",
+          motherName: app.guardian?.motherName || "",
+          fatherOccupation: app.guardian?.fatherOccupation || "",
+          motherOccupation: app.guardian?.motherOccupation || "",
+          // fatherContact: app.guardian?.fatherContact || app.guardian?.fatherContact || "",
+           contact: app.guardian?.fatherContact || "",
+          motherContact: app.guardian?.motherContact || app.guardian?.motherContact || "",
+          email: app.guardian?.email || "",
+          address: app.guardian?.address?.present || app.guardian?.address || "",
+          fatherPhoto: app.guardian?.fatherPhoto || app.guardian?.fatherNID || "",
+          motherPhoto: app.guardian?.motherPhoto || app.guardian?.motherNID || "",
+          guardianNID: app.guardian?.guardianNID || "",
+        },
+        students: app.students?.map((s, idx) => ({
+          firstName: s.name || s.firstName || "",
+          gender: s.gender === "male" ? "Male" : s.gender === "female" ? "Female" : (s.gender || "Male"),
+          dateOfBirth: s.dob || s.dateOfBirth || "",
+          bloodGroup: s.bloodGroup || "",
+          class_id: s.appliedClass || s.class_id || "",
+          section_id: s.section || s.section_id || "",
+          photo: s.photo || "",
+          password: "password",
+          transport: { required: false, route: "" },
+          hostel: { required: false, roomType: "" },
+          fees: {},
+          note: s.note || "",
+          student_id: `TS${Math.random().toString(10).slice(2, 6)}`,
+          id: Date.now() + idx
+        })) || prev.students
+      }));
+      toast.success("আবেদন থেকে তথ্যগুলো লোড করা হয়েছে");
+    }
+  }, [location.state]);
 
   const initialStudent = {
-    id: Date.now(),
     firstName: "",
     gender: "Male",
     dateOfBirth: "",
     bloodGroup: "",
-    class: "",
-    phone: "",
-    section: "",
+    class_id: "",
+    section_id: "",
     photo: "",
     password: "password",
     transport: {
@@ -83,10 +190,11 @@ const CreateAdmission = () => {
     },
     fees: {}, // To store { "Fee Name": "Amount" }
     note: "",
+    student_id:`TS${Math.random().toString(10).slice(2,6)}`
   };
 
   const [formData, setFormData] = useState({
-    academicYear: "2025-2026",
+    academicYear: "2026",
     admissionDate: new Date().toISOString().split("T")[0],
     position: "New",
     students: [{ ...initialStudent }],
@@ -102,6 +210,7 @@ const CreateAdmission = () => {
       motherPhoto: "",
       guardianNID: "",
     },
+    guardian_id: null,
   });
 
   const handleInputChange = (section, field, value) => {
@@ -135,6 +244,10 @@ const CreateAdmission = () => {
   };
 
   const addStudent = () => {
+    if (isEdit) {
+        toast.error("Cannot add students in single-student edit mode");
+        return;
+    }
     setFormData((prev) => ({
       ...prev,
       students: [...prev.students, { ...initialStudent, id: Date.now() }],
@@ -145,7 +258,7 @@ const CreateAdmission = () => {
     if (formData.students.length > 1) {
       setFormData((prev) => ({
         ...prev,
-        students: prev.students.filter((s) => s.id !== id),
+        students: prev.students.filter((s) => s.id !== id && s._id !== id),
       }));
     }
   };
@@ -168,33 +281,81 @@ const CreateAdmission = () => {
     setFormData((prev) => ({
       ...prev,
       guardian: {
-        fatherName: guardian.fatherName,
-        motherName: guardian.motherName,
-        fatherOccupation: guardian.fatherOccupation,
-        motherOccupation: guardian.motherOccupation,
-        contact: guardian.contact,
-        email: guardian.email,
-        address: guardian.address,
+        fatherName: guardian.fatherName || "",
+        motherName: guardian.motherName || "",
+        fatherOccupation: guardian.fatherOccupation || "",
+        motherOccupation: guardian.motherOccupation || "",
+        contact: guardian.contact || "",
+        motherContact: guardian.motherContact || "",
+        email: guardian.email || "",
+        address: guardian.address || "",
         fatherPhoto: guardian.fatherPhoto || "",
         motherPhoto: guardian.motherPhoto || "",
         guardianNID: guardian.guardianNID || "",
       },
+      guardian_id: guardian._id,
     }));
     setUseExistingGuardian(false);
     setGuardianSearchTerm("");
+    toast.success("Guardian information loaded!");
   };
 
-  const filteredGuardians = existingGuardians.filter(
-    (g) =>
-      g.fatherName.toLowerCase().includes(guardianSearchTerm.toLowerCase()) ||
-      g.motherName.toLowerCase().includes(guardianSearchTerm.toLowerCase()) ||
-      g.contact.includes(guardianSearchTerm),
+  const filteredGuardians = guardians.filter(
+    (g) => {
+      const search = guardianSearchTerm.toLowerCase();
+      const fatherName = g.fatherName?.toLowerCase() || "";
+      const motherName = g.motherName?.toLowerCase() || "";
+      const contact = g.contact || "";
+      const email = g.email?.toLowerCase() || "";
+
+      return fatherName.includes(search) || 
+             motherName.includes(search) || 
+             contact.includes(search) || 
+             email.includes(search);
+    }
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Full Admission Data:", formData);
-    setShowVoucher(true);
+    setLoading(true);
+    try {
+      let response;
+      if (isEdit) {
+        const payload = {
+            ...formData,
+            guardianId: guardianIdParam
+        };
+        response = await axiosInstance.put("/v1/admission", payload);
+      } else {
+        response = await axiosInstance.post("/v1/admission", formData);
+      }
+
+      if (response.data.success) {
+        toast.success(isEdit ? "Admission updated successfully!" : "Admission created successfully!");
+        
+        // If this was a pre-filled admission from an online application
+        if (!isEdit && location.state?.preFill && location.state?.applicationData?._id) {
+          try {
+            await axiosInstance.put(`/v1/online-admission/${location.state.applicationData._id}/status`, { 
+              status: "approved" 
+            });
+          } catch (statusErr) {
+            console.error("Failed to update original application status:", statusErr);
+          }
+        }
+
+        if (isEdit) {
+            navigate("/admin/admission/report");
+        } else {
+            setShowVoucher(true);
+        }
+      }
+    } catch (err) {
+      console.error("Admission error:", err);
+      toast.error(err.response?.data?.message || err.response?.data?.error || "Failed to process admission");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -205,13 +366,13 @@ const CreateAdmission = () => {
         position: "New",
         students: [{ ...initialStudent, id: Date.now() }],
         guardian: {
-          fatherName: "",
-          motherName: "",
-          fatherOccupation: "",
-          motherOccupation: "",
-          contact: "",
-          email: "",
-          address: "",
+          fatherName: "Md Sadiq",
+          motherName: "Mis Adiba",
+          fatherOccupation: "Fermer",
+          motherOccupation: "Home Meker",
+          contact: "01996359111",
+          email: "sadiq@gmail.com",
+          address: "Pakunda",
           fatherPhoto: "",
           motherPhoto: "",
           guardianNID: "",
@@ -220,28 +381,28 @@ const CreateAdmission = () => {
     }
   };
 
-  const allFeeType = [
-    { name: "Admission Fee" },
-    { name: "Monthly Fee" },
-    { name: "Boding Fee" },
-    { name: "Card Fee" },
-    { name: "Tussion Fee" },
-    { name: "utiliy Fee" },
-  ];
+
+
+
+
+  
+
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white dark:bg-white p-6 rounded-[20px] border-2 border-slate-200 dark:border-slate-200 shadow-sm text-center md:text-left">
+     {/* Header */}
+      <div className="flex items-center justify-between mb-5 w-full">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-800 mb-1">
-            Create New Admission
+          <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
+            <Users className="w-8 h-8 text-[#00bd7f]" />
+           Create Student
           </h1>
-          {/* <p className="text-slate-600 dark:text-slate-600 text-sm font-semibold">
-            Add new students to the system under a single guardian
-          </p> */}
+          <p className=" text-[14px] text-slate-500 font-bold mt-1">
+            Manage all student records
+          </p>
         </div>
-        <div className="flex items-center gap-3">
+
+           <div className="flex items-center gap-3">
           <Link to={"/admin/student/list"}>
             <button
               type="button"
@@ -253,6 +414,8 @@ const CreateAdmission = () => {
           </Link>
         </div>
       </div>
+      
+
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Academic Year & Admission Date */}
@@ -321,6 +484,16 @@ const CreateAdmission = () => {
                 </>
               )}
             </button>
+            {!useExistingGuardian && formData.guardian_id && (
+              <button
+                type="button"
+                onClick={() => handleInputChange(null, "guardian_id", null)}
+                className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-[8px] transition-all bg-red-100 text-red-600 hover:bg-red-200 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+                Clear Selected Guardian
+              </button>
+            )}
           </div>
 
           {/* Existing Guardian Selection */}
@@ -335,50 +508,67 @@ const CreateAdmission = () => {
                   type="text"
                   value={guardianSearchTerm}
                   onChange={(e) => setGuardianSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-2 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef]   dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   placeholder="Search by father's name, mother's name, or contact..."
                 />
               </div>
 
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+              <div className="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
                 {filteredGuardians.length > 0 ? (
                   filteredGuardians.map((guardian) => (
                     <div
-                      key={guardian.id}
+                      key={guardian._id}
                       onClick={() => selectGuardian(guardian)}
-                      className="p-4 bg-white dark:bg-white rounded-xl border-2 border-slate-200 dark:border-slate-200 hover:border-[#00bd7f] cursor-pointer transition-all hover:shadow-md group"
+                      className="p-4 bg-slate-50 dark:bg-slate-50 rounded-[8px] border-1 border-slate-200 dark:border-slate-200 hover:border-[#00bd7f] hover:bg-emerald-50 cursor-pointer transition-all hover:shadow-md group relative overflow-hidden"
                     >
+                      <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <UserCheck className="w-5 h-5 text-[#00bd7f]" />
+                      </div>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
                             <div>
-                              <p className="text-xs font-bold text-slate-500 uppercase mb-1">
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">
                                 Father's Name
                               </p>
-                              <p className="font-bold text-slate-700 dark:text-slate-700">
+                              <p className="font-bold text-slate-800">
                                 {guardian.fatherName}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs font-bold text-slate-500 uppercase mb-1">
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">
                                 Mother's Name
                               </p>
-                              <p className="font-bold text-slate-700 dark:text-slate-700">
+                              <p className="font-bold text-slate-800">
                                 {guardian.motherName}
                               </p>
                             </div>
                           </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-2">
-                            <div>
-                              <p className="text-xs text-slate-600 dark:text-slate-400">
-                                <Phone className="w-3 h-3 inline mr-1" />
+                          <div className="flex flex-wrap gap-4 pt-3 border-t border-slate-200">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
+                                <Phone className="w-3 h-3 text-[#00bd7f]" />
+                              </div>
+                              <p className="text-xs font-bold text-slate-600">
                                 {guardian.contact}
                               </p>
                             </div>
-                            <div>
-                              <p className="text-xs text-slate-600 dark:text-slate-400">
-                                <Mail className="w-3 h-3 inline mr-1" />
-                                {guardian.email}
+                            {guardian.email && (
+                              <div className="flex items-center gap-2">
+                                <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                                  <Mail className="w-3 h-3 text-blue-500" />
+                                </div>
+                                <p className="text-xs font-bold text-slate-600">
+                                  {guardian.email}
+                                </p>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center">
+                                <MapPin className="w-3 h-3 text-orange-500" />
+                              </div>
+                              <p className="text-xs font-bold text-slate-600 truncate max-w-[200px]">
+                                {guardian.address}
                               </p>
                             </div>
                           </div>
@@ -387,10 +577,10 @@ const CreateAdmission = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8">
+                  <div className="text-center py-10 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
                     <Users className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                    <p className="text-slate-500 font-medium">
-                      No results found
+                    <p className="text-slate-500 font-bold">
+                      {guardianSearchTerm ? "No matching guardians found" : "Start typing to search guardians"}
                     </p>
                   </div>
                 )}
@@ -398,165 +588,236 @@ const CreateAdmission = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <InputField
-              title={"Father's Name"}
-              value={formData.guardian.fatherName}
-              setValue={(val) => handleInputChange("guardian", "fatherName", val)}
-              required={true}
-              placeholder={"Enter your father name"}
-            />
-            <InputField
-              title={"Mother's Name"}
-              value={formData.guardian.motherName}
-              setValue={(val) => handleInputChange("guardian", "motherName", val)}
-              required={true}
-              placeholder={"Enter your Mother name"}
-            />
-            <InputField
-              title={"Father's Occupation"}
-              value={formData.guardian.fatherOccupation}
-              setValue={(val) => handleInputChange("guardian", "fatherOccupation", val)}
-              placeholder={"Father's Occupation"}
-            />
-            <InputField
-              title={" Mother's Occupation"}
-              value={formData.guardian.motherOccupation}
-              setValue={(val) => handleInputChange("guardian", "motherOccupation", val)}
-              placeholder={" Mother's Occupation"}
-            />
-            <InputField
-              title={"Contact Number (Father's)"}
-              value={formData.guardian.contact}
-              setValue={(val) => handleInputChange("guardian", "contact", val)}
-              required={true}
-              type={"number"}
-              placeholder={"019XXXXXXXX"}
-            />
-            <InputField
-              title={"Contact Number  (Mother's)"}
-              value={formData.guardian.motherContact || ""}
-              setValue={(val) => handleInputChange("guardian", "motherContact", val)}
-              type={"number"}
-              placeholder={"019XXXXXXXX"}
-            />
-
-            <TextareaField
-              title={"Address"}
-              value={formData.guardian.address}
-              setValue={(val) => handleInputChange("guardian", "address", val)}
-              required={true}
-              placeholder={"Address"}
-            />
-          </div>
-
-          {/* Guardian Photos and NID */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 p-6 bg-slate-50 rounded-3xl border-2 border-slate-100">
-            {/* Father's Photo */}
-            <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
-              <div className="relative">
-                {formData.guardian.fatherPhoto ? (
-                  <img
-                    src={formData.guardian.fatherPhoto}
-                    alt="Father"
-                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
-                    <ImageIcon className="w-10 h-10 text-emerald-300" />
+          {!useExistingGuardian && formData.guardian_id ? (
+            <div className="p-6 bg-emerald-50 rounded-3xl border-2 border-emerald-100 shadow-sm relative overflow-hidden">
+               {/* Read-only guardian template */}
+              <div className="absolute top-0 right-0 p-4 opacity-50">
+                <UserCheck className="w-16 h-16 text-[#00bd7f]" />
+              </div>
+              <h3 className="text-lg font-black text-emerald-800 mb-6 flex items-center gap-2">
+                <UserCheck className="w-5 h-5" />
+                Selected Guardian
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                <div>
+                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Father's Name</p>
+                  <p className="font-bold text-slate-800">{formData.guardian.fatherName || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Mother's Name</p>
+                  <p className="font-bold text-slate-800">{formData.guardian.motherName || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Contact Number</p>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-emerald-500" />
+                    <p className="font-bold text-slate-800">{formData.guardian.contact || "N/A"}</p>
+                  </div>
+                </div>
+                {formData.guardian.email && (
+                  <div>
+                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Email</p>
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-emerald-500" />
+                      <p className="font-bold text-slate-800">{formData.guardian.email}</p>
+                    </div>
                   </div>
                 )}
-                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
-                  <Upload className="w-4 h-4" />
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={(e) =>
-                      handleImageUpload(
-                        e.target.files?.[0],
-                        "guardian",
-                        "fatherPhoto"
-                      )
-                    }
-                  />
-                </label>
+                <div className="lg:col-span-2">
+                  <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Address</p>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-emerald-500" />
+                    <p className="font-bold text-slate-800">{formData.guardian.address || "N/A"}</p>
+                  </div>
+                </div>
               </div>
-              <div className="text-center">
-                <p className="font-bold text-slate-800 text-sm">Father's  NID Card</p>
-                <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Required for ID</p>
-              </div>
-            </div>
 
-            {/* Mother's Photo */}
-            <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
-              <div className="relative">
-                {formData.guardian.motherPhoto ? (
-                  <img
-                    src={formData.guardian.motherPhoto}
-                    alt="Mother"
-                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
-                    <ImageIcon className="w-10 h-10 text-emerald-300" />
+              {/* Photos */}
+              <div className="flex gap-4 pt-6 border-t border-emerald-200/60">
+                {formData.guardian.fatherPhoto && (
+                  <div className="flex items-center gap-3">
+                    <img src={formData.guardian.fatherPhoto} alt="Father" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-200" />
+                    <div className="text-xs font-bold text-emerald-700">Father's Photo</div>
                   </div>
                 )}
-                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
-                  <Upload className="w-4 h-4" />
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={(e) =>
-                      handleImageUpload(
-                        e.target.files?.[0],
-                        "guardian",
-                        "motherPhoto"
-                      )
-                    }
-                  />
-                </label>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-slate-800 text-sm">Mother's  NID Card</p>
-                <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Required for ID</p>
-              </div>
-            </div>
-
-            {/* Guardian NID */}
-            <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
-              <div className="relative">
-                {formData.guardian.guardianNID ? (
-                  <img
-                    src={formData.guardian.guardianNID}
-                    alt="NID"
-                    className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
-                    <UserCheck className="w-10 h-10 text-emerald-300" />
+                {formData.guardian.motherPhoto && (
+                  <div className="flex items-center gap-3">
+                    <img src={formData.guardian.motherPhoto} alt="Mother" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-200" />
+                    <div className="text-xs font-bold text-emerald-700">Mother's Photo</div>
                   </div>
                 )}
-                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
-                  <Upload className="w-4 h-4" />
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={(e) =>
-                      handleImageUpload(
-                        e.target.files?.[0],
-                        "guardian",
-                        "guardianNID"
-                      )
-                    }
-                  />
-                </label>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-slate-800 text-sm">Guardian NID Card</p>
-                <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Or Birth Certificate</p>
+                {formData.guardian.guardianNID && (
+                  <div className="flex items-center gap-3">
+                    <img src={formData.guardian.guardianNID} alt="NID" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-200" />
+                    <div className="text-xs font-bold text-emerald-700">NID Document</div>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <InputField
+                  title={"Father's Name"}
+                  value={formData.guardian.fatherName}
+                  setValue={(val) => handleInputChange("guardian", "fatherName", val)}
+                  required={true}
+                  placeholder={"Enter your father name"}
+                />
+                <InputField
+                  title={"Mother's Name"}
+                  value={formData.guardian.motherName}
+                  setValue={(val) => handleInputChange("guardian", "motherName", val)}
+                  required={true}
+                  placeholder={"Enter your Mother name"}
+                />
+                <InputField
+                  title={"Father's Occupation"}
+                  value={formData.guardian.fatherOccupation}
+                  setValue={(val) => handleInputChange("guardian", "fatherOccupation", val)}
+                  placeholder={"Father's Occupation"}
+                />
+                <InputField
+                  title={" Mother's Occupation"}
+                  value={formData.guardian.motherOccupation}
+                  setValue={(val) => handleInputChange("guardian", "motherOccupation", val)}
+                  placeholder={" Mother's Occupation"}
+                />
+                <InputField
+                  title={"Contact Number (Father's)"}
+                  value={formData.guardian.contact}
+                  setValue={(val) => handleInputChange("guardian", "contact", val)}
+                  required={true}
+                  type={"number"}
+                  placeholder={"019XXXXXXXX"}
+                />
+                <InputField
+                  title={"Contact Number  (Mother's)"}
+                  value={formData.guardian.motherContact || ""}
+                  setValue={(val) => handleInputChange("guardian", "motherContact", val)}
+                  type={"number"}
+                  placeholder={"019XXXXXXXX"}
+                />
+
+                <TextareaField
+                  title={"Address"}
+                  value={formData.guardian.address}
+                  setValue={(val) => handleInputChange("guardian", "address", val)}
+                  required={true}
+                  placeholder={"Address"}
+                />
+              </div>
+
+              {/* Guardian Photos and NID */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 p-6 bg-slate-50 rounded-3xl border-2 border-slate-100">
+                {/* Father's Photo */}
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+                  <div className="relative">
+                    {formData.guardian.fatherPhoto ? (
+                      <img
+                        src={formData.guardian.fatherPhoto}
+                        alt="Father"
+                        className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
+                        <ImageIcon className="w-10 h-10 text-emerald-300" />
+                      </div>
+                    )}
+                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                      <Upload className="w-4 h-4" />
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={(e) =>
+                          handleImageUpload(
+                            e.target.files?.[0],
+                            "guardian",
+                            "fatherPhoto"
+                          )
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-slate-800 text-sm">Father's  NID Card</p>
+                    <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Required for ID</p>
+                  </div>
+                </div>
+
+                {/* Mother's Photo */}
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+                  <div className="relative">
+                    {formData.guardian.motherPhoto ? (
+                      <img
+                        src={formData.guardian.motherPhoto}
+                        alt="Mother"
+                        className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
+                        <ImageIcon className="w-10 h-10 text-emerald-300" />
+                      </div>
+                    )}
+                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                      <Upload className="w-4 h-4" />
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={(e) =>
+                          handleImageUpload(
+                            e.target.files?.[0],
+                            "guardian",
+                            "motherPhoto"
+                          )
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-slate-800 text-sm">Mother's  NID Card</p>
+                    <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Required for ID</p>
+                  </div>
+                </div>
+
+                {/* Guardian NID */}
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+                  <div className="relative">
+                    {formData.guardian.guardianNID ? (
+                      <img
+                        src={formData.guardian.guardianNID}
+                        alt="NID"
+                        className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
+                        <UserCheck className="w-10 h-10 text-emerald-300" />
+                      </div>
+                    )}
+                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                      <Upload className="w-4 h-4" />
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={(e) =>
+                          handleImageUpload(
+                            e.target.files?.[0],
+                            "guardian",
+                            "guardianNID"
+                          )
+                        }
+                      />
+                    </label>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-slate-800 text-sm">Guardian NID Card</p>
+                    <p className="text-[10px] text-slate-500 font-bold mt-1 uppercase tracking-wider">Or Birth Certificate</p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Students Section */}
@@ -677,37 +938,35 @@ const CreateAdmission = () => {
                   </label>
                   <select
                     required
-                    value={student.class}
+                    value={student.class_id}
                     onChange={(e) =>
-                      handleStudentChange(index, "class", e.target.value)
+                      handleStudentChange(index, "class_id", e.target.value)
                     }
                     className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   >
                     <option value="">Select Class</option>
-                    <option value="Nursery">Nursery</option>
-                    <option value="KG">KG</option>
-                    <option value="Class 1">Class 1</option>
-                    <option value="Class 2">Class 2</option>
-                    <option value="Class 3">Class 3</option>
-                    <option value="Class 4">Class 4</option>
-                    <option value="Class 5">Class 5</option>
+                    {classes.map((cls) => (
+                      <option key={cls._id} value={cls._id}>{cls.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
                   <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                    Group
+                    Section
                   </label>
                   <select
-                    value={student.section}
+                    value={student.section_id}
                     onChange={(e) =>
-                      handleStudentChange(index, "section", e.target.value)
+                      handleStudentChange(index, "section_id", e.target.value)
                     }
                     className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   >
                     <option value="">Select Section</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
+                    {allSections
+                      .filter(sec => sec.class_id === student.class_id)
+                      .map((sec) => (
+                        <option key={sec._id} value={sec._id}>{sec.name}</option>
+                      ))}
                   </select>
                 </div>
 
@@ -759,7 +1018,7 @@ const CreateAdmission = () => {
                 <h4 className="font-black">Fee Setup (ফি সেটআপ)</h4>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {allFeeType?.map((type, i) => (
+                {feeTypes?.map((type, i) => (
                   <div key={i} className="p-5 rounded-[20px] border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3 text-emerald-700">

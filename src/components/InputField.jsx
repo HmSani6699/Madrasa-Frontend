@@ -18,7 +18,7 @@ const InputField = ({
         required={required || false}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+        className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
         placeholder={placeholder}
       />
     </div>

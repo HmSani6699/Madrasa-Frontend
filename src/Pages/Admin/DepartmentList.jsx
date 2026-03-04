@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Building2,
   Plus,
@@ -12,45 +12,35 @@ import {
   CheckCircle,
   AlertTriangle,
 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
 
 const DepartmentList = () => {
-  const [departments, setDepartments] = useState([
-    {
-      id: 1,
-      name: "Academic",
-      head: "মাওলানা আব্দুল হাই",
-      staffCount: 25,
-      color: "bg-blue-500",
-    },
-    {
-      id: 2,
-      name: "Arabic",
-      head: "муфти আব্দুর রহমান",
-      staffCount: 18,
-      color: "bg-emerald-500",
-    },
-    {
-      id: 3,
-      name: "Administration",
-      head: "আহমেদ আলী",
-      staffCount: 8,
-      color: "bg-purple-500",
-    },
-    {
-      id: 4,
-      name: "Maintenance",
-      head: "কামাল উদ্দিন",
-      staffCount: 12,
-      color: "bg-amber-500",
-    },
-    {
-      id: 5,
-      name: "Kitchen",
-      head: "সাইফুল ইসলাম",
-      staffCount: 15,
-      color: "bg-rose-500",
-    },
-  ]);
+  const [departments, setDepartments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDepartments = async () => {
+      try {
+          const response = await axiosInstance.get('/v1/departments');
+          if (response.data.success) {
+              setDepartments(response.data.data.map((d, i) => ({
+                id: d._id,
+                name: d.name,
+                head: "Unassigned", // Backend doesnt support head yet
+                staffCount: 0, 
+                color: ["bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-amber-500", "bg-rose-500"][i % 5]
+              })));
+          }
+      } catch (error) {
+          console.error(error);
+          setToast("Failed to fetch departments");
+      } finally {
+          setLoading(false);
+      }
+  };
+
+  useEffect(() => {
+      fetchDepartments();
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -62,31 +52,48 @@ const DepartmentList = () => {
     d.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSave = (name) => {
-    if (editDept) {
-      setDepartments((prev) =>
-        prev.map((d) => (d.id === editDept.id ? { ...d, name } : d))
-      );
-      setToast(`Department "${name}" updated!`);
-    } else {
-      const newDept = {
-        id: Date.now(),
-        name,
-        head: "Unassigned",
-        staffCount: 0,
-        color: "bg-slate-500",
-      };
-      setDepartments([...departments, newDept]);
-      setToast(`New department "${name}" created!`);
+  const handleSave = async (name) => {
+    try {
+        if (editDept) {
+            const response = await axiosInstance.put(`/v1/departments/${editDept.id}`, { name });
+            if(response.data.success) {
+                setDepartments((prev) =>
+                    prev.map((d) => (d.id === editDept.id ? { ...d, name } : d))
+                );
+                setToast(`Department "${name}" updated!`);
+            }
+        } else {
+            const response = await axiosInstance.post('/v1/departments', { name });
+            if(response.data.success) {
+                const newDept = response.data.data;
+                setDepartments([...departments, {
+                    id: newDept._id,
+                    name: newDept.name,
+                    head: "Unassigned",
+                    staffCount: 0,
+                    color: "bg-slate-500"
+                }]);
+                setToast(`New department "${name}" created!`);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+        setToast("Failed to save department");
     }
     setShowAddModal(false);
     setEditDept(null);
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleDelete = () => {
-    setDepartments((prev) => prev.filter((d) => d.id !== deleteDept.id));
-    setToast(`Department "${deleteDept.name}" removed.`);
+  const handleDelete = async () => {
+    try {
+        await axiosInstance.delete(`/v1/departments/${deleteDept.id}`);
+        setDepartments((prev) => prev.filter((d) => d.id !== deleteDept.id));
+        setToast(`Department "${deleteDept.name}" removed.`);
+    } catch (error) {
+        console.error(error);
+        setToast("Failed to delete department");
+    }
     setDeleteDept(null);
     setTimeout(() => setToast(null), 3000);
   };

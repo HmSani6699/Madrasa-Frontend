@@ -50,8 +50,11 @@ import EmployeeAttendance from "../Pages/Admin/EmployeeAttendance";
 import ExamAttendance from "../Pages/Admin/ExamAttendance";
 import AssignTeacher from "../Pages/Admin/AssignTeacher";
 import SubjectList from "../Pages/Admin/SubjectList";
+import ClassList from "../Pages/Admin/ClassList";
+import SectionList from "../Pages/Admin/SectionList";
 import ClassAssign from "../Pages/Admin/ClassAssign";
 import ClassSchedule from "../Pages/Admin/ClassSchedule";
+import ClassSyllabus from "../Pages/Admin/ClassSyllabus";
 import TeacherSchedule from "../Pages/Admin/TeacherSchedule";
 import HomeworkList from "../Pages/Admin/HomeworkList";
 import HomeworkReport from "../Pages/Admin/HomeworkReport";
@@ -94,7 +97,7 @@ import SettingsPage from "../Pages/Admin/SettingsPage";
 import DonationEntry from "../Pages/Accounting/DonationEntry";
 import FeeCollection from "../Pages/Accounting/FeeCollection";
 import PayrollProcess from "../Pages/Accounting/PayrollProcess";
-import FeeSetup from "../Pages/Accounting/FeeSetup";
+import FeeSetup from "../Pages/Accounting/FeeType";
 import DuesPending from "../Pages/Admin/DuesPending";
 import DonationHistory from "../Pages/Accounting/DonationHistory";
 import SalaryHistory from "../Pages/Accounting/SalaryHistory";
@@ -104,7 +107,8 @@ import AdmissionGuidelines from "../Pages/Portal/AdmissionGuidelines";
 import OnlineAdmissionForm from "../Pages/Portal/OnlineAdmissionForm";
 import Login from "../Pages/Auth/Login";
 import AccountDeactivated from "../Pages/Auth/AccountDeactivated";
-import DepartmentSectionList from "../Pages/Admin/DepartmentSectionList";
+
+// import DepartmentSectionList from "../Pages/Admin/DepartmentSectionList";
 import PaySalary from "../Pages/Accounting/PaySalary";
 import FreeCollectionReport from "../Pages/Accounting/FreeCollectionReport";
 import SalaryReport from "../Pages/Accounting/SalaryReport";
@@ -113,6 +117,9 @@ import IncomeExpenseReport from "../Pages/Accounting/IncomeExpenseReport";
 import IncomeEntry from "../Pages/Accounting/IncomeEntry";
 import ExpenseEntry from "../Pages/Accounting/ExpenseEntry";
 import PortalLayout from "../layouts/PortalLayout";
+import SalarySetup from "../Pages/Admin/SalarySetup";
+import SalaryPayment from "../Pages/Admin/SalaryPayment";
+
 
 // Guardian Pages
 import FeesAndDues from "../Pages/Guardian/FeesAndDues";
@@ -138,6 +145,7 @@ import StudentResults from "../Pages/Students/Results";
 import StudentLibrary from "../Pages/Students/Library";
 import EBooks from "../Pages/Students/EBooks";
 import StudentProfilePage from "../Pages/Students/Profile";
+import FeeType from "../Pages/Accounting/FeeType";
 
 // Helper to flatten routes
 const flattenRoutes = (navItems) => {
@@ -186,6 +194,12 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/employee/designation") {
         element = <DesignationList />;
       }
+      if (item.path === "/admin/employee/salary-setup") {
+        element = <SalarySetup />;
+      }
+      if (item.path === "/admin/employee/salary-payment") {
+        element = <SalaryPayment />;
+      }
       if (item.path === "/admin/employee/deactive") {
         element = <DeactivatedEmployeeList />;
       }
@@ -199,8 +213,11 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/attendance/exam") {
         element = <ExamAttendance />;
       }
-      if (item.path === "/admin/academic/department-section") {
-        element = <DepartmentSectionList />;
+      if (item.path === "/admin/academic/class") {
+        element = <ClassList />;
+      }
+      if (item.path === "/admin/academic/section") {
+        element = <SectionList />;
       }
       if (item.path === "/admin/academic/assign-teacher") {
         element = <AssignTeacher />;
@@ -213,6 +230,9 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/academic/schedule/class") {
         element = <ClassSchedule />;
+      }
+      if (item.path === "/admin/academic/syllabus") {
+        element = <ClassSyllabus />;
       }
       if (item.path === "/admin/academic/schedule/teacher") {
         element = <TeacherSchedule />;
@@ -310,8 +330,11 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/accounting/fees/collect") {
         element = <FeeCollection />;
       }
-      if (item.path === "/admin/accounting/fees/setup") {
-        element = <FeeSetup />;
+      // if (item.path === "/admin/accounting/fees/setup") {
+      //   element = <FeeSetup />;
+      // }
+      if (item.path === "/admin/accounting/fees/type") {
+        element = <FeeType />;
       }
       if (item.path === "/admin/accounting/payroll/process") {
         element = <PayrollProcess />;
@@ -481,7 +504,7 @@ const router = createBrowserRouter([
     element: <Navigate to="/login" replace />,
   },
   {
-    path: "/portal/:slug",
+    path: "/:slug",
     element: <PortalLayout />,
     children: [
       { index: true, element: <MadrasaPortal /> },
@@ -522,7 +545,7 @@ const router = createBrowserRouter([
           {
             element: (
               <ProtectedRoute
-                allowedRoles={["admin", "talimat", "accountant"]}
+                allowedRoles={["admin", "talimat", "accountant", "mohtamim"]}
               />
             ),
             children: [
@@ -537,7 +560,7 @@ const router = createBrowserRouter([
           // Teacher Routes - accessible by admin and talimat too
           {
             element: (
-              <ProtectedRoute allowedRoles={["teacher", "admin", "talimat"]} />
+              <ProtectedRoute allowedRoles={["teacher", "admin", "talimat", "mohtamim"]} />
             ),
             children: [
               { path: "/teacher", element: <TeachersDashboard /> },
@@ -546,7 +569,7 @@ const router = createBrowserRouter([
           },
           // Talimat Routes
           {
-            element: <ProtectedRoute allowedRoles={["talimat", "admin"]} />,
+            element: <ProtectedRoute allowedRoles={["talimat", "admin", "mohtamim"]} />,
             children: [
               { path: "/talimat", element: <TalimatDashboard /> },
               ...talimatRoutes,
@@ -554,7 +577,7 @@ const router = createBrowserRouter([
           },
           // Accounting Routes
           {
-            element: <ProtectedRoute allowedRoles={["accountant", "admin"]} />,
+            element: <ProtectedRoute allowedRoles={["accountant", "admin", "mohtamim"]} />,
             children: [
               { path: "/accounting", element: <AccountingDashboard /> },
               ...accountingRoutes,

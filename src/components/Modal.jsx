@@ -55,7 +55,7 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const Modal = ({ isOpen, onClose, title, children,width }) => {
   const [show, setShow] = useState(isOpen);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
       {/* Modal Content */}
       <div
-        className={`bg-white rounded-2xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden transform transition-all duration-300 mt-10 ${
+        className={`bg-white rounded-[8px] shadow-2xl ${width} relative z-10 overflow-hidden transform transition-all duration-300 mt-10 ${
           isOpen ? "scale-100 translate-y-0" : "scale-95 translate-y-10"
         }`}
         style={{ maxHeight: "90vh" }}

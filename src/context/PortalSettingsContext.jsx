@@ -119,22 +119,41 @@ const defaultSettings = {
 };
 
 export const PortalSettingsProvider = ({ children }) => {
-  const [settings, setSettings] = useState(() => {
-    const saved = localStorage.getItem("portal_settings");
-    if (!saved) return defaultSettings;
-    
-    const parsed = JSON.parse(saved);
-    // Merge saved settings with defaultSettings to ensure new keys exist
-    return {
-      ...defaultSettings,
-      ...parsed,
-      sms: parsed.sms || defaultSettings.sms,
-      profile: parsed.profile || defaultSettings.profile,
-      branding: { ...defaultSettings.branding, ...parsed.branding },
-      contact: { ...defaultSettings.contact, ...parsed.contact },
-      footer: { ...defaultSettings.footer, ...parsed.footer }
+  const [settings, setSettings] = useState(defaultSettings);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const slug = window.location.pathname.split('/')[1];
+        if (!slug || slug === 'login' || slug === 'admin') {
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`/api/portal/v1/${slug}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          setSettings(prev => ({
+            ...prev,
+            ...data.data.settings,
+            madrasa: data.data.madrasa
+          }));
+        } else {
+          setError(data.message || "Failed to load settings");
+        }
+      } catch (err) {
+        console.error("Portal Settings Fetch Error:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
-  });
+
+    fetchSettings();
+  }, []);
 
   const updateSettings = (newSettings) => {
     setSettings(newSettings);
@@ -147,7 +166,7 @@ export const PortalSettingsProvider = ({ children }) => {
   };
 
   return (
-    <PortalSettingsContext.Provider value={{ settings, updateSettings, resetSettings }}>
+    <PortalSettingsContext.Provider value={{ settings, updateSettings, resetSettings, loading, error }}>
       {children}
     </PortalSettingsContext.Provider>
   );

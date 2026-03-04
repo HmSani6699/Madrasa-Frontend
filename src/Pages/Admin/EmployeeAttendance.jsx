@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Search, 
   Filter, 
@@ -14,25 +14,80 @@ import {
   Save,
   Info
 } from "lucide-react";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const EmployeeAttendance = () => {
   const [attendanceMode, setAttendanceMode] = useState("manual"); // "manual" or "biometric"
-  const [selectedDepartment, setSelectedDepartment] = useState("Academic");
+  const [selectedDepartment, setSelectedDepartment] = useState("all");
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Sample Data
-  const employees = [
-    { id: "EMP2025001", name: "মাওলানা আব্দুল করিম", designation: "Head Teacher", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP1" },
-    { id: "EMP2025002", name: "হাফেজ মোহাম্মদ আলী", designation: "Senior Teacher", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP2" },
-    { id: "EMP2025003", name: "হোসেন আহমেদ", designation: "Junior Teacher", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP3" },
-    { id: "EMP2025004", name: "আব্দুল্লাহ মাহমুদ", designation: "Accountant", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP4" },
-    { id: "EMP2025005", name: "সাইফুল ইসলাম", designation: "Staff", photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=EMP5" },
-  ];
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [attendanceData, setAttendanceData] = useState({});
 
-  const [attendanceData, setAttendanceData] = useState(
-    employees.reduce((acc, emp) => ({ ...acc, [emp.id]: "present" }), {})
-  );
+  useEffect(() => {
+    const fetchDepts = async () => {
+      try {
+        const response = await axiosInstance.get("/v1/departments");
+        if (response.data.success) setDepartments(response.data.data);
+      } catch (err) {
+        console.error("Error fetching departments:", err);
+      }
+    };
+    fetchDepts();
+  }, []);
+
+  const fetchEmployeesAndAttendance = async () => {
+    setLoading(true);
+    try {
+      // 1. Fetch Employees
+      const params = {};
+      if (selectedDepartment !== 'all') params.department = selectedDepartment;
+      
+      const empRes = await axiosInstance.get("/v1/staff", { params });
+
+      // 2. Fetch Existing Attendance
+      const attParams = { date: selectedDate, type: "staff" };
+      const attRes = await axiosInstance.get("/v1/attendance/report", { params: attParams });
+
+      if (empRes.data.success) {
+        const empList = empRes.data.data;
+        setEmployees(empList);
+
+        let newAttendanceData = {};
+
+        if (attRes.data.success && attRes.data.data.length > 0) {
+             const records = attRes.data.data;
+             const statusMap = {};
+             records.forEach(r => {
+                 if (r.employeeId) statusMap[r.employeeId._id || r.employeeId] = r.status;
+             });
+
+             empList.forEach(e => {
+                 newAttendanceData[e._id] = statusMap[e._id] || "present";
+             });
+        } else {
+             empList.forEach(e => {
+                newAttendanceData[e._id] = "present";
+            });
+        }
+        setAttendanceData(newAttendanceData);
+      }
+    } catch (err) {
+      console.error("Error fetching employees/attendance:", err);
+      toast.error("Failed to fetch data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployeesAndAttendance();
+  }, [selectedDepartment, selectedDate]);
+
 
   const stats = {
     total: employees.length,
@@ -46,11 +101,41 @@ const EmployeeAttendance = () => {
     setAttendanceData(prev => ({ ...prev, [empId]: status }));
   };
 
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const formattedData = Object.entries(attendanceData).map(([staff_id, status]) => ({
+        staff_id,
+        status: status.charAt(0).toUpperCase() + status.slice(1) // Backend Joi expects "Present", "Absent", etc.
+      }));
+
+      const response = await axiosInstance.post("/v1/attendance/staff", {
+        date: selectedDate,
+        records: formattedData
+      });
+
+      if (response.data.success) {
+        toast.success("Staff attendance saved successfully!");
+        fetchEmployeesAndAttendance(); // Sync
+      }
+    } catch (err) {
+      console.error("Error saving attendance:", err);
+      toast.error("Failed to save attendance");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const markAllAs = (status) => {
     const newData = { ...attendanceData };
-    employees.forEach(e => newData[e.id] = status);
+    employees.forEach(e => newData[e._id] = status);
     setAttendanceData(newData);
   };
+  
+  const filteredEmployees = employees.filter(e => 
+      e.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      e.employeeID?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 p-4 md:p-8">
@@ -104,10 +189,10 @@ const EmployeeAttendance = () => {
                 onChange={(e) => setSelectedDepartment(e.target.value)}
                 className="w-full bg-indigo-50/50 border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-indigo-500 outline-none transition-all"
               >
-                <option>Academic</option>
-                <option>Administration</option>
-                <option>Accountant</option>
-                <option>Staff</option>
+                <option value="all">All Departments</option>
+                {departments.map(dept => (
+                  <option key={dept._id} value={dept.name}>{dept.name}</option>
+                ))}
               </select>
             </div>
             <div className="space-y-2">
@@ -163,11 +248,19 @@ const EmployeeAttendance = () => {
             </div>
 
             <div className="flex gap-2 w-full md:w-auto">
-              <button onClick={() => markAllAs("present")} className="flex-1 md:flex-none px-4 py-2 text-xs font-black bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200">
+              <button 
+                onClick={() => markAllAs("present")} 
+                className="flex-1 md:flex-none px-4 py-2 text-xs font-black bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200"
+              >
                 Mark All Present
               </button>
-              <button className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 flex items-center justify-center gap-2">
-                <Save className="w-3.5 h-3.5" /> Save Attendance
+              <button 
+                onClick={handleSave}
+                disabled={loading}
+                className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <Save className="w-3.5 h-3.5" /> 
+                {loading ? "Saving..." : "Save Attendance"}
               </button>
             </div>
           </div>
@@ -183,14 +276,14 @@ const EmployeeAttendance = () => {
                 </tr>
               </thead>
               <tbody className="divide-y-2 divide-slate-50">
-                {employees.map((emp) => (
-                  <tr key={emp.id} className="hover:bg-slate-50/50 transition-colors">
+                {filteredEmployees.map((emp) => (
+                  <tr key={emp._id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-4">
-                      <span className="text-sm font-black text-emerald-700">{emp.id}</span>
+                      <span className="text-sm font-black text-emerald-700">{emp.employeeID || emp.id}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img src={emp.photo} className="w-10 h-10 rounded-full bg-slate-100 p-0.5" />
+                        <img src={emp.photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${emp._id}`} className="w-10 h-10 rounded-full bg-slate-100 p-0.5" />
                         <div>
                           <p className="text-sm font-bold text-slate-800">{emp.name}</p>
                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">{emp.designation}</p>
@@ -207,9 +300,9 @@ const EmployeeAttendance = () => {
                         ].map(status => (
                           <button
                             key={status.key}
-                            onClick={() => handleStatusChange(emp.id, status.key)}
+                            onClick={() => handleStatusChange(emp._id, status.key)}
                             className={`w-10 h-10 rounded-xl text-xs font-black border-2 transition-all flex items-center justify-center ${
-                              attendanceData[emp.id] === status.key 
+                              attendanceData[emp._id] === status.key 
                                 ? `${status.color} border-transparent text-white shadow-lg shadow-${status.color}/20` 
                                 : `border-slate-100 text-slate-400 ${status.bg} hover:border-slate-300`
                             }`}
