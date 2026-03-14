@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { 
   UserCheck, 
   Search, 
@@ -18,6 +18,8 @@ import {
   Loader2
 } from "lucide-react";
 import teacherService from "../../services/teacherService";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const MarkAttendance = () => {
   const [attendance, setAttendance] = useState({});
@@ -28,17 +30,91 @@ const MarkAttendance = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [selectedClassId, setSelectedClassId] = useState("");
+  const [selectedSectionId, setSelectedSectionId] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+
   useEffect(() => {
-    fetchStudents();
+    const fetchInitialData = async () => {
+      try {
+        const [classesRes, sectionsRes] = await Promise.all([
+          axiosInstance.get("/v1/classes"),
+          axiosInstance.get("/v1/sections")
+        ]);
+        if (classesRes.data.success) {
+            setClasses(classesRes.data.data);
+            if (classesRes.data.data.length > 0) {
+                setSelectedClassId(classesRes.data.data[0]._id);
+            }
+        }
+        if (sectionsRes.data.success) setSections(sectionsRes.data.data);
+      } catch (err) {
+        console.error("Error fetching classes/sections:", err);
+      }
+    };
+    fetchInitialData();
   }, []);
 
-  const fetchStudents = async () => {
+  const filteredSections = useMemo(() => {
+      if (!selectedClassId) return [];
+      return sections.filter(s => s.classId?._id === selectedClassId || s.classId === selectedClassId);
+  }, [sections, selectedClassId]);
+
+  useEffect(() => {
+      if (filteredSections.length > 0 && !filteredSections.find(s => s._id === selectedSectionId)) {
+          setSelectedSectionId(filteredSections[0]._id);
+      }
+  }, [filteredSections]);
+
+  useEffect(() => {
+    if (selectedClassId && selectedSectionId) {
+        fetchStudentsAndAttendance();
+    }
+  }, [selectedClassId, selectedSectionId, selectedDate]);
+
+  const fetchStudentsAndAttendance = async () => {
     try {
       setLoading(true);
-      const data = await teacherService.getStudents();
-      setStudents(data.data || []);
+      const [studentsRes, attendanceRes] = await Promise.all([
+        axiosInstance.get("/v1/students", {
+            params: { class: selectedClassId, section: selectedSectionId }
+        }),
+        teacherService.getStudentAttendance({
+            date: selectedDate,
+            class_id: selectedClassId,
+            section_id: selectedSectionId,
+            type: "student"
+        })
+      ]);
+
+      let studentList = [];
+      if (studentsRes.data.success) {
+          studentList = studentsRes.data.data;
+          setStudents(studentList);
+      }
+
+      let newAttendanceData = {};
+      if (attendanceRes.success && attendanceRes.data.length > 0) {
+          const records = attendanceRes.data;
+          const statusMap = {};
+          records.forEach(r => {
+              if (r.student_id) statusMap[r.student_id._id || r.student_id] = r.status.toLowerCase();
+          });
+          
+          studentList.forEach(s => {
+              newAttendanceData[s._id] = statusMap[s._id] || "present";
+          });
+      } else {
+          studentList.forEach(s => {
+              newAttendanceData[s._id] = "present";
+          });
+      }
+      setAttendance(newAttendanceData);
+      
     } catch (err) {
-      console.error("Failed to fetch students", err);
+      console.error("Failed to fetch students and attendance", err);
     } finally {
       setLoading(false);
     }
@@ -61,23 +137,25 @@ const MarkAttendance = () => {
     setIsSubmitting(true);
     
     try {
-      // Prepare attendance data
-      const attendanceData = Object.entries(attendance).map(([studentId, status]) => ({
-        student: studentId,
-        status: status,
-        date: new Date().toISOString().split('T')[0]
+      const formattedData = Object.entries(attendance).map(([studentId, status]) => ({
+        student_id: studentId,
+        status: status.charAt(0).toUpperCase() + status.slice(1)
       }));
 
-      // In a real app, we might send them all together or loop
-      // Assuming teacherService.markAttendance handles the array or single
-      await teacherService.markAttendance({ records: attendanceData });
+      await teacherService.markAttendance({
+        class_id: selectedClassId,
+        section_id: selectedSectionId,
+        date: selectedDate,
+        records: formattedData 
+      });
       
       setIsSubmitting(false);
       setIsSuccess(true);
       setTimeout(() => setIsSuccess(false), 3000);
+      fetchStudentsAndAttendance();
     } catch (err) {
       setIsSubmitting(false);
-      alert(err.response?.data?.error || "Failed to submit attendance.");
+      toast.error(err.response?.data?.message || "Failed to submit attendance.");
     }
   };
 
@@ -101,47 +179,94 @@ const MarkAttendance = () => {
               <UserCheck className="w-6 h-6 md:w-10 md:h-10 text-emerald-600" />
             </div>
             <div>
-              <h1 className="text-xl md:text-[20px] font-black text-slate-800 tracking-tight uppercase leading-none mb-2 md:mb-3">Student Attendance</h1>
+                <h1 className="text-xl md:text-[20px] font-black text-slate-800 tracking-tight uppercase leading-none mb-2 md:mb-3">Student Attendance</h1>
               <div className="flex flex-wrap items-center gap-3 md:gap-6">
                  <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-200">
-                    <Users className="w-3 h-3" /> Hifz - Section A
+                    <Users className="w-3 h-3" /> 
+                    {classes.find(c => c._id === selectedClassId)?.name || 'Class'} - 
+                    {sections.find(s => s._id === selectedSectionId)?.name || 'Section'}
                  </div>
                  <div className="flex items-center gap-2 px-3 py-1 bg-indigo-50 rounded-full text-[10px] font-black text-indigo-600 uppercase tracking-widest border border-indigo-100">
-                    <Calendar className="w-3 h-3" /> Jan 09, 2026
+                    <Calendar className="w-3 h-3" /> {new Date(selectedDate).toLocaleDateString()}
                  </div>
               </div>
             </div>
           </div>
-
-        
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-[20px] border border-slate-200 p-6 md:p-8 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
-           <div className="relative w-full md:w-[400px]  bg-[#e6f4ef]">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+        <div className="bg-white rounded-[20px] border border-slate-200 p-6 md:p-8 shadow-sm flex flex-col items-center gap-6">
+           {/* Selectors */}
+           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
+                <Users className="w-3.5 h-3.5" /> Class
+              </label>
+              <select 
+                value={selectedClassId} 
+                onChange={(e) => setSelectedClassId(e.target.value)}
+                className="w-full bg-[#e6f4ef] border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold focus:border-emerald-500 outline-none transition-all"
+              >
+                {classes.map(c => (
+                    <option key={c._id} value={c._id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
+                <Filter className="w-3.5 h-3.5" /> Section
+              </label>
+              <select 
+                value={selectedSectionId} 
+                onChange={(e) => setSelectedSectionId(e.target.value)}
+                className="w-full bg-[#e6f4ef] border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold focus:border-emerald-500 outline-none transition-all"
+              >
+                {filteredSections.map(s => (
+                    <option key={s._id} value={s._id}>{s.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
+                <Calendar className="w-3.5 h-3.5" /> Date
+              </label>
               <input 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl pl-10 pr-6 py-3 md:py-4 text-sm font-bold focus:border-emerald-500 outline-none transition-all  bg-[#e6f4ef]" 
-                placeholder="Find student by name or roll..." 
+                type="date" 
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full bg-[#e6f4ef] border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold focus:border-emerald-500 outline-none transition-all" 
               />
+            </div>
            </div>
-           
-           <div className="flex items-center gap-3 w-full md:w-auto">
-              <button 
-                onClick={() => handleBatchAction('present')}
-                className="flex-1 md:flex-none px-6 py-3.5 bg-emerald-500 text-white rounded-[8px] font-black text-[10px] uppercase tracking-widest transition-all border border-emerald-100"
-              >
-                 Mark All Present
-              </button>
-              <button 
-                onClick={() => setAttendance({})}
-                className="p-3.5 md:p-4 bg-slate-50 text-slate-400 rounded-xl md:rounded-2xl hover:bg-rose-50 hover:text-rose-600 transition-all border border-slate-100"
-                title="Reset Selection"
-              >
-                 <RotateCcw className="w-5 h-5" />
-              </button>
+
+           <div className="w-full h-px bg-slate-100 my-2"></div>
+
+           <div className="flex flex-col md:flex-row justify-between items-center w-full gap-6">
+             <div className="relative w-full md:w-[400px]  bg-[#e6f4ef]">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                <input 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl pl-10 pr-6 py-3 md:py-4 text-sm font-bold focus:border-emerald-500 outline-none transition-all  bg-[#e6f4ef]" 
+                  placeholder="Find student by name or roll..." 
+                />
+             </div>
+             
+             <div className="flex items-center gap-3 w-full md:w-auto">
+                <button 
+                  onClick={() => handleBatchAction('present')}
+                  className="flex-1 md:flex-none px-6 py-3.5 bg-emerald-500 text-white rounded-[8px] font-black text-[10px] uppercase tracking-widest transition-all border border-emerald-100 hover:bg-emerald-600 shadow-md shadow-emerald-500/20 hover:-translate-y-0.5 active:translate-y-0"
+                >
+                   Mark All Present
+                </button>
+                <button 
+                  onClick={() => setAttendance({})}
+                  className="p-3.5 md:p-4 bg-slate-50 text-slate-400 rounded-xl md:rounded-2xl hover:bg-rose-50 hover:text-rose-600 transition-all border border-slate-100 hover:border-rose-200"
+                  title="Reset Selection"
+                >
+                   <RotateCcw className="w-5 h-5" />
+                </button>
+             </div>
            </div>
         </div>
 
@@ -209,10 +334,12 @@ const MarkAttendance = () => {
            <div className="bg-slate-900 rounded-[20px] p-4 md:p-6 lg:p-8 text-white shadow-2xl flex flex-col sm:flex-row justify-between items-center gap-6 border border-white/10 backdrop-blur-xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-64 h-full bg-emerald-500/10 rounded-bl-[5rem] -mr-10 -mt-10 blur-3xl group-hover:bg-emerald-500/20 transition-all duration-1000"></div>
               
-              <div className="flex items-center gap-6 md:gap-12 relative z-10">
+               <div className="flex items-center gap-6 md:gap-12 relative z-10">
                  <div className="hidden sm:block">
                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Class Overview</p>
-                    <p className="text-sm font-black uppercase tracking-tight">Hifz Section A</p>
+                    <p className="text-sm font-black uppercase tracking-tight">
+                        {classes.find(c => c._id === selectedClassId)?.name || 'Class'} - {sections.find(s => s._id === selectedSectionId)?.name || 'Section'}
+                    </p>
                  </div>
                  <div className="flex gap-6 md:gap-10">
                     <div className="text-center sm:text-left">
@@ -258,7 +385,9 @@ const MarkAttendance = () => {
                   </div>
                   <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight mb-4 leading-none">Complete Roll Call?</h3>
                   <p className="text-sm font-bold text-slate-500 leading-relaxed mb-10 px-4">
-                     Confirming will sync today's attendance for <span className="text-slate-800 font-black uppercase">Hifz A</span> with the institutional records.
+                     Confirming will sync today's attendance for <span className="text-slate-800 font-black uppercase">
+                        {classes.find(c => c._id === selectedClassId)?.name}
+                     </span> with the institutional records.
                   </p>
                   
                   <div className="flex flex-col gap-3">

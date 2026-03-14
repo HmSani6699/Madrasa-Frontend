@@ -12,8 +12,8 @@ const teacherService = {
     return response.data;
   },
 
-  getStudentAttendance: async (studentId) => {
-    const response = await axiosInstance.get(`${endpoints.teacher.attendance}/${studentId}`);
+  getStudentAttendance: async (params) => {
+    const response = await axiosInstance.get(endpoints.teacher.attendanceReport, { params });
     return response.data;
   }
 };

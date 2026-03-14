@@ -10,7 +10,8 @@ const endpoints = {
   },
   teacher: {
     students: '/v1/students',
-    attendance: '/v1/attendance',
+    attendance: '/v1/attendance/student',
+    attendanceReport: '/v1/attendance/report',
   },
   accountant: {
     collectFee: '/v1/fees/collect',
