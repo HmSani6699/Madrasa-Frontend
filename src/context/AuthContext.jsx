@@ -22,6 +22,15 @@ export const AuthProvider = ({ children }) => {
       
       if (accessToken && storedUser) {
         setUser(JSON.parse(storedUser));
+        try {
+          const profileRes = await authService.getCurrentUser();
+          if (profileRes.success) {
+            setUser(profileRes.data.user);
+            setCurrentMadrasa(profileRes.data.madrasa);
+          }
+        } catch (err) {
+          console.error("Failed to load active tenant context:", err);
+        }
       } else if (refreshToken) {
         // Optionally try to refresh if only refresh token exists
         try {
@@ -29,6 +38,11 @@ export const AuthProvider = ({ children }) => {
            if (data.success) {
               const freshUser = localStorage.getItem("user");
               if (freshUser) setUser(JSON.parse(freshUser));
+              const profileRes = await authService.getCurrentUser();
+              if (profileRes.success) {
+                setUser(profileRes.data.user);
+                setCurrentMadrasa(profileRes.data.madrasa);
+              }
            }
         } catch (err) {
            logout();
@@ -41,7 +55,7 @@ export const AuthProvider = ({ children }) => {
       const storedActiveChild = localStorage.getItem("activeChild");
 
       if (storedMadrasas) setMadrasas(JSON.parse(storedMadrasas));
-      if (storedCurrentMadrasa) setCurrentMadrasa(JSON.parse(storedCurrentMadrasa));
+      if (storedCurrentMadrasa && !currentMadrasa) setCurrentMadrasa(JSON.parse(storedCurrentMadrasa));
       if (storedChildren) setGuardianChildren(JSON.parse(storedChildren));
       if (storedActiveChild) setActiveChild(JSON.parse(storedActiveChild));
 
@@ -57,8 +71,17 @@ export const AuthProvider = ({ children }) => {
       if (response.success) {
         const { user: userData } = response.data;
         setUser(userData);
-        // Handling madrasas and guardian children if they are in the login response
-        // If not, they might be fetched separately. Based on backend, data.user is returned.
+        
+        try {
+          const profileRes = await authService.getCurrentUser();
+          if (profileRes.success) {
+            setUser(profileRes.data.user);
+            setCurrentMadrasa(profileRes.data.madrasa);
+          }
+        } catch (profileErr) {
+          console.error("Failed to load madrasa info after login:", profileErr);
+        }
+        
         return userData;
       }
       throw new Error(response.message || "Login failed");

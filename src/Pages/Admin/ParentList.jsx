@@ -51,6 +51,7 @@ const ParentList = () => {
   const [viewParent, setViewParent] = useState(null);
   const [deleteParent, setDeleteParent] = useState(null);
   const [showStatusToast, setShowStatusToast] = useState(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   // Close menu when clicking elsewhere
   const handleClickOutside = () => setOpenMenuId(null);
@@ -132,17 +133,17 @@ const ParentList = () => {
     try {
       setLoading(true);
       const payload = {
-         fatherName: newParentData.fatherName,
-         motherName: newParentData.motherName || "Not Provided", // Assuming mother name might be required by backend sometimes
-         fatherOccupation: newParentData.fatherOccupation,
-         motherOccupation: newParentData.motherOccupation,
-         contact: newParentData.contact,
-         motherContact: newParentData.motherContact,
-         email: newParentData.email,
-         address: newParentData.address,
-         fatherPhoto: newParentData.fatherPhoto,
-         motherPhoto: newParentData.motherPhoto,
-         guardianNID: newParentData.guardianNID,
+        fatherName: newParentData.fatherName,
+        motherName: newParentData.motherName || "Not Provided", // Assuming mother name might be required by backend sometimes
+        fatherOccupation: newParentData.fatherOccupation,
+        motherOccupation: newParentData.motherOccupation,
+        contact: newParentData.contact,
+        motherContact: newParentData.motherContact,
+        email: newParentData.email,
+        address: newParentData.address,
+        fatherPhoto: newParentData.fatherPhoto,
+        motherPhoto: newParentData.motherPhoto,
+        guardianNID: newParentData.guardianNID,
       };
       const response = await axiosInstance.post("/v1/parents", payload);
       if (response.data.success) {
@@ -159,19 +160,19 @@ const ParentList = () => {
 
   const handleUpdate = async (updatedData) => {
     try {
-       setLoading(true);
-       const payload = {
-         fatherName: updatedData.fatherName,
-         motherName: updatedData.motherName || "Not Provided",
-         fatherOccupation: updatedData.fatherOccupation,
-         motherOccupation: updatedData.motherOccupation,
-         contact: updatedData.contact,
-         motherContact: updatedData.motherContact,
-         email: updatedData.email,
-         address: updatedData.address,
-         fatherPhoto: updatedData.fatherPhoto,
-         motherPhoto: updatedData.motherPhoto,
-         guardianNID: updatedData.guardianNID,
+      setLoading(true);
+      const payload = {
+        fatherName: updatedData.fatherName,
+        motherName: updatedData.motherName || "Not Provided",
+        fatherOccupation: updatedData.fatherOccupation,
+        motherOccupation: updatedData.motherOccupation,
+        contact: updatedData.contact,
+        motherContact: updatedData.motherContact,
+        email: updatedData.email,
+        address: updatedData.address,
+        fatherPhoto: updatedData.fatherPhoto,
+        motherPhoto: updatedData.motherPhoto,
+        guardianNID: updatedData.guardianNID,
       };
       const response = await axiosInstance.put(`/v1/parents/${updatedData.id}`, payload);
       if (response.data.success) {
@@ -222,28 +223,88 @@ const ParentList = () => {
   }, [searchTerm, statusFilter]);
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4">
-    
-       {/* Header */}
+    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 ">
+
+      {/* Header */}
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
             <Users className="w-8 h-8 text-[#00bd7f]" />
-           Parents Management
+            Parents Management
           </h1>
-          <p className=" text-[14px] text-slate-500 font-bold mt-1">
-            Manage all Parents records
-          </p>
         </div>
 
-        <div className="flex gap-3 w-full md:w-auto">
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="w-full flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            Add Parent
-          </button>
+        <div className="flex gap-3  ">
+
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by ID, Name or Phone..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border-1 border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+            />
+          </div>
+
+
+
+
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />  Filter
+            </button>
+
+            {
+              isFilterOpen && <div className="absolute top-[50px] right-0 z-[100]  whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full z-20">
+
+                <div className="flex flex-col gap-4">
+                  <SelectInputField title={"Class"} options={[
+                    { value: "Onte" },
+                    { value: "Two" },
+                    { value: "Three" }
+                  ]} />
+                  <SelectInputField title={"Section"} options={[
+                    { value: "Onte" },
+                    { value: "Two" },
+                    { value: "Three" }
+                  ]} />
+                </div>
+                <div className="flex items-end justify-end gap-4 mt-2.5">
+                  <button
+                    onClick={() => setIsFilterOpen(false)}
+                    className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+
+                    className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+
+          <div>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="w-full flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              Add Parent
+            </button>
+          </div>
+
+
+
         </div>
       </div>
 
@@ -274,13 +335,14 @@ const ParentList = () => {
             color: "text-rose-600",
             bg: "bg-rose-100",
           },
-         
+
         ].map((stat, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-[8px]  p-5 flex items-center justify-between shadow-lg"
+            className="bg-white rounded-[8px]  p-5 flex items-center justify-between shadow-lg relative  overflow-hidden"
           >
-            <div>
+            <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="relative z-[10]">
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
                 {stat.label}
               </p>
@@ -296,77 +358,44 @@ const ParentList = () => {
       </div>
 
 
-      <div className="flex items-center justify-between">
-
-        <div>
-          <h2 className="text-[18px] font-semibold">Student List</h2>
-        </div>
-
-        <div className="flex items-center gap-4">
-            <div className="">
-            <label className="text-sm font-bold text-slate-700 mb-2 block">
-              Quick Search
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search by ID, Name or Phone..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border-1 border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
-              />
-            </div>
-        </div>
-          <div>
-            <SelectInputField title={'Class'} options={[
-              {value:"Onte"},
-              {value:"Two"},
-              {value:"Three"}
-            ]}/>
-          </div>
-      </div>
-        
-      </div>
-
       {/* Table Container */}
       <div className="bg-white rounded-[8px] border-1 border-slate-200 shadow-sm overflow-hidden flex flex-col">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-[#e6f4ef] border-b-2 border-slate-200">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider">
-                  Parent ID
+              <tr className="white-space-nowrap">
+                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider white-space-nowrap">
+                  ID
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider white-space-nowrap">
                   Parent Info
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider white-space-nowrap">
                   Occupation
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider white-space-nowrap">
                   Children
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider white-space-nowrap">
                   Contact
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider white-space-nowrap">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider white-space-nowrap">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y-2 divide-slate-100">
-              {currentParents.map((parent,i) => (
+              {currentParents.map((parent, i) => (
                 <tr
                   key={parent.id}
                   className="hover:bg-slate-50 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm font-black text-emerald-700">
-                      {i+1}
+                      {i + 1}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -406,44 +435,42 @@ const ParentList = () => {
                         <Phone className="w-3.5 h-3.5 text-emerald-500" />
                         {parent.phone}
                       </div>
-                     
+
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${
-                        parent.status === "active"
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                          : "bg-rose-50 text-rose-700 border-rose-100"
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${parent.status === "active"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                        : "bg-rose-50 text-rose-700 border-rose-100"
+                        }`}
                     >
                       <div
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          parent.status === "active"
-                            ? "bg-emerald-500"
-                            : "bg-rose-500"
-                        }`}
+                        className={`w-1.5 h-1.5 rounded-full ${parent.status === "active"
+                          ? "bg-emerald-500"
+                          : "bg-rose-500"
+                          }`}
                       />
                       {parent.status}
                     </span>
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap">
-                                      <div className="flex items-center gap-4">
-                                        <button className="cursor-pointer"  onClick={() => setViewParent(parent)}>
-                                          <Eye className="w-5 h-5 text-[#00bd7f]"  />
-                                        </button>
-                                        <button className="cursor-pointer"  onClick={() =>
-                                  handleAction( "Edit Info", parent)
-                                }>
-                                           <SquarePen className="w-4 h-4 text-[#00bd7f]" />
-                                          </button>
-                                          <button className="cursor-pointer"  onClick={() =>
-                                  handleAction( "Delete Record", parent)}>
-                                           <Trash2 className="w-4 h-4 text-red-500" />
-                                          </button>
-                                      </div>
-                                    </td>
+                    <div className="flex items-center gap-4">
+                      <button className="cursor-pointer" onClick={() => setViewParent(parent)}>
+                        <Eye className="w-5 h-5 text-[#00bd7f]" />
+                      </button>
+                      <button className="cursor-pointer" onClick={() =>
+                        handleAction("Edit Info", parent)
+                      }>
+                        <SquarePen className="w-4 h-4 text-[#00bd7f]" />
+                      </button>
+                      <button className="cursor-pointer" onClick={() =>
+                        handleAction("Delete Record", parent)}>
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -477,11 +504,10 @@ const ParentList = () => {
                 <button
                   key={i + 1}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${
-                    currentPage === i + 1
-                      ? "bg-[#00bd7f] border-[#00bd7f] text-white shadow-lg shadow-emerald-200"
-                      : "bg-white border-slate-200 text-slate-600 hover:border-emerald-500 hover:text-emerald-600"
-                  }`}
+                  className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
+                    ? "bg-[#00bd7f] border-[#00bd7f] text-white shadow-lg shadow-emerald-200"
+                    : "bg-white border-slate-200 text-slate-600 hover:border-emerald-500 hover:text-emerald-600"
+                    }`}
                 >
                   {i + 1}
                 </button>
@@ -629,7 +655,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
             <h2 className="text-2xl font-black text-slate-800 tracking-tight">
               {title}
             </h2>
-            
+
           </div>
           <button
             type="button"
@@ -644,7 +670,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-               Father's Name <span className="text-red-500">*</span>
+                Father's Name <span className="text-red-500">*</span>
               </label>
               <input
                 required
@@ -653,12 +679,12 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, fatherName: e.target.value })
                 }
                 placeholder="Enter father name"
-               className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-               Mother's Name <span className="text-red-500">*</span>
+                Mother's Name <span className="text-red-500">*</span>
               </label>
               <input
                 required
@@ -672,7 +698,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-               Father's Occupation
+                Father's Occupation
               </label>
               <input
                 value={formData.fatherOccupation}
@@ -680,7 +706,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, fatherOccupation: e.target.value })
                 }
                 placeholder="Father's Occupation"
-               className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
             <div className="space-y-2">
@@ -693,7 +719,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, motherOccupation: e.target.value })
                 }
                 placeholder="Mother's Occupation"
-              className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
             <div className="space-y-2">
@@ -720,7 +746,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, motherContact: e.target.value })
                 }
                 placeholder="019XXXXXXXX"
-                 className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                className="w-full px-4 py-2 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
             {/* <div className="space-y-2 md:col-span-3">
@@ -913,11 +939,10 @@ const ParentViewModal = ({ parent, onClose }) => {
               </p>
             </div>
             <span
-              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border-2 ${
-                parent.status === "active"
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                  : "bg-rose-50 text-rose-700 border-rose-100"
-              }`}
+              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest border-2 ${parent.status === "active"
+                ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                : "bg-rose-50 text-rose-700 border-rose-100"
+                }`}
             >
               {parent.status} Portal
             </span>

@@ -285,7 +285,7 @@ export const adminNavigation = [
   {
     name: "Message",
     icon: MessageSquare,
-    path: "/admin/message",
+    path: "/admin/sms-portal",
   },
   {
     name: "Library",
@@ -297,7 +297,6 @@ export const adminNavigation = [
     icon: LayoutTemplate,
     path: "/admin/frontend",
   },
-
   {
     name: "Settings",
     icon: Settings,

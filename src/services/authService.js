@@ -41,6 +41,15 @@ const authService = {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
+    localStorage.removeItem("currentMadrasa");
+  },
+
+  getCurrentUser: async () => {
+    const response = await axiosInstance.get(endpoints.auth.me);
+    if (response.data.success && response.data.data.madrasa) {
+      localStorage.setItem("currentMadrasa", JSON.stringify(response.data.data.madrasa));
+    }
+    return response.data;
   },
 };
 

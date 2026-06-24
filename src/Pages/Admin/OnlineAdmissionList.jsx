@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Search,
   Filter,
@@ -17,6 +17,7 @@ import {
   MapPin,
   FileText,
   X,
+  Plus,
 } from "lucide-react";
 import SelectInputField from "../../components/SelectInputField";
 import { useEffect } from "react";
@@ -31,6 +32,7 @@ const OnlineAdmissionList = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const fetchApplications = async () => {
     setLoading(true);
@@ -79,16 +81,16 @@ const OnlineAdmissionList = () => {
     const students = app.students || (app.student ? [app.student] : []);
 
     const matchesSearch =
-      students.some(s => 
+      students.some(s =>
         (s.name || `${s.firstName || ""} ${s.lastName || ""}`).toLowerCase().includes(searchTerm.toLowerCase())
       ) ||
       (guardian.fatherName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
       (guardian.fatherContact || app.student?.phone || "").includes(searchTerm);
 
     const matchesStatus = statusFilter === "all" || app.status === statusFilter;
-    
+
     const matchesClass =
-      classFilter === "all" || 
+      classFilter === "all" ||
       students.some(s => (s.appliedClass || s.class) === classFilter);
 
     return matchesSearch && matchesStatus && matchesClass;
@@ -121,27 +123,111 @@ const OnlineAdmissionList = () => {
     }
   };
 
+
+
+
+
   return (
-    <div className="space-y-6 p-4 animate-in fade-in duration-500">
+    <div className="space-y-6  animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold ">
-            Online Admission Applications
-          </h1>
-         
+
+
+
+        <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
+          <FileText className="w-8 h-8 text-[#00bd7f]" />
+          Online Admission Applications
+        </h1>
+
+
+        <div className="flex items-center justify-between gap-4">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by ID, Name or Phone..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
+            />
+          </div>
+
+          {/* filter */}
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />  Filter
+            </button>
+
+            {
+              isFilterOpen && <div className="absolute top-[50px] right-0 z-[100]  whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full z-20">
+
+                <div className="flex flex-col gap-4">
+                  {/* Status Filter */}
+                  <SelectInputField title={"Class"} options={[
+                    { value: "Class One" },
+                    { value: "Class Two" }
+                  ]} />
+                  <SelectInputField title={"Group"} options={[
+                    { value: "A" },
+                    { value: "B" }
+                  ]} />
+                  <SelectInputField title={"Status"} options={[
+                    { value: "Approved" },
+                    { value: "Pending" },
+                    { value: "Rejected" }
+                  ]} />
+
+                </div>
+                <div className="flex items-end justify-end gap-4 mt-2.5">
+                  <button
+                    onClick={() => setIsFilterOpen(false)}
+                    className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+
+                    className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+          {/* Ad student */}
+          <div className="flex gap-3 w-full md:w-auto">
+            <Link to="/admin/admission/create" className="w-full sm:w-auto">
+              <button
+
+                className="w-full px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add Student
+              </button>
+            </Link>
+          </div>
         </div>
-        
+
+
+
       </div>
 
 
-       {/* Stats Cards */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-2xl border-1 border-gray-100 shadow-lg p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-[10px] border-1 border-gray-100 shadow-lg p-6 relative overflow-hidden">
+          <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="flex items-center justify-between relative z-[10]">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
-                Total Applications
+                Total
               </p>
               <p className="text-3xl font-black text-slate-900 ">
                 {applications.length}
@@ -153,8 +239,9 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border-1 border-gray-100 shadow-lg p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-[10px] border-1 border-gray-100 shadow-lg p-6 relative overflow-hidden">
+          <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="flex items-center justify-between relative z-[10]">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
                 Pending
@@ -169,8 +256,9 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-         <div className="bg-white rounded-2xl border-1 border-gray-100 shadow-lg p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-[10px] border-1 border-gray-100 shadow-lg p-6 relative overflow-hidden">
+          <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="flex items-center justify-between relative z-[10]">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
                 Approved
@@ -185,8 +273,9 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-         <div className="bg-white rounded-2xl border-1 border-gray-100 shadow-lg p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-[10px] border-1 border-gray-100 shadow-lg p-6 relative overflow-hidden">
+          <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="flex items-center justify-between relative z-[10]">
             <div>
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
                 Rejected
@@ -202,49 +291,11 @@ const OnlineAdmissionList = () => {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white  rounded-2xl border border-gray-200 p-4 shadow-lg">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Search */}
-          <div className="">
-            <label className="text-sm font-bold text-slate-700 mb-2 block">
-              Quick Search
-            </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search by ID, Name or Phone..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-[#e6f4ef] border-2 border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
-              />
-            </div>
-          </div>
 
-          {/* Status Filter */}
-          <SelectInputField title={"Class"} options={[
-            {value:"Class One"},
-            {value:"Class Two"}
-          ]}/>
-          <SelectInputField title={"Group"} options={[
-            {value:"A"},
-            {value:"B"}
-          ]}/>
-          <SelectInputField title={"Status"} options={[
-            {value:"Approved"},
-            {value:"Pending"},
-            {value:"Rejected"}
-          ]}/>
 
-         
-        </div>
-      </div>
-
-     
 
       {/* Applications List */}
-      <div className="bg-white  rounded-2xl border border-gray-100 shadow-lg overflow-hidden">
+      <div className="bg-white  rounded-[10px] border border-gray-100 shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className=" bg-[#e6f4ef]  border-gray-100 dark:border-slate-700">
@@ -281,14 +332,14 @@ const OnlineAdmissionList = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-[#e6f4ef] text-primary rounded-full flex items-center justify-center font-black">
-                         <img
+                        <img
                           src={app.students?.[0]?.photo || app.student?.photo || ""}
                           alt={app.students?.[0]?.name || app.student?.firstName || "N/A"}
                           className="w-14 h-14 object-cover"
                         />
                       </div>
                       <div>
-                       
+
                         <p className="font-bold">
                           {app.students?.[0]?.name || app.student?.firstName || "N/A"}
                           {app.students?.length > 1 && <span className="text-xs text-primary ml-1">(+{app.students.length - 1} more)</span>}
@@ -318,7 +369,7 @@ const OnlineAdmissionList = () => {
                         <Phone className="w-3 h-3" />
                         {app.guardian?.fatherContact || app.student?.phone || "N/A"}
                       </p>
-                    
+
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -416,7 +467,7 @@ const OnlineAdmissionList = () => {
 
                 {/* Guardian Documents */}
                 <div className="mt-6">
-                   <h4 className="text-sm font-black text-slate-900 mb-4 flex items-center gap-2">
+                  <h4 className="text-sm font-black text-slate-900 mb-4 flex items-center gap-2">
                     <FileText className="w-4 h-4 text-primary" />
                     Uploaded Documents
                   </h4>
@@ -429,9 +480,9 @@ const OnlineAdmissionList = () => {
                       <div key={doc.key} className="bg-slate-50 border-2 border-slate-100 rounded-xl p-3 flex flex-col items-center justify-center min-h-[140px] relative group overflow-hidden">
                         {selectedApplication.guardian?.[doc.key] ? (
                           <>
-                            <img 
-                              src={selectedApplication.guardian[doc.key]} 
-                              alt={doc.label} 
+                            <img
+                              src={selectedApplication.guardian[doc.key]}
+                              alt={doc.label}
                               className="w-full h-full object-contain transition-transform group-hover:scale-110 cursor-zoom-in"
                               onClick={() => window.open(selectedApplication.guardian[doc.key], '_blank')}
                             />
@@ -447,9 +498,9 @@ const OnlineAdmissionList = () => {
                           </div>
                         )}
                         {selectedApplication.guardian?.[doc.key] && (
-                           <div className="absolute bottom-2 left-2 right-2 bg-white/80 backdrop-blur-sm rounded-lg p-1 text-center">
-                              <span className="text-[10px] font-black text-slate-700">{doc.label}</span>
-                           </div>
+                          <div className="absolute bottom-2 left-2 right-2 bg-white/80 backdrop-blur-sm rounded-lg p-1 text-center">
+                            <span className="text-[10px] font-black text-slate-700">{doc.label}</span>
+                          </div>
                         )}
                       </div>
                     ))}
@@ -468,11 +519,11 @@ const OnlineAdmissionList = () => {
                     <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50  rounded-2xl p-6">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-black shadow-sm border border-slate-100">
-                           <img
-                          src={student.photo || ""}
-                          alt={student.name || student.firstName || "N/A"}
-                          className="w-10 h-10 object-cover"
-                        />
+                          <img
+                            src={student.photo || ""}
+                            alt={student.name || student.firstName || "N/A"}
+                            className="w-10 h-10 object-cover"
+                          />
                         </div>
                         <div>
                           <p className="font-bold">{student.name || student.firstName || "N/A"}</p>
@@ -493,7 +544,7 @@ const OnlineAdmissionList = () => {
               </div>
 
 
-             
+
 
               {/* Status Actions */}
               <div>
@@ -526,7 +577,7 @@ const OnlineAdmissionList = () => {
                       <XCircle className="w-4 h-4" />
                       Reject
                     </button>
-                   
+
                   </div>
                 </div>
               </div>

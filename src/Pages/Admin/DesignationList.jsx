@@ -24,17 +24,6 @@ const DesignationList = () => {
           if (response.data.success) {
               setDesignations(response.data.data.map((d, i) => ({
                 id: d._id,
-                title: d.title, // Map title to name if needed, but backend uses title?
-                // Backend model has 'designation' field? No, wait. 
-                // Employee model has 'designation' string.
-                // Designation model? I haven't seen Designation model. Let's check logic.
-                // Controller uses Designation.find(). 
-                // Let's assume Designation model has title/name. 
-                // Wait, in CreateEmployee, designation is just a string. 
-                // But DesignationList is managing a list of available designations.
-                // Previous mock data used 'title'. I'll assume backend uses 'title' or 'name'.
-                // Let's check Designation Model content or just use 'name' if I created it that way.
-                // I'll check Designation model first to be sure.
                 title: d.title || d.name, 
                 level: d.level || "Middle",
                 employeeCount: 0, 

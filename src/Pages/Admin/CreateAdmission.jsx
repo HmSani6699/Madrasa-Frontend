@@ -46,6 +46,7 @@ const CreateAdmission = () => {
   const [showVoucher, setShowVoucher] = useState(false);
   const [loading, setLoading] = useState(false);
   const [guardians, setGuardians] = useState([]);
+  const [subscriptionLimitError, setSubscriptionLimitError] = useState(null);
   const [classes, setClasses] = useState([]);
   const [allSections, setAllSections] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
@@ -55,7 +56,7 @@ const CreateAdmission = () => {
       const [parentsRes, classesRes, sectionsRes, feeTypesRes] = await Promise.all([
         axiosInstance.get("/v1/parents"),
         axiosInstance.get("/v1/classes"),
-        axiosInstance.get("/v1/sections"), 
+        axiosInstance.get("/v1/sections"),
         axiosInstance.get("/fee-type/v1")
       ]);
 
@@ -79,7 +80,7 @@ const CreateAdmission = () => {
       if (res.data.success) {
         const studentData = res.data.data;
         const guardianData = studentData.guardian;
-        
+
         setFormData({
           academicYear: studentData.academicYear || "2026",
           admissionDate: studentData.admissionDate ? new Date(studentData.admissionDate).toISOString().split("T")[0] : "",
@@ -142,7 +143,7 @@ const CreateAdmission = () => {
           fatherOccupation: app.guardian?.fatherOccupation || "",
           motherOccupation: app.guardian?.motherOccupation || "",
           // fatherContact: app.guardian?.fatherContact || app.guardian?.fatherContact || "",
-           contact: app.guardian?.fatherContact || "",
+          contact: app.guardian?.fatherContact || "",
           motherContact: app.guardian?.motherContact || app.guardian?.motherContact || "",
           email: app.guardian?.email || "",
           address: app.guardian?.address?.present || app.guardian?.address || "",
@@ -190,7 +191,7 @@ const CreateAdmission = () => {
     },
     fees: {}, // To store { "Fee Name": "Amount" }
     note: "",
-    student_id:`TS${Math.random().toString(10).slice(2,6)}`
+    student_id: `TS${Math.random().toString(10).slice(2, 6)}`
   };
 
   const [formData, setFormData] = useState({
@@ -245,8 +246,8 @@ const CreateAdmission = () => {
 
   const addStudent = () => {
     if (isEdit) {
-        toast.error("Cannot add students in single-student edit mode");
-        return;
+      toast.error("Cannot add students in single-student edit mode");
+      return;
     }
     setFormData((prev) => ({
       ...prev,
@@ -308,10 +309,10 @@ const CreateAdmission = () => {
       const contact = g.contact || "";
       const email = g.email?.toLowerCase() || "";
 
-      return fatherName.includes(search) || 
-             motherName.includes(search) || 
-             contact.includes(search) || 
-             email.includes(search);
+      return fatherName.includes(search) ||
+        motherName.includes(search) ||
+        contact.includes(search) ||
+        email.includes(search);
     }
   );
 
@@ -322,8 +323,8 @@ const CreateAdmission = () => {
       let response;
       if (isEdit) {
         const payload = {
-            ...formData,
-            guardianId: guardianIdParam
+          ...formData,
+          guardianId: guardianIdParam
         };
         response = await axiosInstance.put("/v1/admission", payload);
       } else {
@@ -332,12 +333,12 @@ const CreateAdmission = () => {
 
       if (response.data.success) {
         toast.success(isEdit ? "Admission updated successfully!" : "Admission created successfully!");
-        
+
         // If this was a pre-filled admission from an online application
         if (!isEdit && location.state?.preFill && location.state?.applicationData?._id) {
           try {
-            await axiosInstance.put(`/v1/online-admission/${location.state.applicationData._id}/status`, { 
-              status: "approved" 
+            await axiosInstance.put(`/v1/online-admission/${location.state.applicationData._id}/status`, {
+              status: "approved"
             });
           } catch (statusErr) {
             console.error("Failed to update original application status:", statusErr);
@@ -345,14 +346,27 @@ const CreateAdmission = () => {
         }
 
         if (isEdit) {
-            navigate("/admin/admission/report");
+          navigate("/admin/admission/report");
         } else {
-            setShowVoucher(true);
+          setShowVoucher(true);
         }
       }
     } catch (err) {
       console.error("Admission error:", err);
-      toast.error(err.response?.data?.message || err.response?.data?.error || "Failed to process admission");
+      if (err.response?.status === 403 && err.response?.data?.message?.includes("capacity")) {
+        // Parse numbers from the message for a beautiful modal
+        const msg = err.response.data.message;
+        const limitMatch = msg.match(/allows up to (\d+)/);
+        const currentMatch = msg.match(/currently have (\d+)/);
+        const addMatch = msg.match(/tried to add (\d+)/);
+        setSubscriptionLimitError({
+          limit: limitMatch ? limitMatch[1] : "?",
+          current: currentMatch ? currentMatch[1] : "?",
+          adding: addMatch ? addMatch[1] : "?",
+        });
+      } else {
+        toast.error(err.response?.data?.message || err.response?.data?.error || "Failed to process admission");
+      }
     } finally {
       setLoading(false);
     }
@@ -385,24 +399,150 @@ const CreateAdmission = () => {
 
 
 
-  
+
 
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4">
-     {/* Header */}
+    <div className="space-y-6  animate-in fade-in duration-500  ">
+
+      {/* ── Subscription Limit Exceeded Modal ── */}
+      {subscriptionLimitError && (
+        <div
+          className="fixed inset-0 z-[999] flex items-center justify-center p-4"
+          style={{ backgroundColor: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
+          onClick={() => setSubscriptionLimitError(null)}
+        >
+          <div
+            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden p-4"
+            onClick={(e) => e.stopPropagation()}
+            style={{ animation: "modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}
+          >
+            {/* Red top bar */}
+            <div className="flex items-center justify-center ">
+              <svg width="100" height="100" viewBox="0 0 24 24" fill="red">
+                <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+
+            {/* Body */}
+            <div >
+              <p style={{ color: "#374151", fontSize: "15px", lineHeight: 1.7, marginBottom: "20px", textAlign: "center" }}>
+                আপনার বর্তমান প্ল্যানে সর্বোচ্চ{" "}
+                <strong style={{ color: "#ff4d4d" }}>{subscriptionLimitError.limit} জন</strong> শিক্ষার্থী যোগ করা যাবে।
+                এই মুহূর্তে{" "}
+                <strong style={{ color: "#374151" }}>{subscriptionLimitError.current} জন</strong> শিক্ষার্থী নিবন্ধিত আছে।
+                আর নতুন শিক্ষার্থী যোগ করার সুযোগ নেই।
+              </p>
+
+              {/* Stats row */}
+              {/* <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "12px",
+                  marginBottom: "20px",
+                }}
+              >
+                {[
+                  { label: "প্ল্যান সীমা", value: subscriptionLimitError.limit + " জন", color: "#6366f1" },
+                  { label: "নিবন্ধিত", value: subscriptionLimitError.current + " জন", color: "#f59e0b" },
+                  { label: "যোগ করতে চান", value: subscriptionLimitError.adding + " জন", color: "#ef4444" },
+                ].map((s) => (
+                  <div
+                    key={s.label}
+                    style={{
+                      textAlign: "center",
+                      background: "#f8fafc",
+                      borderRadius: "10px",
+                      padding: "12px 8px",
+                      border: "1px solid #e2e8f0",
+                    }}
+                  >
+                    <div style={{ fontSize: "20px", fontWeight: 900, color: s.color }}>{s.value}</div>
+                    <div style={{ fontSize: "11px", color: "#94a3b8", marginTop: "3px" }}>{s.label}</div>
+                  </div>
+                ))}
+              </div> */}
+
+              {/* Upgrade tip */}
+              <div
+                style={{
+                  background: "linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)",
+                  borderRadius: "12px",
+                  padding: "14px 16px",
+                  border: "1px solid #bfdbfe",
+                  marginBottom: "20px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "10px",
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, marginTop: "2px" }}>
+                  <path d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                <p style={{ color: "#1e40af", fontSize: "13px", lineHeight: 1.6, margin: 0 }}>
+                  আরও শিক্ষার্থী যোগ করতে <strong>সুপার অ্যাডমিনের</strong> সাথে যোগাযোগ করুন এবং
+                  আপনার প্ল্যান আপগ্রেড করুন।
+                </p>
+              </div>
+
+              {/* Buttons */}
+              <div style={{ display: "flex", gap: "10px" }}>
+                <button
+                  onClick={() => setSubscriptionLimitError(null)}
+                  style={{
+                    flex: 1,
+                    padding: "11px 0",
+                    borderRadius: "10px",
+                    border: "2px solid #e2e8f0",
+                    background: "white",
+                    color: "#374151",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    cursor: "pointer",
+                  }}
+                >
+                  ঠিক আছে
+                </button>
+                <button
+                  onClick={() => { setSubscriptionLimitError(null); window.location.href = "/admin/support"; }}
+                  style={{
+                    flex: 1,
+                    padding: "11px 0",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "linear-gradient(135deg, #00bc7d 0%, #52f67bff 100%)",
+                    color: "white",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    cursor: "pointer",
+                  }}
+                >
+                  আপগ্রেড করুন →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <style>{`
+            @keyframes modalPop {
+              from { transform: scale(0.85); opacity: 0; }
+              to   { transform: scale(1);    opacity: 1; }
+            }
+          `}</style>
+        </div>
+      )}
+      {/* Header */}
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
             <Users className="w-8 h-8 text-[#00bd7f]" />
-           Create Student
+            Create Student
           </h1>
-          <p className=" text-[14px] text-slate-500 font-bold mt-1">
-            Manage all student records
-          </p>
+
         </div>
 
-           <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <Link to={"/admin/student/list"}>
             <button
               type="button"
@@ -414,12 +554,12 @@ const CreateAdmission = () => {
           </Link>
         </div>
       </div>
-      
+
 
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Academic Year & Admission Date */}
-        <div className="bg-white dark:bg-white rounded-[20px] border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-white rounded-[8px]  p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
             <div className="w-10 h-10 rounded-xl bg-[#e6f4ef] flex items-center justify-center">
               <Calendar className="w-5 h-5 text-[#00bd7f]" />
@@ -457,7 +597,7 @@ const CreateAdmission = () => {
         </div>
 
         {/* Guardian Information */}
-        <div className="bg-white dark:bg-white rounded-[20px] border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-white rounded-[8px]  p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#e6f4ef] flex items-center justify-center">
@@ -590,7 +730,7 @@ const CreateAdmission = () => {
 
           {!useExistingGuardian && formData.guardian_id ? (
             <div className="p-6 bg-emerald-50 rounded-3xl border-2 border-emerald-100 shadow-sm relative overflow-hidden">
-               {/* Read-only guardian template */}
+              {/* Read-only guardian template */}
               <div className="absolute top-0 right-0 p-4 opacity-50">
                 <UserCheck className="w-16 h-16 text-[#00bd7f]" />
               </div>
@@ -598,7 +738,7 @@ const CreateAdmission = () => {
                 <UserCheck className="w-5 h-5" />
                 Selected Guardian
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                 <div>
                   <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Father's Name</p>
@@ -840,7 +980,7 @@ const CreateAdmission = () => {
           {formData.students.map((student, index) => (
             <div
               key={student.id}
-              className="relative bg-white dark:bg-white rounded-3xl border-2 border-slate-200 dark:border-slate-200 p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow animate-in slide-in-from-bottom duration-500"
+              className="relative bg-white dark:bg-white rounded-[8px] p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow animate-in slide-in-from-bottom duration-500"
             >
               {formData.students.length > 1 && (
                 <button
@@ -859,7 +999,7 @@ const CreateAdmission = () => {
                   <h3 className="text-xl font-black text-emerald-800">
                     Student #{index + 1} Setup
                   </h3>
-                
+
                 </div>
               </div>
               {/* Student Bio */}
@@ -1071,10 +1211,10 @@ const CreateAdmission = () => {
 
               <div className="grid-cols-1 sm:col-span-2 lg:col-span-3 mt-[20px]">
                 <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
-                  Note 
+                  Note
                 </label>
                 <textarea
-                 
+
                   rows="3"
                   value={student.note}
                   onChange={(e) => handleStudentChange(index, "note", e.target.value)}
@@ -1098,7 +1238,7 @@ const CreateAdmission = () => {
           </button>
           <button
             type="submit"
-           className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
           >
             <CheckCircle2 className="w-6 h-6" />
             Save

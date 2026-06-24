@@ -53,7 +53,7 @@ const StudentList = () => {
   const [loading, setLoading] = useState(true);
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
-  const [isFilterOpen,setIsFilterOpen]=useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [tempFilters, setTempFilters] = useState({
     class_id: "all",
     section_id: "all"
@@ -160,7 +160,7 @@ const StudentList = () => {
   };
 
   // Expanded Sample Data REMOVED - Using API data
-  
+
   // Filtered Results - Now handled by backend or local set
   const filteredStudents = Array.isArray(students) ? students : [];
 
@@ -178,36 +178,100 @@ const StudentList = () => {
 
   return (
     <div className="animate-in fade-in duration-500">
-    {/* Header */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
             <Users className="w-8 h-8 text-[#00bd7f]" />
-           Student Management
+            Student Management
           </h1>
-          <p className=" text-[14px] text-slate-500 font-bold mt-1">
-            Manage all student records
-          </p>
+
         </div>
 
-        <div className="flex gap-3 w-full md:w-auto">
-          <Link to="/admin/admission/create" className="w-full sm:w-auto">
-             <button
-        
-           className="w-full px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Student
-          </button>
-          </Link>
+        <div className="flex items-center justify-between gap-4">
+
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by Name or Student ID..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
+            />
+          </div>
+
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />  Filter
+            </button>
+
+            {
+              isFilterOpen && <div className="absolute top-[50px] right-0 z-[100]  whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full z-20">
+
+                <div className="flex flex-col gap-4">
+                  <SelectInputField
+                    title={'Class'}
+                    options={[{ value: "all", label: "All Classes" }, ...classes.map(c => ({ value: c._id, label: c.name }))]}
+                    value={tempFilters.class_id}
+                    setValue={(val) => setTempFilters({ ...tempFilters, class_id: val })}
+                  />
+                  <SelectInputField
+                    title={'Section'}
+                    options={[{ value: "all", label: "All Sections" }, ...filterSections.map(s => ({ value: s._id, label: s.name }))]}
+                    value={tempFilters.section_id}
+                    setValue={(val) => setTempFilters({ ...tempFilters, section_id: val })}
+                    disabled={tempFilters.class_id === "all"}
+                  />
+
+                </div>
+                <div className="flex items-end justify-end gap-4 mt-2.5">
+                  <button
+                    onClick={resetFilters}
+                    className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer"
+                  >
+                    Reset
+                  </button>
+
+                  <button
+                    onClick={applyFilters}
+                    className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div className="flex gap-3 w-full md:w-auto">
+            <Link to="/admin/admission/create" className="w-full sm:w-auto">
+              <button
+
+                className="w-full px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add Student
+              </button>
+            </Link>
+          </div>
         </div>
+
+
+
+
+
+
       </div>
 
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
-         
+
           {
             label: "Total Student",
             value: students.length,
@@ -232,9 +296,11 @@ const StudentList = () => {
         ].map((stat, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg"
+            className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden"
           >
-            <div>
+            <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+
+            <div className="z-[10]">
               <p className="text-xs font-bold text-slate-500 uppercase mb-1">
                 {stat.label}
               </p>
@@ -254,7 +320,7 @@ const StudentList = () => {
 
 
       {/* Table Container */}
-      <div className="bg-white rounded-[20px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative mt-8">
+      <div className="bg-white rounded-[10px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative mt-8">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
             <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -262,239 +328,172 @@ const StudentList = () => {
           </div>
         ) : (
           <>
-              <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
-                
-                  <div className="p-4 flex items-center justify-between border-b border-b-gray-200">
-                <h2 className="text-[18px] font-semibold">Students List</h2>
+            <div className="overflow-x-auto border border-gray-200 rounded-[8px] ">
 
-                <div>
-                   <div className="flex items-center gap-4">
-          
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search by Name or Student ID..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
-              />
-                    </div>
-                   
-                      <div className="relative">
-                          <button
-                        onClick={()=>setIsFilterOpen(!isFilterOpen)}
-                        className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
-                      >
-                      <Filter className="h-4 w-4"/>  Filter
-                        </button>
-                        
-                        {
-                          isFilterOpen && <div className="absolute top-[50px] right-0 z-[100]  whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full z-20"> 
-                          
-                          <div className="flex flex-col gap-4">
-                            <SelectInputField 
-                                title={'Class'}
-                                options={[{ value: "all", label: "All Classes" }, ...classes.map(c => ({ value: c._id, label: c.name }))]}
-                                value={tempFilters.class_id}
-                                setValue={(val) => setTempFilters({ ...tempFilters, class_id: val })}
+
+              <table className="w-full">
+                <thead className="bg-[#e6f4ef]">
+                  <tr className="whitespace-nowrap">
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Student ID
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Student Info
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Academic
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Guardian
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Contact
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Status
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y-2 divide-slate-100">
+                  {currentStudents.map((student, i) => (
+                    <tr
+                      key={student.id}
+                      className="group hover:bg-amber-50/10 transition-all duration-300"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="text-sm font-black text-emerald-700">
+                          {student.student_id || student.id}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full border-2 border-emerald-100 overflow-hidden shadow-sm">
+                            <img
+                              src={student.photo}
+                              alt={student.firstName}
+                              className="w-full h-full object-cover"
                             />
-                            <SelectInputField 
-                                title={'Section'}
-                                options={[{ value: "all", label: "All Sections" }, ...filterSections.map(s => ({ value: s._id, label: s.name }))]}
-                                value={tempFilters.section_id}
-                                setValue={(val) => setTempFilters({ ...tempFilters, section_id: val })}
-                                disabled={tempFilters.class_id === "all"}
-                            />
-                           
                           </div>
-                          <div className="flex items-end justify-end gap-4 mt-2.5">
-                            <button
-                                onClick={resetFilters}
-                                className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer"
-                            >
-                                Reset
-                            </button>
-
-                            <button
-                                onClick={applyFilters}
-                                className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
-                            >
-                                Apply
-                            </button>
+                          <div>
+                            <p className="text-sm font-bold text-slate-800">
+                              {student.firstName} {student.lastName}
+                            </p>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                              {student.gender}
+                            </p>
+                          </div>
                         </div>
-                          </div>
-                        }
-                      </div>
-          </div>
-                </div>
-              </div>
-            <table className="w-full">
-              <thead className="bg-[#e6f4ef]">
-                <tr className="whitespace-nowrap">
-                  <th className="px-10 py-3.5 text-left text-[12px] font-black">
-                    Student ID
-                  </th>
-                  <th className="px-10 py-3.5 text-left text-[12px] font-black">
-                    Student Info
-                  </th>
-                  <th className="px-10 py-3.5 text-left text-[12px] font-black">
-                    Academic
-                  </th>
-                  <th className="px-10 py-3.5 text-left text-[12px] font-black">
-                    Guardian
-                  </th>
-                  <th className="px-10 py-3.5 text-left text-[12px] font-black">
-                    Contact
-                  </th>
-                  <th className="px-10 py-3.5 text-left text-[12px] font-black">
-                    Status
-                  </th>
-                  <th className="px-10 py-3.5 text-left text-[12px] font-black">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-            <tbody className="divide-y-2 divide-slate-100">
-              {currentStudents.map((student,i) => (
-                <tr
-                  key={student.id}
-                  className="group hover:bg-amber-50/10 transition-all duration-300"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-black text-emerald-700">
-                      {student.student_id || student.id}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full border-2 border-emerald-100 overflow-hidden shadow-sm">
-                        <img
-                          src={student.photo}
-                          alt={student.firstName}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="space-y-1">
+                          <p className="text-sm font-bold text-slate-700">
+                            {student.classInfo?.name || "N/A"} ({student.sectionInfo?.name || "N/A"})
+                          </p>
+                          <p className="text-xs font-black text-emerald-600">
+                            Roll: {student.roll_number || student.rollNo}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <p className="text-sm font-bold text-slate-800">
-                          {student.firstName} {student.lastName}
+                          {student.guardian?.fatherName || student.guardianName}
                         </p>
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-                          {student.gender}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="space-y-1">
-                      <p className="text-sm font-bold text-slate-700">
-                        {student.classInfo?.name || "N/A"} ({student.sectionInfo?.name || "N/A"})
-                      </p>
-                      <p className="text-xs font-black text-emerald-600">
-                        Roll: {student.roll_number || student.rollNo}
-                      </p>
-                    </div>
-                  </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm font-bold text-slate-800">
-                      {student.guardian?.fatherName || student.guardianName}
-                    </p>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="space-y-1 text-xs font-bold text-slate-600">
-                      <div className="flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5 text-emerald-500" />
-                        {student?.guardian?.contact}
-                      </div>
-                      {/* <div className="flex items-center gap-1.5">
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="space-y-1 text-xs font-bold text-slate-600">
+                          <div className="flex items-center gap-1.5">
+                            <Phone className="w-3.5 h-3.5 text-emerald-500" />
+                            {student?.guardian?.contact}
+                          </div>
+                          {/* <div className="flex items-center gap-1.5">
                         <Mail className="w-3.5 h-3.5 text-emerald-500" />
                         {student.email}
                       </div> */}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${
-                        student.status === "active"
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                          : "bg-rose-50 text-rose-700 border-rose-100"
-                      }`}
-                    >
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          student.status === "active"
-                            ? "bg-emerald-500"
-                            : "bg-rose-500"
-                        }`}
-                      />
-                      {student.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-4">
-                      <button className="cursor-pointer" onClick={() => handleAction("View Profile", student)}>
-                        <Eye className="w-5 h-5 text-[#00bd7f]"  />
-                      </button>
-                      <button className="cursor-pointer" onClick={() => handleAction("Edit Info", student)}>
-                         <SquarePen className="w-4 h-4 text-[#00bd7f]" />
-                        </button>
-                        <button className="cursor-pointer" onClick={() => handleAction("Delete Record", student)}>
-                         <Trash2 className="w-4 h-4 text-red-500" />
-                        </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination Controls */}
-        <div className="bg-slate-50/50 px-6 py-4 border-t-2 border-slate-50 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-            Showing{" "}
-            <span className="text-slate-900">
-              {(currentPage - 1) * itemsPerPage + 1}
-            </span>{" "}
-            to{" "}
-            <span className="text-slate-900">
-              {Math.min(currentPage * itemsPerPage, filteredStudents.length)}
-            </span>{" "}
-            of <span className="text-slate-900">{filteredStudents.length}</span>{" "}
-            students
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <div className="flex items-center gap-1">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i + 1}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${
-                    currentPage === i + 1
-                      ? "bg-[#00bd7f] border-[#00bd7f] text-white shadow-lg shadow-emerald-200"
-                      : "bg-white border-slate-200 text-slate-600 hover:border-emerald-500 hover:text-emerald-600"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${student.status === "active"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                            : "bg-rose-50 text-rose-700 border-rose-100"
+                            }`}
+                        >
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${student.status === "active"
+                              ? "bg-emerald-500"
+                              : "bg-rose-500"
+                              }`}
+                          />
+                          {student.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-4">
+                          <button className="cursor-pointer" onClick={() => handleAction("View Profile", student)}>
+                            <Eye className="w-5 h-5 text-[#00bd7f]" />
+                          </button>
+                          <button className="cursor-pointer" onClick={() => handleAction("Edit Info", student)}>
+                            <SquarePen className="w-4 h-4 text-[#00bd7f]" />
+                          </button>
+                          <button className="cursor-pointer" onClick={() => handleAction("Delete Record", student)}>
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+
+            {/* Pagination Controls */}
+            <div className="bg-slate-50/50 px-6 py-4 border-t-2 border-slate-50 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Showing{" "}
+                <span className="text-slate-900">
+                  {(currentPage - 1) * itemsPerPage + 1}
+                </span>{" "}
+                to{" "}
+                <span className="text-slate-900">
+                  {Math.min(currentPage * itemsPerPage, filteredStudents.length)}
+                </span>{" "}
+                of <span className="text-slate-900">{filteredStudents.length}</span>{" "}
+                students
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <div className="flex items-center gap-1">
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
+                        ? "bg-[#00bd7f] border-[#00bd7f] text-white shadow-lg shadow-emerald-200"
+                        : "bg-white border-slate-200 text-slate-600 hover:border-emerald-500 hover:text-emerald-600"
+                        }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
 
           </>
         )}
@@ -502,12 +501,12 @@ const StudentList = () => {
 
       {/* Action Modals */}
       {editStudent && (
-        <EditModal 
-          student={editStudent} 
+        <EditModal
+          student={editStudent}
           classes={classes}
           sections={sections}
           feeTypes={feeTypes}
-          onClose={() => setEditStudent(null)} 
+          onClose={() => setEditStudent(null)}
           onSuccess={() => {
             setEditStudent(null);
             fetchStudents();
@@ -576,12 +575,12 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
     try {
       // Clean up the payload to send only database-relevant fields
       const payload = { ...formData };
-      delete payload.guardian; 
+      delete payload.guardian;
       delete payload.classInfo;
       delete payload.sectionInfo;
       delete payload.status;
       delete payload.id;
-      
+
       const response = await axiosInstance.put(`/v1/students/${student._id}`, payload);
       if (response.data.success) {
         toast.success("Student profile updated!");

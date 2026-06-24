@@ -38,7 +38,7 @@ const RecentAdmissions = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-[8px] border border-gray-100 shadow-sm overflow-hidden">
       <div className="p-6 border-b border-gray-50 flex items-center justify-between">
         <div>
           <h3 className="font-bold text-gray-800">{t("dashboard.recent_admissions")}</h3>

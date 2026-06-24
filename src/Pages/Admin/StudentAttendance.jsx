@@ -32,52 +32,56 @@ const StudentAttendance = () => {
   const [loading, setLoading] = useState(false);
   const [attendanceData, setAttendanceData] = useState({});
 
-  // Fetch Classes and Sections on mount
+  // Fetch Classes on mount
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const fetchClasses = async () => {
       try {
-        const [classesRes, sectionsRes] = await Promise.all([
-          axiosInstance.get("/v1/classes"),
-          axiosInstance.get("/v1/sections")
-        ]);
+        const classesRes = await axiosInstance.get("/v1/classes");
         if (classesRes.data.success) {
             setClasses(classesRes.data.data);
-            if (classesRes.data.data.length > 0) {
-                setSelectedClassId(classesRes.data.data[0]._id);
-            }
         }
-        if (sectionsRes.data.success) setSections(sectionsRes.data.data);
       } catch (err) {
-        console.error("Error fetching initial data:", err);
-        toast.error("Failed to load classes/sections");
+        console.error("Error fetching classes:", err);
+        toast.error("Failed to load classes");
       }
     };
-    fetchInitialData();
+    fetchClasses();
   }, []);
 
-  // Filter sections by class
-  const filteredSections = useMemo(() => {
-      if (!selectedClassId) return [];
-      return sections.filter(s => s.classId?._id === selectedClassId || s.classId === selectedClassId);
-  }, [sections, selectedClassId]);
-
-  // Auto-select first section when class changes
+  // Fetch sections when class is selected
   useEffect(() => {
-      if (filteredSections.length > 0 && !filteredSections.find(s => s._id === selectedSectionId)) {
-          setSelectedSectionId(filteredSections[0]._id);
-      }
-  }, [filteredSections]);
+    if (selectedClassId) {
+      const fetchSections = async () => {
+        try {
+          const sectionsRes = await axiosInstance.get(`/v1/sections?class_id=${selectedClassId}`);
+          if (sectionsRes.data.success) {
+            setSections(sectionsRes.data.data);
+          }
+        } catch (err) {
+          console.error("Error fetching sections:", err);
+          toast.error("Failed to load sections");
+        }
+      };
+      fetchSections();
+    } else {
+      setSections([]);
+      setSelectedSectionId("");
+    }
+  }, [selectedClassId]);
 
   const fetchData = async () => {
-    if (!selectedClassId || !selectedSectionId) return;
+    if (!selectedClassId || !selectedSectionId || !selectedDate) {
+      toast.error("Please select class, category, and date first.");
+      return;
+    }
 
     setLoading(true);
     try {
       // 1. Fetch Students
       const studentsRes = await axiosInstance.get("/v1/students", {
         params: {
-          class: selectedClassId,  // backend expects ID usually, if passing name need to check controller
-          section: selectedSectionId
+          class_id: selectedClassId,  
+          section_id: selectedSectionId
         }
       });
 
@@ -140,11 +144,6 @@ const StudentAttendance = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [selectedClassId, selectedSectionId, selectedDate]);
-
-
   const stats = {
     total: students.length,
     present: Object.values(attendanceData).filter(v => v === "present").length,
@@ -190,15 +189,17 @@ const StudentAttendance = () => {
     setAttendanceData(newData);
   };
 
-  const filteredStudents = students.filter(s => 
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    s.studentId?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students.filter(s => {
+    const fullName = `${s.firstName || ''} ${s.lastName || ''}`.trim().toLowerCase();
+    const sId = s.student_id || s.studentId || '';
+    const searchLower = searchTerm.toLowerCase();
+    return fullName.includes(searchLower) || sId.toLowerCase().includes(searchLower);
+  });
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 p-4 md:p-8">
+    <div className=" animate-in fade-in duration-500 ">
       {/* Header Section */}
-      <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
+      <div className=" rounded-[8px]  p-6 flex flex-col md:flex-row justify-between items-center gap-6 ">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
             <Calendar className="w-8 h-8 text-[#00bd7f]" />
@@ -233,10 +234,11 @@ const StudentAttendance = () => {
         </div>
       </div>
 
+
       {/* Control & Stats Bar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Filters */}
-        <div className="lg:col-span-8 bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-sm">
+        <div className="lg:col-span-8 bg-white rounded-[8px]  p-6 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
@@ -247,6 +249,7 @@ const StudentAttendance = () => {
                 onChange={(e) => setSelectedClassId(e.target.value)}
                 className="w-full bg-[#e6f4ef] border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all"
               >
+                <option value="">Select class</option>
                 {classes.map(c => (
                     <option key={c._id} value={c._id}>{c.name}</option>
                 ))}
@@ -254,14 +257,15 @@ const StudentAttendance = () => {
             </div>
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
-                <Filter className="w-3.5 h-3.5" /> Section
+                <Filter className="w-3.5 h-3.5" /> Category
               </label>
               <select 
                 value={selectedSectionId} 
                 onChange={(e) => setSelectedSectionId(e.target.value)}
                 className="w-full bg-[#e6f4ef] border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all"
               >
-                {filteredSections.map(s => (
+                <option value="">Select category</option>
+                {sections.map(s => (
                     <option key={s._id} value={s._id}>{s.name}</option>
                 ))}
               </select>
@@ -277,14 +281,23 @@ const StudentAttendance = () => {
                 className="w-full bg-[#e6f4ef] border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all" 
               />
             </div>
+            <div className="space-y-2 sm:col-span-3 flex justify-end">
+              <button
+                onClick={fetchData}
+                disabled={loading}
+                className="px-8 py-2.5 bg-[#00bd7f] text-white font-black rounded-xl shadow-lg shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+              >
+                {loading ? "Loading..." : "Filter"}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="lg:col-span-4 bg-white rounded-3xl border-2 border-slate-200 p-6 shadow-sm flex items-center justify-around">
+        <div className="lg:col-span-4 bg-white rounded-[8px]  p-6 shadow-sm flex items-center justify-around">
           <div className="text-center">
             <p className="text-2xl font-black text-slate-800">{stats.present}</p>
-            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Present</p>
+            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Current</p>
           </div>
           <div className="w-px h-10 bg-slate-100" />
           <div className="text-center">
@@ -299,14 +312,22 @@ const StudentAttendance = () => {
           <div className="w-px h-10 bg-slate-100" />
           <div className="text-center">
             <p className="text-2xl font-black text-slate-800">{stats.leave}</p>
-            <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Leave</p>
+            <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Skip</p>
           </div>
         </div>
       </div>
 
       {attendanceMode === "manual" ? (
-        <div className="bg-white rounded-3xl border-2 border-slate-200 shadow-sm overflow-hidden">
-          {/* Action Bar */}
+        <div className="bg-white rounded-[8px] border-1 lg:mt-[25px] border-slate-200 shadow-sm overflow-hidden">
+         
+
+          
+          {
+            filteredStudents.length > 0 ? (
+             
+              
+              <div>
+                 {/* Action Bar */}
           <div className="bg-[#e6f4ef]/50 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border-b-2 border-slate-100">
             <div className="relative w-full md:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -336,42 +357,42 @@ const StudentAttendance = () => {
             </div>
           </div>
 
-          {/* Table */}
-          <div className="overflow-x-auto">
+{/* Table */}
+                   <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-[#e6f4ef]/30 border-b-2 border-slate-100">
                 <tr>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Roll</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Student</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">ID Number</th>
-                  <th className="px-6 py-4 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest w-64">Status</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Role</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Student Name</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Student ID</th>
+                  <th className="px-6 py-4 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest w-64">Attendance Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y-2 divide-slate-50">
                 {filteredStudents.map((student) => (
                   <tr key={student._id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-4">
-                      <span className="text-sm font-black text-slate-700">{student.rollNo}</span>
+                      <span className="text-sm font-black text-slate-700">{student.roll_number || student.rollNo}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <img src={student.photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${student._id}`} className="w-8 h-8 rounded-full bg-emerald-100 p-0.5" />
-                        <span className="text-sm font-bold text-slate-800">{student.name}</span>
+                        <span className="text-sm font-bold text-slate-800">{student.firstName} {student.lastName || ''}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm font-black text-emerald-600">{student.studentId}</td>
+                    <td className="px-6 py-4 text-sm font-black text-emerald-600">{student.student_id || student.studentId}</td>
                     <td className="px-6 py-4">
                       <div className="flex justify-center gap-1.5">
                         {[
-                          { key: 'present', label: 'P', color: 'bg-emerald-500', bg: 'bg-emerald-50' },
-                          { key: 'absent', label: 'A', color: 'bg-rose-500', bg: 'bg-rose-50' },
-                          { key: 'late', label: 'L', color: 'bg-amber-500', bg: 'bg-amber-50' },
-                          { key: 'leave', label: 'Lv', color: 'bg-blue-500', bg: 'bg-blue-50' },
+                          { key: 'present', label: 'Current', color: 'bg-emerald-500', bg: 'bg-emerald-50' },
+                          { key: 'absent', label: 'Absent', color: 'bg-rose-500', bg: 'bg-rose-50' },
+                          { key: 'late', label: 'Late', color: 'bg-amber-500', bg: 'bg-amber-50' },
+                          { key: 'leave', label: 'Skip', color: 'bg-blue-500', bg: 'bg-blue-50' },
                         ].map(status => (
                           <button
                             key={status.key}
                             onClick={() => handleStatusChange(student._id, status.key)}
-                            className={`w-10 h-10 rounded-xl text-xs font-black border-2 transition-all flex items-center justify-center ${
+                            className={`px-3 py-1.5 rounded-xl text-xs font-black border-2 transition-all flex items-center justify-center ${
                               attendanceData[student._id] === status.key 
                                 ? `${status.color} border-transparent text-white shadow-lg` 
                                 : `border-slate-100 text-slate-400 ${status.bg} hover:border-slate-300`
@@ -386,7 +407,13 @@ const StudentAttendance = () => {
                 ))}
               </tbody>
             </table>
-          </div>
+              </div>
+
+              </div>
+            ) : <div className="h-[200px] w-full flex items-center justify-center"><p> Please charge student in class</p></div>
+          }
+          {/* Table */}
+         
         </div>
       ) : (
         /* Biometric View */

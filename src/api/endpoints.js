@@ -3,10 +3,14 @@ const endpoints = {
     login: '/auth/v1/login',
     refreshToken: '/auth/v1/refresh-token',
     logout: '/auth/v1/logout',
+    me: '/auth/v1/me',
   },
   admin: {
     users: '/v1/users',
     madrasas: '/super-admin/v1/madrasas',
+    plans: '/super-admin/v1/plans',
+    smsRecharges: '/super-admin/v1/sms/recharges',
+    smsRates: '/super-admin/v1/sms/rates',
   },
   teacher: {
     students: '/v1/students',
@@ -30,6 +34,10 @@ const endpoints = {
   },
   portal: {
     studentData: (id) => `/v1/portal/student/${id}`,
+    smsBalance: '/sms/balance',
+    smsRechargeRequest: '/sms/recharge-request',
+    smsRecharges: '/sms/recharges',
+    smsBroadcast: '/sms/broadcast',
   }
 };
 

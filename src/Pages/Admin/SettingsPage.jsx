@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { 
   Settings, 
@@ -18,19 +18,53 @@ import {
   MapPin,
   Globe,
   CheckCircle2,
-  DollarSign
+  DollarSign,
+  CreditCard,
+  Cpu,
+  Activity,
+  Sparkles,
+  TrendingUp
 } from "lucide-react";
 import { usePortalSettings } from "../../context/PortalSettingsContext";
 import InputField from "../../components/InputField";
+import { useAuth } from "../../context/AuthContext";
+import portalService from "../../services/portalService";
 
 const SettingsPage = () => {
   const { settings, updateSettings } = usePortalSettings();
   const { t } = useTranslation();
+  const { currentMadrasa } = useAuth();
   const [activeTab, setActiveTab] = useState("SMS");
+
+  const [studentStats, setStudentStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(false);
+
+  const sub = currentMadrasa?.subscription || {};
+  const studentLimit = sub.studentLimit || 150;
+  const currentStudents = studentStats?.totalStudents || 0;
+  const utilizationPercentage = studentLimit ? Math.min(Math.round((currentStudents / studentLimit) * 100), 100) : 0;
+
+  useEffect(() => {
+    if (activeTab === "Subscription") {
+      const fetchStats = async () => {
+        try {
+          setStatsLoading(true);
+          const res = await portalService.getStudentStats();
+          setStudentStats(res.data);
+        } catch (err) {
+          console.error("Failed to load student stats for settings page", err);
+        } finally {
+          setStatsLoading(false);
+        }
+      };
+      fetchStats();
+    }
+  }, [activeTab]);
 
   const tabs = [
     { id: "SMS", label: t("settings_page.sms_setup"), icon: MessageSquare },
     { id: "Profile", label: t("settings_page.profile"), icon: User },
+    { id: "Subscription", label: "SaaS Subscription", icon: ShieldCheck },
   ];
 
   const handleSmsToggle = (key) => {
@@ -254,6 +288,136 @@ const SettingsPage = () => {
                          </button>
                       </div>
                    </div>
+                 )}
+
+                 {activeTab === "Subscription" && (
+                    <div className="space-y-10 animate-in fade-in duration-500">
+                      
+                      {/* Section Title */}
+                      <div className="flex items-center gap-4 mb-2 pb-6 border-b border-slate-100">
+                        <div className="w-14 h-14 bg-[#00bd7f]/10 rounded-2xl flex items-center justify-center border border-[#00bd7f]/20 shadow-inner">
+                          <ShieldCheck className="w-7 h-7 text-[#00bd7f]" />
+                        </div>
+                        <div>
+                          <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">SaaS License & Subscription</h2>
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Manage operational boundaries and monitor active pricing details</p>
+                        </div>
+                      </div>
+
+                      {/* Main Layout Grid */}
+                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 pt-2">
+                        
+                        {/* 1. Holographic SaaS Pass Card */}
+                        <div className="space-y-4">
+                          <h3 className="text-xs font-black text-slate-400 uppercase tracking-wider px-2 flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Active Membership License
+                          </h3>
+                          
+                          <div className="relative overflow-hidden bg-gradient-to-br from-[#0b1329] via-[#121c33] to-[#060c1c] rounded-[2rem] p-8 shadow-xl shadow-slate-900/20 border border-white/10 text-white flex flex-col justify-between aspect-[1.586/1] w-full max-w-md mx-auto group hover:scale-[1.01] hover:shadow-2xl hover:shadow-[#00bd7f]/5 transition-all duration-300">
+                            {/* Holographic light reflections */}
+                            <div className="absolute top-0 right-0 w-60 h-60 bg-gradient-to-bl from-[#00bd7f]/15 to-blue-500/5 rounded-full filter blur-3xl opacity-60 pointer-events-none group-hover:opacity-80 transition-opacity" />
+                            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-gradient-to-tr from-purple-500/10 to-transparent rounded-full filter blur-2xl opacity-40 pointer-events-none" />
+
+                            {/* Card Top */}
+                            <div className="flex justify-between items-start">
+                              <div className="space-y-1">
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">SaaS Portal Key</p>
+                                <div className="flex items-center gap-2">
+                                  <Cpu className="w-5 h-5 text-slate-400" />
+                                  <span className="text-xs font-mono tracking-widest text-slate-300">PASS-{(currentMadrasa?._id || "507f").toString().slice(-6).toUpperCase()}</span>
+                                </div>
+                              </div>
+                              <span className="bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" /> Active
+                              </span>
+                            </div>
+
+                            {/* Card Middle: Massive Tier Name */}
+                            <div className="py-4">
+                              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Subscription Tier</p>
+                              <h4 className="text-3xl md:text-4xl font-extrabold uppercase bg-clip-text text-transparent bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500 tracking-tight mt-1 group-hover:scale-[1.02] transition-transform duration-300">
+                                {currentMadrasa?.subscription?.plan || "Basic"} Tier
+                              </h4>
+                            </div>
+
+                            {/* Card Bottom */}
+                            <div className="flex justify-between items-end border-t border-white/5 pt-4">
+                              <div className="space-y-0.5">
+                                <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Pricing Cycle</p>
+                                <p className="text-lg font-black text-slate-100">
+                                  ৳ {currentMadrasa?.subscription?.price || 999} <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">/ {currentMadrasa?.subscription?.billingCycle || "monthly"}</span>
+                                </p>
+                              </div>
+                              <div className="text-right space-y-0.5">
+                                <p className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Renewal Date</p>
+                                <p className="text-xs font-bold text-indigo-300 tracking-wide">
+                                  {currentMadrasa?.subscription?.nextBillingDate 
+                                    ? new Date(currentMadrasa.subscription.nextBillingDate).toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' })
+                                    : "N/A"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 2. Operational Metrics Panel */}
+                        <div className="space-y-6 flex flex-col justify-between">
+                          
+                          {/* Student Capacity Gauge */}
+                          <div className="bg-slate-50 border border-slate-150 rounded-3xl p-6 space-y-4 hover:shadow-md hover:border-slate-200 transition-all">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-2">
+                                <Activity className="w-5 h-5 text-indigo-500" />
+                                <h4 className="text-sm font-black text-slate-800 uppercase tracking-wider">Student Enrolled Limit</h4>
+                              </div>
+                              <span className="bg-indigo-50 text-indigo-600 text-xs font-black px-2.5 py-1 rounded-lg">
+                                {statsLoading ? "Loading..." : `${studentStats?.totalStudents || 0} / ${currentMadrasa?.subscription?.studentLimit || 150}`}
+                              </span>
+                            </div>
+
+                            {/* Utilization Progress Bar */}
+                            <div className="space-y-2">
+                              <div className="w-full bg-slate-200 h-3.5 rounded-full overflow-hidden p-0.5 shadow-inner">
+                                <div 
+                                  className={`h-full rounded-full bg-gradient-to-r shadow-md transition-all duration-1000 ${
+                                    utilizationPercentage >= 90
+                                      ? "from-amber-500 to-rose-500 shadow-rose-500/20"
+                                      : "from-[#00bd7f] to-blue-500 shadow-[#00bd7f]/20"
+                                  }`}
+                                  style={{ width: `${utilizationPercentage}%` }}
+                                />
+                              </div>
+                              <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">
+                                <span>0% Usage</span>
+                                <span>{utilizationPercentage}% capacity utilized</span>
+                                <span>100% Limit</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Guidelines Accent Help Box */}
+                          <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-900 border border-white/5 rounded-3xl p-6 text-white space-y-4 hover:shadow-lg transition-shadow">
+                            <div className="flex items-center gap-2">
+                              <TrendingUp className="w-5 h-5 text-amber-400" />
+                              <h4 className="text-sm font-black uppercase tracking-wider text-slate-200">System Upgrades & Extensions</h4>
+                            </div>
+                            <p className="text-xs text-slate-400 leading-relaxed">
+                              Need more student slots, support options, or custom billing structures? 
+                              Reach out to the Super Administration team to modify your billing boundaries or request direct assistance.
+                            </p>
+                            <div className="pt-2">
+                              <a 
+                                href="mailto:support@mms.com"
+                                className="inline-flex items-center gap-1.5 bg-[#00bd7f] hover:bg-[#009b68] text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-lg shadow-[#00bd7f]/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wider"
+                              >
+                                Contact Super Admin
+                              </a>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
                  )}
               </div>
            </div>

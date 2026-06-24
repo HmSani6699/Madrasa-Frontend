@@ -15,6 +15,26 @@ const portalService = {
   getStudentPortalData: async (id) => {
     const response = await axiosInstance.get(endpoints.portal.studentData(id));
     return response.data;
+  },
+
+  getSmsBalance: async () => {
+    const response = await axiosInstance.get(endpoints.portal.smsBalance);
+    return response.data;
+  },
+
+  submitSmsRecharge: async (rechargeData) => {
+    const response = await axiosInstance.post(endpoints.portal.smsRechargeRequest, rechargeData);
+    return response.data;
+  },
+
+  getSmsRecharges: async () => {
+    const response = await axiosInstance.get(endpoints.portal.smsRecharges);
+    return response.data;
+  },
+
+  broadcastSms: async (broadcastData) => {
+    const response = await axiosInstance.post(endpoints.portal.smsBroadcast, broadcastData);
+    return response.data;
   }
 };
 

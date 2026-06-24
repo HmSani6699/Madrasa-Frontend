@@ -4,8 +4,6 @@ import {
   GraduationCap,
   Wallet,
   CalendarCheck,
-  ArrowUpRight,
-  TrendingUp,
   MoreHorizontal,
   CalendarDays,
   Bell,
@@ -25,6 +23,26 @@ const AdminDashboard = () => {
     studentStats: null,
     financialOverview: null,
   });
+
+  const sub = currentMadrasa?.subscription || {};
+  const nextBillingDate = sub.nextBillingDate;
+  const status = currentMadrasa?.status || "Active";
+  
+  let daysLeft = null;
+  let showBillingWarning = false;
+  
+  if (nextBillingDate && status === "Active") {
+    const dueDate = new Date(nextBillingDate);
+    const today = new Date();
+    dueDate.setHours(0,0,0,0);
+    today.setHours(0,0,0,0);
+    const diffTime = dueDate - today;
+    daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (daysLeft >= 0 && daysLeft <= 5) {
+      showBillingWarning = true;
+    }
+  }
 
   useEffect(() => {
     fetchDashboardData();
@@ -47,6 +65,23 @@ const AdminDashboard = () => {
       setLoading(false);
     }
   };
+
+  const classDistribution = (dashboardData.studentStats?.classDistribution || [
+    { className: "Class 1", count: 28 },
+    { className: "Class 2", count: 34 },
+    { className: "Class 3", count: 29 },
+    { className: "Class 4", count: 22 },
+  ]).map((item) => ({
+    name: item.className || item.name || item.class || "Class",
+    count: item.studentCount || item.count || item.students || 0,
+  }));
+
+  const totalClassStudents = classDistribution.reduce(
+    (sum, item) => sum + item.count,
+    0
+  );
+
+  const chartColors = ["#013f77", "#0f766e", "#f59e0b", "#ef4444"];
 
   const stats = [
     {
@@ -89,22 +124,40 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="p-4 md:p-4 space-y-8 animate-in fade-in duration-500">
+    <div className=" space-y-4 animate-in fade-in duration-500">
+      {showBillingWarning && (
+        <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white p-5 rounded-2xl shadow-lg shadow-orange-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-orange-400/20">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-white/10 rounded-xl shrink-0">
+              <Bell className="w-6 h-6 text-white animate-bounce" />
+            </div>
+            <div>
+              <p className="font-bold text-base">সাবস্ক্রিপশন মেয়াদ শেষের সতর্কতা! (Subscription Warning)</p>
+              <p className="text-xs text-white/90 mt-0.5">আপনার মাদ্রাসার সাবস্ক্রিপশন মেয়াদের আর মাত্র <span className="font-bold underline">{daysLeft} দিন</span> বাকি আছে। সাময়িক বন্ধ হওয়া এড়াতে দয়া করে সময়মতো বিল পরিশোধ করুন।</p>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <span className="bg-white text-orange-600 px-4 py-2 rounded-xl text-xs font-bold shadow-md block text-center border border-orange-100">
+              Due Date: {new Date(nextBillingDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
+            </span>
+          </div>
+        </div>
+      )}
   
 
       {/* 2. Key Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between"
+            className="bg-white p-6 rounded-[8px] shadow-sm hover:shadow-md transition-shadow flex items-center justify-between relative overflow-hidden "
           >
-            
-            <div>
-              <h3 className="text-3xl font-bold text-slate-800 tracking-tight mb-1">
+             <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#013f7724] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+            <div clsassName=" relative z-20 flex flex-col items-start">
+              <h3 className="text-3xl font-bold text-slate-800 tracking-tight mb-1  relative z-20">
                 {stat.value}
               </h3>
-              <p className="text-sm font-medium text-slate-500">{stat.title}</p>
+              <p className="text-sm font-medium text-slate-500  relative z-20">{stat.title}</p>
             </div>
 
             <div className="flex items-start justify-between mb-4">
@@ -117,55 +170,80 @@ const AdminDashboard = () => {
       </div>
 
       {/* 3. Main Content Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* Left Column (Main) */}
-        <div className="xl:col-span-2 space-y-8">
-          {/* Fees Collection Summary (Simplified) */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div className="xl:col-span-2 space-y-4">
+{/* Student Distribution Overview */}
+          <div className="bg-white rounded-[8px] border border-slate-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-slate-800">
-                {t("dashboard.fees_overview")}
-              </h2>
-             
-
-              <Link to={'/admin/accounting/report/free-collection'}> <button className="text-primary text-sm font-semibold hover:underline flex items-center gap-1">
-                {t("dashboard.view_report")} <ArrowUpRight className="w-4 h-4" />
-              </button></Link>
+              <div>
+                <h2 className="text-lg font-bold text-slate-800">
+                  Class-wise Student Distribution
+                </h2>
+                <p className="text-sm text-slate-500 mt-1">
+                  A beautiful snapshot of how many students are in each class
+                </p>
+              </div>
+              <div className="flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5">
+                <Users className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-primary">
+                  {totalClassStudents || dashboardData.studentStats?.totalStudents || 0} Students
+                </span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100/50">
-                <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">
-                  {t("dashboard.collected_today")}
-                </p>
-                <p className="text-2xl font-bold text-slate-800">৳ {dashboardData.financialOverview?.collectedToday || "0"}</p>
-                <div className="flex items-center gap-1 mt-2 text-xs font-semibold text-emerald-600">
-                  <TrendingUp className="w-3 h-3" /> +{dashboardData.financialOverview?.growth || "0"}% from yesterday
-                </div>
-              </div>
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  {t("dashboard.monthly_target")}
-                </p>
-                <p className="text-2xl font-bold text-slate-800">৳ {dashboardData.financialOverview?.monthlyTarget || "0"}</p>
-                <div className="w-full bg-slate-200 h-1.5 rounded-full mt-3 overflow-hidden">
+            <div className="grid gap-6 lg:grid-cols-[220px_1fr] items-center">
+              <div className="flex justify-center">
+                <div className="relative w-44 h-44 rounded-full p-3 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 shadow-inner">
                   <div
-                    className="bg-primary h-full rounded-full"
-                    style={{ width: `${dashboardData.financialOverview?.achievementPercentage || 0}%` }}
+                    className="w-full h-full rounded-full"
+                    style={{
+                      background: `conic-gradient(${chartColors[0]} 0deg 120deg, ${chartColors[1]} 120deg 240deg, ${chartColors[2]} 240deg 320deg, ${chartColors[3]} 320deg 360deg)`,
+                    }}
                   ></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-slate-800">
+                        {totalClassStudents || dashboardData.studentStats?.totalStudents || 0}
+                      </p>
+                      <p className="text-[10px] uppercase tracking-[0.25em] text-slate-400 mt-1">
+                        Students
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1 font-medium">
-                  {dashboardData.financialOverview?.achievementPercentage || 0}% {t("dashboard.achieved")}
-                </p>
               </div>
-              <div className="p-4 rounded-xl bg-rose-50 border border-rose-100/50">
-                <p className="text-xs font-bold text-rose-600 uppercase tracking-wider mb-2">
-                  {t("dashboard.pending_dues")}
-                </p>
-                <p className="text-2xl font-bold text-slate-800">৳ {dashboardData.financialOverview?.pendingDues || "0"}</p>
-                <p className="text-[10px] text-rose-500/80 mt-2 font-medium">
-                  {dashboardData.financialOverview?.pendingStudents || 0} {t("sidebar.students")}
-                </p>
+
+              <div className="space-y-3">
+                {classDistribution.map((item, index) => {
+                  const percentage = totalClassStudents
+                    ? Math.round((item.count / totalClassStudents) * 100)
+                    : 0;
+
+                  return (
+                    <div key={`${item.name}-${index}`} className="space-y-1.5">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="w-2.5 h-2.5 rounded-full"
+                            style={{ backgroundColor: chartColors[index % chartColors.length] }}
+                          ></span>
+                          <span className="font-semibold text-slate-700">{item.name}</span>
+                        </div>
+                        <span className="text-slate-500 font-medium">{item.count}</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${percentage}%`,
+                            backgroundColor: chartColors[index % chartColors.length],
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -178,9 +256,9 @@ const AdminDashboard = () => {
         </div>
 
         {/* Right Column (Sidebar) */}
-        <div className="space-y-8">
+        <div className="space-y-4">
           {/* Notice Board */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div className="bg-white rounded-[8px] border border-slate-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-slate-800">{t("dashboard.notice_board")}</h2>
               <button className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
@@ -218,7 +296,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Upcoming Event / Calendar Mini */}
-          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-lg">
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[8px] p-6 text-white shadow-lg">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-white/10 rounded-lg">
                 <CalendarDays className="w-5 h-5 text-white" />

@@ -8,7 +8,11 @@ import ProtectedRoute from "./ProtectedRoute";
 import SuperAdminDashboard from "../Pages/SuperAdmin/Dashboard";
 import MadrasaList from "../Pages/SuperAdmin/MadrasaList";
 import Settings from "../Pages/SuperAdmin/Settings";
+import PlanList from "../Pages/SuperAdmin/PlanList";
+import BillingList from "../Pages/SuperAdmin/BillingList";
+import SmsSettings from "../Pages/SuperAdmin/SmsSettings";
 import AdminDashboard from "../Pages/Admin/Dashboard";
+import SmsPortal from "../Pages/Admin/SmsPortal";
 import Placeholder from "../Pages/Admin/Placeholder";
 import { adminNavigation } from "../navigation/adminNavigation";
 import { teacherNavigation } from "../navigation/teacherNavigation";
@@ -146,6 +150,7 @@ import StudentLibrary from "../Pages/Students/Library";
 import EBooks from "../Pages/Students/EBooks";
 import StudentProfilePage from "../Pages/Students/Profile";
 import FeeType from "../Pages/Accounting/FeeType";
+import Home from "../Pages/Home/Home";
 
 // Helper to flatten routes
 const flattenRoutes = (navItems) => {
@@ -400,6 +405,9 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/settings") {
         element = <SettingsPage />;
       }
+      if (item.path === "/admin/sms-portal") {
+        element = <SmsPortal />;
+      }
 
       // Teacher Routes Mapping
       if (item.path === "/teacher/academic/schedule") {
@@ -501,7 +509,7 @@ const accountingRoutes = flattenRoutes(accountingNavigation);
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/login" replace />,
+    element: <Home />,
   },
   {
     path: "/:slug",
@@ -539,6 +547,9 @@ const router = createBrowserRouter([
               { path: "/super-admin", element: <SuperAdminDashboard /> },
               { path: "/super-admin/madrasas", element: <MadrasaList /> },
               { path: "/super-admin/settings", element: <Settings /> },
+              { path: "/super-admin/plans", element: <PlanList /> },
+              { path: "/super-admin/billing", element: <BillingList /> },
+              { path: "/super-admin/sms", element: <SmsSettings /> },
             ],
           },
           // Admin (Muhtamim) Routes - accessible by talimat and accountant for specific modules
