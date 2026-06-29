@@ -19,7 +19,7 @@ const TextareaField = ({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         rows="3"
-        className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+        className="w-full px-4 py-3 bg-[#013f7724] dark:bg-[#013f7724] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:ring-0.5 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
         placeholder={placeholder}
       />
     </div>

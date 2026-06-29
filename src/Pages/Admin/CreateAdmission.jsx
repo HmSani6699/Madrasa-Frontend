@@ -24,6 +24,8 @@ import {
   Printer,
   CheckCircle2,
   Bus,
+  QrCode,
+  Globe,
 } from "lucide-react";
 import { Link, useSearchParams, useNavigate, useLocation } from "react-router";
 import InputField from "../../components/InputField";
@@ -31,6 +33,8 @@ import TextareaField from "../../components/TextareaField";
 import SelectInputField from "../../components/SelectInputField";
 import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-hot-toast";
+
+import VoucherModal from "../../components/VoucherModal/VoucherModal";
 
 const CreateAdmission = () => {
   const [searchParams] = useSearchParams();
@@ -43,7 +47,7 @@ const CreateAdmission = () => {
   const [useExistingGuardian, setUseExistingGuardian] = useState(false);
   const [guardianSearchTerm, setGuardianSearchTerm] = useState("");
 
-  const [showVoucher, setShowVoucher] = useState(false);
+  const [showVoucher, setShowVoucher] = useState(true);
   const [loading, setLoading] = useState(false);
   const [guardians, setGuardians] = useState([]);
   const [subscriptionLimitError, setSubscriptionLimitError] = useState(null);
@@ -511,7 +515,7 @@ const CreateAdmission = () => {
                     padding: "11px 0",
                     borderRadius: "10px",
                     border: "none",
-                    background: "linear-gradient(135deg, #00bc7d 0%, #52f67bff 100%)",
+                    background: "linear-gradient(135deg, #013f77 0%, #013f7724 100%)",
                     color: "white",
                     fontWeight: 700,
                     fontSize: "14px",
@@ -536,7 +540,7 @@ const CreateAdmission = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#00bd7f]" />
+            <Users className="w-8 h-8 text-[#013f77]" />
             Create Student
           </h1>
 
@@ -546,7 +550,7 @@ const CreateAdmission = () => {
           <Link to={"/admin/student/list"}>
             <button
               type="button"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#013f77] text-white rounded-[8px] hover:bg-[#013f77] transition-all shadow-sm cursor-pointer"
             >
               <User2 className="w-4 h-4" />
               All Student
@@ -561,10 +565,10 @@ const CreateAdmission = () => {
         {/* Academic Year & Admission Date */}
         <div className="bg-white dark:bg-white rounded-[8px]  p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
-            <div className="w-10 h-10 rounded-xl bg-[#e6f4ef] flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-[#00bd7f]" />
+            <div className="w-10 h-10 rounded-xl bg-[#013f7724] flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-[#013f77]" />
             </div>
-            <h2 className="text-xl font-black text-[#00bd7f]">
+            <h2 className="text-xl font-black text-[#013f77]">
               Academic Information
             </h2>
           </div>
@@ -575,6 +579,7 @@ const CreateAdmission = () => {
               setValue={(val) => handleInputChange(null, "academicYear", val)}
               options={[{ value: "2025-2026" }, { value: "2026-2027" }]}
               required={true}
+              bgColor={"bg-[#013f7724]"}
             />
 
             <InputField
@@ -592,6 +597,7 @@ const CreateAdmission = () => {
               setValue={(val) => handleInputChange(null, "position", val)}
               options={[{ value: "Old" }, { value: "New" }]}
               required={true}
+              bgColor={"bg-[#013f7724]"}
             />
           </div>
         </div>
@@ -600,17 +606,17 @@ const CreateAdmission = () => {
         <div className="bg-white dark:bg-white rounded-[8px]  p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#e6f4ef] flex items-center justify-center">
-                <Users className="w-5 h-5 text-[#00bd7f]" />
+              <div className="w-10 h-10 rounded-xl bg-[#013f7724] flex items-center justify-center">
+                <Users className="w-5 h-5 text-[#013f77]" />
               </div>
-              <h2 className="text-xl font-black text-[#00bd7f]">
+              <h2 className="text-xl font-black text-[#013f77]">
                 Guardian Information
               </h2>
             </div>
             <button
               type="button"
               onClick={() => setUseExistingGuardian(!useExistingGuardian)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-[8px] ransition-all bg-[#00bd7f] text-white shadow-lg shadow-emerald-500/30 cursor-pointer`}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-[8px] ransition-all bg-[#013f77] text-white shadow-lg  cursor-pointer`}
             >
               {useExistingGuardian ? (
                 <>
@@ -648,7 +654,7 @@ const CreateAdmission = () => {
                   type="text"
                   value={guardianSearchTerm}
                   onChange={(e) => setGuardianSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef]   dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[#013f7724] dark:bg-[#013f7724]   dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
                   placeholder="Search by father's name, mother's name, or contact..."
                 />
               </div>
@@ -659,10 +665,10 @@ const CreateAdmission = () => {
                     <div
                       key={guardian._id}
                       onClick={() => selectGuardian(guardian)}
-                      className="p-4 bg-slate-50 dark:bg-slate-50 rounded-[8px] border-1 border-slate-200 dark:border-slate-200 hover:border-[#00bd7f] hover:bg-emerald-50 cursor-pointer transition-all hover:shadow-md group relative overflow-hidden"
+                      className="p-4 bg-slate-50 dark:bg-slate-50 rounded-[8px] border-1 border-slate-200 dark:border-slate-200 hover:border-[#013f77] hover:bg-[#013f7724] cursor-pointer transition-all hover:shadow-md group relative overflow-hidden"
                     >
                       <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <UserCheck className="w-5 h-5 text-[#00bd7f]" />
+                        <UserCheck className="w-5 h-5 text-[#013f77]" />
                       </div>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -686,8 +692,8 @@ const CreateAdmission = () => {
                           </div>
                           <div className="flex flex-wrap gap-4 pt-3 border-t border-slate-200">
                             <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
-                                <Phone className="w-3 h-3 text-[#00bd7f]" />
+                              <div className="w-6 h-6 rounded-full bg-[#013f7724] flex items-center justify-center">
+                                <Phone className="w-3 h-3 text-[#013f77]" />
                               </div>
                               <p className="text-xs font-bold text-slate-600">
                                 {guardian.contact}
@@ -729,12 +735,12 @@ const CreateAdmission = () => {
           )}
 
           {!useExistingGuardian && formData.guardian_id ? (
-            <div className="p-6 bg-emerald-50 rounded-3xl border-2 border-emerald-100 shadow-sm relative overflow-hidden">
+            <div className="p-6 bg-[#013f7724] rounded-3xl border-2 border-[#013f7724] shadow-sm relative overflow-hidden">
               {/* Read-only guardian template */}
               <div className="absolute top-0 right-0 p-4 opacity-50">
-                <UserCheck className="w-16 h-16 text-[#00bd7f]" />
+                <UserCheck className="w-16 h-16 text-[#013f77]" />
               </div>
-              <h3 className="text-lg font-black text-emerald-800 mb-6 flex items-center gap-2">
+              <h3 className="text-lg font-black text-[#013f77] mb-6 flex items-center gap-2">
                 <UserCheck className="w-5 h-5" />
                 Selected Guardian
               </h3>
@@ -751,7 +757,7 @@ const CreateAdmission = () => {
                 <div>
                   <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Contact Number</p>
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-emerald-500" />
+                    <Phone className="w-4 h-4 text-[#013f77]" />
                     <p className="font-bold text-slate-800">{formData.guardian.contact || "N/A"}</p>
                   </div>
                 </div>
@@ -759,7 +765,7 @@ const CreateAdmission = () => {
                   <div>
                     <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Email</p>
                     <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-emerald-500" />
+                      <Mail className="w-4 h-4 text-[#013f77]" />
                       <p className="font-bold text-slate-800">{formData.guardian.email}</p>
                     </div>
                   </div>
@@ -767,30 +773,30 @@ const CreateAdmission = () => {
                 <div className="lg:col-span-2">
                   <p className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Address</p>
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-emerald-500" />
+                    <MapPin className="w-4 h-4 text-[#013f77]" />
                     <p className="font-bold text-slate-800">{formData.guardian.address || "N/A"}</p>
                   </div>
                 </div>
               </div>
 
               {/* Photos */}
-              <div className="flex gap-4 pt-6 border-t border-emerald-200/60">
+              <div className="flex gap-4 pt-6 border-t border-[#013f7724]">
                 {formData.guardian.fatherPhoto && (
                   <div className="flex items-center gap-3">
-                    <img src={formData.guardian.fatherPhoto} alt="Father" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-200" />
-                    <div className="text-xs font-bold text-emerald-700">Father's Photo</div>
+                    <img src={formData.guardian.fatherPhoto} alt="Father" className="w-12 h-12 rounded-xl object-cover border-2 border-[#013f7724]" />
+                    <div className="text-xs font-bold text-[#013f77]">Father's Photo</div>
                   </div>
                 )}
                 {formData.guardian.motherPhoto && (
                   <div className="flex items-center gap-3">
-                    <img src={formData.guardian.motherPhoto} alt="Mother" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-200" />
-                    <div className="text-xs font-bold text-emerald-700">Mother's Photo</div>
+                    <img src={formData.guardian.motherPhoto} alt="Mother" className="w-12 h-12 rounded-xl object-cover border-2 border-[#013f7724]" />
+                    <div className="text-xs font-bold text-[#013f77]">Mother's Photo</div>
                   </div>
                 )}
                 {formData.guardian.guardianNID && (
                   <div className="flex items-center gap-3">
-                    <img src={formData.guardian.guardianNID} alt="NID" className="w-12 h-12 rounded-xl object-cover border-2 border-emerald-200" />
-                    <div className="text-xs font-bold text-emerald-700">NID Document</div>
+                    <img src={formData.guardian.guardianNID} alt="NID" className="w-12 h-12 rounded-xl object-cover border-2 border-[#013f7724]" />
+                    <div className="text-xs font-bold text-[#013f77]">NID Document</div>
                   </div>
                 )}
               </div>
@@ -846,26 +852,27 @@ const CreateAdmission = () => {
                   setValue={(val) => handleInputChange("guardian", "address", val)}
                   required={true}
                   placeholder={"Address"}
+                  className="bg-[#013f7724] border-[#013f7724] focus:ring-[#013f77] focus:border-[#013f77]"
                 />
               </div>
 
               {/* Guardian Photos and NID */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 p-6 bg-slate-50 rounded-3xl border-2 border-slate-100">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6  ">
                 {/* Father's Photo */}
-                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-[6px] border-1 border-[#013f7724] shadow-sm">
                   <div className="relative">
                     {formData.guardian.fatherPhoto ? (
                       <img
                         src={formData.guardian.fatherPhoto}
                         alt="Father"
-                        className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                        className="w-24 h-24 rounded-2xl object-cover border-2 border-[#013f7724] shadow-sm"
                       />
                     ) : (
-                      <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
-                        <ImageIcon className="w-10 h-10 text-emerald-300" />
+                      <div className="w-24 h-24 rounded-2xl bg-[#013f7724] flex items-center justify-center border-2 border-[#013f7724] border-dashed">
+                        <ImageIcon className="w-10 h-10 text-[#013f77]" />
                       </div>
                     )}
-                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#013f77] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#013f77] transition-colors">
                       <Upload className="w-4 h-4" />
                       <input
                         type="file"
@@ -887,20 +894,20 @@ const CreateAdmission = () => {
                 </div>
 
                 {/* Mother's Photo */}
-                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-[6px] border-1 border-[#013f7724] shadow-sm">
                   <div className="relative">
                     {formData.guardian.motherPhoto ? (
                       <img
                         src={formData.guardian.motherPhoto}
                         alt="Mother"
-                        className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                        className="w-24 h-24 rounded-2xl object-cover border-2 border-[#013f7724] shadow-sm"
                       />
                     ) : (
-                      <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
-                        <ImageIcon className="w-10 h-10 text-emerald-300" />
+                      <div className="w-24 h-24 rounded-2xl bg-[#013f7724] flex items-center justify-center border-2 border-[#013f7724] border-dashed">
+                        <ImageIcon className="w-10 h-10 text-[#013f77]" />
                       </div>
                     )}
-                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#013f77] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#013f77] transition-colors">
                       <Upload className="w-4 h-4" />
                       <input
                         type="file"
@@ -922,20 +929,20 @@ const CreateAdmission = () => {
                 </div>
 
                 {/* Guardian NID */}
-                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm">
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-[6px] border-1 border-[#013f7724] shadow-sm">
                   <div className="relative">
                     {formData.guardian.guardianNID ? (
                       <img
                         src={formData.guardian.guardianNID}
                         alt="NID"
-                        className="w-24 h-24 rounded-2xl object-cover border-2 border-emerald-200 shadow-sm"
+                        className="w-24 h-24 rounded-2xl object-cover border-2 border-[#013f7724] shadow-sm"
                       />
                     ) : (
-                      <div className="w-24 h-24 rounded-2xl bg-emerald-50 flex items-center justify-center border-2 border-emerald-100 border-dashed">
-                        <UserCheck className="w-10 h-10 text-emerald-300" />
+                      <div className="w-24 h-24 rounded-2xl bg-[#013f7724] flex items-center justify-center border-2 border-[#013f7724] border-dashed">
+                        <UserCheck className="w-10 h-10 text-[#013f77]" />
                       </div>
                     )}
-                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#00bd7f] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#009b68] transition-colors">
+                    <label className="absolute -bottom-2 -right-2 p-2 bg-[#013f77] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#013f77] transition-colors">
                       <Upload className="w-4 h-4" />
                       <input
                         type="file"
@@ -964,13 +971,13 @@ const CreateAdmission = () => {
         <div className="space-y-8">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-black text-slate-800 dark:text-slate-800 flex items-center gap-3">
-              <Users className="w-8 h-8 text-[#00bd7f]" />
+              <Users className="w-8 h-8 text-[#013f77]" />
               Student List ({formData.students.length})
             </h2>
             <button
               type="button"
               onClick={addStudent}
-              className="flex items-center gap-2 px-6 py-2.5 bg-[#00bd7f] text-white font-black rounded-[8px] hover:bg-[#009b68] transition-all shadow-lg shadow-emerald-500/20"
+              className=" cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-[#013f77] text-white font-black rounded-[8px] hover:bg-[#013f77] transition-all shadow-lg "
             >
               <Plus className="w-5 h-5" />
               Add Another Student
@@ -992,12 +999,12 @@ const CreateAdmission = () => {
                 </button>
               )}
               <div className="flex items-center gap-3 mb-8 pb-4 border-b-2 border-slate-100 dark:border-slate-100">
-                <div className="w-12 h-12 rounded-[8px] bg-emerald-500 flex items-center justify-center text-white font-black shadow-lg shadow-emerald-500/30">
+                <div className="w-12 h-12 rounded-[8px] bg-[#013f77] flex items-center justify-center text-white font-black shadow-lg ">
                   {index + 1}
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-emerald-800">
-                    Student #{index + 1} Setup
+                  <h3 className="text-xl font-black text-[#013f77]">
+                    Student {index + 1} Setup
                   </h3>
 
                 </div>
@@ -1015,7 +1022,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "firstName", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#013f7724] dark:bg-[#013f7724] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
                     placeholder="Enter student name"
                   />
                 </div>
@@ -1030,7 +1037,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "gender", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#013f7724] dark:bg-[#013f7724] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
                   >
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
@@ -1047,7 +1054,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "dateOfBirth", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#013f7724] dark:bg-[#013f7724] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
                   />
                 </div>
                 <div>
@@ -1059,7 +1066,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "bloodGroup", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#013f7724] dark:bg-[#013f7724] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
                   >
                     <option value="">Select Blood Group</option>
                     <option value="A+">A+</option>
@@ -1082,7 +1089,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "class_id", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#013f7724] dark:bg-[#013f7724] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
                   >
                     <option value="">Select Class</option>
                     {classes.map((cls) => (
@@ -1099,7 +1106,7 @@ const CreateAdmission = () => {
                     onChange={(e) =>
                       handleStudentChange(index, "section_id", e.target.value)
                     }
-                    className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                    className="w-full px-4 py-3 bg-[#013f7724] dark:bg-[#013f7724] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
                   >
                     <option value="">Select Section</option>
                     {allSections
@@ -1112,20 +1119,20 @@ const CreateAdmission = () => {
 
                 {/* Photo Upload for this student */}
                 <div className="col-span-full">
-                  <div className="flex items-center gap-6 p-4 bg-emerald-50/50 rounded-2xl border-2 border-emerald-100">
+                  <div className="flex items-center gap-6 p-4 bg-[#013f7724] rounded-[6px] ">
                     <div className="relative">
                       {student.photo ? (
                         <img
                           src={student.photo}
                           alt="Student"
-                          className="w-20 h-20 rounded-xl object-cover border-2 border-emerald-200 shadow-sm"
+                          className="w-20 h-20 rounded-[6px] object-cover border-2 border-[#013f7724] shadow-sm"
                         />
                       ) : (
-                        <div className="w-20 h-20 rounded-xl bg-emerald-100 flex items-center justify-center border-2 border-emerald-200 border-dashed">
-                          <ImageIcon className="w-8 h-8 text-emerald-400" />
+                        <div className="w-20 h-20 rounded-xl bg-[#013f7724] flex items-center justify-center border-1 border-[#013f7724] border-dashed">
+                          <ImageIcon className="w-8 h-8 text-[#013f77]" />
                         </div>
                       )}
-                      <label className="absolute -bottom-2 -right-2 p-1.5 bg-emerald-600 text-white rounded-lg shadow-lg cursor-pointer hover:bg-emerald-700 transition-colors">
+                      <label className="absolute -bottom-2 -right-2 p-1.5 bg-[#013f77] text-white rounded-lg shadow-lg cursor-pointer hover:bg-[#013f77] transition-colors">
                         <Upload className="w-3.5 h-3.5" />
                         <input
                           type="file"
@@ -1142,10 +1149,10 @@ const CreateAdmission = () => {
                       </label>
                     </div>
                     <div>
-                      <p className="font-bold text-emerald-900 text-sm">
+                      <p className="font-bold text-[#013f77] text-sm">
                         Student Photo
                       </p>
-                      <p className="text-xs text-emerald-600 font-medium mt-0.5">
+                      <p className="text-xs text-[#013f77] font-medium mt-0.5">
                         High quality passport size photo recommended
                       </p>
                     </div>
@@ -1153,61 +1160,64 @@ const CreateAdmission = () => {
                 </div>
               </div>
               {/* Fee Setup (ফি সেটআপ) */}
-              <div className="flex items-center gap-2 mb-6 text-emerald-700">
+
+              {feeTypes?.length > 0 && (<div><div className="flex items-center gap-2 mb-6 text-[#013f77]">
                 <Calculator className="w-5 h-5" />
                 <h4 className="font-black">Fee Setup (ফি সেটআপ)</h4>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {feeTypes?.map((type, i) => (
-                  <div key={i} className="p-5 rounded-[20px] border-2 border-slate-100 bg-white shadow-sm hover:shadow-md transition-all duration-300">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3 text-emerald-700">
-                        <div className="w-8 h-8 rounded-[8px] bg-emerald-50 flex items-center justify-center">
-                          <Home className="w-4 h-4 text-[#00bd7f]" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {feeTypes?.map((type, i) => (
+                    <div key={i} className="p-5 rounded-[6px]  bg-[#f2f2f3] shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3 text-[#013f77]">
+                          <div className="w-8 h-8 rounded-[8px] bg-[#013f7724] flex items-center justify-center">
+                            <Home className="w-4 h-4 text-[#013f77]" />
+                          </div>
+                          <span className="font-bold text-slate-700">{type?.name}</span>
                         </div>
-                        <span className="font-bold text-slate-700">{type?.name}</span>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          className="sr-only peer"
-                          checked={!!student.fees?.[type.name]}
-                          onChange={(e) => {
-                            const currentFees = { ...(student.fees || {}) };
-                            if (e.target.checked) {
-                              currentFees[type.name] = "0";
-                            } else {
-                              delete currentFees[type.name];
-                            }
-                            handleStudentChange(index, "fees", currentFees);
-                          }}
-                        />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00bd7f]"></div>
-                      </label>
-                    </div>
-
-                    {/* Dynamic Amount Input */}
-                    {student.fees?.[type.name] !== undefined && (
-                      <div className="animate-in slide-in-from-top-2 duration-300">
-                        <div className="relative group">
-                          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold group-focus-within:text-[#00bd7f] transition-colors">৳</div>
+                        <label className="relative inline-flex items-center cursor-pointer">
                           <input
-                            type="number"
-                            value={student.fees[type.name]}
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={!!student.fees?.[type.name]}
                             onChange={(e) => {
                               const currentFees = { ...(student.fees || {}) };
-                              currentFees[type.name] = e.target.value;
+                              if (e.target.checked) {
+                                currentFees[type.name] = "0";
+                              } else {
+                                delete currentFees[type.name];
+                              }
                               handleStudentChange(index, "fees", currentFees);
                             }}
-                            placeholder="Enter amount"
-                            className="w-full pl-8 pr-4 py-2.5 bg-[#f8fafc] border-2 border-slate-100 rounded-xl outline-none focus:border-[#00bd7f] focus:bg-white text-sm font-bold text-slate-700 transition-all placeholder:text-slate-300"
                           />
-                        </div>
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#013f77]"></div>
+                        </label>
                       </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+
+                      {/* Dynamic Amount Input */}
+                      {student.fees?.[type.name] !== undefined && (
+                        <div className="animate-in slide-in-from-top-2 duration-300">
+                          <div className="relative group">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold group-focus-within:text-[#013f77] transition-colors">৳</div>
+                            <input
+                              type="number"
+                              value={student.fees[type.name]}
+                              onChange={(e) => {
+                                const currentFees = { ...(student.fees || {}) };
+                                currentFees[type.name] = e.target.value;
+                                handleStudentChange(index, "fees", currentFees);
+                              }}
+                              placeholder="Enter amount"
+                              className="w-full pl-8 pr-4 py-2.5 bg-[#013f7724] border-2 border-slate-100 rounded-[6px] outline-none focus:border-[#013f77] focus:bg-white text-sm font-bold text-slate-700 transition-all placeholder:text-slate-300"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div></div>)}
+
+
 
               <div className="grid-cols-1 sm:col-span-2 lg:col-span-3 mt-[20px]">
                 <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
@@ -1218,7 +1228,7 @@ const CreateAdmission = () => {
                   rows="3"
                   value={student.note}
                   onChange={(e) => handleStudentChange(index, "note", e.target.value)}
-                  className="w-full px-4 py-3 bg-[#e6f4ef] dark:bg-[#e6f4ef] border-1 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+                  className="w-full px-4 py-3 bg-[#013f7724] dark:bg-[#013f7724] border-1 border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:ring-0.5 focus:ring-[#013f77] focus:border-[#013f77] transition-all"
                   placeholder="Enter full Detals in Student"
                 />
               </div>
@@ -1231,16 +1241,16 @@ const CreateAdmission = () => {
           <button
             type="button"
             onClick={handleReset}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-red-500 text-white rounded-[8px] hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-red-500 text-white rounded-[8px] hover:bg-red-700 transition-all shadow-sm cursor-pointer"
           >
             <X className="w-5 h-5" />
             Reset Form
           </button>
           <button
             type="submit"
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00bd7f] text-white rounded-[8px] hover:bg-[#009b68] transition-all shadow-sm cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#013f77] text-white rounded-[8px] hover:bg-[#013f77] transition-all shadow-sm cursor-pointer"
           >
-            <CheckCircle2 className="w-6 h-6" />
+            <CheckCircle2 className="w-5 h-5" />
             Save
           </button>
         </div>
@@ -1260,252 +1270,9 @@ const CreateAdmission = () => {
   );
 };
 
-// Voucher Modal Component
-const VoucherModal = ({ formData, onClose }) => {
-  const handlePrint = () => {
-    window.print();
-  };
-
-  // Extract all unique fee names present in the current students
-  const activeFeeNames = Array.from(
-    new Set(
-      formData.students.flatMap((s) => Object.keys(s.fees || {}))
-    )
-  );
-
-  // Grouped subtotals for the breakdown
-  const feeSubtotals = activeFeeNames.reduce((acc, feeName) => {
-    acc[feeName] = formData.students.reduce(
-      (sum, s) => sum + (Number(s.fees?.[feeName]) || 0),
-      0
-    );
-    return acc;
-  }, {});
-
-  const totalPayable = Object.values(feeSubtotals).reduce((a, b) => a + b, 0);
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-[2.5rem] shadow-2xl flex flex-col">
-        {/* Modal Header */}
-        <div className="p-6 border-b-2 border-slate-100 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#00bd7f] flex items-center justify-center">
-              <Printer className="w-6 h-6 text-white" />
-            </div>
-            <h2 className="text-xl font-black text-slate-800">
-              Admission Voucher
-            </h2>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-2 px-5 py-2.5 bg-[#00bd7f] text-white font-black rounded-xl hover:bg-[#009b68] transition-all shadow-lg shadow-emerald-500/20 shadow-[#00bd7f]/20 cursor-pointer"
-            >
-              <Printer className="w-4 h-4" />
-              Print Voucher
-            </button>
-            <button
-              onClick={onClose}
-              className="p-2.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Voucher Content */}
-        <div className="p-8 print-content" id="printable-voucher">
-          <style>
-            {`
-              @media print {
-                body * { visibility: hidden; }
-                #printable-voucher, #printable-voucher * { visibility: visible; }
-                #printable-voucher {
-                  position: absolute;
-                  left: 0;
-                  top: 0;
-                  width: 100%;
-                  margin: 0;
-                  padding: 20px;
-                }
-                .no-print { display: none !important; }
-              }
-            `}
-          </style>
-
-          {/* Institutional Header */}
-          <div className="flex justify-between items-start border-b-4 border-[#00bd7f] pb-8 mb-8">
-            <div>
-              <h1 className="text-4xl font-black text-[#00bd7f] tracking-tighter mb-2">
-                MADRASA MANAGEMENT SYSTEM
-              </h1>
-              <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">
-                Official Admission Receipt
-              </p>
-            </div>
-            <div className="text-right">
-              <div className="text-[#00bd7f] font-black text-lg mb-1">
-                VOICE NO: {Date.now().toString().slice(-6)}
-              </div>
-              <div className="text-slate-500 font-bold">
-                DATE: {formData.admissionDate}
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-12 mb-10">
-            {/* Guardian Info Card */}
-            <div className="space-y-4">
-              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b-2 border-slate-100 pb-2">
-                Guardian Details
-              </h3>
-              <div>
-                <p className="text-lg font-black text-slate-800">
-                  {formData.guardian.fatherName}
-                </p>
-                <p className="text-sm font-bold text-slate-500 italic">
-                  Father & Lead Guardian
-                </p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5" /> {formData.guardian.contact}
-                </p>
-                <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                  <MapPin className="w-3.5 h-3.5" /> {formData.guardian.address}
-                </p>
-              </div>
-            </div>
-
-            {/* Admission Summary */}
-            <div className="space-y-4">
-              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b-2 border-slate-100 pb-2">
-                Academic Summary
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-slate-50 rounded-2xl border-2 border-slate-100">
-                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1">
-                    Academic Year
-                  </p>
-                  <p className="text-sm font-black text-slate-800">
-                    {formData.academicYear}
-                  </p>
-                </div>
-                <div className="p-4 bg-slate-50 rounded-2xl border-2 border-slate-100">
-                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1">
-                    Students
-                  </p>
-                  <p className="text-sm font-black text-slate-800">
-                    {formData.students.length}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Students Table */}
-          <div className="mb-10">
-            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">
-              Enrolled Students
-            </h3>
-            <div className="border-2 border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 border-b-2 border-slate-200">
-                    <th className="p-4 text-xs font-black text-slate-500 uppercase">
-                      Student Name
-                    </th>
-                    <th className="p-4 text-xs font-black text-slate-500 uppercase">
-                      Class
-                    </th>
-                    <th className="p-4 text-xs font-black text-slate-500 uppercase">
-                      Fee Details
-                    </th>
-                    <th className="p-4 text-xs font-black text-slate-500 uppercase text-right">
-                      Subtotal
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y-2 divide-slate-100">
-                  {formData.students.map((s, idx) => {
-                    const studentTotal = Object.values(s.fees || {}).reduce((sum, val) => sum + (Number(val) || 0), 0);
-                    return (
-                      <tr key={idx}>
-                        <td className="p-4">
-                          <p className="font-black text-slate-800">
-                            {s.firstName}
-                          </p>
-                          <p className="text-[10px] font-bold text-slate-400">
-                            ID: {Date.now().toString().slice(-4)}
-                          </p>
-                        </td>
-                        <td className="p-4 font-bold text-slate-600">
-                          {s.class} ({s.section})
-                        </td>
-                        <td className="p-4">
-                          <div className="flex flex-wrap gap-2 text-[10px]">
-                            {Object.entries(s.fees || {}).map(([name, val]) => (
-                              <span key={name} className="px-2 py-1 bg-slate-50 rounded-lg font-bold text-slate-500 border border-slate-100">
-                                {name}: ৳{val}
-                              </span>
-                            ))}
-                          </div>
-                        </td>
-                        <td className="p-4 font-black text-slate-800 text-right">
-                          ৳{studentTotal}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Financial Breakdown */}
-          <div className="flex justify-end gap-12">
-            <div className="w-80 space-y-4">
-              {Object.entries(feeSubtotals).map(([feeName, amount]) => (
-                <div key={feeName} className="flex justify-between items-center text-slate-600 font-bold">
-                  <span>Subtotal {feeName}</span>
-                  <span>৳{amount}</span>
-                </div>
-              ))}
-              <div className="pt-4 border-t-2 border-[#00bd7f] flex justify-between items-center text-[#00bd7f]">
-                <span className="text-xl font-black">Total Payable</span>
-                <span className="text-2xl font-black">
-                  ৳{totalPayable}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Signatures */}
-          <div className="mt-20 flex justify-between">
-            <div className="text-center w-48 pt-4 border-t-2 border-slate-200">
-              <p className="text-sm font-black text-slate-800">Accountant</p>
-            </div>
-            <div className="text-center w-48 pt-4 border-t-2 border-slate-200">
-              <p className="text-sm font-black text-slate-800">
-                Guardian Signature
-              </p>
-            </div>
-            <div className="text-center w-48 pt-4 border-t-2 border-[#00bd7f]">
-              <p className="text-sm font-black text-[#00bd7f]">Principal</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Modal Footer */}
-        <div className="p-6 bg-slate-50 border-t-2 border-slate-100 text-center">
-          <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
-            Computer generated voucher - No seal required
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 export default CreateAdmission;
+
+
+
+
+

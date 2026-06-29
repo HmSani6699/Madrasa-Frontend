@@ -182,7 +182,7 @@ const StudentList = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#00bd7f]" />
+            <Users className="w-8 h-8 text-[#013f77]" />
             Student Management
           </h1>
 
@@ -197,22 +197,22 @@ const StudentList = () => {
               placeholder="Search by Name or Student ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
+              className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
             />
           </div>
 
           <div className="relative">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
+              className=" px-4 py-2 bg-[#fff]  rounded-[8px] border border-slate-200 cursor-pointer flex items-center gap-2"
             >
               <Filter className="h-4 w-4" />  Filter
             </button>
 
             {
-              isFilterOpen && <div className="absolute top-[50px] right-0 z-[100]  whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full z-20">
+              isFilterOpen && <div className="absolute top-[50px] right-0 z-[100] bg-[#f2f2f3] whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full z-20">
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 ">
                   <SelectInputField
                     title={'Class'}
                     options={[{ value: "all", label: "All Classes" }, ...classes.map(c => ({ value: c._id, label: c.name }))]}
@@ -231,14 +231,14 @@ const StudentList = () => {
                 <div className="flex items-end justify-end gap-4 mt-2.5">
                   <button
                     onClick={resetFilters}
-                    className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer"
+                    className=" px-4 py-2 bg-red-200  rounded-[8px] cursor-pointer text-red-700"
                   >
-                    Reset
+                    Cancel
                   </button>
 
                   <button
                     onClick={applyFilters}
-                    className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
+                    className=" px-4 py-2 bg-[#013f77] text-white rounded-[8px] cursor-pointer"
                   >
                     Apply
                   </button>
@@ -251,7 +251,7 @@ const StudentList = () => {
             <Link to="/admin/admission/create" className="w-full sm:w-auto">
               <button
 
-                className="w-full px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
+                className="w-full px-4 py-2 bg-[#013f77] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Add Student
@@ -298,13 +298,14 @@ const StudentList = () => {
             key={idx}
             className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden"
           >
-            <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#013f7724] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
 
             <div className="z-[10]">
-              <p className="text-xs font-bold text-slate-500 uppercase mb-1">
+              <p className="text-2xl font-black text-slate-800 mb-1">{stat.value}</p>
+              <p className="text-xs font-bold text-slate-500 uppercase ">
                 {stat.label}
               </p>
-              <p className="text-2xl font-black text-slate-800">{stat.value}</p>
+              
             </div>
             <div
               className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center`}
@@ -328,11 +329,11 @@ const StudentList = () => {
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto border border-gray-200 rounded-[8px] ">
+            <div className="overflow-x-auto border border-gray-200 rounded-t-[8px] ">
 
 
               <table className="w-full">
-                <thead className="bg-[#e6f4ef]">
+                <thead className="bg-[#013f7724]">
                   <tr className="whitespace-nowrap">
                     <th className="px-10 py-3.5 text-left text-[12px] font-black">
                       Student ID
