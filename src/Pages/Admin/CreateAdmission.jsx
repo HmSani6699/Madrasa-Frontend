@@ -199,7 +199,7 @@ const CreateAdmission = () => {
   };
 
   const [formData, setFormData] = useState({
-    academicYear: "2026",
+    academicYear: "2025-2026",
     admissionDate: new Date().toISOString().split("T")[0],
     position: "New",
     students: [{ ...initialStudent }],

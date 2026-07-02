@@ -45,8 +45,8 @@ const RecentTenants = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {recentTenants.map((tenant) => (
-              <tr key={tenant.id} className="hover:bg-gray-50/50 transition-colors group whitespace-nowrap">
+            {recentTenants.map((tenant, i) => (
+              <tr key={i} className="hover:bg-gray-50/50 transition-colors group whitespace-nowrap">
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 text-primary flex items-center justify-center font-bold text-sm">

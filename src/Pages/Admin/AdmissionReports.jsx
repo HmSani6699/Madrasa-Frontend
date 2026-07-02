@@ -40,7 +40,7 @@ const AdmissionReports = () => {
   const itemsPerPage = 10;
   const [filters, setFilters] = useState({
     class_id: "All",
-    academicYear: "2025-2026",
+    academicYear: "All",
     gender: "All",
     bloodGroup: "All",
     religion: "All",
@@ -230,7 +230,7 @@ const AdmissionReports = () => {
                           title={'Academic Year'}
                           value={filters.academicYear}
                           setValue={(val) => setFilters({ ...filters, academicYear: val })}
-                          options={[{ label: "2025-2026", value: "2025-2026" }, { label: "2026-2027", value: "2026-2027" }]}
+                          options={[{ label: "All Years", value: "All" }, { label: "2025-2026", value: "2025-2026" }, { label: "2026-2027", value: "2026-2027" }]}
                         />
                       </div>
                       <div>
@@ -291,7 +291,7 @@ const AdmissionReports = () => {
                     <div className="flex justify-end gap-2 mt-6">
                       <button
                         onClick={() => {
-                          setFilters({ class_id: "All", academicYear: "2025-2026", gender: "All", bloodGroup: "All", religion: "All", startDate: "", endDate: "" });
+                          setFilters({ class_id: "All", academicYear: "All", gender: "All", bloodGroup: "All", religion: "All", startDate: "", endDate: "" });
                           setShowFilter(false);
                           setCurrentPage(1);
                           fetchAdmissions();

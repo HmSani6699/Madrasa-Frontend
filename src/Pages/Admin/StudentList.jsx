@@ -499,7 +499,7 @@ const StudentList = () => {
                       key={i + 1}
                       onClick={() => setCurrentPage(i + 1)}
                       className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
-                        ? "bg-[#00315e] border-[#00315e] text-white shadow-lg shadow-blue-200"
+                        ? "bg-[#00315e] border-[#00315e] text-white "
                         : "bg-white border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600"
                         }`}
                     >
