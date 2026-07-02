@@ -32,7 +32,28 @@ const OnlineAdmissionList = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [classes, setClasses] = useState([]);
+  const [classesMap, setClassesMap] = useState({});
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const res = await axiosInstance.get("/v1/classes");
+        if (res.data.success) {
+          const map = {};
+          res.data.data.forEach(c => {
+            map[c._id] = c.name;
+          });
+          setClassesMap(map);
+          setClasses(res.data.data.map(c => ({ label: c.name, value: c._id })));
+        }
+      } catch (err) {
+        console.error("Error fetching classes:", err);
+      }
+    };
+    fetchClasses();
+  }, []);
 
   const fetchApplications = async () => {
     setLoading(true);
@@ -135,7 +156,7 @@ const OnlineAdmissionList = () => {
 
 
         <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-          <FileText className="w-8 h-8 text-[#00bd7f]" />
+          <FileText className="w-8 h-8 text-[#00315e]" />
           Online Admission Applications
         </h1>
 
@@ -149,7 +170,7 @@ const OnlineAdmissionList = () => {
               placeholder="Search by ID, Name or Phone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
+              className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 transition-all"
             />
           </div>
 
@@ -157,7 +178,7 @@ const OnlineAdmissionList = () => {
           <div className="relative">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
+              className=" px-4 py-2 bg-[#fff]  rounded-[8px] cursor-pointer flex items-center gap-2"
             >
               <Filter className="h-4 w-4" />  Filter
             </button>
@@ -167,10 +188,15 @@ const OnlineAdmissionList = () => {
 
                 <div className="flex flex-col gap-4">
                   {/* Status Filter */}
-                  <SelectInputField title={"Class"} options={[
-                    { value: "Class One" },
-                    { value: "Class Two" }
-                  ]} />
+                  <SelectInputField
+                    title={"Class"}
+                    value={classFilter}
+                    setValue={setClassFilter}
+                    options={[
+                      { label: "All Classes", value: "all" },
+                      ...classes
+                    ]}
+                  />
                   <SelectInputField title={"Group"} options={[
                     { value: "A" },
                     { value: "B" }
@@ -185,14 +211,14 @@ const OnlineAdmissionList = () => {
                 <div className="flex items-end justify-end gap-4 mt-2.5">
                   <button
                     onClick={() => setIsFilterOpen(false)}
-                    className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer"
+                    className=" px-4 py-2 bg-[#fff]  rounded-[8px] cursor-pointer"
                   >
                     Cancel
                   </button>
 
                   <button
 
-                    className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
+                    className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
                   >
                     Apply
                   </button>
@@ -206,7 +232,7 @@ const OnlineAdmissionList = () => {
             <Link to="/admin/admission/create" className="w-full sm:w-auto">
               <button
 
-                className="w-full px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
+                className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Add Student
@@ -222,15 +248,16 @@ const OnlineAdmissionList = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-[10px] border-1 border-gray-100 shadow-lg p-6 relative overflow-hidden">
-          <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+        <div className="bg-white rounded-[10px]  shadow-lg p-6 relative overflow-hidden">
+          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
           <div className="flex items-center justify-between relative z-[10]">
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-1">
-                Total
-              </p>
+
               <p className="text-3xl font-black text-slate-900 ">
                 {applications.length}
+              </p>
+              <p className="text-xs font-bold text-slate-500 uppercase mt-1">
+                Total
               </p>
             </div>
             <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
@@ -239,15 +266,16 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-[10px] border-1 border-gray-100 shadow-lg p-6 relative overflow-hidden">
-          <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+        <div className="bg-white rounded-[10px]  shadow-lg p-6 relative overflow-hidden">
+          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
           <div className="flex items-center justify-between relative z-[10]">
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-1">
-                Pending
-              </p>
+
               <p className="text-3xl font-black text-yellow-600">
                 {applications.filter((a) => a.status === "pending").length}
+              </p>
+              <p className="text-xs font-bold text-slate-500 uppercase mt-1">
+                Pending
               </p>
             </div>
             <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-xl flex items-center justify-center">
@@ -256,15 +284,16 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-[10px] border-1 border-gray-100 shadow-lg p-6 relative overflow-hidden">
-          <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+        <div className="bg-white rounded-[10px]  shadow-lg p-6 relative overflow-hidden">
+          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
           <div className="flex items-center justify-between relative z-[10]">
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-1">
-                Approved
-              </p>
+
               <p className="text-3xl font-black text-green-600">
                 {applications.filter((a) => a.status === "approved").length}
+              </p>
+              <p className="text-xs font-bold text-slate-500 uppercase mt-1">
+                Approved
               </p>
             </div>
             <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
@@ -273,15 +302,16 @@ const OnlineAdmissionList = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-[10px] border-1 border-gray-100 shadow-lg p-6 relative overflow-hidden">
-          <div className="absolute -top-[50%] -left-[50%] h-[200px] w-[200px] bg-emerald-50 rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+        <div className="bg-white rounded-[10px]  shadow-lg p-6 relative overflow-hidden">
+          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
           <div className="flex items-center justify-between relative z-[10]">
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase mb-1">
-                Rejected
-              </p>
+
               <p className="text-3xl font-black text-red-600">
                 {applications.filter((a) => a.status === "rejected").length}
+              </p>
+              <p className="text-xs font-bold text-slate-500 uppercase mt-1">
+                Rejected
               </p>
             </div>
             <div className="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-xl flex items-center justify-center">
@@ -298,7 +328,7 @@ const OnlineAdmissionList = () => {
       <div className="bg-white  rounded-[10px] border border-gray-100 shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className=" bg-[#e6f4ef]  border-gray-100 dark:border-slate-700">
+            <thead className="bg-[#00315e]/5 border-gray-100 dark:border-slate-700">
               <tr className="cursor-pointer whitespace-nowrap">
                 <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
                   Student
@@ -310,7 +340,7 @@ const OnlineAdmissionList = () => {
                   Guardian
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
-                  Contact
+                  Contact & Address
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
                   Applied Date
@@ -327,62 +357,73 @@ const OnlineAdmissionList = () => {
               {filteredApplications.map((app) => (
                 <tr
                   key={app._id || app.id}
-                  className=" dark:hover:bg-gray-100 transition-colors cursor-pointer"
+                  className="border-b border-slate-100 last:border-0 dark:hover:bg-gray-100 transition-colors cursor-pointer"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[#e6f4ef] text-primary rounded-full flex items-center justify-center font-black">
-                        <img
-                          src={app.students?.[0]?.photo || app.student?.photo || ""}
-                          alt={app.students?.[0]?.name || app.student?.firstName || "N/A"}
-                          className="w-14 h-14 object-cover"
-                        />
-                      </div>
-                      <div>
-
-                        <p className="font-bold">
-                          {app.students?.[0]?.name || app.student?.firstName || "N/A"}
-                          {app.students?.length > 1 && <span className="text-xs text-primary ml-1">(+{app.students.length - 1} more)</span>}
-                        </p>
-                        <p className="text-xs text-slate-500">
-                          {app.students?.[0]?.gender || app.student?.gender || ""}
-                        </p>
-                      </div>
+                    <div className="flex flex-col gap-4">
+                      {(app.students || (app.student ? [app.student] : [])).filter(Boolean).map((student, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-slate-50 text-[#00315e] rounded-full flex items-center justify-center font-black overflow-hidden border border-slate-200">
+                            <img
+                              src={student.photo || ""}
+                              alt={student.name || student.firstName || "N/A"}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800">
+                              {student.name || student.firstName || "N/A"}
+                            </p>
+                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                              {student.gender || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-lg">
-                      {app.students?.[0]?.appliedClass || app.student?.class || "N/A"}
-                    </span>
+                  <td className="px-6 py-4 whitespace-nowrap align-top pt-5">
+                    <div className="flex flex-col gap-4">
+                      {(app.students || (app.student ? [app.student] : [])).filter(Boolean).map((student, idx) => (
+                        <div key={idx} className="h-10 flex items-center">
+                          <span className="inline-block px-3 py-1 bg-[#00315e]/10 text-[#00315e] text-xs font-bold rounded-lg border border-[#00315e]/20">
+                            {classesMap[student.appliedClass] || classesMap[student.class] || student.appliedClass || student.class || "N/A"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="font-bold">
+                  <td className="px-6 py-4 whitespace-nowrap align-top pt-[26px]">
+                    <p className="font-bold text-slate-800">
                       {app.guardian?.fatherName || "N/A"}
                     </p>
                     <p className="text-xs text-slate-500 whitespace-nowrap">
                       {app.guardian?.fatherOccupation || "Guardian"}
                     </p>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="space-y-1">
+                  <td className="px-6 py-4 whitespace-nowrap align-top pt-[26px]">
+                    <div className="space-y-2">
                       <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
-                        <Phone className="w-3 h-3" />
+                        <Phone className="w-3 h-3 text-[#00315e]" />
                         {app.guardian?.fatherContact || app.student?.phone || "N/A"}
                       </p>
-
+                      <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1 max-w-[200px]" title={app.guardian?.address}>
+                        <MapPin className="w-3 h-3 text-[#00bd7f] shrink-0" />
+                        <span className="truncate">{app.guardian?.address || "N/A"}</span>
+                      </p>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap align-top pt-[26px]">
                     <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {app.created_at ? new Date(app.created_at).toLocaleDateString() : (app.applicationDate || "N/A")}
                     </p>
                   </td>
-                  <td className="px-6 py-4">{getStatusBadge(app.status)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                  <td className="px-6 py-4 align-top pt-[26px]">{getStatusBadge(app.status)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center align-top pt-5">
                     <button
                       onClick={() => setSelectedApplication(app)}
-                      className="inline-flex items-center gap-2 bg-[#00bd7f] text-white px-5 py-2 rounded-lg hover:bg-[#009b68] transition-all"
+                      className="inline-flex items-center gap-2 bg-[#00315e] text-white px-5 py-2 rounded-lg  transition-all cursor-pointer"
                     >
                       <Eye className="w-3 h-3" />
                       View Details
@@ -536,7 +577,7 @@ const OnlineAdmissionList = () => {
                       </div>
                       <div>
                         <label className="text-xs font-bold text-slate-500 uppercase block mb-1">Applied Class</label>
-                        <p className="font-bold">{student.appliedClass || student.class || "N/A"}</p>
+                        <p className="font-bold">{classesMap[student.appliedClass] || classesMap[student.class] || student.appliedClass || student.class || "N/A"}</p>
                       </div>
                     </div>
                   ))}

@@ -137,7 +137,7 @@ const VoucherModal = ({ formData, onClose }) => {
                 {/* Modal Header */}
                 <div className="p-6 border-b-2 border-slate-100 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#013f77] flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-xl bg-[#00315e] flex items-center justify-center">
                             <Printer className="w-6 h-6 text-white" />
                         </div>
                         <h2 className="text-xl font-black text-slate-800">

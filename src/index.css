@@ -11,8 +11,8 @@
   --color-border: #f1f5f9; /* Slate 100 - Extra soft border */
   --color-fg-main: #1e293b; /* Slate 800 */
   --color-fg-muted: #334155; /* Slate 700 - Even better contrast for Light Mode */
-  --color-brand-main: #013f77;
-  --color-brand-main-alpha: #013f7724;
+  --color-brand-main: #00315e;
+  --color-brand-main-alpha: #00315e24;
   --font-sans: 'Outfit', sans-serif;
 }
 
@@ -50,7 +50,8 @@
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -104,5 +105,5 @@
 
 
 
-/* mian #013f77 */
-/* main opacity #013f7724 */
+/* mian #00315e */
+/* main opacity #00315e24 */

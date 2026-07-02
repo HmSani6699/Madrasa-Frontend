@@ -180,7 +180,7 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
   const sections = getLinks();
 
   const sidebarClasses = `
-    fixed inset-y-0 left-0 z-50 w-72 bg-[#013f77] text-white border-r border-border flex flex-col transform transition-all duration-300 ease-in-out md:translate-x-0
+    fixed inset-y-0 left-0 z-50 w-72 bg-[#00315e] text-white border-r border-border flex flex-col transform transition-all duration-300 ease-in-out md:translate-x-0
     ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
   `;
 

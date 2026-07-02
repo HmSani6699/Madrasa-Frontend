@@ -39,6 +39,8 @@ const StudentList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [classFilter, setClassFilter] = useState("all");
   const [sectionFilter, setSectionFilter] = useState("all");
+  const [academicYearFilter, setAcademicYearFilter] = useState("all");
+  const [genderFilter, setGenderFilter] = useState("all");
   const [openMenuId, setOpenMenuId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -56,7 +58,9 @@ const StudentList = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [tempFilters, setTempFilters] = useState({
     class_id: "all",
-    section_id: "all"
+    section_id: "all",
+    academicYear: "all",
+    gender: "all"
   });
   const [filterSections, setFilterSections] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
@@ -81,8 +85,10 @@ const StudentList = () => {
     try {
       const response = await axiosInstance.get("/v1/students", {
         params: {
-          class_id: classFilter,
-          section_id: sectionFilter,
+          class_id: classFilter === "all" ? "" : classFilter,
+          section_id: sectionFilter === "all" ? "" : sectionFilter,
+          academicYear: academicYearFilter === "all" ? "" : academicYearFilter,
+          gender: genderFilter === "all" ? "" : genderFilter,
           search: searchTerm,
           page: currentPage,
           limit: itemsPerPage
@@ -119,7 +125,7 @@ const StudentList = () => {
 
   useEffect(() => {
     fetchStudents();
-  }, [classFilter, sectionFilter, searchTerm, currentPage]);
+  }, [classFilter, sectionFilter, academicYearFilter, genderFilter, searchTerm, currentPage]);
 
   const handleClickOutside = () => setOpenMenuId(null);
   useEffect(() => {
@@ -147,14 +153,18 @@ const StudentList = () => {
   const applyFilters = () => {
     setClassFilter(tempFilters.class_id);
     setSectionFilter(tempFilters.section_id);
+    setAcademicYearFilter(tempFilters.academicYear);
+    setGenderFilter(tempFilters.gender);
     setIsFilterOpen(false);
     setCurrentPage(1);
   };
 
   const resetFilters = () => {
-    setTempFilters({ class_id: "all", section_id: "all" });
+    setTempFilters({ class_id: "all", section_id: "all", academicYear: "all", gender: "all" });
     setClassFilter("all");
     setSectionFilter("all");
+    setAcademicYearFilter("all");
+    setGenderFilter("all");
     setIsFilterOpen(false);
     setCurrentPage(1);
   };
@@ -182,7 +192,7 @@ const StudentList = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#013f77]" />
+            <Users className="w-8 h-8 text-[#00315e]" />
             Student Management
           </h1>
 
@@ -197,7 +207,7 @@ const StudentList = () => {
               placeholder="Search by Name or Student ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
+              className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 transition-all"
             />
           </div>
 
@@ -210,9 +220,21 @@ const StudentList = () => {
             </button>
 
             {
-              isFilterOpen && <div className="absolute top-[50px] right-0 z-[100] bg-[#f2f2f3] whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full z-20">
+              isFilterOpen && <div className="absolute top-[50px] right-0 z-[100] bg-[#f2f2f3] whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[400px] w-full z-20">
 
-                <div className="flex flex-col gap-4 ">
+                <div className="grid grid-cols-2 gap-4">
+                  <SelectInputField
+                    title={'Academic Year'}
+                    options={[{ value: "all", label: "All Years" }, { value: "2025-2026", label: "2025-2026" }, { value: "2026-2027", label: "2026-2027" }]}
+                    value={tempFilters.academicYear}
+                    setValue={(val) => setTempFilters({ ...tempFilters, academicYear: val })}
+                  />
+                  <SelectInputField
+                    title={'Gender'}
+                    options={[{ value: "all", label: "All Genders" }, { value: "Male", label: "Male" }, { value: "Female", label: "Female" }, { value: "Other", label: "Other" }]}
+                    value={tempFilters.gender}
+                    setValue={(val) => setTempFilters({ ...tempFilters, gender: val })}
+                  />
                   <SelectInputField
                     title={'Class'}
                     options={[{ value: "all", label: "All Classes" }, ...classes.map(c => ({ value: c._id, label: c.name }))]}
@@ -226,7 +248,6 @@ const StudentList = () => {
                     setValue={(val) => setTempFilters({ ...tempFilters, section_id: val })}
                     disabled={tempFilters.class_id === "all"}
                   />
-
                 </div>
                 <div className="flex items-end justify-end gap-4 mt-2.5">
                   <button
@@ -238,7 +259,7 @@ const StudentList = () => {
 
                   <button
                     onClick={applyFilters}
-                    className=" px-4 py-2 bg-[#013f77] text-white rounded-[8px] cursor-pointer"
+                    className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
                   >
                     Apply
                   </button>
@@ -251,7 +272,7 @@ const StudentList = () => {
             <Link to="/admin/admission/create" className="w-full sm:w-auto">
               <button
 
-                className="w-full px-4 py-2 bg-[#013f77] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
+                className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Add Student
@@ -283,8 +304,8 @@ const StudentList = () => {
             label: "Active",
             value: students.filter((s) => s.status === "active").length,
             icon: CheckCircle,
-            color: "text-emerald-600",
-            bg: "bg-emerald-100",
+            color: "text-blue-600",
+            bg: "bg-blue-100",
           },
           {
             label: "Inactive",
@@ -298,14 +319,14 @@ const StudentList = () => {
             key={idx}
             className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden"
           >
-            <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#013f7724] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
 
             <div className="z-[10]">
               <p className="text-2xl font-black text-slate-800 mb-1">{stat.value}</p>
               <p className="text-xs font-bold text-slate-500 uppercase ">
                 {stat.label}
               </p>
-              
+
             </div>
             <div
               className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center`}
@@ -321,19 +342,19 @@ const StudentList = () => {
 
 
       {/* Table Container */}
-      <div className="bg-white rounded-[10px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative mt-8">
+      <div className="bg-white rounded-[10px]  shadow-xl shadow-slate-100/50 overflow-hidden relative mt-8">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading students...</p>
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto border border-gray-200 rounded-t-[8px] ">
+            <div className="overflow-x-auto rounded-t-[8px] ">
 
 
               <table className="w-full">
-                <thead className="bg-[#013f7724]">
+                <thead className="bg-[#00315e24]">
                   <tr className="whitespace-nowrap">
                     <th className="px-10 py-3.5 text-left text-[12px] font-black">
                       Student ID
@@ -365,13 +386,13 @@ const StudentList = () => {
                       className="group hover:bg-amber-50/10 transition-all duration-300"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm font-black text-emerald-700">
+                        <span className="text-sm font-black ">
                           {student.student_id || student.id}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full border-2 border-emerald-100 overflow-hidden shadow-sm">
+                          <div className="w-10 h-10 rounded-full border-2 border-blue-100 overflow-hidden shadow-sm">
                             <img
                               src={student.photo}
                               alt={student.firstName}
@@ -393,7 +414,7 @@ const StudentList = () => {
                           <p className="text-sm font-bold text-slate-700">
                             {student.classInfo?.name || "N/A"} ({student.sectionInfo?.name || "N/A"})
                           </p>
-                          <p className="text-xs font-black text-emerald-600">
+                          <p className="text-xs font-black text-blue-[#00315e]">
                             Roll: {student.roll_number || student.rollNo}
                           </p>
                         </div>
@@ -406,11 +427,11 @@ const StudentList = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="space-y-1 text-xs font-bold text-slate-600">
                           <div className="flex items-center gap-1.5">
-                            <Phone className="w-3.5 h-3.5 text-emerald-500" />
+                            <Phone className="w-3.5 h-3.5 text-blue-500" />
                             {student?.guardian?.contact}
                           </div>
                           {/* <div className="flex items-center gap-1.5">
-                        <Mail className="w-3.5 h-3.5 text-emerald-500" />
+                        <Mail className="w-3.5 h-3.5 text-blue-500" />
                         {student.email}
                       </div> */}
                         </div>
@@ -418,13 +439,13 @@ const StudentList = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2 ${student.status === "active"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                            ? "bg-blue-50 text-blue-700 border-blue-100"
                             : "bg-rose-50 text-rose-700 border-rose-100"
                             }`}
                         >
                           <div
                             className={`w-1.5 h-1.5 rounded-full ${student.status === "active"
-                              ? "bg-emerald-500"
+                              ? "bg-blue-500"
                               : "bg-rose-500"
                               }`}
                           />
@@ -434,10 +455,10 @@ const StudentList = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-4">
                           <button className="cursor-pointer" onClick={() => handleAction("View Profile", student)}>
-                            <Eye className="w-5 h-5 text-[#00bd7f]" />
+                            <Eye className="w-5 h-5 text-[#00315e]" />
                           </button>
                           <button className="cursor-pointer" onClick={() => handleAction("Edit Info", student)}>
-                            <SquarePen className="w-4 h-4 text-[#00bd7f]" />
+                            <SquarePen className="w-4 h-4 text-[#00315e]" />
                           </button>
                           <button className="cursor-pointer" onClick={() => handleAction("Delete Record", student)}>
                             <Trash2 className="w-4 h-4 text-red-500" />
@@ -468,7 +489,7 @@ const StudentList = () => {
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-blue-500 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -478,8 +499,8 @@ const StudentList = () => {
                       key={i + 1}
                       onClick={() => setCurrentPage(i + 1)}
                       className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
-                        ? "bg-[#00bd7f] border-[#00bd7f] text-white shadow-lg shadow-emerald-200"
-                        : "bg-white border-slate-200 text-slate-600 hover:border-emerald-500 hover:text-emerald-600"
+                        ? "bg-[#00315e] border-[#00315e] text-white shadow-lg shadow-blue-200"
+                        : "bg-white border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600"
                         }`}
                     >
                       {i + 1}
@@ -489,7 +510,7 @@ const StudentList = () => {
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-emerald-500 hover:text-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-blue-500 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -535,7 +556,7 @@ const StudentList = () => {
       {showStatusToast && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] animate-in slide-in-from-bottom-10 duration-500">
           <div className="bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
-            <div className="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
               <CheckCircle className="w-4 h-4 text-white" />
             </div>
             <p className="text-sm font-bold">{showStatusToast}</p>
@@ -628,7 +649,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                 required
                 value={formData.firstName}
                 onChange={(e) => handleFieldChange("firstName", e.target.value)}
-                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 transition-all"
                 placeholder="Enter student name"
               />
             </div>
@@ -641,7 +662,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                 required
                 value={formData.gender}
                 onChange={(e) => handleFieldChange("gender", e.target.value)}
-                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 transition-all"
               >
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -658,7 +679,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                 required
                 value={formData.dateOfBirth}
                 onChange={(e) => handleFieldChange("dateOfBirth", e.target.value)}
-                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 transition-all"
               />
             </div>
 
@@ -669,7 +690,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
               <select
                 value={formData.bloodGroup}
                 onChange={(e) => handleFieldChange("bloodGroup", e.target.value)}
-                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 transition-all"
               >
                 <option value="">Select Blood Group</option>
                 {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(bg => (
@@ -686,7 +707,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                 required
                 value={formData.class_id}
                 onChange={(e) => handleFieldChange("class_id", e.target.value)}
-                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 transition-all"
               >
                 <option value="">Select Class</option>
                 {classes.map((cls) => (
@@ -702,7 +723,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
               <select
                 value={formData.section_id}
                 onChange={(e) => handleFieldChange("section_id", e.target.value)}
-                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 transition-all"
+                className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 transition-all"
               >
                 <option value="">Select Section</option>
                 {allSections
@@ -715,20 +736,20 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
 
             {/* Photo Upload */}
             <div className="col-span-full">
-              <div className="flex items-center gap-6 p-4 bg-emerald-50/50 rounded-2xl border-2 border-emerald-100">
+              <div className="flex items-center gap-6 p-4 bg-blue-50/50 rounded-2xl border-2 border-blue-100">
                 <div className="relative">
                   {formData.photo ? (
                     <img
                       src={formData.photo}
                       alt="Student"
-                      className="w-20 h-20 rounded-xl object-cover border-2 border-emerald-200 shadow-sm"
+                      className="w-20 h-20 rounded-xl object-cover border-2 border-blue-200 shadow-sm"
                     />
                   ) : (
-                    <div className="w-20 h-20 rounded-xl bg-emerald-100 flex items-center justify-center border-2 border-emerald-200 border-dashed">
-                      <ImageIcon className="w-8 h-8 text-emerald-400" />
+                    <div className="w-20 h-20 rounded-xl bg-blue-100 flex items-center justify-center border-2 border-blue-200 border-dashed">
+                      <ImageIcon className="w-8 h-8 text-blue-400" />
                     </div>
                   )}
-                  <label className="absolute -bottom-2 -right-2 p-1.5 bg-emerald-600 text-white rounded-lg shadow-lg cursor-pointer hover:bg-emerald-700 transition-colors">
+                  <label className="absolute -bottom-2 -right-2 p-1.5 bg-blue-600 text-white rounded-lg shadow-lg cursor-pointer hover:bg-blue-700 transition-colors">
                     <Upload className="w-3.5 h-3.5" />
                     <input
                       type="file"
@@ -738,10 +759,10 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                   </label>
                 </div>
                 <div>
-                  <p className="font-bold text-emerald-900 text-sm">
+                  <p className="font-bold text-blue-900 text-sm">
                     Student Photo
                   </p>
-                  <p className="text-xs text-emerald-600 font-medium mt-0.5">
+                  <p className="text-xs text-blue-600 font-medium mt-0.5">
                     Update student's passport size photo
                   </p>
                 </div>
@@ -751,7 +772,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
 
           {/* Fee Setup Section */}
           <div className="space-y-6">
-            <div className="flex items-center gap-2 text-emerald-700 pb-2 border-b-2 border-slate-100">
+            <div className="flex items-center gap-2 text-blue-700 pb-2 border-b-2 border-slate-100">
               <Calculator className="w-5 h-5" />
               <h4 className="font-black">Fee Setup (ফি সেটআপ)</h4>
             </div>
@@ -760,8 +781,8 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                 <div key={i} className="p-4 rounded-2xl border-2 border-slate-100 bg-white shadow-sm">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                        <Home className="w-4 h-4 text-[#00bd7f]" />
+                      <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                        <Home className="w-4 h-4 text-[#00315e]" />
                       </div>
                       <span className="font-bold text-sm text-slate-700">{type?.name}</span>
                     </div>
@@ -780,7 +801,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                           handleFieldChange("fees", currentFees);
                         }}
                       />
-                      <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#00bd7f]"></div>
+                      <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#00315e]"></div>
                     </label>
                   </div>
 
@@ -796,7 +817,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                           handleFieldChange("fees", currentFees);
                         }}
                         placeholder="0.00"
-                        className="w-full pl-7 pr-3 py-2 bg-[#f8fafc] border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-[#00bd7f]"
+                        className="w-full pl-7 pr-3 py-2 bg-[#f8fafc] border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-[#00315e]"
                       />
                     </div>
                   )}
@@ -814,7 +835,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
               rows="3"
               value={formData.note}
               onChange={(e) => handleFieldChange("note", e.target.value)}
-              className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-emerald-500 transition-all placeholder:text-slate-400"
+              className="w-full px-4 py-3 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-xl outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-400"
               placeholder="Enter internal details about the student..."
             />
           </div>
@@ -830,7 +851,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
             <button
               onClick={handleUpdate}
               disabled={loading}
-              className="px-8 py-2.5 bg-[#00bd7f] text-white text-sm font-black rounded-xl shadow-lg shadow-emerald-100 disabled:opacity-50 hover:bg-[#009b68] transition-all"
+              className="px-8 py-2.5 bg-[#00315e] text-white text-sm font-black rounded-xl shadow-lg shadow-blue-100 disabled:opacity-50 hover:bg-[#009b68] transition-all"
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>
@@ -926,7 +947,7 @@ const IDCardModal = ({ student, onClose }) => (
       </div>
       <div className="p-8 flex flex-col items-center">
         {/* ID Card UI */}
-        <div className="w-full aspect-[1/1.6] bg-gradient-to-br from-emerald-500 to-teal-700 rounded-2xl shadow-xl p-6 text-white flex flex-col items-center relative overflow-hidden">
+        <div className="w-full aspect-[1/1.6] bg-gradient-to-br from-blue-500 to-teal-700 rounded-2xl shadow-xl p-6 text-white flex flex-col items-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16" />
           <div className="w-24 h-24 rounded-full border-4 border-white/30 shadow-lg overflow-hidden mb-4 relative z-10">
             <img
@@ -971,7 +992,7 @@ const IDCardModal = ({ student, onClose }) => (
         <div className="w-full mt-6">
           <button
             onClick={() => alert("Downloading ID Card...")}
-            className="w-full flex items-center justify-center gap-2 py-3 bg-[#00bd7f] text-white font-black rounded-xl shadow-lg shadow-emerald-100 hover:scale-[1.02] transition-all"
+            className="w-full flex items-center justify-center gap-2 py-3 bg-[#00315e] text-white font-black rounded-xl shadow-lg shadow-blue-100 hover:scale-[1.02] transition-all"
           >
             <Download className="w-4 h-4" />
             Download PDF

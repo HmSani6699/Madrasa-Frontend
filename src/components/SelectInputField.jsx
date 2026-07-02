@@ -19,7 +19,7 @@ const SelectInputField = ({
         required={required || false}
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className={`w-full px-4 py-2 ${bgColor || "bg-[#fff] dark:bg-[#fff]"} border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:outline-none focus:ring-0.5 focus:ring-[#013f77] focus:border-[#013f77] transition-all`}
+        className={`w-full px-4 py-2 ${bgColor || "bg-[#fff] dark:bg-[#fff]"} border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[6px] outline-none focus:outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all`}
       >
         <option value="">--Select--</option>
 
