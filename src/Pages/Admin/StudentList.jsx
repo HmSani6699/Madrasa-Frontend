@@ -392,7 +392,7 @@ const StudentList = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full border-2 border-blue-100 overflow-hidden shadow-sm">
+                          <div className="w-10 h-10 rounded-full  overflow-hidden shadow-sm">
                             <img
                               src={student.photo}
                               alt={student.firstName}
@@ -499,8 +499,8 @@ const StudentList = () => {
                       key={i + 1}
                       onClick={() => setCurrentPage(i + 1)}
                       className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
-                        ? "bg-[#00315e] border-[#00315e] text-white "
-                        : "bg-white border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600"
+                        ? "bg-[#00315e] border-[#00315e] text-white cursor-pointer"
+                        : "bg-white border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600 cursor-pointer"
                         }`}
                     >
                       {i + 1}
