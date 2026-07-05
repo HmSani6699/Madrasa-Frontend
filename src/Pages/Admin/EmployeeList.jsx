@@ -40,6 +40,7 @@ import {
   ShieldAlert,
   Save,
   ChevronDown,
+  SquarePen,
 } from "lucide-react";
 import SelectInputField from "../../components/SelectInputField";
 import axiosInstance from "../../api/axiosInstance";
@@ -49,8 +50,8 @@ const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deptFilter, setDeptFilter] = useState("all");
-   const [searchTerm, setSearchTerm] = useState("");
-  
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [openMenuId, setOpenMenuId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -81,7 +82,7 @@ const EmployeeList = () => {
     fetchEmployees();
   }, [deptFilter, searchTerm]);
 
- 
+
 
   const handleClickOutside = () => setOpenMenuId(null);
   useEffect(() => {
@@ -148,14 +149,14 @@ const EmployeeList = () => {
 
   const handleDelete = async () => {
     try {
-        const response = await axiosInstance.delete(`/v1/staff/${deleteEmp._id}`);
-        if(response.data.success) {
-            setEmployees((prev) => prev.filter((p) => p._id !== deleteEmp._id));
-            setShowToast(`${deleteEmp.name} removed from system.`);
-        }
+      const response = await axiosInstance.delete(`/v1/staff/${deleteEmp._id}`);
+      if (response.data.success) {
+        setEmployees((prev) => prev.filter((p) => p._id !== deleteEmp._id));
+        setShowToast(`${deleteEmp.name} removed from system.`);
+      }
     } catch (err) {
-        console.error(err);
-        toast.error("Failed to delete employee");
+      console.error(err);
+      toast.error("Failed to delete employee");
     }
     setDeleteEmp(null);
     setTimeout(() => setShowToast(null), 3000);
@@ -170,274 +171,261 @@ const EmployeeList = () => {
   ];
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-500 p-3 sm:p-4 md:p-4 lg:p-4 overflow-hidden">
+    <div className="animate-in fade-in duration-500">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[20px] border-2 border-slate-200 shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full -mr-32 -mt-32 opacity-40" />
-        <div className="flex items-center gap-5 relative z-10">
-          <div className="w-8 h-8 bg-[#e6f4ef] rounded-2xl flex items-center justify-center shadow-inner">
-            <Briefcase className="w-8 h-8 text-[#00bd7f]" />
-          </div>
-          <div>
-            <h1 className="text-2xl sm:text-4xl font-black text-slate-800 tracking-tight">
-              Employee List
-            </h1>
-            
-          </div>
+      <div className="flex items-center justify-between mb-5 w-full">
+        <div>
+          <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
+            <Users className="w-8 h-8 text-[#00315e]" />
+            Employee Management
+          </h1>
         </div>
-        <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10">
-          <button
-            onClick={() => navigate("/admin/employee/create")}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 text-sm font-black bg-[#00bd7f] text-white rounded-[8px] shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
-          >
-            <Plus className="w-5 h-5" /> Add New Staff
-          </button>
+
+        <div className="flex items-center justify-between gap-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by ID or Name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 transition-all"
+            />
+          </div>
+
+          <div className="flex gap-3 w-full md:w-auto">
+            <Link to="/admin/employee/create" className="w-full sm:w-auto">
+              <button className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add Staff
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
           {
             label: "Total Staff",
             value: employees.length,
             icon: Users,
             color: "text-blue-600",
-            bg: "bg-blue-50",
+            bg: "bg-blue-100",
           },
           {
             label: "Active",
             value: employees.filter((e) => e.status === "active").length,
             icon: CheckCircle,
-            color: "text-emerald-600",
-            bg: "bg-emerald-50",
+            color: "text-blue-600",
+            bg: "bg-blue-100",
           },
           {
             label: "Inactive",
             value: employees.filter((e) => e.status === "inactive").length,
             icon: XCircle,
             color: "text-rose-600",
-            bg: "bg-rose-50",
+            bg: "bg-rose-100",
           },
-        
         ].map((stat, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-3xl border-2 border-slate-100 p-6 flex items-center justify-between shadow-sm hover:border-emerald-200 transition-colors group"
+            className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden"
           >
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+            <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+
+            <div className="z-[10]">
+              <p className="text-2xl font-black text-slate-800 mb-1">{stat.value}</p>
+              <p className="text-xs font-bold text-slate-500 uppercase ">
                 {stat.label}
               </p>
-              <p className="text-3xl font-black text-slate-800">{stat.value}</p>
             </div>
             <div
-              className={`w-14 h-14 ${stat.bg} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform`}
+              className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center`}
             >
-              <stat.icon className={`w-7 h-7 ${stat.color}`} />
+              <stat.icon className={`w-6 h-6 ${stat.color}`} />
             </div>
           </div>
         ))}
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-[20px] border-2 border-slate-100 p-6 shadow-sm">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by ID or Name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-[#e6f4ef] border-2 border-transparent focus:border-emerald-500 focus:bg-white rounded-2xl outline-none transition-all font-bold text-slate-800"
-            />
-          </div>
-          <SelectInputField options={[
-            {value:"Teacher"}
-          ]} />
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-[20px] border-2 border-slate-100 shadow-sm min-h-[400px] flex flex-col overflow-visible relative">
+      {/* Table Container */}
+      <div className="bg-white rounded-[10px] shadow-xl shadow-slate-100/50 overflow-hidden relative mt-8">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading staff data...</p>
           </div>
+        ) : filteredEmployees.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-20">
+            <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mb-4">
+              <Search className="w-8 h-8" />
+            </div>
+            <p className="text-slate-500 font-bold">No staff found</p>
+          </div>
         ) : (
-          <div className="overflow-x-auto overflow-visible">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50 border-b-2 border-slate-100">
-                <th className="px-8 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Employee
-                </th>
-                <th className="px-8 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Department
-                </th>
-                <th className="px-8 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Designation
-                </th>
-                <th className="px-8 py-6 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Contact
-                </th>
-                <th className="px-8 py-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Status
-                </th>
-                <th className="px-8 py-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className="divide-y-2 divide-slate-50">
-              {currentItems.map((emp) => (
-                <tr
-                  key={emp._id}
-                  className="hover:bg-emerald-50/30 transition-colors group"
-                >
-                  {/* Employee */}
-                  <td className="px-8 py-5 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl border-2 border-slate-100 overflow-hidden shadow-sm group-hover:scale-110 transition-transform">
-                      <img
-                        src={emp.photo}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black text-emerald-600 mb-0.5 uppercase tracking-tighter">
-                        {emp.employeeID || emp.id}
-                      </p>
-                      <p className="text-sm font-black text-slate-800 whitespace-nowrap">
-                        {emp.name}
-                      </p>
-                    </div>
-                  </td>
-
-                  {/* Department */}
-                  <td className="px-8 py-5">
-                    <span className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase">
-                      {emp.department}
-                    </span>
-                  </td>
-
-                  {/* Designation */}
-                  <td className="px-8 py-5">
-                    <p className="text-xs font-bold text-slate-600">
-                      {emp.designation}
-                    </p>
-                  </td>
-
-                  {/* Contact */}
-                  <td className="px-8 py-5">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                        <Phone className="w-3 h-3 text-emerald-500" />{" "}
-                        {emp.phone}
-                      </div>
-                      {/* <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                        <Mail className="w-3 h-3 text-emerald-500" />{" "}
-                        {emp.email}
-                      </div> */}
-                    </div>
-                  </td>
-
-                  {/* Status */}
-                  <td className="px-8 py-5 text-center">
-                    <span
-                      className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border-2 ${
-                        emp.status === "active"
-                          ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                          : "bg-rose-50 text-rose-600 border-rose-100"
-                      }`}
+          <>
+            <div className="overflow-x-auto rounded-t-[8px]">
+              <table className="w-full">
+                <thead className="bg-[#00315e24]">
+                  <tr className="whitespace-nowrap">
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Employee ID
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Employee Info
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Department
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Contact
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Status
+                    </th>
+                    <th className="px-10 py-3.5 text-left text-[12px] font-black">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y-2 divide-slate-100">
+                  {currentItems.map((emp, i) => (
+                    <tr
+                      key={emp._id}
+                      className="group hover:bg-amber-50/10 transition-all duration-300"
                     >
-                      {emp.status}
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="px-8 py-5 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {/* View Button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setViewEmp(emp);
-                        }}
-                        className="p-2.5 bg-slate-50 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all"
-                      >
-                        <Eye className="w-4.5 h-4.5" />
-                      </button>
-
-                      {/* Three Dot Menu */}
-                      <div
-                        className="relative"
-                        onClick={(e) => e.stopPropagation()} // 🔥 modal close prevent
-                      >
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenMenuId(
-                              openMenuId === emp._id ? null : emp._id,
-                            );
-                          }}
-                          className={`p-2.5 rounded-xl transition-all ${
-                            openMenuId === emp._id
-                              ? "bg-[#00bd7f] text-white shadow-lg"
-                              : "bg-slate-50 text-slate-400"
-                          }`}
-                        >
-                          <MoreVertical className="w-4.5 h-4.5" />
-                        </button>
-
-                        {openMenuId === emp.id && (
-                          <div className="absolute right-8 top-[-12px] mt-3 w-48 bg-white rounded-2xl shadow-2xl border-2 border-slate-50 z-50 py-2 animate-in fade-in slide-in-from-top-2">
-                            {[
-                              {
-                                label: "Edit Info",
-                                icon: Edit2,
-                                color: "text-slate-600",
-                              },
-                              {
-                                label: "Message",
-                                icon: MessageCircle,
-                                color: "text-slate-600",
-                              },
-                              {
-                                label: "Change Status",
-                                icon: UserCheck,
-                                color: "text-slate-600",
-                              },
-                              {
-                                label: "Delete Record",
-                                icon: Trash2,
-                                color: "text-rose-600",
-                              },
-                            ].map((btn, i) => (
-                              <button
-                                key={i}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleAction(btn.label, emp);
-                                }}
-                                className={`w-full flex items-center gap-3 px-5 py-3 text-xs font-black ${btn.color} hover:bg-slate-50 transition-colors`}
-                              >
-                                <btn.icon className="w-4 h-4" /> {btn.label}
-                              </button>
-                            ))}
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <span className="text-sm font-black ">
+                          {i + 1}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full overflow-hidden shadow-sm">
+                            <img
+                              src={emp.photo}
+                              alt={emp.name}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                          <div>
+                            <p className="text-sm font-bold text-slate-800">
+                              {emp.name}
+                            </p>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                              {emp.designation}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-3 py-1 bg-blue-50 text-[#00315e] rounded-md text-xs font-bold uppercase">
+                          {emp.department}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="space-y-1 text-xs font-bold text-slate-600">
+                          <div className="flex items-center gap-1.5">
+                            <Phone className="w-3.5 h-3.5 text-[#00315e]" />
+                            {emp.phone}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest  ${emp.status === "active"
+                            ? "bg-blue-50 text-blue-700 border-blue-100"
+                            : "bg-rose-50 text-rose-700 border-rose-100"
+                            }`}
+                        >
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${emp.status === "active"
+                              ? "bg-blue-500"
+                              : "bg-rose-500"
+                              }`}
+                          />
+                          {emp.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-4">
+                          <button
+                            className="cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setViewEmp(emp);
+                            }}
+                          >
+                            <Eye className="w-5 h-5 text-[#00315e]" />
+                          </button>
+                          <Link to={`/admin/employee/create?id=${emp._id}`} className="cursor-pointer">
+                            <SquarePen className="w-4 h-4 text-[#00315e]" />
+                          </Link>
+                          <button
+                            className="cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteEmp(emp);
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="bg-slate-50/50 px-6 py-4 border-t-2 border-slate-50 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Showing{" "}
+                <span className="text-slate-900">
+                  {(currentPage - 1) * itemsPerPage + (currentItems.length > 0 ? 1 : 0)}
+                </span>{" "}
+                to{" "}
+                <span className="text-slate-900">
+                  {(currentPage - 1) * itemsPerPage + currentItems.length}
+                </span>{" "}
+                of <span className="text-slate-900">{filteredEmployees.length}</span>{" "}
+                staff
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <div className="flex items-center gap-1">
+                  {[...Array(Math.max(1, Math.ceil(filteredEmployees.length / itemsPerPage)))].map((_, i) => (
+                    <button
+                      key={i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
+                        ? "bg-[#00315e] border-[#00315e] text-white cursor-pointer"
+                        : "bg-white border-slate-200 text-slate-600 hover:border-[#00315e] hover:text-[#00315e] cursor-pointer"
+                        }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  disabled={currentPage === Math.max(1, Math.ceil(filteredEmployees.length / itemsPerPage))}
+                  onClick={() => setCurrentPage((p) => Math.min(Math.max(1, Math.ceil(filteredEmployees.length / itemsPerPage)), p + 1))}
+                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </div>
 
@@ -604,28 +592,25 @@ const EmployeeFormModal = ({ emp, onClose, onSave, title, departments }) => {
               <button
                 key={s.id}
                 onClick={() => setActiveSection(s.id)}
-                className={`group relative flex items-center gap-5 px-6 py-5 rounded-[2rem] text-sm font-black transition-all ${
-                  activeSection === s.id
-                    ? "text-white translate-x-3"
-                    : "text-slate-400 hover:bg-white hover:text-emerald-600 hover:translate-x-1"
-                }`}
+                className={`group relative flex items-center gap-5 px-6 py-5 rounded-[2rem] text-sm font-black transition-all ${activeSection === s.id
+                  ? "text-white translate-x-3"
+                  : "text-slate-400 hover:bg-white hover:text-emerald-600 hover:translate-x-1"
+                  }`}
               >
                 {activeSection === s.id && (
                   <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-500 rounded-[2rem] shadow-[0_15px_40px_-5px_rgba(16,185,129,0.3)] animate-in slide-in-from-left-4 duration-500" />
                 )}
                 <div
-                  className={`relative z-10 w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-                    activeSection === s.id
-                      ? "bg-white/20"
-                      : "bg-slate-100 group-hover:bg-emerald-50"
-                  }`}
+                  className={`relative z-10 w-10 h-10 rounded-xl flex items-center justify-center transition-all ${activeSection === s.id
+                    ? "bg-white/20"
+                    : "bg-slate-100 group-hover:bg-emerald-50"
+                    }`}
                 >
                   <s.icon
-                    className={`w-5 h-5 transition-transform group-hover:scale-110 ${
-                      activeSection === s.id
-                        ? "text-white"
-                        : "text-slate-400 group-hover:text-emerald-600"
-                    }`}
+                    className={`w-5 h-5 transition-transform group-hover:scale-110 ${activeSection === s.id
+                      ? "text-white"
+                      : "text-slate-400 group-hover:text-emerald-600"
+                      }`}
                   />
                 </div>
                 <span className="relative z-10 tracking-tight">{s.label}</span>
@@ -933,18 +918,16 @@ const EmployeeFormModal = ({ emp, onClose, onSave, title, departments }) => {
                     onClick={() =>
                       setFormData({ ...formData, skipBank: !formData.skipBank })
                     }
-                    className={`w-20 h-11 rounded-full border-4 border-white/30 transition-all relative ${
-                      formData.skipBank
-                        ? "bg-white shadow-[0_0_20px_rgba(255,255,255,0.4)]"
-                        : "bg-black/20"
-                    }`}
+                    className={`w-20 h-11 rounded-full border-4 border-white/30 transition-all relative ${formData.skipBank
+                      ? "bg-white shadow-[0_0_20px_rgba(255,255,255,0.4)]"
+                      : "bg-black/20"
+                      }`}
                   >
                     <div
-                      className={`absolute top-1 w-7 h-7 rounded-full transition-all duration-500 transform ${
-                        formData.skipBank
-                          ? "left-10 bg-orange-600"
-                          : "left-1.5 bg-white/60"
-                      }`}
+                      className={`absolute top-1 w-7 h-7 rounded-full transition-all duration-500 transform ${formData.skipBank
+                        ? "left-10 bg-orange-600"
+                        : "left-1.5 bg-white/60"
+                        }`}
                     />
                   </button>
                 </div>
@@ -1040,9 +1023,8 @@ const EmployeeFormModal = ({ emp, onClose, onSave, title, departments }) => {
 // Reusable Section Header Component
 const SectionHeader = ({ title, subtitle, centered }) => (
   <div
-    className={`space-y-2 pb-6 border-b-2 border-slate-50/50 ${
-      centered ? "text-center" : ""
-    }`}
+    className={`space-y-2 pb-6 border-b-2 border-slate-50/50 ${centered ? "text-center" : ""
+      }`}
   >
     <h3 className="text-3xl font-black text-slate-800 tracking-tight bg-gradient-to-br from-slate-900 via-slate-700 to-slate-500 bg-clip-text text-transparent">
       {title}
@@ -1189,11 +1171,10 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                   Status
                 </p>
                 <p
-                  className={`text-sm font-black uppercase tracking-widest ${
-                    emp.status === "active"
-                      ? "text-emerald-600"
-                      : "text-rose-500"
-                  }`}
+                  className={`text-sm font-black uppercase tracking-widest ${emp.status === "active"
+                    ? "text-emerald-600"
+                    : "text-rose-500"
+                    }`}
                 >
                   {emp.status}
                 </p>

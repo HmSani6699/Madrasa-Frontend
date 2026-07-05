@@ -170,11 +170,15 @@ const SectionList = () => {
             <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading sections...</p>
           </div>
-        ) : <> {
-          filteredSections?.length === 0 ? <div className="flex flex-col items-center justify-center h-[200px]">
-            <DatabaseBackup className="h-15 w-15 text-gray-300" />
-            <p className="text-gray-300 text-[20px] mt-2.5">Data Not Found</p>
-          </div> : <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
+        ) : filteredSections?.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-20">
+            <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mb-4">
+              <Search className="w-8 h-8" />
+            </div>
+            <p className="text-slate-500 font-bold">No sections found</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
 
             <table className="w-full">
               <thead className="bg-[#00315e24]">
@@ -242,8 +246,7 @@ const SectionList = () => {
               </tbody>
             </table>
           </div>
-        }
-        </>}
+        )}
       </div>
 
       {/* Add Modal */}

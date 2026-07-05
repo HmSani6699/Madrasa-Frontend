@@ -348,6 +348,13 @@ const StudentList = () => {
             <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading students...</p>
           </div>
+        ) : filteredStudents.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center py-20">
+            <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mb-4">
+              <Search className="w-8 h-8" />
+            </div>
+            <p className="text-slate-500 font-bold">No students found</p>
+          </div>
         ) : (
           <>
             <div className="overflow-x-auto rounded-t-[8px] ">

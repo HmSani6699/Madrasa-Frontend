@@ -47,7 +47,7 @@ const CreateEmployee = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const  desigsRes = await axiosInstance.get("/v1/designations")
+        const desigsRes = await axiosInstance.get("/v1/designations")
         if (desigsRes?.data?.success) setDesignations(desigsRes?.data?.data);
       } catch (err) {
         console.error("Error fetching dynamic data:", err);
@@ -64,7 +64,7 @@ const CreateEmployee = () => {
   //       ]);
 
   //       console.log(desigsRes);
-        
+
 
   //       // if (deptsRes.data.success) setDepartments(deptsRes.data.data);
   //       if (desigsRes?.data?.success) setDesignations(desigsRes?.data?.data);
@@ -85,6 +85,7 @@ const CreateEmployee = () => {
     totalExperience: "",
 
     // Employee Details
+    employeeID: "",
     name: "",
     gender: "",
     bloodGroup: "",
@@ -134,49 +135,50 @@ const CreateEmployee = () => {
 
   useEffect(() => {
     const fetchEmployee = async () => {
-        if (!editId) return;
-        setLoading(true);
-        try {
-            const response = await axiosInstance.get(`/v1/staff/${editId}`);
-            if (response.data.success) {
-                const emp = response.data.data;
-                setFormData({
-                    role: emp.userId?.role ? emp.userId.role.charAt(0).toUpperCase() + emp.userId.role.slice(1) : "Staff",
-                    joinDate: emp.joinDate ? new Date(emp.joinDate).toISOString().split('T')[0] : "",
-                    designation: emp.designation,
-                    department: emp.department,
-                    qualification: emp.qualification || "",
-                    totalExperience: emp.totalExperience || "",
-                    name: emp.name,
-                    gender: emp.gender,
-                    bloodGroup: emp.bloodGroup,
-                    dob: emp.dob ? new Date(emp.dob).toISOString().split('T')[0] : "",
-                    phone: emp.phone,
-                    email: emp.userId?.email || "",
-                    address: emp.address,
-                    photo: emp.photo,
-                    password: "", // Don't pre-fill password
-                    confirmPassword: "",
-                    facebook: emp.socialLinks?.facebook || "",
-                    twitter: emp.socialLinks?.twitter || "",
-                    linkedin: emp.socialLinks?.linkedin || "",
-                    paymentMethod: emp.paymentDetails?.paymentMethod || "None",
-                    bankName: emp.paymentDetails?.bankName || "",
-                    holderName: emp.paymentDetails?.holderName || "",
-                    bankBranch: emp.paymentDetails?.bankBranch || "",
-                    bankAddress: emp.paymentDetails?.bankAddress || "",
-                    ifscCode: emp.paymentDetails?.ifscCode || "",
-                    accountNo: emp.paymentDetails?.accountNo || "",
-                    mobileMethods: emp.paymentDetails?.mobileMethods || [],
-                    mobileNumber: emp.paymentDetails?.mobileNumber || ""
-                });
-            }
-        } catch (err) {
-            console.error(err);
-            toast.error("Failed to fetch employee details");
-        } finally {
-            setLoading(false);
+      if (!editId) return;
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get(`/v1/staff/${editId}`);
+        if (response.data.success) {
+          const emp = response.data.data;
+          setFormData({
+            role: emp.userId?.role ? emp.userId.role.charAt(0).toUpperCase() + emp.userId.role.slice(1) : "Staff",
+            joinDate: emp.joinDate ? new Date(emp.joinDate).toISOString().split('T')[0] : "",
+            designation: emp.designation,
+            department: emp.department,
+            qualification: emp.qualification || "",
+            totalExperience: emp.totalExperience || "",
+            employeeID: emp.employeeID || "",
+            name: emp.name,
+            gender: emp.gender,
+            bloodGroup: emp.bloodGroup,
+            dob: emp.dob ? new Date(emp.dob).toISOString().split('T')[0] : "",
+            phone: emp.phone,
+            email: emp.userId?.email || "",
+            address: emp.address,
+            photo: emp.photo,
+            password: "", // Don't pre-fill password
+            confirmPassword: "",
+            facebook: emp.socialLinks?.facebook || "",
+            twitter: emp.socialLinks?.twitter || "",
+            linkedin: emp.socialLinks?.linkedin || "",
+            paymentMethod: emp.paymentDetails?.paymentMethod || "None",
+            bankName: emp.paymentDetails?.bankName || "",
+            holderName: emp.paymentDetails?.holderName || "",
+            bankBranch: emp.paymentDetails?.bankBranch || "",
+            bankAddress: emp.paymentDetails?.bankAddress || "",
+            ifscCode: emp.paymentDetails?.ifscCode || "",
+            accountNo: emp.paymentDetails?.accountNo || "",
+            mobileMethods: emp.paymentDetails?.mobileMethods || [],
+            mobileNumber: emp.paymentDetails?.mobileNumber || ""
+          });
         }
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to fetch employee details");
+      } finally {
+        setLoading(false);
+      }
     };
     fetchEmployee();
   }, [editId]);
@@ -201,12 +203,12 @@ const CreateEmployee = () => {
           accountNo: formData.accountNo
         }
       };
-      
+
       let response;
       if (editId) {
-          response = await axiosInstance.put(`/v1/staff/${editId}`, payload);
+        response = await axiosInstance.put(`/v1/staff/${editId}`, payload);
       } else {
-          response = await axiosInstance.post("/v1/staff", payload);
+        response = await axiosInstance.post("/v1/staff", payload);
       }
 
       if (response.data.success) {
@@ -224,35 +226,25 @@ const CreateEmployee = () => {
 
 
   console.log(designations);
-  
+
 
   return (
-    <div className="min-h-screen bg-slate-50 p-5 animate-in fade-in duration-700">
+    <div className="min-h-screen  p-4 animate-in fade-in duration-700">
       {/* Page Header */}
-      <div className="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-8">
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => navigate("/admin/employee/list")}
-            className="w-12 h-12 bg-white hover:bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-90 shadow-sm border border-slate-200"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <div>
-            <h1 className="text-3xl md:text-5xl font-black text-slate-800 tracking-tighter">
-              New Staff
-            </h1>
-            <p className="text-slate-500 text-xs font-bold   mt-2">
-              Institutional Management Protocol
-            </p>
-          </div>
+      <div className="flex items-center justify-between mb-5 w-full">
+        <div>
+          <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
+            <Users className="w-8 h-8 text-[#00315e]" />
+            New Staff
+          </h1>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/admin/employee/list")}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00315e] text-white rounded-[8px] hover:bg-[#00315e] transition-all shadow-sm cursor-pointer"
           >
-            <User className="w-5 h-5" /> All Staff
+            <User className="w-4 h-4" /> All Staff List
           </button>
         </div>
       </div>
@@ -268,6 +260,15 @@ const CreateEmployee = () => {
           icon={GraduationCap}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <FormInput
+              label="Employee ID"
+              field="employeeID"
+              data={formData}
+              setter={handleInputChange}
+              required
+              icon={Briefcase}
+              placeholder="e.g., EMP-101"
+            />
             <FormSelect
               label="Role"
               field="role"
@@ -297,14 +298,14 @@ const CreateEmployee = () => {
               required
               icon={Briefcase}
             />
-            
+
             <FormSelect
               label="Department"
               field="department"
               options={["Select", ...departments.map(d => d.name || d.title || d._id)]}
               data={formData}
               setter={handleInputChange}
-             
+
               icon={Building2}
             />
 
@@ -316,7 +317,7 @@ const CreateEmployee = () => {
               icon={GraduationCap}
               placeholder="Enter Qualification"
             />
-            
+
             <FormInput
               label="Total Experience"
               field="totalExperience"
@@ -343,7 +344,7 @@ const CreateEmployee = () => {
             <FormSelect
               label="Gender"
               field="gender"
-              options={["Select", "Male", "Female", "Other"]}
+              options={["Select", "Male", "Female"]}
               data={formData}
               setter={handleInputChange}
               icon={Users}
@@ -408,7 +409,7 @@ const CreateEmployee = () => {
                 Profile Picture
               </label>
               <div
-                className="relative group border-2 border-dashed border-slate-200 rounded-[2.5rem] bg-[#e6f4ef] hover:bg-[#d9ede6] hover:border-emerald-300 transition-all p-12 text-center cursor-pointer"
+                className="relative group border-2 border-dashed border-slate-200 rounded-[8px] bg-[#00315e24] hover:bg-[#00315e33] hover:border-[#00315e] transition-all p-12 text-center cursor-pointer"
                 onClick={() => document.getElementById("photo-upload").click()}
               >
                 <input
@@ -442,7 +443,7 @@ const CreateEmployee = () => {
                 ) : (
                   <div className="flex flex-col items-center gap-4">
                     <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
-                      <Upload className="w-10 h-10 text-[#00bd7f]" />
+                      <Upload className="w-10 h-10 text-[#00315e]" />
                     </div>
                     <div>
                       <h4 className="text-xl font-black text-slate-800 mb-1">
@@ -610,21 +611,19 @@ const CreateEmployee = () => {
                           : [...currentMethods, method];
                         handleInputChange("mobileMethods", newMethods);
                       }}
-                      className={`px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 border-2 ${
-                        formData.mobileMethods?.includes(method)
-                          ? "bg-[#00bd7f] border-[#00bd7f] text-white shadow-lg shadow-emerald-500/20"
-                          : "bg-[#e6f4ef] border-transparent text-slate-600 hover:border-emerald-200"
-                      }`}
+                      className={`px-6 py-3 rounded-[8px] font-bold text-sm transition-all flex items-center gap-2 border-2 ${formData.mobileMethods?.includes(method)
+                        ? "bg-[#00315e] border-[#00315e] text-white shadow-lg "
+                        : "bg-[#00315e24] border-transparent text-slate-600 hover:border-slate-300"
+                        }`}
                     >
                       <div
-                        className={`w-4 h-4 rounded-md border-2 flex items-center justify-center ${
-                          formData.mobileMethods?.includes(method)
-                            ? "bg-white border-white"
-                            : "bg-white border-slate-200"
-                        }`}
+                        className={`w-4 h-4 rounded-md border-2 flex items-center justify-center ${formData.mobileMethods?.includes(method)
+                          ? "bg-white border-white"
+                          : "bg-white border-slate-200"
+                          }`}
                       >
                         {formData.mobileMethods?.includes(method) && (
-                          <ShieldCheck className="w-3 h-3 text-[#00bd7f]" />
+                          <ShieldCheck className="w-3 h-3 text-[#00315e]" />
                         )}
                       </div>
                       {method}
@@ -662,15 +661,15 @@ const CreateEmployee = () => {
           <button
             type="button"
             onClick={() => navigate("/admin/employee/list")}
-            className="flex-1 md:flex-none px-10 py-5 bg-slate-100 text-slate-600 font-black rounded-full hover:bg-red-500 hover:text-white transition-all uppercase text-[10px] tracking-widest active:scale-95 cursor-pointer"
+            className="flex-1 md:flex-none px-8 py-3 text-slate-600 font-bold rounded-[8px] bg-red-500 text-white transition-all text-sm active:scale-95 cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 md:flex-none px-14 py-5 bg-[#00bd7f] text-white font-black rounded-full shadow-2xl shadow-emerald-500/30 hover:scale-[1.02] transition-all uppercase text-[10px] tracking-widest flex items-center justify-center gap-3 active:scale-95 cursor-pointer"
+            className="flex-1 md:flex-none px-8 py-3 bg-[#00315e] text-white font-bold rounded-[8px] shadow-sm hover:scale-[1.02] transition-all text-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
           >
-            <Save className="w-5 h-5" /> Save
+            <Save className="w-4 h-4" /> Save
           </button>
         </div>
       </form>
@@ -682,17 +681,14 @@ const CreateEmployee = () => {
  * Reusable Section Container
  */
 const SectionContainer = ({ title, icon: Icon, children }) => (
-  <div className="bg-white rounded-[1.5rem] border-2 border-slate-200 p-8 sm:p-10 shadow-sm hover:shadow-md transition-shadow space-y-8 animate-in slide-in-from-bottom-5 duration-700">
-    <div className="flex items-center gap-4 py-2 border-b-2 border-slate-50">
-      <div className="w-10 h-10 bg-[#e6f4ef] rounded-xl flex items-center justify-center">
-        <Icon className="w-5 h-5 text-[#00bd7f]" />
+  <div className="bg-white dark:bg-white rounded-[8px] p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow mb-6">
+    <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
+      <div className="w-10 h-10 rounded-xl bg-[#00315e24] flex items-center justify-center">
+        <Icon className="w-5 h-5 text-[#00315e]" />
       </div>
-      <div className="flex-1 flex items-center gap-6">
-        <h2 className="text-xl font-black text-[#00bd7f] tracking-tight whitespace-nowrap">
-          {title}
-        </h2>
-        <div className="h-[2px] w-full bg-slate-50" />
-      </div>
+      <h2 className="text-xl font-black text-[#00315e]">
+        {title}
+      </h2>
     </div>
     {children}
   </div>
@@ -711,9 +707,9 @@ const FormInput = ({
   icon: Icon,
   placeholder,
 }) => (
-  <div className="space-y-4 group">
-    <label className="text-slate-500 text-[14px] font-black  tracking-widest flex items-center gap-3 transition-colors group-focus-within:text-[#00bd7f]">
-      {label} {required && <span className="text-[#00bd7f] ">*</span>}
+  <div className="w-full">
+    <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+      {label} {required && <span className="text-red-500">*</span>}
     </label>
     <div className="relative">
       <input
@@ -722,11 +718,8 @@ const FormInput = ({
         onChange={(e) => setter(field, e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="w-full bg-[#e6f4ef] text-slate-800 px-6 py-4 rounded-xl border-2 border-transparent focus:border-[#00bd7f] focus:bg-white outline-none font-bold text-sm transition-all focus:shadow-[0_10px_30px_rgba(0,189,127,0.1)]"
+        className="w-full px-4 py-2 bg-[#00315e24] dark:bg-[#00315e24] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
       />
-      {Icon && (
-        <Icon className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#00bd7f] transition-colors" />
-      )}
     </div>
   </div>
 );
@@ -740,16 +733,16 @@ const FormSelect = ({
   required,
   icon: Icon,
 }) => (
-  <div className="space-y-4 group">
-    <label className="text-slate-500 text-[14px] font-black  tracking-widest flex items-center gap-3 transition-colors group-focus-within:text-emerald-600">
-      {label} {required && <span className="text-rose-500">*</span>}
+  <div className="w-full">
+    <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+      {label} {required && <span className="text-red-500">*</span>}
     </label>
     <div className="relative">
       <select
         value={data[field]}
         onChange={(e) => setter(field, e.target.value)}
         required={required}
-        className="w-full bg-[#e6f4ef] text-slate-800 px-6 py-4 rounded-xl border-2 border-transparent focus:border-[#00bd7f] focus:bg-white outline-none font-bold text-sm transition-all appearance-none cursor-pointer"
+        className="w-full px-4 py-2 bg-[#00315e24] dark:bg-[#00315e24] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all appearance-none cursor-pointer"
       >
         {options.map((opt) => (
           <option key={opt} value={opt}>
@@ -757,11 +750,8 @@ const FormSelect = ({
           </option>
         ))}
       </select>
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
-        {Icon && (
-          <Icon className="w-4 h-4 text-slate-400 group-focus-within:text-[#00bd7f] transition-colors" />
-        )}
-        <ChevronDown className="w-4 h-4 text-slate-400 group-focus-within:text-[#00bd7f] transition-colors" />
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+        <ChevronDown className="w-4 h-4 text-slate-400" />
       </div>
     </div>
   </div>
@@ -776,9 +766,9 @@ const FormTextarea = ({
   icon: Icon,
   placeholder,
 }) => (
-  <div className="space-y-4 group">
-    <label className="text-slate-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-colors group-focus-within:text-[#00bd7f]">
-      {label} {required && <span className="text-[#00bd7f] text-lg">*</span>}
+  <div className="w-full">
+    <label className="text-sm font-bold text-slate-700 dark:text-slate-700 mb-2 block">
+      {label} {required && <span className="text-red-500">*</span>}
     </label>
     <div className="relative">
       <textarea
@@ -787,11 +777,8 @@ const FormTextarea = ({
         placeholder={placeholder}
         required={required}
         rows={2}
-        className="w-full bg-[#e6f4ef] text-slate-800 px-6 py-4 rounded-xl border-2 border-transparent focus:border-[#00bd7f] focus:bg-white outline-none font-bold text-sm transition-all resize-none shadow-inner"
+        className="w-full px-4 py-2 bg-[#00315e24] dark:bg-[#00315e24] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all resize-none"
       />
-      {Icon && (
-        <Icon className="absolute right-6 bottom-6 w-4 h-4 text-slate-400 group-focus-within:text-[#00bd7f] transition-colors" />
-      )}
     </div>
   </div>
 );
