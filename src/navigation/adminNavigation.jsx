@@ -77,7 +77,6 @@ export const adminNavigation = [
       { name: "Add New Employee", path: "/admin/employee/create", icon: UserPlus },
       { name: "Add Designation", path: "/admin/employee/designation", icon: Award },
       { name: "Salary Setup", path: "/admin/employee/salary-setup", icon: DollarSign },
-      { name: "Salary Payment", path: "/admin/employee/salary-payment", icon: Banknote },
     ],
   },
   {

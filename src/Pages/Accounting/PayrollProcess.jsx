@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users,
   CheckCircle,
@@ -7,112 +7,166 @@ import {
   Banknote,
   Search,
   Download,
+  Calendar,
+  Play
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router";
+import { Link } from "react-router-dom"; // Fixed from react-router to react-router-dom
 import SalarySetupModal from "../../components/SalarySetupModal";
+import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-hot-toast";
 
 const PayrollProcess = () => {
   const { t } = useTranslation();
-  // Mock Employee Data for Payroll
-  const employees = [
-    {
-      id: 1,
-      name: "Maulana Ahmed",
-      role: "Head Teacher",
-      basic: 25000,
-      allowance: 5000,
-      deduction: 0,
-      status: "pending",
-    },
-    {
-      id: 2,
-      name: "Hafiz Karim",
-      role: "Teacher",
-      basic: 18000,
-      allowance: 2000,
-      deduction: 500,
-      status: "paid",
-    },
-    {
-      id: 3,
-      name: "Abdul Jabbar",
-      role: "Staff",
-      basic: 12000,
-      allowance: 1000,
-      deduction: 0,
-      status: "pending",
-    },
+  
+  const [loading, setLoading] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [openSalarySetupModal, setOpenSalarySetupModal] = useState(false);
+  const [ledgers, setLedgers] = useState([]);
+  
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [year, setYear] = useState(new Date().getFullYear());
+
+  const months = [
+    { value: 1, label: "January" }, { value: 2, label: "February" },
+    { value: 3, label: "March" }, { value: 4, label: "April" },
+    { value: 5, label: "May" }, { value: 6, label: "June" },
+    { value: 7, label: "July" }, { value: 8, label: "August" },
+    { value: 9, label: "September" }, { value: 10, label: "October" },
+    { value: 11, label: "November" }, { value: 12, label: "December" }
   ];
 
-  const [openSalarySetupModal, setOpenSalarySetupModal] = useState(false);
+  const fetchLedgers = async () => {
+    try {
+      setLoading(true);
+      const res = await axiosInstance.get('/payroll/v1/ledgers');
+      if (res.data.success) {
+        setLedgers(res.data.data);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to fetch ledgers");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  console.log(openSalarySetupModal);
+  useEffect(() => {
+    fetchLedgers();
+  }, []);
+
+  const handleGenerate = async () => {
+    if (!window.confirm(`Are you sure you want to generate payroll for ${months.find(m => m.value == month).label} ${year}?`)) {
+      return;
+    }
+    try {
+      setGenerating(true);
+      const res = await axiosInstance.post('/payroll/v1/generate', { month, year });
+      if (res.data.success) {
+        toast.success(res.data.message);
+        fetchLedgers(); // Refresh data to show updated balances
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to generate payroll");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const totalPayable = ledgers.filter(l => l.balance > 0).reduce((acc, curr) => acc + curr.balance, 0);
+  const totalAdvance = Math.abs(ledgers.filter(l => l.balance < 0).reduce((acc, curr) => acc + curr.balance, 0));
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">
-            {t('payroll_process.title')}
+            Payroll Generation
           </h1>
-         
+          <p className="text-sm text-slate-500 mt-1">Generate monthly salaries and view current ledger balances</p>
         </div>
         <div className="flex gap-3">
           <Link to={"/admin/accounting/payroll/history"}>
-            <button className="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 font-semibold hover:bg-slate-50 cursor-pointer">
-              {t('payroll_process.view_history')}
+            <button className="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 font-semibold hover:bg-slate-50 cursor-pointer transition-colors">
+              Ledger History
             </button>
           </Link>
           <button
-            onClick={() => setOpenSalarySetupModal(!openSalarySetupModal)}
-            className="px-6 py-2 bg-primary text-white font-bold rounded-lg shadow-lg shadow-primary/20 hover:scale-105 transition-all cursor-pointer"
+            onClick={() => setOpenSalarySetupModal(true)}
+            className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg shadow-lg shadow-indigo-600/20 hover:scale-105 transition-all cursor-pointer"
           >
-            {t('payroll_process.salary_setup')}
+            Salary Setup
           </button>
         </div>
       </div>
 
+      {/* Generation Panel */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-end gap-4">
+         <div className="w-full md:w-1/3">
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Select Month</label>
+            <div className="relative">
+              <Calendar className="absolute left-3 top-2.5 w-5 h-5 text-slate-400" />
+              <select 
+                value={month} 
+                onChange={(e) => setMonth(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 bg-white"
+              >
+                {months.map(m => (
+                  <option key={m.value} value={m.value}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+         </div>
+         <div className="w-full md:w-1/3">
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Select Year</label>
+            <select 
+              value={year} 
+              onChange={(e) => setYear(e.target.value)}
+              className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-indigo-500 bg-white"
+            >
+              {[2024, 2025, 2026, 2027, 2028].map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+         </div>
+         <div className="w-full md:w-1/3">
+            <button 
+              onClick={handleGenerate}
+              disabled={generating}
+              className="w-full flex items-center justify-center gap-2 px-6 py-2.5 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50"
+            >
+              {generating ? (
+                <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+              ) : (
+                <Play className="w-4 h-4 fill-current" />
+              )}
+              {generating ? "Generating..." : "Generate Payroll"}
+            </button>
+         </div>
+      </div>
+
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
-            {t('payroll_process.total_payable')}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-6 rounded-2xl shadow-lg shadow-teal-500/20 text-white">
+          <p className="text-xs font-bold text-teal-100 uppercase tracking-widest mb-2">
+            Total Due Payable (Company Owes)
           </p>
-          <h3 className="text-3xl font-black text-slate-800">৳ 145,000</h3>
-          <p className="text-sm text-slate-500 mt-1">{t('payroll_process.for_employees', { count: 12 })}</p>
+          <h3 className="text-4xl font-black">৳ {totalPayable.toLocaleString()}</h3>
         </div>
-        <div className="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 shadow-sm">
-          <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">
-            {t('payroll_process.disbursed')}
+        <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-6 rounded-2xl shadow-lg shadow-rose-500/20 text-white">
+          <p className="text-xs font-bold text-pink-100 uppercase tracking-widest mb-2">
+            Total Advance (Staff Owes)
           </p>
-          <h3 className="text-3xl font-black text-indigo-700">৳ 22,500</h3>
-          <p className="text-sm text-indigo-500 mt-1">{t('payroll_process.employees_paid', { count: 2 })}</p>
-        </div>
-        <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100 shadow-sm">
-          <p className="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">
-            {t('payroll_process.pending')}
-          </p>
-          <h3 className="text-3xl font-black text-amber-700">৳ 122,500</h3>
-          <p className="text-sm text-amber-600/80 mt-1">{t('payroll_process.action_required')}</p>
+          <h3 className="text-4xl font-black">৳ {totalAdvance.toLocaleString()}</h3>
         </div>
       </div>
 
-      {/* Employee List Table */}
+      {/* Ledger Table */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-slate-500">
             <Users className="w-5 h-5" />
-            <span className="font-bold text-sm uppercase">{t('payroll_process.employee_list')}</span>
-          </div>
-          <div className="relative max-w-sm w-full">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder={t('payroll_process.search_employee')}
-              className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-primary"
-            />
+            <span className="font-bold text-sm uppercase">Current Ledger Balances</span>
           </div>
         </div>
 
@@ -120,70 +174,52 @@ const PayrollProcess = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 text-slate-500 text-xs uppercase font-bold tracking-wider">
-                <th className="p-4 border-b border-slate-200">{t('salary_report.employee')}</th>
-                <th className="p-4 border-b border-slate-200">{t('common.role')}</th>
-                <th className="p-4 border-b border-slate-200 whitespace-nowrap">
-                  {t('payroll_process.base_salary')}
-                </th>
-                <th className="p-4 border-b border-slate-200">{t('payroll_process.allowances')}</th>
-                <th className="p-4 border-b border-slate-200 text-rose-500">
-                  {t('payroll_process.deductions')}
-                </th>
-                <th className="p-4 border-b border-slate-200 text-emerald-600 whitespace-nowrap">
-                  {t('payroll_process.net_payable')}
-                </th>
-                <th className="p-4 border-b border-slate-200 text-center">
-                  {t('common.status')}
-                </th>
-                <th className="p-4 border-b border-slate-200 text-right">
-                  {t('salary_report.action')}
-                </th>
+                <th className="p-4 border-b border-slate-200">Staff Name</th>
+                <th className="p-4 border-b border-slate-200">Role</th>
+                <th className="p-4 border-b border-slate-200">Setup Basic</th>
+                <th className="p-4 border-b border-slate-200">Setup Total</th>
+                <th className="p-4 border-b border-slate-200 text-right">Current Balance</th>
+                <th className="p-4 border-b border-slate-200 text-center">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {employees.map((emp) => {
-                const netPay = emp.basic + emp.allowance - emp.deduction;
-                const isPaid = emp.status === "Paid";
-
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="p-8 text-center text-slate-500">Loading ledgers...</td>
+                </tr>
+              ) : ledgers.length === 0 ? (
+                 <tr>
+                  <td colSpan="6" className="p-8 text-center text-slate-500">No staff records found.</td>
+                </tr>
+              ) : ledgers.map((emp) => {
+                const isAdvance = emp.balance < 0;
+                const isDue = emp.balance > 0;
+                
                 return (
-                  <tr
-                    key={emp.id}
-                    className="hover:bg-slate-50/50 transition-colors whitespace-nowrap"
-                  >
+                  <tr key={emp._id} className="hover:bg-slate-50/50 transition-colors whitespace-nowrap">
                     <td className="p-4 font-bold text-slate-800">{emp.name}</td>
                     <td className="p-4 text-slate-500 text-sm">{emp.role}</td>
-                    <td className="p-4 text-slate-600 font-medium">
-                      ৳ {emp.basic}
-                    </td>
-                    <td className="p-4 text-green-600 font-medium">
-                      + {emp.allowance}
-                    </td>
-                    <td className="p-4 text-rose-500 font-medium">
-                      - {emp.deduction}
-                    </td>
-                    <td className="p-4 font-black text-slate-800">
-                      ৳ {netPay}
+                    <td className="p-4 text-slate-600 font-medium">৳ {emp.basic_salary}</td>
+                    <td className="p-4 text-indigo-600 font-medium">৳ {emp.total_salary}</td>
+                    <td className="p-4 text-right">
+                       <span className={`font-black text-lg ${isAdvance ? 'text-rose-600' : isDue ? 'text-emerald-600' : 'text-slate-400'}`}>
+                          {isAdvance ? '- ৳ ' : isDue ? '+ ৳ ' : '৳ '}
+                          {Math.abs(emp.balance).toLocaleString()}
+                       </span>
                     </td>
                     <td className="p-4 text-center">
-                      {isPaid ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase rounded-full">
-                          <CheckCircle className="w-3 h-3" /> {t('salary_report.statuses.paid')}
+                      {isAdvance ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-rose-100 text-rose-700 text-[10px] font-bold uppercase rounded-full border border-rose-200">
+                          Advance
+                        </span>
+                      ) : isDue ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase rounded-full border border-emerald-200">
+                          Due Payable
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold uppercase rounded-full">
-                          <Clock className="w-3 h-3" /> {t('salary_report.statuses.pending')}
+                         <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase rounded-full border border-slate-200">
+                          Cleared
                         </span>
-                      )}
-                    </td>
-                    <td className="p-4 text-right">
-                      {isPaid ? (
-                        <button className="p-2 text-slate-400 hover:text-primary transition-colors">
-                          <Download className="w-4 h-4" />
-                        </button>
-                      ) : (
-                        <button className="px-4 py-1.5 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition-all shadow-md">
-                          {t('payroll_process.pay_now')}
-                        </button>
                       )}
                     </td>
                   </tr>
@@ -195,7 +231,7 @@ const PayrollProcess = () => {
       </div>
 
       {openSalarySetupModal && (
-        <SalarySetupModal onClose={setOpenSalarySetupModal} />
+        <SalarySetupModal onClose={() => setOpenSalarySetupModal(false)} />
       )}
     </div>
   );

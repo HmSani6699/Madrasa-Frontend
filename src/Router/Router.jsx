@@ -122,7 +122,7 @@ import IncomeEntry from "../Pages/Accounting/IncomeEntry";
 import ExpenseEntry from "../Pages/Accounting/ExpenseEntry";
 import PortalLayout from "../layouts/PortalLayout";
 import SalarySetup from "../Pages/Admin/SalarySetup";
-import SalaryPayment from "../Pages/Admin/SalaryPayment";
+
 
 
 // Guardian Pages
@@ -202,9 +202,7 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/employee/salary-setup") {
         element = <SalarySetup />;
       }
-      if (item.path === "/admin/employee/salary-payment") {
-        element = <SalaryPayment />;
-      }
+
       if (item.path === "/admin/employee/deactive") {
         element = <DeactivatedEmployeeList />;
       }
