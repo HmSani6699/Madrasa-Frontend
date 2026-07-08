@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
-import { 
-  Search, 
-  Filter, 
-  Calendar, 
-  Users, 
-  CheckCircle2, 
-  XCircle, 
-  Clock, 
+import {
+  Search,
+  Filter,
+  Calendar,
+  Users,
+  CheckCircle2,
+  XCircle,
+  Clock,
   FileText,
   Upload,
   RefreshCw,
@@ -25,49 +25,29 @@ const StudentAttendance = () => {
   const [selectedSectionId, setSelectedSectionId] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [attendanceData, setAttendanceData] = useState({});
 
-  // Fetch Classes on mount
+  // Fetch Classes and Sections on mount
   useEffect(() => {
-    const fetchClasses = async () => {
+    const fetchInitialData = async () => {
       try {
-        const classesRes = await axiosInstance.get("/v1/classes");
-        if (classesRes.data.success) {
-            setClasses(classesRes.data.data);
-        }
+        const [classesRes, sectionsRes] = await Promise.all([
+          axiosInstance.get("/v1/classes"),
+          axiosInstance.get("/v1/sections")
+        ]);
+        if (classesRes.data.success) setClasses(classesRes.data.data);
+        if (sectionsRes.data.success) setSections(sectionsRes.data.data);
       } catch (err) {
-        console.error("Error fetching classes:", err);
-        toast.error("Failed to load classes");
+        console.error("Error fetching initial data:", err);
       }
     };
-    fetchClasses();
+    fetchInitialData();
   }, []);
-
-  // Fetch sections when class is selected
-  useEffect(() => {
-    if (selectedClassId) {
-      const fetchSections = async () => {
-        try {
-          const sectionsRes = await axiosInstance.get(`/v1/sections?class_id=${selectedClassId}`);
-          if (sectionsRes.data.success) {
-            setSections(sectionsRes.data.data);
-          }
-        } catch (err) {
-          console.error("Error fetching sections:", err);
-          toast.error("Failed to load sections");
-        }
-      };
-      fetchSections();
-    } else {
-      setSections([]);
-      setSelectedSectionId("");
-    }
-  }, [selectedClassId]);
 
   const fetchData = async () => {
     if (!selectedClassId || !selectedSectionId || !selectedDate) {
@@ -80,59 +60,60 @@ const StudentAttendance = () => {
       // 1. Fetch Students
       const studentsRes = await axiosInstance.get("/v1/students", {
         params: {
-          class_id: selectedClassId,  
-          section_id: selectedSectionId
+          class_id: selectedClassId,
+          section_id: selectedSectionId,
+          limit: 1000
         }
       });
 
       // 2. Fetch Existing Attendance
       const attendanceRes = await axiosInstance.get("/v1/attendance/report", {
-          params: {
-              date: selectedDate,
-              class_id: selectedClassId,
-              section_id: selectedSectionId,
-              type: "student"
-          }
+        params: {
+          date: selectedDate,
+          class_id: selectedClassId,
+          section_id: selectedSectionId,
+          type: "student"
+        }
       });
 
       if (studentsRes.data.success) {
         const studentList = studentsRes.data.data;
         setStudents(studentList);
-        
+
         // Default: Mark everyone present if no record exists
         let newAttendanceData = {};
-        
+
         // If attendance exists, map it
         if (attendanceRes.data.success && attendanceRes.data.data.length > 0) {
-            // Assuming backend returns array of { studentId, status, ... }
-            // Or maybe it returns a single document with an array of records? 
-            // Let's assume the controller returns a list of attendance records for that day/class/section
-            // We need to map it carefully.
-            
-            // Wait, looking at common patterns, likely it returns a list of records where each record is specific to a student?
-            // OR one record for the class? 
-            // Let's assume it returns a list of students with their attendance status appended, OR a list of attendance documents.
-            // If the backend `getStudentAttendance` returns the Attendance document(s).
-            
-            // If I look at `attendanceController.js` (I haven't viewed it, but I can guess or assume standard behavior). 
-            // Standard behavior: returns list of { studentId, status }
-            
-            // Let's handle the case where we get a list of records.
-            const records = attendanceRes.data.data;
-            // Create a lookup
-            const statusMap = {};
-            records.forEach(r => {
-                if (r.student_id) statusMap[r.student_id._id || r.student_id] = r.status.toLowerCase();
-            });
-            
-            studentList.forEach(s => {
-                newAttendanceData[s._id] = statusMap[s._id] || "present"; // Default to present if student exists but no record (maybe new student)
-            });
-            
+          // Assuming backend returns array of { studentId, status, ... }
+          // Or maybe it returns a single document with an array of records? 
+          // Let's assume the controller returns a list of attendance records for that day/class/section
+          // We need to map it carefully.
+
+          // Wait, looking at common patterns, likely it returns a list of records where each record is specific to a student?
+          // OR one record for the class? 
+          // Let's assume it returns a list of students with their attendance status appended, OR a list of attendance documents.
+          // If the backend `getStudentAttendance` returns the Attendance document(s).
+
+          // If I look at `attendanceController.js` (I haven't viewed it, but I can guess or assume standard behavior). 
+          // Standard behavior: returns list of { studentId, status }
+
+          // Let's handle the case where we get a list of records.
+          const records = attendanceRes.data.data;
+          // Create a lookup
+          const statusMap = {};
+          records.forEach(r => {
+            if (r.student_id) statusMap[r.student_id._id || r.student_id] = r.status.toLowerCase();
+          });
+
+          studentList.forEach(s => {
+            newAttendanceData[s._id] = statusMap[s._id] || "present"; // Default to present if student exists but no record (maybe new student)
+          });
+
         } else {
-             studentList.forEach(s => {
-                newAttendanceData[s._id] = "present";
-            });
+          studentList.forEach(s => {
+            newAttendanceData[s._id] = "present";
+          });
         }
         setAttendanceData(newAttendanceData);
       }
@@ -199,34 +180,32 @@ const StudentAttendance = () => {
   return (
     <div className=" animate-in fade-in duration-500 ">
       {/* Header Section */}
-      <div className=" rounded-[8px]  p-6 flex flex-col md:flex-row justify-between items-center gap-6 ">
+      <div className=" rounded-[8px]  mb-4 flex flex-col md:flex-row justify-between items-center gap-6 ">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
-            <Calendar className="w-8 h-8 text-[#00bd7f]" />
+            <Calendar className="w-8 h-8 text-[#00315e]" />
             Student Attendance
           </h1>
           <p className="text-slate-500 font-bold mt-1">Manage daily attendance records</p>
         </div>
 
         <div className="flex bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto">
-          <button 
+          <button
             onClick={() => setAttendanceMode("manual")}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2 ${
-              attendanceMode === "manual" 
-                ? "bg-white text-slate-800 shadow-md" 
-                : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
-            }`}
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-[8px] text-sm font-black transition-all flex items-center justify-center gap-2 ${attendanceMode === "manual"
+              ? "bg-white text-slate-800 shadow-md"
+              : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+              }`}
           >
             <FileText className="w-4 h-4" />
             Manual Mode
           </button>
-          <button 
+          <button
             onClick={() => setAttendanceMode("biometric")}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2 ${
-              attendanceMode === "biometric" 
-                ? "bg-white text-slate-800 shadow-md" 
-                : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
-            }`}
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-[8px] text-sm font-black transition-all flex items-center justify-center gap-2 ${attendanceMode === "biometric"
+              ? "bg-white text-slate-800 shadow-md"
+              : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+              }`}
           >
             <Fingerprint className="w-4 h-4" />
             Biometric Mode
@@ -244,29 +223,32 @@ const StudentAttendance = () => {
               <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
                 <Users className="w-3.5 h-3.5" /> Class
               </label>
-              <select 
-                value={selectedClassId} 
+              <select
+                value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
-                className="w-full bg-[#e6f4ef] border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all"
+                className="w-full bg-[#00315e24] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#00315e] outline-none transition-all"
               >
                 <option value="">Select class</option>
                 {classes.map(c => (
-                    <option key={c._id} value={c._id}>{c.name}</option>
+                  <option key={c._id} value={c._id}>{c.name}</option>
                 ))}
               </select>
             </div>
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
-                <Filter className="w-3.5 h-3.5" /> Category
+                <Filter className="w-3.5 h-3.5" /> Section
               </label>
-              <select 
-                value={selectedSectionId} 
+              <select
+                value={selectedSectionId}
                 onChange={(e) => setSelectedSectionId(e.target.value)}
-                className="w-full bg-[#e6f4ef] border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all"
+                className="w-full bg-[#00315e24] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#00315e] outline-none transition-all"
               >
-                <option value="">Select category</option>
-                {sections.map(s => (
-                    <option key={s._id} value={s._id}>{s.name}</option>
+                <option value="">Select Section</option>
+                {sections.filter(s => {
+                  const cls = classes.find(c => c._id === selectedClassId);
+                  return (s.class_id?._id || s.class_id) === selectedClassId || (cls && cls.section_id === s._id);
+                }).map(s => (
+                  <option key={s._id} value={s._id}>{s.name}</option>
                 ))}
               </select>
             </div>
@@ -274,18 +256,18 @@ const StudentAttendance = () => {
               <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
                 <Calendar className="w-3.5 h-3.5" /> Date
               </label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full bg-[#e6f4ef] border-2 border-slate-100 rounded-xl px-4 py-2.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all" 
+                className="w-full bg-[#00315e24] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#00315e] outline-none transition-all"
               />
             </div>
             <div className="space-y-2 sm:col-span-3 flex justify-end">
               <button
                 onClick={fetchData}
                 disabled={loading}
-                className="px-8 py-2.5 bg-[#00bd7f] text-white font-black rounded-xl shadow-lg shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                className="px-8 py-2.5 cursor-pointer bg-[#00315e] text-white font-black rounded-[8px] shadow-lg shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
               >
                 {loading ? "Loading..." : "Filter"}
               </button>
@@ -318,110 +300,109 @@ const StudentAttendance = () => {
       </div>
 
       {attendanceMode === "manual" ? (
-        <div className="bg-white rounded-[8px] border-1 lg:mt-[25px] border-slate-200 shadow-sm overflow-hidden">
-         
+        <div className="bg-white rounded-[8px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative lg:mt-[25px]">
 
-          
+
+
           {
             filteredStudents.length > 0 ? (
-             
-              
+
+
               <div>
-                 {/* Action Bar */}
-          <div className="bg-[#e6f4ef]/50 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border-b-2 border-slate-100">
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input 
-                placeholder="Search students..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white border-2 border-slate-100 rounded-xl text-sm font-bold outline-none focus:border-[#00bd7f]"
-              />
-            </div>
+                {/* Action Bar */}
+                <div className="bg-slate-50 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border-b-2 border-slate-100">
+                  <div className="relative w-full md:w-64">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      placeholder="Search students..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 bg-[#00315e24] border-none rounded-[8px] text-sm font-bold outline-none focus:ring-1 focus:ring-[#00315e] transition-all"
+                    />
+                  </div>
 
-            <div className="flex gap-2 w-full md:w-auto">
-              <button 
-                onClick={() => markAllAs("present")} 
-                className="flex-1 md:flex-none px-4 py-2 text-xs font-black bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200"
-              >
-                Mark All Present
-              </button>
-              <button 
-                onClick={handleSave}
-                disabled={loading}
-                className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-200 flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                <Save className="w-3.5 h-3.5" /> 
-                {loading ? "Saving..." : "Save Attendance"}
-              </button>
-            </div>
-          </div>
+                  <div className="flex gap-2 w-full md:w-auto">
+                    <button
+                      onClick={() => markAllAs("present")}
+                      className="flex-1 md:flex-none px-4 py-2 text-xs font-black bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200"
+                    >
+                      Mark All Present
+                    </button>
+                    <button
+                      onClick={handleSave}
+                      disabled={loading}
+                      className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-[#00315e] text-white rounded-[8px] shadow-lg shadow-slate-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      <Save className="w-3.5 h-3.5" />
+                      {loading ? "Saving..." : "Save Attendance"}
+                    </button>
+                  </div>
+                </div>
 
-{/* Table */}
-                   <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-[#e6f4ef]/30 border-b-2 border-slate-100">
-                <tr>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Role</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Student Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Student ID</th>
-                  <th className="px-6 py-4 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest w-64">Attendance Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y-2 divide-slate-50">
-                {filteredStudents.map((student) => (
-                  <tr key={student._id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-black text-slate-700">{student.roll_number || student.rollNo}</span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <img src={student.photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${student._id}`} className="w-8 h-8 rounded-full bg-emerald-100 p-0.5" />
-                        <span className="text-sm font-bold text-slate-800">{student.firstName} {student.lastName || ''}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm font-black text-emerald-600">{student.student_id || student.studentId}</td>
-                    <td className="px-6 py-4">
-                      <div className="flex justify-center gap-1.5">
-                        {[
-                          { key: 'present', label: 'Current', color: 'bg-emerald-500', bg: 'bg-emerald-50' },
-                          { key: 'absent', label: 'Absent', color: 'bg-rose-500', bg: 'bg-rose-50' },
-                          { key: 'late', label: 'Late', color: 'bg-amber-500', bg: 'bg-amber-50' },
-                          { key: 'leave', label: 'Skip', color: 'bg-blue-500', bg: 'bg-blue-50' },
-                        ].map(status => (
-                          <button
-                            key={status.key}
-                            onClick={() => handleStatusChange(student._id, status.key)}
-                            className={`px-3 py-1.5 rounded-xl text-xs font-black border-2 transition-all flex items-center justify-center ${
-                              attendanceData[student._id] === status.key 
-                                ? `${status.color} border-transparent text-white shadow-lg` 
-                                : `border-slate-100 text-slate-400 ${status.bg} hover:border-slate-300`
-                            }`}
-                          >
-                            {status.label}
-                          </button>
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-              </div>
+                {/* Table */}
+                <div className="overflow-x-auto rounded-t-[8px]">
+                  <table className="w-full">
+                    <thead className="bg-[#00315e24]">
+                      <tr>
+                        <th className="px-10 py-3.5 text-left text-[12px] font-black">Role</th>
+                        <th className="px-10 py-3.5 text-left text-[12px] font-black">Student Name</th>
+                        <th className="px-10 py-3.5 text-left text-[12px] font-black">Student ID</th>
+                        <th className="px-10 py-3.5 text-center text-[12px] font-black w-64">Attendance Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y-2 divide-slate-100">
+                      {filteredStudents.map((student) => (
+                        <tr key={student._id} className="group hover:bg-amber-50/10 transition-all duration-300">
+                          <td className="px-10 py-3.5">
+                            <span className="text-sm font-bold text-slate-500">{student.roll_number || student.rollNo}</span>
+                          </td>
+                          <td className="px-10 py-3.5">
+                            <div className="flex items-center gap-3">
+                              <img src={student.photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${student._id}`} className="w-8 h-8 rounded-full bg-slate-100 p-0.5" />
+                              <span className="text-sm font-bold text-slate-500">{student.firstName} {student.lastName || ''}</span>
+                            </div>
+                          </td>
+                          <td className="px-10 py-3.5 text-sm font-bold text-slate-500">{student.student_id || student.studentId}</td>
+                          <td className="px-10 py-3.5">
+                            <div className="flex justify-center gap-1.5">
+                              {[
+                                { key: 'present', label: 'Current', color: 'bg-emerald-500', bg: 'bg-emerald-50' },
+                                { key: 'absent', label: 'Absent', color: 'bg-rose-500', bg: 'bg-rose-50' },
+                                { key: 'late', label: 'Late', color: 'bg-amber-500', bg: 'bg-amber-50' },
+                                { key: 'leave', label: 'Skip', color: 'bg-blue-500', bg: 'bg-blue-50' },
+                              ].map(status => (
+                                <button
+                                  key={status.key}
+                                  onClick={() => handleStatusChange(student._id, status.key)}
+                                  className={`px-3 py-1.5 rounded-[8px] text-xs font-black border-2 transition-all flex items-center justify-center ${attendanceData[student._id] === status.key
+                                    ? `${status.color} border-transparent text-white shadow-lg`
+                                    : `border-slate-100 text-slate-400 ${status.bg} hover:border-slate-300`
+                                    }`}
+                                >
+                                  {status.label}
+                                </button>
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
               </div>
             ) : <div className="h-[200px] w-full flex items-center justify-center"><p> Please charge student in class</p></div>
           }
           {/* Table */}
-         
+
         </div>
       ) : (
         /* Biometric View */
         <div className="bg-white rounded-3xl border-2 border-slate-200 shadow-sm p-8 text-center space-y-8 min-h-[400px] flex flex-col items-center justify-center">
-          <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center animate-pulse">
-            <Fingerprint className="w-12 h-12 text-[#00bd7f]" />
+          <div className="w-24 h-24 bg-[#00315e24] rounded-full flex items-center justify-center animate-pulse">
+            <Fingerprint className="w-12 h-12 text-[#00315e]" />
           </div>
-          
+
           <div className="max-w-md space-y-4">
             <h2 className="text-2xl font-black text-slate-800 tracking-tight">Biometric Machine Sync</h2>
             <p className="text-slate-500 font-bold leading-relaxed">
@@ -434,7 +415,7 @@ const StudentAttendance = () => {
               <Upload className="w-5 h-5 text-slate-500" />
               Upload CSV/Excel
             </button>
-            <button className="flex-1 px-8 py-4 bg-[#00bd7f] text-white font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all">
+            <button className="flex-1 px-8 py-4 bg-[#00315e] text-white font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all">
               <RefreshCw className="w-5 h-5" />
               Sync Now
             </button>
