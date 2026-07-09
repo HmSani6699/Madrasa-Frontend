@@ -4,19 +4,10 @@ import {
   Search,
   BookOpen,
   Filter,
-  MoreVertical,
-  Edit3,
-  Trash2,
-  BookMarked,
-  Layers,
-  CheckCircle2,
-  Info,
   X,
   AlertCircle,
-  ShieldCheck,
-  Shapes,
-  ChevronDown,
-  File,
+  Layers,
+  Trash2,
   SquarePen
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
@@ -24,9 +15,8 @@ import { toast } from "react-hot-toast";
 import InputField from "../../components/InputField";
 import SelectInputField from "../../components/SelectInputField";
 
-const SubjectList = () => {
+const SubjectTypeList = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [levelFilter, setLevelFilter] = useState("All");
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,74 +25,45 @@ const SubjectList = () => {
 
   // Focus States
   const [selectedSubject, setSelectedSubject] = useState(null);
-
-
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Form States
   const [formData, setFormData] = useState({
     name: "",
     code: "",
-    class_id: "",
-    section_id: "",
     status: "active",
   });
 
   const [subjects, setSubjects] = useState([]);
-  const [classes, setClasses] = useState([]);
-  const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Filter States
   const [filters, setFilters] = useState({
-    class_id: "",
-    section_id: "",
     status: "",
   });
-
-  const fetchInitialData = async () => {
-    try {
-      const [classesRes, sectionsRes] = await Promise.all([
-        axiosInstance.get("/v1/classes"),
-        axiosInstance.get("/v1/sections")
-      ]);
-      if (classesRes.data.success) setClasses(classesRes.data.data);
-      if (sectionsRes.data.success) setSections(sectionsRes.data.data);
-    } catch (err) {
-      console.error("Error fetching initial data:", err);
-    }
-  };
 
   const fetchSubjects = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (searchTerm) params.append("search", searchTerm);
-      if (filters.class_id) params.append("class_id", filters.class_id);
-      if (filters.section_id) params.append("section_id", filters.section_id);
       if (filters.status) params.append("status", filters.status);
 
-      const response = await axiosInstance.get(`/v1/subjects?${params.toString()}`);
+      const response = await axiosInstance.get(`/subject-types/v1?${params.toString()}`);
       if (response.data.success) {
         setSubjects(response.data.data);
       }
     } catch (err) {
-      console.error("Error fetching subjects:", err);
-      toast.error("Failed to fetch subjects");
+      console.error("Error fetching subject types:", err);
+      toast.error("Failed to fetch subject types");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchInitialData();
-  }, []);
-
-  useEffect(() => {
     fetchSubjects();
   }, [searchTerm, filters]);
-
-  const levels = ["All", "Primary", "Secondary", "Hifz", "Kitab"];
 
   // Handlers
   const openAddModal = () => {
@@ -116,8 +77,6 @@ const SubjectList = () => {
     setFormData({
       name: subject.name,
       code: subject.code,
-      class_id: subject.class_id,
-      section_id: subject.section_id || "",
       status: subject.status,
     });
     setModalType("edit");
@@ -133,15 +92,15 @@ const SubjectList = () => {
     setLoading(true);
     try {
       if (modalType === "add") {
-        const response = await axiosInstance.post("/v1/subjects", formData);
+        const response = await axiosInstance.post("/subject-types/v1", formData);
         if (response.data.success) {
-          toast.success("Subject added successfully!");
+          toast.success("Subject type added successfully!");
           fetchSubjects();
         }
       } else {
-        const response = await axiosInstance.put(`/v1/subjects/${selectedSubject._id}`, formData);
+        const response = await axiosInstance.put(`/subject-types/v1/${selectedSubject._id}`, formData);
         if (response.data.success) {
-          toast.success("Subject updated successfully!");
+          toast.success("Subject type updated successfully!");
           fetchSubjects();
         }
       }
@@ -158,9 +117,9 @@ const SubjectList = () => {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.delete(`/v1/subjects/${selectedSubject._id}`);
+      const response = await axiosInstance.delete(`/subject-types/v1/${selectedSubject._id}`);
       if (response.data.success) {
-        toast.success("Subject deleted!");
+        toast.success("Subject type deleted!");
         fetchSubjects();
       }
       setIsDeleteModalOpen(false);
@@ -177,18 +136,10 @@ const SubjectList = () => {
     setFormData({
       name: "",
       code: "",
-      class_id: "",
-      section_id: "",
       status: "active",
     });
     setSelectedSubject(null);
   };
-
-  const [openFilter, setOpenFilter] = useState(false);
-
-
-  console.log(sections);
-
 
   return (
     <div className="animate-in fade-in duration-500">
@@ -196,11 +147,11 @@ const SubjectList = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Layers className="w-8 h-8 text-[#00315e]" />
-            Subjects
+            <BookOpen className="w-8 h-8 text-[#00315e]" />
+            Subject Types
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
-            Manage academic subjects
+            Manage master list of academic subjects
           </p>
         </div>
 
@@ -226,21 +177,6 @@ const SubjectList = () => {
               <div className="absolute top-[50px] right-0 z-[100] whitespace-nowrap flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-[8px] shadow-lg lg:w-[300px] w-full">
                 <div className="flex flex-col gap-4">
                   <SelectInputField
-                    title={'Class'}
-                    options={classes.map(c => ({ value: c._id, label: c.name }))}
-                    value={filters.class_id}
-                    setValue={(val) => setFilters({ ...filters, class_id: val, section_id: "" })}
-                  />
-                  <SelectInputField
-                    title={'Section'}
-                    options={sections.filter(s => {
-                      const cls = classes.find(c => c._id === filters.class_id);
-                      return (s.class_id?._id || s.class_id) === filters.class_id || (cls && cls.section_id === s._id);
-                    }).map(s => ({ value: s._id, label: s.name }))}
-                    value={filters.section_id}
-                    setValue={(val) => setFilters({ ...filters, section_id: val })}
-                  />
-                  <SelectInputField
                     title={'Status'}
                     options={[{ value: "active", label: "Active" }, { value: "inactive", label: "Inactive" }]}
                     value={filters.status}
@@ -250,7 +186,7 @@ const SubjectList = () => {
                 <div className="flex items-end justify-end gap-4 mt-2.5">
                   <button
                     onClick={() => {
-                      setFilters({ class_id: "", section_id: "", status: "" });
+                      setFilters({ status: "" });
                       setIsFilterModalOpen(false);
                     }}
                     className="px-4 py-2 bg-red-200 text-red-700 rounded-[8px] cursor-pointer"
@@ -273,7 +209,7 @@ const SubjectList = () => {
             className="w-full md:w-auto px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
-            Add Subject
+            Add Subject Type
           </button>
         </div>
       </div>
@@ -283,30 +219,25 @@ const SubjectList = () => {
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
             <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-slate-500 font-bold">Loading Subjects...</p>
+            <p className="text-slate-500 font-bold">Loading Subject Types...</p>
           </div>
         ) : subjects.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center mb-4">
               <Search className="w-8 h-8" />
             </div>
-            <p className="text-slate-500 font-bold">No subjects found</p>
+            <p className="text-slate-500 font-bold">No subject types found</p>
           </div>
         ) : (
           <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
-
             <table className="w-full">
               <thead className="bg-[#00315e24]">
                 <tr>
                   <th className="px-10 py-3.5 text-left text-[12px] font-black">
-                    Class
+                    Subject Name
                   </th>
                   <th className="px-10 py-3.5 text-center text-[12px] font-black">
-                    Section
-                  </th>
-
-                  <th className="px-10 py-3.5 text-center text-[12px] font-black">
-                    Subject
+                    Code
                   </th>
                   <th className="px-10 py-3.5 text-center text-[12px] font-black">
                     Status
@@ -324,25 +255,15 @@ const SubjectList = () => {
                     className="group hover:bg-amber-50/10 transition-all duration-300"
                   >
                     <td className="px-10 py-3.5">
-                      <span
-                        onClick={() => openEditModal(sub)}
-                        className="text-sm font-bold text-slate-500"
-                      >
-                        {sub.className || "N/A"}
-                      </span>
-                    </td>
-
-                    <td className="px-10 py-3.5 text-center">
                       <span className="text-sm font-bold text-slate-500">
-                        {sub.sectionName || "N/A"}
+                        {sub.name}
                       </span>
                     </td>
                     <td className="px-10 py-3.5 text-center">
                       <span className="text-sm font-bold text-slate-500">
-                        {sub.name} <span className="text-xs text-slate-400">({sub.code})</span>
+                        {sub.code}
                       </span>
                     </td>
-
 
                     <td className="px-10 py-3.5 text-center">
                       <div
@@ -359,10 +280,10 @@ const SubjectList = () => {
                     <td>
                       <div className="flex items-center gap-3 justify-center">
                         <button className="cursor-pointer" onClick={() => openEditModal(sub)}>
-                          <SquarePen className="w-4 w-4  text-[#00315e]" />
+                          <SquarePen className="w-4 h-4  text-[#00315e]" />
                         </button>
                         <button className="cursor-pointer" onClick={() => openDeleteModal(sub)}>
-                          <Trash2 className="w-4 w-4 text-red-500" />
+                          <Trash2 className="w-4 h-4 text-red-500" />
                         </button>
                       </div>
                     </td>
@@ -374,14 +295,13 @@ const SubjectList = () => {
         )}
       </div>
 
-
-      {/* Add/Edit Modal - Unified & Styled */}
+      {/* Add/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-6 sm:p-10">
           <div className="bg-white rounded-[8px] w-full max-w-lg shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] animate-in fade-in zoom-in duration-300 overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-5 border-b-2 border-slate-50 flex items-center justify-between bg-gradient-to-r from-white to-slate-50/50">
               <h2 className="text-[20px] font-black text-slate-800 tracking-tight">
-                {modalType === "add" ? "Add Subject" : "Update Subject"}
+                {modalType === "add" ? "Add Subject Type" : "Update Subject Type"}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -392,43 +312,19 @@ const SubjectList = () => {
             </div>
 
             <div className="p-5 ">
-
-
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <SelectInputField
-                  title={'Class'}
-                  options={classes.map(c => ({ value: c._id, label: c.name }))}
-                  value={formData.class_id}
-                  setValue={(val) => setFormData({ ...formData, class_id: val, section_id: "" })}
+              <div className="grid grid-cols-1 gap-4">
+                <InputField
+                  title={'Subject Name'}
+                  placeholder={'Enter subject name'}
+                  value={formData.name}
+                  setValue={(val) => setFormData({ ...formData, name: val })}
                 />
-                <SelectInputField
-                  title={'Section'}
-                  options={sections.filter(s => {
-                    const cls = classes.find(c => c._id === formData.class_id);
-                    return (s.class_id?._id || s.class_id) === formData.class_id || (cls && cls.section_id === s._id);
-                  }).map(s => ({ value: s._id, label: s.name }))}
-                  value={formData.section_id}
-                  setValue={(val) => setFormData({ ...formData, section_id: val })}
-                />
-
-                <div className="col-span-2">
-                  <InputField
-                    title={'Subject Name'}
-                    placeholder={'Enter subject name'}
-                    value={formData.name}
-                    setValue={(val) => setFormData({ ...formData, name: val })}
-                  />
-                </div>
-
                 <InputField
                   title={'Subject Code'}
                   placeholder={'Enter subject code'}
                   value={formData.code}
                   setValue={(val) => setFormData({ ...formData, code: val })}
                 />
-
-
                 <SelectInputField
                   title={'Status'}
                   options={[{ value: "active", label: "Active" }, { value: "inactive", label: "Inactive" }]}
@@ -448,7 +344,7 @@ const SubjectList = () => {
                   onClick={handleAction}
                   className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
                 >
-                  {modalType === "add" ? "Add Subject" : "Update Subject"}
+                  {modalType === "add" ? "Add Subject Type" : "Update Subject Type"}
                 </button>
               </div>
             </div>
@@ -456,7 +352,7 @@ const SubjectList = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal - Styled */}
+      {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-6">
           <div className="bg-white rounded-[8px] w-full max-w-md shadow-2xl animate-in fade-in zoom-in duration-300 overflow-hidden">
@@ -483,7 +379,7 @@ const SubjectList = () => {
                   onClick={() => setIsDeleteModalOpen(false)}
                   className="w-full py-5 font-black text-slate-400 border border-slate-200 cursor-pointer hover:bg-slate-50 rounded-[8px] transition-all uppercase tracking-widest text-[14px]"
                 >
-                  Cencel
+                  Cancel
                 </button>{" "}
                 <button
                   onClick={handleDelete}
@@ -500,4 +396,4 @@ const SubjectList = () => {
   );
 };
 
-export default SubjectList;
+export default SubjectTypeList;

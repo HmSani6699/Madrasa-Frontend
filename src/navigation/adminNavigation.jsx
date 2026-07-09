@@ -44,6 +44,7 @@ import {
   FileCheck,
   List,
   Shapes,
+  BookMarked,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -121,7 +122,8 @@ export const adminNavigation = [
     children: [
       { name: "Class List", path: "/admin/academic/class", icon: LayoutGrid },
       { name: "Section List", path: "/admin/academic/section", icon: Shapes },
-      { name: "Subject", path: "/admin/academic/subject", icon: BookOpen },
+      { name: "Subject Type", path: "/admin/academic/subject-type", icon: BookOpen },
+      { name: "Class & Subject Assign", path: "/admin/academic/class-subject", icon: BookMarked },
       { name: "Class Schedule", path: "/admin/academic/schedule/class", icon: Clock },
       { name: "Class Syllabus", path: "/admin/academic/syllabus", icon: ClipboardList },
       { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher", icon: Clock },

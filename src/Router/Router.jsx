@@ -53,7 +53,8 @@ import StudentAttendance from "../Pages/Admin/StudentAttendance";
 import EmployeeAttendance from "../Pages/Admin/EmployeeAttendance";
 import ExamAttendance from "../Pages/Admin/ExamAttendance";
 import AssignTeacher from "../Pages/Admin/AssignTeacher";
-import SubjectList from "../Pages/Admin/SubjectList";
+import SubjectTypeList from "../Pages/Admin/SubjectTypeList";
+import ClassSubjectAssign from "../Pages/Admin/ClassSubjectAssign";
 import ClassList from "../Pages/Admin/ClassList";
 import SectionList from "../Pages/Admin/SectionList";
 import ClassAssign from "../Pages/Admin/ClassAssign";
@@ -225,8 +226,11 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/academic/assign-teacher") {
         element = <AssignTeacher />;
       }
-      if (item.path === "/admin/academic/subject") {
-        element = <SubjectList />;
+      if (item.path === "/admin/academic/subject-type") {
+        element = <SubjectTypeList />;
+      }
+      if (item.path === "/admin/academic/class-subject") {
+        element = <ClassSubjectAssign />;
       }
       if (item.path === "/admin/academic/class-assign") {
         element = <ClassAssign />;
