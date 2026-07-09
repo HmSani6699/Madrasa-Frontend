@@ -29,8 +29,10 @@ const SectionList = () => {
   const [selectedSection, setSelectedSection] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const [classes, setClasses] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
+    class_id: "",
     status: "active",
   });
 
@@ -39,9 +41,15 @@ const SectionList = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.get("/v1/sections");
-      if (response.data.success) {
-        setSections(response.data.data);
+      const [sectionRes, classRes] = await Promise.all([
+        axiosInstance.get("/v1/sections"),
+        axiosInstance.get("/v1/classes")
+      ]);
+      if (sectionRes.data.success) {
+        setSections(sectionRes.data.data);
+      }
+      if (classRes?.data?.success) {
+        setClasses(classRes.data.data);
       }
     } catch (err) {
       console.error("Error fetching sections:", err);
@@ -65,6 +73,7 @@ const SectionList = () => {
     setSelectedSection(sec);
     setFormData({
       name: sec.name,
+      class_id: sec.class_id || "",
       status: sec.status,
     });
     setModalType("edit");
@@ -79,10 +88,7 @@ const SectionList = () => {
   const handleAction = async () => {
     try {
       if (modalType === "add") {
-        const response = await axiosInstance.post("/v1/sections", {
-          ...formData,
-          class_id: "" // Backend update made this optional
-        });
+        const response = await axiosInstance.post("/v1/sections", formData);
         if (response.data.success) {
           toast.success("Section added successfully!");
           fetchData();
@@ -118,7 +124,7 @@ const SectionList = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: "", status: "active" });
+    setFormData({ name: "", class_id: "", status: "active" });
     setSelectedSection(null);
   };
 
@@ -274,10 +280,19 @@ const SectionList = () => {
                   placeholder="Enter section name"
                 />
                 <SelectInputField
+                  title={'Class'}
+                  value={formData.class_id}
+                  setValue={(val) => setFormData({ ...formData, class_id: val })}
+                  options={[
+                    { value: "", label: "Select Class (Optional)" },
+                    ...classes.map(c => ({ value: c._id, label: c.name }))
+                  ]}
+                />
+                <SelectInputField
                   title={'Status'}
                   value={formData.status}
                   setValue={(val) => setFormData({ ...formData, status: val })}
-                  options={[{ value: "active" }, { value: "inactive" }]}
+                  options={[{ value: "active", label: "Active" }, { value: "inactive", label: "Inactive" }]}
                 />
               </div>
 

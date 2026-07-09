@@ -1110,7 +1110,10 @@ const CreateAdmission = () => {
                   >
                     <option value="">Select Section</option>
                     {allSections
-                      .filter(sec => sec.class_id === student.class_id)
+                      .filter(sec => 
+                        (sec.class_id?._id === student.class_id || sec.class_id === student.class_id) ||
+                        (sec.classId?._id === student.class_id || sec.classId === student.class_id)
+                      )
                       .map((sec) => (
                         <option key={sec._id} value={sec._id}>{sec.name}</option>
                       ))}

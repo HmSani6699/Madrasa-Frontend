@@ -21,19 +21,27 @@ import {
   Printer,
   ChevronDown,
   FileDown,
-  CirclePlus
+  CirclePlus,
+  Globe,
+  Phone
 } from "lucide-react";
 import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { toPng } from 'html-to-image';
 import Modal from "../../components/Modal";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-hot-toast";
 import InputField from "../../components/InputField";
 import SelectInputField from "../../components/SelectInputField";
+import logo from '../../../public/mlogo.jpg';
 
 const ClassSchedule = () => {
   const [selectedClassId, setSelectedClassId] = useState("");
   const [selectedSectionId, setSelectedSectionId] = useState("");
+  const [filterClassId, setFilterClassId] = useState("");
+  const [filterSectionId, setFilterSectionId] = useState("");
   const [viewMode, setViewMode] = useState("grid"); // "grid" or "list"
   const [duration, setDuration] = useState("");
 
@@ -49,6 +57,7 @@ const ClassSchedule = () => {
   const [currentSlot, setCurrentSlot] = useState(null); // For Add/Edit
   const [slotToDelete, setSlotToDelete] = useState(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
   const days = [
     "Saturday",
@@ -62,9 +71,16 @@ const ClassSchedule = () => {
   ];
 
   const [activeTab, setActiveTab] = useState("Saturday");
-  const [modalRows, setModalRows] = useState([
-    { subjectId: "", teacherId: "", timeFrom: "", timeTo: "" }
-  ]);
+  const initialRows = { subjectId: "", teacherId: "", timeFrom: "", timeTo: "" };
+  const [modalRowsByDay, setModalRowsByDay] = useState({
+    Saturday: [{ ...initialRows }],
+    Sunday: [{ ...initialRows }],
+    Monday: [{ ...initialRows }],
+    Tuesday: [{ ...initialRows }],
+    Wednesday: [{ ...initialRows }],
+    Thursday: [{ ...initialRows }],
+    Friday: [{ ...initialRows }],
+  });
 
 
   console.log(activeTab);
@@ -171,19 +187,36 @@ const ClassSchedule = () => {
   const handleAddSlot = () => {
     setCurrentSlot(null);
     setActiveTab("Saturday");
-    setModalRows([{ subjectId: "", teacherId: "", timeFrom: "", timeTo: "" }]);
+    setModalRowsByDay({
+      Saturday: [{ ...initialRows }],
+      Sunday: [{ ...initialRows }],
+      Monday: [{ ...initialRows }],
+      Tuesday: [{ ...initialRows }],
+      Wednesday: [{ ...initialRows }],
+      Thursday: [{ ...initialRows }],
+      Friday: [{ ...initialRows }],
+    });
     setIsModalOpen(true);
   };
 
   const handleEditSlot = (dayRoutine) => {
     setCurrentSlot(dayRoutine);
     setActiveTab(dayRoutine.day);
-    setModalRows(dayRoutine.periods.map(p => ({
-      subjectId: p.subject_id,
-      teacherId: p.teacher_id,
-      timeFrom: p.startTime,
-      timeTo: p.endTime
-    })));
+    setModalRowsByDay({
+      Saturday: [{ ...initialRows }],
+      Sunday: [{ ...initialRows }],
+      Monday: [{ ...initialRows }],
+      Tuesday: [{ ...initialRows }],
+      Wednesday: [{ ...initialRows }],
+      Thursday: [{ ...initialRows }],
+      Friday: [{ ...initialRows }],
+      [dayRoutine.day]: dayRoutine.periods.map(p => ({
+        subjectId: p.subject_id,
+        teacherId: p.teacher_id,
+        timeFrom: p.startTime,
+        timeTo: p.endTime
+      }))
+    });
     setIsModalOpen(true);
   };
 
@@ -226,33 +259,42 @@ const ClassSchedule = () => {
 
     setLoading(true);
     try {
-      const payload = {
-        routine_id: currentSlot?._id,
-        class_id: selectedClassId,
-        section_id: selectedSectionId,
-        day: activeTab,
-        overwrite: !!currentSlot?._id,
-        periods: modalRows.map(row => ({
+      const promises = [];
+      let totalPeriods = 0;
+
+      days.forEach(day => {
+        const periods = modalRowsByDay[day].map(row => ({
           startTime: row.timeFrom || "09:00",
           endTime: row.timeTo || "10:00",
           subject_id: row.subjectId,
           teacher_id: row.teacherId,
           roomNumber: "101" // Default
-        })).filter(r => r.subject_id && r.teacher_id)
-      };
+        })).filter(r => r.subject_id && r.teacher_id);
 
-      if (payload.periods.length === 0) {
+        if (periods.length > 0) {
+          totalPeriods += periods.length;
+          const payload = {
+            routine_id: currentSlot?.day === day ? currentSlot._id : null,
+            class_id: selectedClassId,
+            section_id: selectedSectionId,
+            day: day,
+            overwrite: !!(currentSlot?._id && currentSlot?.day === day),
+            periods: periods
+          };
+          promises.push(axiosInstance.post("/v1/class-routines", payload));
+        }
+      });
+
+      if (totalPeriods === 0) {
         toast.error("Please add at least one subject/teacher row");
         setLoading(false);
         return;
       }
 
-      const response = await axiosInstance.post("/v1/class-routines", payload);
-      if (response.data.success) {
-        toast.success("Time Table updated!");
-        fetchRoutines();
-        setIsModalOpen(false);
-      }
+      await Promise.all(promises);
+      toast.success("Time Table updated!");
+      fetchRoutines();
+      setIsModalOpen(false);
     } catch (err) {
       console.error("Submit error:", err);
       toast.error("Failed to save schedule");
@@ -280,55 +322,48 @@ const ClassSchedule = () => {
     }));
   };
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (scheduleData.length === 0) {
       toast.error("No schedule data to export");
       return;
     }
 
-    const className = classes.find(c => c._id === selectedClassId)?.name || "Class";
-    const sectionName = sections.find(s => s._id === selectedSectionId)?.name || "Section";
+    setLoading(true);
+    try {
+      const printContent = document.getElementById('printable-routine');
+      if (!printContent) return;
 
-    const exportData = [];
-    
-    // Add title
-    exportData.push([`Routine for ${className} - ${sectionName}`]);
-    exportData.push([]); 
-    
-    // Add headers
-    exportData.push(["Day", "Time", "Subject", "Teacher"]);
+      const a4WidthPx = 794;
+      const a4HeightPx = 1123;
 
-    // Add data
-    days.forEach(day => {
-      const slots = getSlotsByDay(day);
-      if (slots.length > 0) {
-        slots.forEach((slot, index) => {
-          exportData.push([
-            index === 0 ? day : "", 
-            slot.timeRange,
-            slot.subjectId?.name || slot.subject,
-            slot.teacherId?.name || slot.teacher
-          ]);
-        });
-        exportData.push([]); // Empty row spacing between days
-      }
-    });
+      const dataUrl = await toPng(printContent, {
+        pixelRatio: 2,
+        width: a4WidthPx,
+        height: a4HeightPx,
+        style: {
+          transform: 'none',
+        }
+      });
 
-    const ws = XLSX.utils.aoa_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    
-    ws['!cols'] = [
-      { wch: 15 }, 
-      { wch: 25 }, 
-      { wch: 25 }, 
-      { wch: 25 }  
-    ];
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [a4WidthPx, a4HeightPx]
+      });
 
-    if(!ws["!merges"]) ws["!merges"] = [];
-    ws["!merges"].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 3 } });
+      doc.addImage(dataUrl, 'PNG', 0, 0, a4WidthPx, a4HeightPx);
 
-    XLSX.utils.book_append_sheet(wb, ws, "Class Routine");
-    XLSX.writeFile(wb, `${className}_${sectionName}_Routine.xlsx`);
+      const className = classes.find(c => c._id === selectedClassId)?.name || "Class";
+      const sectionName = sections.find(s => s._id === selectedSectionId)?.name || "Section";
+
+      doc.save(`${className}_${sectionName}_Routine.pdf`);
+      toast.success("Routine downloaded successfully!");
+    } catch (err) {
+      console.error("Export error:", err);
+      toast.error("Failed to export schedule");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -350,7 +385,11 @@ const ClassSchedule = () => {
 
           <div className="relative">
             <button
-              onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}
+              onClick={() => {
+                setFilterClassId(selectedClassId);
+                setFilterSectionId(selectedSectionId);
+                setIsFilterModalOpen(!isFilterModalOpen);
+              }}
               className="px-4 py-2 bg-white border border-slate-200 rounded-[8px] text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2 font-bold text-sm cursor-pointer"
             >
               <Filter className="w-5 h-5" />
@@ -362,18 +401,18 @@ const ClassSchedule = () => {
                   <SelectInputField
                     title={'Class'}
                     options={classes.map(c => ({ value: c._id, label: c.name }))}
-                    value={selectedClassId}
-                    setValue={setSelectedClassId}
+                    value={filterClassId}
+                    setValue={setFilterClassId}
                     bgColor={'bg-[#00315e24]'}
                   />
                   <SelectInputField
                     title={'Section'}
                     options={sections.filter(s => {
-                      const cls = classes.find(c => c._id === selectedClassId);
-                      return (s.class_id?._id || s.class_id) === selectedClassId || (cls && cls.section_id === s._id);
+                      const cls = classes.find(c => c._id === filterClassId);
+                      return (s.class_id?._id || s.class_id) === filterClassId || (cls && cls.section_id === s._id);
                     }).map(s => ({ value: s._id, label: s.name }))}
-                    value={selectedSectionId}
-                    setValue={setSelectedSectionId}
+                    value={filterSectionId}
+                    setValue={setFilterSectionId}
                     bgColor={'bg-[#00315e24]'}
                   />
                 </div>
@@ -385,7 +424,11 @@ const ClassSchedule = () => {
                     Cancel
                   </button>
                   <button
-                    onClick={() => setIsFilterModalOpen(false)}
+                    onClick={() => {
+                      setSelectedClassId(filterClassId);
+                      setSelectedSectionId(filterSectionId);
+                      setIsFilterModalOpen(false);
+                    }}
                     className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer font-bold text-sm"
                   >
                     Apply
@@ -408,12 +451,12 @@ const ClassSchedule = () => {
       <div className="bg-white rounded-[8px] border border-slate-100 shadow-sm overflow-hidden">
         <div className="px-5 pb-2 border-b border-slate-300 flex items-center justify-between ">
           <h2 className="text-lg font-black text-[#2d3748]">Time Table</h2>
-          <button 
-            onClick={handleExport}
+          <button
+            onClick={() => setIsPreviewModalOpen(true)}
             className="px-4 py-2 bg-white border border-slate-200 rounded-[8px] text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-2 text-sm font-bold cursor-pointer"
           >
             <FileDown className="w-4 h-4" />
-            Export
+            Preview & Export
           </button>
         </div>
 
@@ -534,7 +577,7 @@ const ClassSchedule = () => {
               ))}
             </div>
 
-            {modalRows.map((row, index) => (
+            {modalRowsByDay[activeTab].map((row, index) => (
               <div key={index} className="flex items-center gap-4 mb-4">
 
 
@@ -548,9 +591,9 @@ const ClassSchedule = () => {
                     required={true}
                     value={row.subjectId}
                     onChange={(e) => {
-                      const newRows = [...modalRows];
+                      const newRows = [...modalRowsByDay[activeTab]];
                       newRows[index].subjectId = e.target.value;
-                      setModalRows(newRows);
+                      setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                     }}
                     className="w-full px-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
                   >
@@ -572,9 +615,9 @@ const ClassSchedule = () => {
                     required={true}
                     value={row.teacherId}
                     onChange={(e) => {
-                      const newRows = [...modalRows];
+                      const newRows = [...modalRowsByDay[activeTab]];
                       newRows[index].teacherId = e.target.value;
-                      setModalRows(newRows);
+                      setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                     }}
                     className="w-full px-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
                   >
@@ -601,9 +644,9 @@ const ClassSchedule = () => {
                     required={true}
                     value={row.timeFrom}
                     onChange={(e) => {
-                      const newRows = [...modalRows];
+                      const newRows = [...modalRowsByDay[activeTab]];
                       newRows[index].timeFrom = e.target.value;
-                      setModalRows(newRows);
+                      setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                     }}
                     className="w-full px-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
 
@@ -620,9 +663,9 @@ const ClassSchedule = () => {
                     required={true}
                     value={row.timeTo}
                     onChange={(e) => {
-                      const newRows = [...modalRows];
+                      const newRows = [...modalRowsByDay[activeTab]];
                       newRows[index].timeTo = e.target.value;
-                      setModalRows(newRows);
+                      setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                     }}
                     className="w-full px-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
 
@@ -633,16 +676,22 @@ const ClassSchedule = () => {
                 <div className="flex items-center gap-2 mt-6">
                   <button
                     onClick={() => {
-                      const newRows = modalRows.filter((_, i) => i !== index);
-                      setModalRows(newRows.length > 0 ? newRows : [{ subjectId: "", teacherId: "", timeFrom: "", timeTo: "" }]);
+                      const newRows = modalRowsByDay[activeTab].filter((_, i) => i !== index);
+                      setModalRowsByDay({
+                        ...modalRowsByDay,
+                        [activeTab]: newRows.length > 0 ? newRows : [{ ...initialRows }]
+                      });
                     }}
                     className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>
-                  {index === modalRows.length - 1 && (
+                  {index === modalRowsByDay[activeTab].length - 1 && (
                     <button
-                      onClick={() => setModalRows([...modalRows, { subjectId: "", teacherId: "", timeFrom: "", timeTo: "" }])}
+                      onClick={() => {
+                        const newRows = [...modalRowsByDay[activeTab], { ...initialRows }];
+                        setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
+                      }}
                       className="p-2 text-[#00315e] hover:bg-[#00315e]/10 rounded-lg transition-colors"
                     >
                       <CirclePlus className="w-6 h-6" />
@@ -681,6 +730,135 @@ const ClassSchedule = () => {
         onDelete={confirmDelete}
         itemName="schedule slot"
       />
+
+      {/* Routine Preview Modal */}
+      <Modal
+        isOpen={isPreviewModalOpen}
+        onClose={() => setIsPreviewModalOpen(false)}
+        title="Routine Preview"
+        width="w-full lg:max-w-[850px]"
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-end">
+            <button
+              onClick={handleExport}
+              disabled={loading}
+              className="px-6 py-2 bg-[#00315e] text-white rounded-[8px] flex items-center gap-2 hover:bg-[#002240] transition-all font-bold text-sm cursor-pointer disabled:opacity-50"
+            >
+              <FileDown className="w-4 h-4" />
+              {loading ? "Exporting..." : "Download PDF"}
+            </button>
+          </div>
+          <div className="overflow-auto bg-slate-100 p-4 rounded-xl flex justify-center max-h-[70vh]">
+            <div id="printable-routine" className="w-[794px] shrink-0 min-h-[1123px] bg-[#f0f3f6] relative z-0 flex flex-col font-sans shadow-lg">
+              {/* Full Page Watermark */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] pointer-events-none z-0 overflow-hidden">
+                <img src={logo} alt="" className="w-[40%] max-w-2xl object-contain grayscale" />
+              </div>
+              <style>
+                {`
+              @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
+              .font-arabic { font-family: 'Amiri', serif; }
+            `}
+              </style>
+
+              <div className="p-8 flex-grow flex flex-col relative z-10">
+                {/* Institutional Header */}
+                <div className="flex justify-between items-start border-b-[3px] border-[#164366] pb-2 mb-6 relative">
+                  <div className="flex items-center gap-6">
+
+                    <div className="text-center pt-2">
+                      <div className="flex items-center justify-center gap-2 mb-1">
+                        <span className="text-[25px] font-bold text-[#164366] uppercase whitespace-nowrap">Pakunda Islamia Madrasa</span>
+                        <div className="w-15 h-15 flex flex-col items-center justify-center overflow-hidden">
+                          <img src={logo} alt="" />
+                        </div>
+                        <span className="text-[23px] leading-none font-arabic font-bold text-[#164366] whitespace-nowrap">الْمَدْرَسَةُ الْإِسْلَامِيَّةُ وَدَارُ الْأَيْتَامِ بِنَاكُونْدَا</span>
+                      </div>
+                      <h2 className="text-[40px] font-black text-slate-800 mb-0.5 -mt-[16px]">পাকুন্ডা ইসলামিয়া মাদ্রাসা ও এতিমখানা</h2>
+                      <p className="text-[13px] font-bold text-slate-700">পাকুন্ডা, সোনামুড়ী, নারায়ণগঞ্জ,</p>
+                      <p className="text-[13px] font-bold text-slate-700">স্থাপিত : ২০০০ খ্রি</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center mb-8 relative z-10">
+                  <h3 className="inline-block text-[22px] font-black text-slate-800 border-b-2 border-slate-800 pb-1 uppercase tracking-wider">Class Routine</h3>
+                </div>
+
+                {/* Table */}
+                <div className="flex-grow relative z-10">
+                  <div className="flex justify-between text-[15px] font-black text-slate-800 mb-4 px-2">
+                    <span>Class : {classes.find(c => c._id === selectedClassId)?.name || "Class"}</span>
+                    <span>Section : {sections.find(s => s._id === selectedSectionId)?.name || "Section"}</span>
+                  </div>
+                  <table className="w-full text-left border-collapse border-2 border-[#164366]">
+                    <thead>
+                      <tr className="bg-[#164366] text-white">
+                        <th className="p-3 font-bold border-2 border-[#164366] text-center w-32 text-lg">Day</th>
+                        <th className="p-3 font-bold border-2 border-[#164366] text-center w-40 text-lg">Time</th>
+                        <th className="p-3 font-bold border-2 border-[#164366] text-lg">Subject</th>
+                        <th className="p-3 font-bold border-2 border-[#164366] text-lg">Teacher</th>
+                      </tr>
+                    </thead>
+                    <tbody className="">
+                      {days.map((day) => {
+                        const slots = getSlotsByDay(day);
+                        if (slots.length === 0) return null;
+                        return slots.map((slot, index) => (
+                          <tr key={slot._id} className="border-b-2 border-[#164366]">
+                            {index === 0 && (
+                              <td rowSpan={slots.length} className="p-3 font-black border-2 border-[#164366] text-center bg-slate-50 text-[#164366] align-middle text-lg uppercase tracking-wider">
+                                {day}
+                              </td>
+                            )}
+                            <td className="p-3 font-bold border-2 border-[#164366] text-center text-slate-700 text-[15px]">
+                              {slot.timeRange}
+                            </td>
+                            <td className="p-3 font-black border-2 border-[#164366] text-slate-800 text-[16px]">
+                              {slot.subjectId?.name || slot.subject}
+                            </td>
+                            <td className="p-3 font-bold border-2 border-[#164366] text-slate-700 text-[15px]">
+                              {slot.teacherId?.name || slot.teacher}
+                            </td>
+                          </tr>
+                        ));
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Signature */}
+                <div className="mt-auto pt-12 pb-6 flex justify-end">
+                  <div className="text-center w-48 mr-6">
+                    <div className="h-16 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" className="h-12 opacity-80">
+                        <path d="M10,80 Q40,10 80,70 T150,60 T220,80 Q250,30 280,60" fill="none" stroke="#164366" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M120,40 Q130,20 140,50" fill="none" stroke="#164366" strokeWidth="3" strokeLinecap="round" />
+                      </svg>
+                    </div>
+                    <div className="pt-2 border-t-2 border-slate-800">
+                      <p className="text-sm font-black text-slate-800">প্রধান শিক্ষক</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Area */}
+              <div className="bg-[#164366] text-white py-4 px-8 flex justify-center items-center gap-12 text-sm font-bold mt-auto shrink-0">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-5 h-5" />
+                  <span>www.pakundamadrasa.com</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="w-5 h-5" />
+                  <span>01986566021</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

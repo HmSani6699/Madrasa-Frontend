@@ -115,7 +115,10 @@ const StudentList = () => {
         setFilterSections([]);
         setTempFilters(prev => ({ ...prev, section_id: "all" }));
       } else {
-        const filtered = sections.filter(s => s.class_id === tempFilters.class_id);
+        const filtered = sections.filter(s => 
+          (s.class_id?._id === tempFilters.class_id || s.class_id === tempFilters.class_id) ||
+          (s.classId?._id === tempFilters.class_id || s.classId === tempFilters.class_id)
+        );
         setFilterSections(filtered);
         setTempFilters(prev => ({ ...prev, section_id: "all" }));
       }
@@ -734,7 +737,10 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
               >
                 <option value="">Select Section</option>
                 {allSections
-                  .filter(sec => sec.class_id === formData.class_id)
+                  .filter(sec => 
+                    (sec.class_id?._id === formData.class_id || sec.class_id === formData.class_id) ||
+                    (sec.classId?._id === formData.class_id || sec.classId === formData.class_id)
+                  )
                   .map((sec) => (
                     <option key={sec._id} value={sec._id}>{sec.name}</option>
                   ))}
