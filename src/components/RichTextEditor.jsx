@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import { Bold, Italic, Underline, List, ListOrdered, Link, Undo, Redo, Type } from 'lucide-react';
+import { Bold, Italic, Underline, List, ListOrdered, Link, Undo, Redo, Image as ImageIcon } from 'lucide-react';
 
 const RichTextEditor = ({ title, value, setValue, placeholder }) => {
   const editorRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
@@ -20,6 +21,53 @@ const RichTextEditor = ({ title, value, setValue, placeholder }) => {
   const handleInput = () => {
     if (editorRef.current) {
       setValue(editorRef.current.innerHTML);
+    }
+  };
+
+  useEffect(() => {
+    const handleDblClick = (e) => {
+      if (e.target.tagName === 'IMG') {
+        const currentWidth = e.target.style.width || e.target.width + 'px';
+        const newWidth = prompt('Enter new image width (e.g., 50%, 300px):', currentWidth);
+        if (newWidth) {
+          e.target.style.width = newWidth;
+          e.target.style.height = 'auto';
+          handleInput(); // Save changes
+        }
+      }
+    };
+
+    const editor = editorRef.current;
+    if (editor) {
+      editor.addEventListener('dblclick', handleDblClick);
+    }
+    return () => {
+      if (editor) editor.removeEventListener('dblclick', handleDblClick);
+    };
+  }, []);
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        executeCommand('insertImage', e.target.result);
+        // Find the inserted image and add a helpful title
+        if (editorRef.current) {
+          const images = editorRef.current.getElementsByTagName('img');
+          const lastImage = images[images.length - 1];
+          if (lastImage) {
+            lastImage.title = "Double-click to resize";
+            lastImage.style.maxWidth = "100%";
+            handleInput();
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -53,6 +101,16 @@ const RichTextEditor = ({ title, value, setValue, placeholder }) => {
             const url = prompt('Enter URL:');
             if (url) executeCommand('createLink', url);
           }} title="Link" />
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+          <ToolbarButton icon={ImageIcon} onClick={() => {
+            fileInputRef.current?.click();
+          }} title="Upload Image" />
           <div className="flex-1" />
           <ToolbarButton icon={Undo} onClick={() => executeCommand('undo')} title="Undo" />
           <ToolbarButton icon={Redo} onClick={() => executeCommand('redo')} title="Redo" />
