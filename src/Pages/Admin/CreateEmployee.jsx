@@ -302,7 +302,8 @@ const CreateEmployee = () => {
             <FormSelect
               label="Department"
               field="department"
-              options={["Select", ...departments.map(d => d.name || d.title || d._id)]}
+              // options={["Select", ...departments.map(d => d.name || d.title || d._id)]}
+              options={["Select", "Academic", "Boading", " IT "]}
               data={formData}
               setter={handleInputChange}
 

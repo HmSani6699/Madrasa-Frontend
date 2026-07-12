@@ -220,6 +220,30 @@ const ClassSchedule = () => {
     setIsModalOpen(true);
   };
 
+  const handleTabChange = (newDay) => {
+    const currentDayRows = modalRowsByDay[activeTab];
+    const newDayRows = modalRowsByDay[newDay];
+
+    const isNewDayEmpty = newDayRows.length === 1 &&
+      !newDayRows[0].subjectId &&
+      !newDayRows[0].teacherId &&
+      !newDayRows[0].timeFrom &&
+      !newDayRows[0].timeTo;
+
+    const hasCurrentDayData = currentDayRows.some(row =>
+      row.subjectId || row.teacherId || row.timeFrom || row.timeTo
+    );
+
+    if (isNewDayEmpty && hasCurrentDayData) {
+      setModalRowsByDay(prev => ({
+        ...prev,
+        [newDay]: currentDayRows.map(row => ({ ...row }))
+      }));
+    }
+
+    setActiveTab(newDay);
+  };
+
   const handleDeleteClick = (slot) => {
     setSlotToDelete(slot);
     setIsDeleteModalOpen(true);
@@ -333,8 +357,11 @@ const ClassSchedule = () => {
       const printContent = document.getElementById('printable-routine');
       if (!printContent) return;
 
-      const a4WidthPx = 794;
-      const a4HeightPx = 1123;
+      // const a4WidthPx = 794;
+      // const a4HeightPx = 1123;
+
+      const a4WidthPx = 1123;
+      const a4HeightPx = 794;
 
       const dataUrl = await toPng(printContent, {
         pixelRatio: 2,
@@ -367,7 +394,7 @@ const ClassSchedule = () => {
   };
 
   return (
-    <div className=" bg-[#f8fafc] min-h-screen">
+    <div className="  min-h-screen">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
@@ -449,7 +476,7 @@ const ClassSchedule = () => {
 
       {/* Main Content Area */}
       <div className="bg-white rounded-[8px] border border-slate-100 shadow-sm overflow-hidden">
-        <div className="px-5 pb-2 border-b border-slate-300 flex items-center justify-between ">
+        <div className="px-5 py-4 border-b border-slate-300 flex items-center justify-between ">
           <h2 className="text-lg font-black text-[#2d3748]">Time Table</h2>
           <button
             onClick={() => setIsPreviewModalOpen(true)}
@@ -465,6 +492,16 @@ const ClassSchedule = () => {
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
               <p className="text-slate-500 font-bold">Loading timetable...</p>
+            </div>
+          ) : !selectedClassId || !selectedSectionId ? (
+            <div className="flex flex-col items-center justify-center py-20 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
+                <Calendar className="w-8 h-8 text-slate-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-700 mb-1">কোন রুটিন নির্বাচন করা হয়নি</h3>
+              <p className="text-slate-500 text-sm text-center max-w-md">
+                ক্লাস রুটিন দেখতে বা নতুন রুটিন তৈরি করতে অনুগ্রহ করে উপরের ফিল্টার থেকে নির্দিষ্ট ক্লাস এবং সেকশন নির্বাচন করুন।
+              </p>
             </div>
           ) : (
             <div className="flex gap-4 w-full  overflow-x-auto">
@@ -568,7 +605,7 @@ const ClassSchedule = () => {
               {days.map(day => (
                 <button
                   key={day}
-                  onClick={() => setActiveTab(day)}
+                  onClick={() => handleTabChange(day)}
                   className={`px-8 py-3 text-sm font-black transition-all relative ${activeTab === day ? "text-[#00315e]" : "text-slate-400 hover:text-slate-600"}`}
                 >
                   {day}
@@ -808,17 +845,17 @@ const ClassSchedule = () => {
                         return slots.map((slot, index) => (
                           <tr key={slot._id} className="border-b-2 border-[#164366]">
                             {index === 0 && (
-                              <td rowSpan={slots.length} className="p-3 font-black border-2 border-[#164366] text-center bg-slate-50 text-[#164366] align-middle text-lg uppercase tracking-wider">
+                              <td rowSpan={slots.length} className="px-3 py-1 font-black border-2 border-[#164366] text-center bg-slate-50 text-[#164366] align-middle text-lg uppercase tracking-wider">
                                 {day}
                               </td>
                             )}
-                            <td className="p-3 font-bold border-2 border-[#164366] text-center text-slate-700 text-[15px]">
+                            <td className="px-3 py-1 font-bold border-2 border-[#164366] text-center text-slate-700 text-[15px]">
                               {slot.timeRange}
                             </td>
-                            <td className="p-3 font-black border-2 border-[#164366] text-slate-800 text-[16px]">
+                            <td className="px-3 py-1 font-black border-2 border-[#164366] text-slate-800 text-[16px]">
                               {slot.subjectId?.name || slot.subject}
                             </td>
-                            <td className="p-3 font-bold border-2 border-[#164366] text-slate-700 text-[15px]">
+                            <td className="px-3 py-1 font-bold border-2 border-[#164366] text-slate-700 text-[15px]">
                               {slot.teacherId?.name || slot.teacher}
                             </td>
                           </tr>

@@ -31,13 +31,13 @@ const ClassAssign = () => {
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
-  
+
   // View State - Grouped by Class for UI
   const [mappings, setMappings] = useState([]);
 
   // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Form States
   const [formData, setFormData] = useState({
     classId: "",
@@ -56,7 +56,7 @@ const ClassAssign = () => {
 
       if (classRes.data.success) setClasses(classRes.data.data);
       if (subjectRes.data.success) setSubjects(subjectRes.data.data);
-      
+
       if (sectionRes.data.success) {
         setSections(sectionRes.data.data);
         processMappings(sectionRes.data.data, classRes.data.data);
@@ -77,31 +77,31 @@ const ClassAssign = () => {
   const processMappings = (allSections, allClasses) => {
     // Group sections by Class
     const grouped = allClasses.map(cls => {
-        // Fix: use class_id instead of classId (backend uses underscore)
-        const clsSections = allSections.filter(s => 
-            (s.class_id?._id === cls._id || s.class_id === cls._id) || 
-            (s.classId?._id === cls._id || s.classId === cls._id)
-        );
-        
-        const allSubIds = new Set();
-        clsSections.forEach(s => {
-            if(s.subjects) s.subjects.forEach(sub => allSubIds.add(sub._id || sub));
-        });
+      // Fix: use class_id instead of classId (backend uses underscore)
+      const clsSections = allSections.filter(s =>
+        (s.class_id?._id === cls._id || s.class_id === cls._id) ||
+        (s.classId?._id === cls._id || s.classId === cls._id)
+      );
 
-        // Also check if the class itself has subjects (for classes without sections)
-        if (cls.subjects) {
-            cls.subjects.forEach(sub => allSubIds.add(sub._id || sub));
-        }
+      const allSubIds = new Set();
+      clsSections.forEach(s => {
+        if (s.subjects) s.subjects.forEach(sub => allSubIds.add(sub._id || sub));
+      });
 
-        return {
-            class: cls,
-            sections: clsSections,
-            subjectCount: allSubIds.size,
-            sectionCount: clsSections.length,
-            hasConfig: allSubIds.size > 0
-        };
-    }); 
-    
+      // Also check if the class itself has subjects (for classes without sections)
+      if (cls.subjects) {
+        cls.subjects.forEach(sub => allSubIds.add(sub._id || sub));
+      }
+
+      return {
+        class: cls,
+        sections: clsSections,
+        subjectCount: allSubIds.size,
+        sectionCount: clsSections.length,
+        hasConfig: allSubIds.size > 0
+      };
+    });
+
     setMappings(grouped);
   };
 
@@ -125,68 +125,68 @@ const ClassAssign = () => {
   };
 
   const handleClassChange = (e) => {
-      const clsId = e.target.value;
-      const clsMapping = mappings.find(m => m.class._id === clsId);
-      
-      setFormData({
-          classId: clsId,
-          sectionIds: clsMapping ? clsMapping.sections.map(s => s._id) : [], // Select all segments of this class by default
-          subjectIds: []
-      });
+    const clsId = e.target.value;
+    const clsMapping = mappings.find(m => m.class._id === clsId);
+
+    setFormData({
+      classId: clsId,
+      sectionIds: clsMapping ? clsMapping.sections.map(s => s._id) : [], // Select all segments of this class by default
+      subjectIds: []
+    });
   };
 
   const handleAction = async () => {
     if (!formData.classId) {
-        toast.error("Please select a class");
-        return;
+      toast.error("Please select a class");
+      return;
     }
-    
+
     // Allow assignment if no sections exist, provided sectionIds is empty
     // But if sections exist, user MIGHT want to select some or all.
     // The requirement says "even if there is no section, the class can be assigned"
 
     try {
-        setLoading(true);
-        const response = await axiosInstance.post("/v1/class-assign", {
-            classId: formData.classId,
-            sectionIds: formData.sectionIds,
-            subjectIds: formData.subjectIds
-        });
+      setLoading(true);
+      const response = await axiosInstance.post("/v1/class-assign", {
+        classId: formData.classId,
+        sectionIds: formData.sectionIds,
+        subjectIds: formData.subjectIds
+      });
 
-        if (response.data.success) {
-            toast.success(response.data.message || "Subjects assigned successfully");
-            fetchData();
-            setIsModalOpen(false);
-            resetForm();
-        }
+      if (response.data.success) {
+        toast.success(response.data.message || "Subjects assigned successfully");
+        fetchData();
+        setIsModalOpen(false);
+        resetForm();
+      }
     } catch (err) {
-        console.error("Assignment error:", err);
-        toast.error(err.response?.data?.message || "Failed to assign subjects");
+      console.error("Assignment error:", err);
+      toast.error(err.response?.data?.message || "Failed to assign subjects");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
   const openEditModal = (mapping) => {
     const clsId = mapping.class._id;
-    
+
     // Get subjects from class or sections
     const existingSubjectIds = new Set();
     if (mapping.class.subjects) {
-        mapping.class.subjects.forEach(s => existingSubjectIds.add(s._id || s));
+      mapping.class.subjects.forEach(s => existingSubjectIds.add(s._id || s));
     }
     mapping.sections.forEach(sec => {
-        if (sec.subjects) {
-            sec.subjects.forEach(s => existingSubjectIds.add(s._id || s));
-        }
+      if (sec.subjects) {
+        sec.subjects.forEach(s => existingSubjectIds.add(s._id || s));
+      }
     });
 
     setFormData({
-        classId: clsId,
-        sectionIds: mapping.sections.map(s => s._id),
-        subjectIds: Array.from(existingSubjectIds)
+      classId: clsId,
+      sectionIds: mapping.sections.map(s => s._id),
+      subjectIds: Array.from(existingSubjectIds)
     });
-    
+
     setIsModalOpen(true);
   };
 
@@ -196,16 +196,16 @@ const ClassAssign = () => {
     try {
       setLoading(true);
       const sectionIds = mapping.sections.map(s => s._id);
-      
+
       const response = await axiosInstance.post("/v1/class-assign", {
-          classId: mapping.class._id,
-          sectionIds: sectionIds,
-          subjectIds: [] // Empty array to clear assignments
+        classId: mapping.class._id,
+        sectionIds: sectionIds,
+        subjectIds: [] // Empty array to clear assignments
       });
 
       if (response.data.success) {
-          toast.success("Assignments cleared successfully");
-          fetchData();
+        toast.success("Assignments cleared successfully");
+        fetchData();
       }
     } catch (err) {
       console.error("Delete error:", err);
@@ -224,13 +224,13 @@ const ClassAssign = () => {
   };
 
   // Filter for Modal
-  const modalSections = sections.filter(s => 
+  const modalSections = sections.filter(s =>
     s.class_id?._id === formData.classId || s.class_id === formData.classId ||
     s.classId?._id === formData.classId || s.classId === formData.classId
   );
 
-  const filteredMappings = mappings.filter(m => 
-      m.class.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredMappings = mappings.filter(m =>
+    m.class.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -261,7 +261,7 @@ const ClassAssign = () => {
 
       {/* Toolbar */}
       <div className="flex flex-col lg:flex-row gap-6">
-        <div className="flex-1 bg-white rounded-[2.5rem] border-2 border-slate-100 p-3 flex items-center shadow-sm">
+        <div className="flex-1 bg-white rounded-[2.5rem] p-3 flex items-center shadow-sm">
           <div className="px-5 text-slate-400">
             <Search className="w-5 h-5" />
           </div>
@@ -277,7 +277,7 @@ const ClassAssign = () => {
       {/* Mapping Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {loading ? (
-             <div className="col-span-2 text-center py-20 text-slate-400 font-bold">Loading...</div>
+          <div className="col-span-2 text-center py-20 text-slate-400 font-bold">Loading...</div>
         ) : filteredMappings.map((mapping) => (
           <div
             key={mapping.class._id}
@@ -332,7 +332,7 @@ const ClassAssign = () => {
                         {sec.name}
                       </span>
                     )) : (
-                        <span className="text-[10px] font-black text-slate-300 uppercase italic">No Sections</span>
+                      <span className="text-[10px] font-black text-slate-300 uppercase italic">No Sections</span>
                     )}
                   </div>
                 </div>
@@ -343,20 +343,20 @@ const ClassAssign = () => {
                     <BookOpen className="w-3.5 h-3.5" /> Subjects ({mapping.subjectCount})
                   </div>
                   <div className="flex flex-wrap gap-2 pt-1">
-                     {/* Try to get subjects from class first, then sections */}
-                     {(mapping.class.subjects || mapping.sections[0]?.subjects)?.slice(0, 3).map((sub, idx) => (
-                         <span key={idx} className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-bold">
-                             {sub.name || "Subject"}
-                         </span>
-                     ))}
-                     {mapping.subjectCount > 3 && (
-                         <span className="px-3 py-1 bg-slate-50 text-slate-400 rounded-lg text-[10px] font-bold">
-                             +{mapping.subjectCount - 3} more
-                         </span>
-                     )}
-                     {mapping.subjectCount === 0 && (
-                        <span className="text-xs font-bold text-slate-300 italic">No subjects</span>
-                     )}
+                    {/* Try to get subjects from class first, then sections */}
+                    {(mapping.class.subjects || mapping.sections[0]?.subjects)?.slice(0, 3).map((sub, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-bold">
+                        {sub.name || "Subject"}
+                      </span>
+                    ))}
+                    {mapping.subjectCount > 3 && (
+                      <span className="px-3 py-1 bg-slate-50 text-slate-400 rounded-lg text-[10px] font-bold">
+                        +{mapping.subjectCount - 3} more
+                      </span>
+                    )}
+                    {mapping.subjectCount === 0 && (
+                      <span className="text-xs font-bold text-slate-300 italic">No subjects</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -438,33 +438,32 @@ const ClassAssign = () => {
                   </div>
                   <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto pr-2">
                     {formData.classId ? (
-                        modalSections.length > 0 ? (
-                            modalSections.map((sec) => (
-                              <button
-                                key={sec._id}
-                                onClick={() => toggleSection(sec._id)}
-                                className={`py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all flex items-center justify-between ${
-                                  formData.sectionIds.includes(sec._id)
-                                    ? "bg-indigo-50 border-indigo-500 text-indigo-600"
-                                    : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
-                                }`}
-                              >
-                                {sec.name}
-                                {formData.sectionIds.includes(sec._id) ? (
-                                  <CheckCircle2 className="w-4 h-4" />
-                                ) : (
-                                  <Plus className="w-4 h-4" />
-                                )}
-                              </button>
-                            ))
-                        ) : (
-                            <div className="p-4 bg-emerald-50 rounded-2xl border-2 border-emerald-100 text-center">
-                                <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">No Sections Needed</p>
-                                <p className="text-[8px] font-bold text-emerald-400 mt-1">Assign directly to class</p>
-                            </div>
-                        )
+                      modalSections.length > 0 ? (
+                        modalSections.map((sec) => (
+                          <button
+                            key={sec._id}
+                            onClick={() => toggleSection(sec._id)}
+                            className={`py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all flex items-center justify-between ${formData.sectionIds.includes(sec._id)
+                                ? "bg-indigo-50 border-indigo-500 text-indigo-600"
+                                : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
+                              }`}
+                          >
+                            {sec.name}
+                            {formData.sectionIds.includes(sec._id) ? (
+                              <CheckCircle2 className="w-4 h-4" />
+                            ) : (
+                              <Plus className="w-4 h-4" />
+                            )}
+                          </button>
+                        ))
+                      ) : (
+                        <div className="p-4 bg-emerald-50 rounded-2xl border-2 border-emerald-100 text-center">
+                          <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">No Sections Needed</p>
+                          <p className="text-[8px] font-bold text-emerald-400 mt-1">Assign directly to class</p>
+                        </div>
+                      )
                     ) : (
-                        <p className="text-xs text-slate-400 font-bold italic">Select a class first</p>
+                      <p className="text-xs text-slate-400 font-bold italic">Select a class first</p>
                     )}
                   </div>
                 </div>
@@ -484,19 +483,18 @@ const ClassAssign = () => {
                       <button
                         key={sub._id}
                         onClick={() => toggleSubject(sub._id)}
-                        className={`w-full py-4 px-5 rounded-2xl text-xs font-black border-2 transition-all flex items-center justify-between ${
-                          formData.subjectIds.includes(sub._id)
+                        className={`w-full py-4 px-5 rounded-2xl text-xs font-black border-2 transition-all flex items-center justify-between ${formData.subjectIds.includes(sub._id)
                             ? "bg-amber-50 border-amber-400 text-amber-600 shadow-sm"
                             : "bg-slate-50 border-slate-50 text-slate-400 hover:border-slate-200 hover:bg-white"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-3 text-left">
                           <BookOpen
                             className={`w-4 h-4 ${formData.subjectIds.includes(sub._id) ? "text-amber-500" : "text-slate-300"}`}
                           />
                           <div>
-                              <p>{sub.name}</p>
-                              <p className="text-[9px] opacity-50">{sub.code}</p>
+                            <p>{sub.name}</p>
+                            <p className="text-[9px] opacity-50">{sub.code}</p>
                           </div>
                         </div>
                         {formData.subjectIds.includes(sub._id) && (

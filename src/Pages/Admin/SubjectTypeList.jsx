@@ -215,7 +215,7 @@ const SubjectTypeList = () => {
       </div>
 
       {/* Subject List Table - Enhanced Padding & Spacing */}
-      <div className="bg-white rounded-[8px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative">
+      <div className="bg-white rounded-[8px]  shadow-xl shadow-slate-100/50 overflow-hidden relative">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
             <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -229,7 +229,7 @@ const SubjectTypeList = () => {
             <p className="text-slate-500 font-bold">No subject types found</p>
           </div>
         ) : (
-          <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
+          <div className="overflow-x-auto  rounded-[8px]">
             <table className="w-full">
               <thead className="bg-[#00315e24]">
                 <tr>

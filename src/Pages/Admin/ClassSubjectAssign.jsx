@@ -85,8 +85,8 @@ const ClassSubjectAssign = () => {
 
   const filteredData = useMemo(() => {
     if (!searchTerm) return groupedData;
-    return groupedData.filter(g => 
-      g.className?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    return groupedData.filter(g =>
+      g.className?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       g.sectionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       g.subjects.some(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
@@ -107,7 +107,7 @@ const ClassSubjectAssign = () => {
   };
 
   const handleSubjectToggle = (code) => {
-    setSelectedSubjects(prev => 
+    setSelectedSubjects(prev =>
       prev.includes(code) ? prev.filter(c => c !== code) : [...prev, code]
     );
   };
@@ -125,7 +125,7 @@ const ClassSubjectAssign = () => {
       toast.error("Please select a class");
       return;
     }
-    
+
     setLoading(true);
     try {
       const subjectsPayload = selectedSubjects.map(code => {
@@ -188,7 +188,7 @@ const ClassSubjectAssign = () => {
       </div>
 
       {/* Grouped List Table */}
-      <div className="bg-white rounded-[8px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative">
+      <div className="bg-white rounded-[8px]  shadow-xl shadow-slate-100/50 overflow-hidden relative">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
             <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
