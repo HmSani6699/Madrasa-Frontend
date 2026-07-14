@@ -94,7 +94,10 @@ import AttendanceReports from "../Pages/Admin/AttendanceReports";
 import ExamReports from "../Pages/Admin/ExamReports";
 import InventoryReports from "../Pages/Admin/InventoryReports";
 import AdmissionReports from "../Pages/Admin/AdmissionReports";
-import StudentAcademicReport from "../Pages/Admin/StudentAcademicReport";
+import StudentAcademicReport from "../Pages/Admin/AcademicReports/StudentAcademicReport";
+import ClassRoutineReport from "../Pages/Admin/AcademicReports/ClassRoutineReport";
+import SyllabusCoverageReport from "../Pages/Admin/AcademicReports/SyllabusCoverageReport";
+import ClassSubjectAssignmentReport from "../Pages/Admin/AcademicReports/ClassSubjectAssignmentReport";
 import StudentAttendanceReport from "../Pages/Admin/StudentAttendanceReport";
 import StaffAttendanceReport from "../Pages/Admin/StaffAttendanceReport";
 import ExamAttendanceReport from "../Pages/Admin/ExamAttendanceReport";
@@ -244,8 +247,17 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/academic/schedule/teacher") {
         element = <TeacherSchedule />;
       }
-      if (item.path === "/admin/academic/student-academic-report") {
+      if (item.path === "/admin/academic/reports/student") {
         element = <StudentAcademicReport />;
+      }
+      if (item.path === "/admin/academic/reports/routine") {
+        element = <ClassRoutineReport />;
+      }
+      if (item.path === "/admin/academic/reports/syllabus") {
+        element = <SyllabusCoverageReport />;
+      }
+      if (item.path === "/admin/academic/reports/assignments") {
+        element = <ClassSubjectAssignmentReport />;
       }
 
       if (item.path === "/admin/homework/list") {
