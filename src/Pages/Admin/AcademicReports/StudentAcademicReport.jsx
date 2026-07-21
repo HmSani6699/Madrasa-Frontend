@@ -36,6 +36,7 @@ const StudentAcademicReport = () => {
 
   // Report Data
   const [singleReport, setSingleReport] = useState([]);
+  const [studentProfile, setStudentProfile] = useState(null);
   const [classReport, setClassReport] = useState([]);
   const [subjects, setSubjects] = useState([]); 
   const [classStudents, setClassStudents] = useState([]);
@@ -75,9 +76,22 @@ const StudentAcademicReport = () => {
         let url = `/v1/academic-reports/student/${studentId}`;
         if (examId) url += `?exam_id=${examId}`;
         
-        const res = await axiosInstance.get(url);
+        const [res, studentRes] = await Promise.all([
+          axiosInstance.get(url),
+          axiosInstance.get(`/v1/students?search=${studentId}`)
+        ]);
+
         if (res.data?.success) {
           setSingleReport(res.data.data);
+          
+          if (studentRes.data?.success && studentRes.data.data.length > 0) {
+             // Exact match on student_id or fallback to first search result
+             const matchedStudent = studentRes.data.data.find(s => s.student_id === studentId || s.roll_number === studentId) || studentRes.data.data[0];
+             setStudentProfile(matchedStudent);
+          } else {
+             setStudentProfile(null);
+          }
+          
           setShowReport(true);
         } else {
           toast.error(res.data?.message || "Failed to fetch report");
@@ -255,16 +269,26 @@ const StudentAcademicReport = () => {
             {/* Student Profile Overview */}
             <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-center gap-6 relative">
               <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-[#00315e] shrink-0 overflow-hidden border-2 border-white shadow-sm">
-                <div className="w-full h-full bg-[#00315e] flex items-center justify-center">
-                   <User size={32} className="text-white" />
-                </div>
+                {studentProfile?.photo ? (
+                  <img src={studentProfile.photo} alt="Student" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-[#00315e] flex items-center justify-center">
+                     <User size={32} className="text-white" />
+                  </div>
+                )}
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h2 className="text-lg font-bold text-gray-800">
-                  {singleReport.length > 0 ? (singleReport[0].student_id?.name || singleReport[0].student_id || studentId) : studentId}
+                  {studentProfile ? `${studentProfile.firstName} ${studentProfile.lastName || ''}` : (singleReport.length > 0 ? (singleReport[0].student_id?.name || singleReport[0].student_id || studentId) : studentId)}
                 </h2>
                 <div className="flex flex-col md:flex-row md:items-center gap-x-4 gap-y-1 mt-1">
-                  <span className="text-sm font-medium text-gray-500">Student ID: {studentId}</span>
+                  <span className="text-sm font-medium text-gray-500">Student ID: {studentProfile?.student_id || studentId}</span>
+                  {(studentProfile?.classInfo?.name || (singleReport.length > 0 && singleReport[0].class_id)) && (
+                    <span className="text-sm font-medium text-gray-500 md:border-l md:border-gray-300 md:pl-4">Class: {studentProfile?.classInfo?.name || singleReport[0]?.class_id?.name || singleReport[0]?.class_id}</span>
+                  )}
+                  {(studentProfile?.sectionInfo?.name || (singleReport.length > 0 && singleReport[0].section_id)) && (
+                    <span className="text-sm font-medium text-gray-500 md:border-l md:border-gray-300 md:pl-4">Section: {studentProfile?.sectionInfo?.name || singleReport[0]?.section_id?.name || singleReport[0]?.section_id}</span>
+                  )}
                 </div>
               </div>
             </div>

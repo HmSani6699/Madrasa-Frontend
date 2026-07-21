@@ -10,7 +10,8 @@ import {
   SquarePen,
   ClipboardList,
   Download,
-  AlertCircle
+  AlertCircle,
+  Eye
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-hot-toast";
@@ -31,6 +32,7 @@ const ClassSyllabus = () => {
   const [modalType, setModalType] = useState("add"); // "add" | "edit"
   const [selectedSyllabus, setSelectedSyllabus] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   // Form States
   const [formData, setFormData] = useState({
@@ -92,6 +94,11 @@ const ClassSyllabus = () => {
   const openDeleteModal = (syllabus) => {
     setSelectedSyllabus(syllabus);
     setIsDeleteModalOpen(true);
+  };
+
+  const openViewModal = (syllabus) => {
+    setSelectedSyllabus(syllabus);
+    setIsViewModalOpen(true);
   };
 
   const handleAction = async () => {
@@ -468,15 +475,19 @@ const ClassSyllabus = () => {
                       </div>
                     </td>
                     <td>
-                      <div className="flex items-center gap-3 justify-center">
-                        <button className="cursor-pointer" onClick={() => handleDownload(syllabus)}>
-                          <Download className="w-4 h-4  text-[#00315e]" />
+                      <div className="flex items-center gap-2 justify-center">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#00315e]/5 hover:bg-[#00315e]/10 transition-colors cursor-pointer" onClick={() => openViewModal(syllabus)} title="View">
+                          <Eye className="w-4 h-4 text-[#00315e]" />
                         </button>
-                        <button className="cursor-pointer" onClick={() => openEditModal(syllabus)}>
-                          <SquarePen className="w-4 h-4  text-[#00315e]" />
+
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#00315e]/5 hover:bg-[#00315e]/10 transition-colors cursor-pointer" onClick={() => openEditModal(syllabus)} title="Edit">
+                          <SquarePen className="w-4 h-4 text-[#00315e]" />
                         </button>
-                        <button className="cursor-pointer" onClick={() => openDeleteModal(syllabus)}>
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 transition-colors cursor-pointer" onClick={() => openDeleteModal(syllabus)} title="Delete">
                           <Trash2 className="w-4 h-4 text-red-500" />
+                        </button>
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#00315e]/5 hover:bg-[#00315e]/10 transition-colors cursor-pointer" onClick={() => handleDownload(syllabus)} title="Download">
+                          <Download className="w-4 h-4 text-[#00315e]" />
                         </button>
                       </div>
                     </td>
@@ -550,6 +561,42 @@ const ClassSyllabus = () => {
                   {modalType === "add" ? "Add Syllabus" : "Update Syllabus"}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Modal */}
+      {isViewModalOpen && selectedSyllabus && (
+        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-6 sm:p-10">
+          <div className="bg-white rounded-[8px] w-full max-w-4xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] animate-in fade-in zoom-in duration-300 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b-2 border-slate-50 flex items-center justify-between bg-gradient-to-r from-white to-slate-50/50">
+              <h2 className="text-[20px] font-black text-slate-800 tracking-tight">
+                View Syllabus
+              </h2>
+              <button
+                onClick={() => setIsViewModalOpen(false)}
+                className="p-[2px] bg-slate-100 hover:bg-red-500 text-slate-500 hover:text-white rounded-2xl transition-all active:scale-90 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-8 overflow-y-auto flex-1 prose max-w-none">
+              <div className="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800 mb-1">
+                    Class: {classes.find(c => c._id === selectedSyllabus.class_id)?.name || "N/A"}
+                  </h3>
+                  <p className="text-slate-500 font-medium">
+                    Subject: {subjects.find(s => s._id === selectedSyllabus.subject_id)?.name || "N/A"}
+                  </p>
+                </div>
+              </div>
+              <div
+                className="text-slate-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: selectedSyllabus.description }}
+              />
             </div>
           </div>
         </div>

@@ -153,7 +153,7 @@ const TeacherSchedule = () => {
           <div className="relative teacher-selector-container">
             <button
               onClick={() => setIsTeacherDropdownOpen(!isTeacherDropdownOpen)}
-              className="px-4 py-2 bg-[#00315e] text-white border border-slate-200 rounded-[8px] hover:bg-slate-50 transition-all flex items-center gap-2 font-bold text-sm cursor-pointer"
+              className="px-4 py-2 bg-[#00315e] text-white border border-slate-200 rounded-[8px]  transition-all flex items-center gap-2 font-bold text-sm cursor-pointer"
             >
               <Filter className="w-5 h-5" />
               Filter Teachers
@@ -210,7 +210,7 @@ const TeacherSchedule = () => {
 
                 <div className="flex justify-end gap-3 mt-2 pt-3 border-t border-slate-100">
                   <button
-                    className="text-xs font-bold text-slate-500 hover:text-slate-700 px-3 py-1.5"
+                    className="text-xs font-bold text-slate-500 hover:text-slate-700 px-3 py-1.5 cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedTeacherIds([]);
@@ -219,7 +219,7 @@ const TeacherSchedule = () => {
                     Clear All
                   </button>
                   <button
-                    className="text-xs font-bold bg-[#00315e] text-white rounded-[6px] px-4 py-1.5 hover:bg-blue-900"
+                    className="text-xs font-bold bg-[#00315e] cursor-pointer text-white rounded-[6px] px-4 py-1.5 hover:bg-blue-900"
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsTeacherDropdownOpen(false);
