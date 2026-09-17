@@ -127,16 +127,6 @@ export const adminNavigation = [
       { name: "Class Schedule", path: "/admin/academic/schedule/class", icon: Clock },
       { name: "Class Syllabus", path: "/admin/academic/syllabus", icon: ClipboardList },
       { name: "Teacher Schedule", path: "/admin/academic/schedule/teacher", icon: Clock },
-      {
-        name: "Reports",
-        icon: FileBarChart,
-        children: [
-          { name: "Student Academic Report", path: "/admin/academic/reports/student", icon: FileBarChart },
-          { name: "Class Routine & Load", path: "/admin/academic/reports/routine", icon: Clock },
-          { name: "Syllabus Coverage", path: "/admin/academic/reports/syllabus", icon: ClipboardList },
-          { name: "Subject Assignment", path: "/admin/academic/reports/assignments", icon: BookMarked }
-        ]
-      },
     ],
   },
   {

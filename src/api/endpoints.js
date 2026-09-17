@@ -18,7 +18,10 @@ const endpoints = {
     attendanceReport: '/v1/attendance/report',
   },
   accountant: {
-    collectFee: '/v1/fees/collect',
+    collectFee: '/fee-management/v1/collect',
+    getPendingFees: (studentId) => `/fee-management/v1/pending/${studentId}`,
+    generateFees: '/fee-management/v1/generate',
+    getAccounts: '/accounts',
     donations: '/v1/donations',
     salaryProcess: '/v1/salary/process',
     feeHeads: '/fee-setup/v1/heads',

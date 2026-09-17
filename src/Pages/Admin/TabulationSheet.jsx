@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import {
   Table,
   Search,
@@ -8,7 +10,9 @@ import {
   Printer,
   ChevronDown,
   School,
-  X
+  X,
+  Layers,
+  CheckCircle2
 } from "lucide-react";
 import SelectInputField from "../../components/SelectInputField";
 import axiosInstance from "../../api/axiosInstance";
@@ -24,15 +28,16 @@ const TabulationSheet = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSection, setSelectedSection] = useState("");
 
-  const [isGenerated, setIsGenerated] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [students, setStudents] = useState([]);
   const [subjects, setSubjects] = useState([]);
-  const [results, setResults] = useState([]);
-  
+  const [isGenerated, setIsGenerated] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [tabulationData, setTabulationData] = useState([]);
+  
+  const pdfRef = useRef(null);
 
   useEffect(() => {
     fetchInitialData();
@@ -121,7 +126,6 @@ const TabulationSheet = () => {
 
       setStudents(fetchedStudents);
       setSubjects(fetchedSubjects);
-      setResults(fetchedResults);
 
       // Process tabulation data
       const processedData = fetchedStudents.map((student) => {
@@ -142,7 +146,6 @@ const TabulationSheet = () => {
           studentMarks[subject._id] = mark;
           totalMarks += mark;
 
-          // Calculate Grade Point
           let point = 0;
           const matchedGrade = grades.find(g => mark >= g.min_marks && mark <= g.max_marks);
           if (matchedGrade) {
@@ -150,7 +153,7 @@ const TabulationSheet = () => {
           }
           
           if (point === 0) {
-             hasFailed = true; // Assuming 0 point means fail
+             hasFailed = true;
           }
           totalPoints += point;
         });
@@ -167,6 +170,21 @@ const TabulationSheet = () => {
         };
       });
 
+      processedData.sort((a, b) => {
+        if (a.resultStatus === "Passed" && b.resultStatus === "Failed") return -1;
+        if (a.resultStatus === "Failed" && b.resultStatus === "Passed") return 1;
+        
+        const gpaA = parseFloat(a.gpa);
+        const gpaB = parseFloat(b.gpa);
+        if (gpaB !== gpaA) return gpaB - gpaA;
+        
+        return b.totalMarks - a.totalMarks;
+      });
+
+      processedData.forEach((student, index) => {
+        student.roll_number = (index + 1).toString();
+      });
+
       setTabulationData(processedData);
       setIsGenerated(true);
 
@@ -178,9 +196,60 @@ const TabulationSheet = () => {
     }
   };
 
+  const exportToCSV = () => {
+    if (!tabulationData || tabulationData.length === 0) return;
+
+    const headers = ["Student Name", "Roll Number", "ID"];
+    subjects.forEach(subject => headers.push(`"${subject.name}"`));
+    headers.push(`"Grand Total"`, `"GPA"`, `"Result"`);
+
+    const headersRow = headers.map(h => h.startsWith('"') ? h : `"${h}"`).join(",");
+
+    const rows = tabulationData.map(student => {
+      const row = [
+        `"${student.firstName} ${student.lastName}"`,
+        `"${student.roll_number || "N/A"}"`,
+        `"${student._id?.slice(-6)}"`
+      ];
+      
+      subjects.forEach(subject => {
+        row.push(student.marks[subject._id] !== undefined ? student.marks[subject._id] : 0);
+      });
+
+      row.push(student.totalMarks, student.gpa, `"${student.resultStatus}"`);
+      return row.join(",");
+    });
+
+    const csvContent = "\uFEFF" + [headersRow, ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `tabulation_sheet.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportToPDF = async () => {
+    if (!pdfRef.current) return;
+    const element = pdfRef.current;
+    element.style.display = 'block';
+    const canvas = await html2canvas(element, { scale: 2 });
+    const data = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('l', 'px', 'a4');
+    const imgProperties = pdf.getImageProperties(data);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+    pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save('tabulation-sheet.pdf');
+    element.style.display = 'none';
+    setIsPreviewOpen(false);
+  };
+
   return (
     <div className="animate-in fade-in duration-500">
-      {/* Header */}
       <div className="flex items-center justify-between mb-5 w-full relative z-50">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
@@ -256,10 +325,22 @@ const TabulationSheet = () => {
           </div>
 
           {isGenerated && !loading && (
-            <button className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] font-bold shadow-sm hover:bg-blue-900 transition-all flex items-center justify-center gap-2">
-              <Download className="w-4 h-4" />
-              Export PDF
-            </button>
+            <>
+              <button 
+                onClick={exportToCSV}
+                className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] font-bold shadow-sm hover:bg-blue-900 transition-all flex items-center justify-center gap-2"
+              >
+                <FileText className="w-4 h-4" />
+                Export CSV
+              </button>
+              <button 
+                onClick={() => setIsPreviewOpen(true)}
+                className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] font-bold shadow-sm hover:bg-blue-900 transition-all flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Export PDF
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -349,6 +430,173 @@ const TabulationSheet = () => {
             প্রথমে ডাটা ফিল্টার করুন, তারপর টেবিল
           </h2>
         </div>
+      )}
+
+      {/* PDF Layout Container - Used exclusively for rendering the PDF via html2canvas */}
+      <div 
+        ref={pdfRef} 
+        style={{ display: 'none', width: '1120px' }} 
+        className="bg-white p-12 text-slate-800"
+      >
+        <div className="flex items-center justify-between border-b-2 border-slate-200 pb-8 mb-8">
+          <div className="w-24 h-24 bg-slate-50 border-2 border-slate-100 rounded-2xl flex items-center justify-center shrink-0">
+             <span className="text-[10px] font-black text-slate-300">LOGO</span>
+          </div>
+          <div className="flex-1 text-center px-4">
+             <h1 className="text-4xl font-black tracking-tight uppercase text-slate-900">Madrasa Management System</h1>
+             <h2 className="text-xl font-bold text-slate-500 mt-2">Tabulation Sheet & Result Analysis</h2>
+          </div>
+          <div className="w-24 h-24 border-2 border-slate-800 rounded-lg p-2 flex flex-col items-center justify-center gap-1">
+             <div className="w-full flex justify-between">
+                <div className="w-6 h-6 bg-slate-800"></div>
+                <div className="w-6 h-6 bg-slate-800"></div>
+             </div>
+             <div className="w-10 h-10 bg-slate-800"></div>
+             <span className="text-[7px] font-black uppercase mt-1">SCAN QR</span>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center mb-6 text-sm font-black uppercase tracking-widest text-slate-600">
+           <span>Exam: {exams.find(e => e.value === selectedExam)?.label || "N/A"}</span>
+           <span>Class: {classes.find(c => c.value === selectedClass)?.label || "N/A"}</span>
+        </div>
+
+        <table className="w-full border-collapse border border-slate-300 text-[10px]">
+          <thead>
+            <tr className="bg-slate-100 text-slate-800 text-left font-black uppercase tracking-wider">
+              <th className="p-3 border border-slate-300">Roll</th>
+              <th className="p-3 border border-slate-300">Student Name</th>
+              <th className="p-3 border border-slate-300">ID</th>
+              {subjects.map(subject => (
+                <th key={subject._id} className="p-3 border border-slate-300">{subject.name}</th>
+              ))}
+              <th className="p-3 border border-slate-300">Total</th>
+              <th className="p-3 border border-slate-300">GPA</th>
+              <th className="p-3 border border-slate-300">Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tabulationData.map(student => (
+              <tr key={student._id} className="font-bold text-slate-700">
+                <td className="p-3 border border-slate-300">{student.roll_number || "N/A"}</td>
+                <td className="p-3 border border-slate-300">{student.firstName} {student.lastName}</td>
+                <td className="p-3 border border-slate-300">{student._id?.slice(-6)}</td>
+                {subjects.map(subject => (
+                  <td key={subject._id} className="p-3 border border-slate-300">
+                    {student.marks[subject._id] !== undefined ? student.marks[subject._id] : "-"}
+                  </td>
+                ))}
+                <td className="p-3 border border-slate-300">{student.totalMarks}</td>
+                <td className="p-3 border border-slate-300">{student.gpa}</td>
+                <td className="p-3 border border-slate-300">{student.resultStatus}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Generation Preview Modal */}
+      {isPreviewOpen && (
+          <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-xl z-[100] flex items-center justify-center p-6 sm:p-10 lg:p-20">
+              <div className="bg-white rounded-[4rem] w-full h-full max-w-7xl shadow-[0_0_100px_rgba(0,0,0,0.4)] flex flex-col overflow-hidden animate-in zoom-in duration-300">
+                   {/* Modal Header */}
+                   <div className="p-10 border-b-2 border-slate-50 flex items-center justify-between shrink-0 bg-white">
+                        <div className="flex items-center gap-6">
+                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-[1.5rem] flex items-center justify-center shadow-inner border-2 border-blue-100/50">
+                                <FileText className="w-8 h-8" />
+                            </div>
+                            <div>
+                                <h2 className="text-3xl font-black text-slate-800 tracking-tight">Print Engine Preview</h2>
+                                <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Template: <span className="text-blue-500">Tabulation Result Sheet</span></p>
+                            </div>
+                        </div>
+                        <div className="flex gap-4">
+                            <button 
+                              onClick={exportToPDF} 
+                              className="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm hover:bg-black shadow-xl shadow-slate-200 transition-all"
+                            >
+                                <Download className="w-5 h-5" /> Download PDF
+                            </button>
+                            <button 
+                              onClick={() => {
+                                const el = pdfRef.current;
+                                el.style.display = 'block';
+                                window.print();
+                                el.style.display = 'none';
+                              }} 
+                              className="flex items-center gap-3 px-8 py-4 bg-[#00315e] text-white rounded-2xl font-black text-sm hover:bg-blue-900 shadow-xl shadow-blue-100 transition-all"
+                            >
+                                <Printer className="w-5 h-5" /> Print Sheet
+                            </button>
+                            <button onClick={() => setIsPreviewOpen(false)} className="p-4 text-slate-400 hover:bg-slate-50 rounded-2xl transition-all ml-4">
+                                <X className="w-8 h-8" />
+                            </button>
+                        </div>
+                   </div>
+
+                   {/* Preview Container */}
+                   <div className="flex-1 overflow-y-auto p-12 lg:p-20 bg-slate-100/30 custom-scrollbar flex justify-center">
+                        {/* A visible miniature clone of the layout for preview */}
+                        <div className="w-[1120px] bg-white p-12 text-slate-800 shadow-[0_40px_100px_rgba(0,0,0,0.2)] border-8 border-white scale-[0.6] origin-top md:scale-[0.8] lg:scale-[0.9] xl:scale-100 transition-transform">
+                          <div className="flex items-center justify-between border-b-2 border-slate-200 pb-8 mb-8">
+                            <div className="w-24 h-24 bg-slate-50 border-2 border-slate-100 rounded-2xl flex items-center justify-center shrink-0">
+                               <span className="text-[10px] font-black text-slate-300">LOGO</span>
+                            </div>
+                            <div className="flex-1 text-center px-4">
+                               <h1 className="text-4xl font-black tracking-tight uppercase text-slate-900">Madrasa Management System</h1>
+                               <h2 className="text-xl font-bold text-slate-500 mt-2">Tabulation Sheet & Result Analysis</h2>
+                            </div>
+                            <div className="w-24 h-24 border-2 border-slate-800 rounded-lg p-2 flex flex-col items-center justify-center gap-1">
+                               <div className="w-full flex justify-between">
+                                  <div className="w-6 h-6 bg-slate-800"></div>
+                                  <div className="w-6 h-6 bg-slate-800"></div>
+                               </div>
+                               <div className="w-10 h-10 bg-slate-800"></div>
+                               <span className="text-[7px] font-black uppercase mt-1">SCAN QR</span>
+                            </div>
+                          </div>
+
+                          <div className="flex justify-between items-center mb-6 text-sm font-black uppercase tracking-widest text-slate-600">
+                             <span>Exam: {exams.find(e => e.value === selectedExam)?.label || "N/A"}</span>
+                             <span>Class: {classes.find(c => c.value === selectedClass)?.label || "N/A"}</span>
+                          </div>
+
+                          <table className="w-full border-collapse border border-slate-300 text-[10px]">
+                            <thead>
+                              <tr className="bg-slate-100 text-slate-800 text-left font-black uppercase tracking-wider">
+                                <th className="p-3 border border-slate-300">Roll</th>
+                                <th className="p-3 border border-slate-300">Student Name</th>
+                                <th className="p-3 border border-slate-300">ID</th>
+                                {subjects.map(subject => (
+                                  <th key={subject._id} className="p-3 border border-slate-300">{subject.name}</th>
+                                ))}
+                                <th className="p-3 border border-slate-300">Total</th>
+                                <th className="p-3 border border-slate-300">GPA</th>
+                                <th className="p-3 border border-slate-300">Result</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {tabulationData.map(student => (
+                                <tr key={student._id} className="font-bold text-slate-700">
+                                  <td className="p-3 border border-slate-300">{student.roll_number || "N/A"}</td>
+                                  <td className="p-3 border border-slate-300">{student.firstName} {student.lastName}</td>
+                                  <td className="p-3 border border-slate-300">{student._id?.slice(-6)}</td>
+                                  {subjects.map(subject => (
+                                    <td key={subject._id} className="p-3 border border-slate-300">
+                                      {student.marks[subject._id] !== undefined ? student.marks[subject._id] : "-"}
+                                    </td>
+                                  ))}
+                                  <td className="p-3 border border-slate-300">{student.totalMarks}</td>
+                                  <td className="p-3 border border-slate-300">{student.gpa}</td>
+                                  <td className="p-3 border border-slate-300">{student.resultStatus}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                   </div>
+              </div>
+          </div>
       )}
     </div>
   );

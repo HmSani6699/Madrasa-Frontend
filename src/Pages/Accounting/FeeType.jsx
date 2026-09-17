@@ -124,7 +124,7 @@ const FeeType = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Layers className="w-8 h-8 text-[#00bd7f]" />
+            <Layers className="w-8 h-8 text-[#00315e]" />
             Fee Setup
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
@@ -135,7 +135,7 @@ const FeeType = () => {
         <div className="flex gap-3 w-full md:w-auto">
           <button
             onClick={openAddModal}
-           className="w-full px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer flex items-center gap-2 transition-all hover:bg-[#00a670] active:scale-95"
+           className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2 transition-all hover:bg-[#002244] active:scale-95 shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Add Fee Type
@@ -144,16 +144,16 @@ const FeeType = () => {
       </div>
 
       {/* Fee Type List Table */}
-      <div className="bg-white rounded-[8px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative">
+      <div className="bg-white rounded-[8px] border border-slate-200 shadow-xl shadow-slate-100/50 overflow-hidden relative">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading fee types...</p>
           </div>
         ) : (
             <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
               <div className="p-4 flex items-center justify-between border-b border-b-gray-200">
-                <h2 className="text-[18px] font-semibold">Fee Type List</h2>
+                <h2 className="text-[18px] font-semibold text-slate-800">Fee Type List</h2>
 
                 <div>
                    <div className="flex items-center gap-4">
@@ -165,12 +165,12 @@ const FeeType = () => {
                 placeholder="Search by Fee Type Name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[#e6f4ef] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-emerald-500 transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#00315e] transition-all"
               />
                     </div>
                      <button
                         onClick={() => toast.success("Filter feature coming soon!")}
-                        className=" px-4 py-2 bg-[#e6f4ef]  rounded-[8px] cursor-pointer flex items-center gap-2"
+                        className=" px-4 py-2 bg-[#fff] border border-slate-200 rounded-[8px] cursor-pointer flex items-center gap-2 hover:bg-slate-50 transition-colors text-slate-700"
                       >
                       <Filter className="h-4 w-4"/>  Filter
                 </button>
@@ -178,18 +178,18 @@ const FeeType = () => {
                 </div>
               </div>
             <table className="w-full">
-              <thead className="bg-[#e6f4ef]">
+              <thead className="bg-[#00315e24]">
                 <tr>
-                  <th className="px-10 py-3.5 text-left text-[12px] font-black uppercase tracking-wider">
+                  <th className="px-10 py-3.5 text-left text-[12px] font-black uppercase tracking-wider text-slate-700">
                     Name
                   </th>
-                  <th className="px-10 py-3.5 text-center text-[12px] font-black uppercase tracking-wider">
+                  <th className="px-10 py-3.5 text-center text-[12px] font-black uppercase tracking-wider text-slate-700">
                     Pay Type
                   </th>
-                  <th className="px-10 py-3.5 text-center text-[12px] font-black uppercase tracking-wider">
+                  <th className="px-10 py-3.5 text-center text-[12px] font-black uppercase tracking-wider text-slate-700">
                     Status
                   </th>
-                  <th className="px-10 py-3.5 text-center text-[12px] font-black uppercase tracking-wider">
+                  <th className="px-10 py-3.5 text-center text-[12px] font-black uppercase tracking-wider text-slate-700">
                     Action
                   </th>
                 </tr>
@@ -199,41 +199,44 @@ const FeeType = () => {
                   filteredFeeTypes.map((ft) => (
                     <tr
                       key={ft._id}
-                      className="group hover:bg-emerald-50/30 transition-all duration-300"
+                      className="group hover:bg-[#00315e]/5 transition-all duration-300"
                     >
                       <td className="px-10 py-3.5">
                         <span 
                           onClick={() => openEditModal(ft)}
-                          className="text-base font-black text-slate-800 tracking-tight cursor-pointer hover:text-[#00bd7f] transition-colors"
+                          className="text-base font-black text-slate-800 tracking-tight cursor-pointer hover:text-[#00315e] transition-colors"
                         >
                           {ft.name}
                         </span>
                       </td>
                       <td className="px-10 py-3.5 text-center">
-                        <span className="px-3 py-1 rounded-lg bg-emerald-50 text-[#00bd7f] text-xs font-bold">
+                        <span className="px-3 py-1 rounded-lg bg-blue-50 text-[#00315e] text-xs font-bold">
                           {ft.pay_type}
                         </span>
                       </td>
                       <td className="px-10 py-3.5 text-center">
-                        <div
-                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg border transition-all ${
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
                             ft.status === "active"
-                              ? "bg-emerald-50 border-emerald-100 text-emerald-600"
-                              : "bg-slate-50 border-slate-100 text-slate-400"
+                              ? "bg-blue-50 text-blue-700 border border-blue-100"
+                              : "bg-rose-50 text-rose-700 border border-rose-100"
                           }`}
                         >
-                          <span className="text-[10px] font-black uppercase tracking-widest">
-                            {ft.status}
-                          </span>
-                        </div>
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              ft.status === "active" ? "bg-blue-500" : "bg-rose-500"
+                            }`}
+                          />
+                          {ft.status}
+                        </span>
                       </td>
                       <td>
                         <div className="flex items-center gap-3 justify-center">
-                          <button className="cursor-pointer p-1.5 hover:bg-emerald-50 rounded-lg transition-colors" onClick={() => openEditModal(ft)}>
-                           <SquarePen className="w-4 h-4 text-[#00bd7f]" />
+                          <button className="cursor-pointer p-1.5 hover:bg-blue-50 rounded-lg transition-colors" onClick={() => openEditModal(ft)}>
+                            <SquarePen className="w-4 h-4 text-[#00315e]" />
                           </button>
                           <button className="cursor-pointer p-1.5 hover:bg-red-50 rounded-lg transition-colors" onClick={() => openDeleteModal(ft)}>
-                           <Trash2 className="w-4 h-4 text-red-500" />
+                            <Trash2 className="w-4 h-4 text-red-500" />
                           </button>
                         </div>
                       </td>
@@ -308,7 +311,7 @@ const FeeType = () => {
                 </button>
                 <button
                   onClick={handleAction}
-                  className="px-6 py-2.5 bg-[#00bd7f] text-white rounded-[8px] font-bold hover:bg-[#00a670] shadow-lg shadow-emerald-200 transition-all active:scale-95 cursor-pointer"
+                  className="px-6 py-2.5 bg-[#00315e] text-white rounded-[8px] font-bold hover:bg-[#002244] shadow-lg shadow-slate-200 transition-all active:scale-95 cursor-pointer"
                 >
                   {modalType === "add" ? "Save Fee Type" : "Update changes"}
                 </button>

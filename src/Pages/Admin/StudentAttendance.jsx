@@ -279,7 +279,7 @@ const StudentAttendance = () => {
         <div className="lg:col-span-4 bg-white rounded-[8px]  p-6 shadow-sm flex items-center justify-around">
           <div className="text-center">
             <p className="text-2xl font-black text-slate-800">{stats.present}</p>
-            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Current</p>
+            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Present</p>
           </div>
           <div className="w-px h-10 bg-slate-100" />
           <div className="text-center">
@@ -300,7 +300,7 @@ const StudentAttendance = () => {
       </div>
 
       {attendanceMode === "manual" ? (
-        <div className="bg-white rounded-[8px] border-2 border-slate-100 shadow-xl shadow-slate-100/50 overflow-hidden relative lg:mt-[25px]">
+        <div className=" overflow-hidden relative lg:mt-[25px]">
 
 
 
@@ -310,7 +310,7 @@ const StudentAttendance = () => {
 
               <div>
                 {/* Action Bar */}
-                <div className="bg-slate-50 py-4 flex flex-col md:flex-row justify-between items-center gap-4 border-b-2 border-slate-100">
+                <div className=" py-4 flex flex-col md:flex-row justify-between items-center gap-4 border-b-2 border-slate-100">
                   <div className="relative w-full md:w-64">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
@@ -340,7 +340,7 @@ const StudentAttendance = () => {
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto rounded-t-[8px]">
+                <div className="overflow-x-auto rounded-t-[8px] bg-white">
                   <table className="w-full">
                     <thead className="bg-[#00315e24]">
                       <tr>
@@ -366,7 +366,7 @@ const StudentAttendance = () => {
                           <td className="px-10 py-3.5">
                             <div className="flex justify-center gap-1.5">
                               {[
-                                { key: 'present', label: 'Current', color: 'bg-emerald-500', bg: 'bg-emerald-50' },
+                                { key: 'present', label: 'Present', color: 'bg-emerald-500', bg: 'bg-emerald-50' },
                                 { key: 'absent', label: 'Absent', color: 'bg-rose-500', bg: 'bg-rose-50' },
                                 { key: 'late', label: 'Late', color: 'bg-amber-500', bg: 'bg-amber-50' },
                                 { key: 'leave', label: 'Skip', color: 'bg-blue-500', bg: 'bg-blue-50' },

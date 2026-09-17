@@ -7,6 +7,21 @@ const accountantService = {
     return response.data;
   },
 
+  getPendingFees: async (studentId) => {
+    const response = await axiosInstance.get(endpoints.accountant.getPendingFees(studentId));
+    return response.data;
+  },
+
+  generateFees: async (data) => {
+    const response = await axiosInstance.post(endpoints.accountant.generateFees, data);
+    return response.data;
+  },
+
+  getAccounts: async () => {
+    const response = await axiosInstance.get(endpoints.accountant.getAccounts);
+    return response.data;
+  },
+
   addDonation: async (donationData) => {
     const response = await axiosInstance.post(endpoints.accountant.donations, donationData);
     return response.data;
@@ -17,8 +32,18 @@ const accountantService = {
     return response.data;
   },
 
-  getStudents: async () => {
-    const response = await axiosInstance.get(endpoints.teacher.students);
+  getStudents: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.teacher.students, { params });
+    return response.data;
+  },
+
+  getStudentFeeHistory: async (studentId) => {
+    const response = await axiosInstance.get(`/fee-management/v1/student-history/${studentId}`);
+    return response.data;
+  },
+
+  getFeeTypes: async () => {
+    const response = await axiosInstance.get('/fee-type/v1');
     return response.data;
   },
 
@@ -53,7 +78,7 @@ const accountantService = {
     return response.data;
   },
   getClasses: async () => {
-    const response = await axiosInstance.get('/class/v1/classes');
+    const response = await axiosInstance.get(endpoints.common.classes);
     return response.data;
   }
 };
