@@ -1,320 +1,439 @@
 import React from 'react';
-import { Printer, X, Receipt, Calendar, Banknote, Building2 } from 'lucide-react';
+import { Printer, X, Receipt, QrCode, Globe, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
-const numberToWordsBDT = (num) => {
-  const n = Math.floor(Math.abs(Number(num) || 0));
-  if (n === 0) return 'Zero Taka Only';
-
-  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
-    'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-  const convertLessThanOneThousand = (number) => {
-    let current = '';
-    if (number % 100 < 20) {
-      current = ones[number % 100];
-      number = Math.floor(number / 100);
-    } else {
-      current = ones[number % 10];
-      number = Math.floor(number / 10);
-      current = tens[number % 10] + (current ? ' ' + current : '');
-      number = Math.floor(number / 10);
-    }
-    if (number === 0) return current;
-    return ones[number] + ' Hundred' + (current ? ' ' + current : '');
-  };
-
-  let word = '';
-  const crore = Math.floor(n / 10000000);
-  const lakh = Math.floor((n % 10000000) / 100000);
-  const thousand = Math.floor((n % 100000) / 1000);
-  const remainder = n % 1000;
-
-  if (crore > 0) word += convertLessThanOneThousand(crore) + ' Crore ';
-  if (lakh > 0) word += convertLessThanOneThousand(lakh) + ' Lakh ';
-  if (thousand > 0) word += convertLessThanOneThousand(thousand) + ' Thousand ';
-  if (remainder > 0) word += convertLessThanOneThousand(remainder);
-
-  return word.trim() + ' Taka Only';
-};
+import logo from '/mlogo.jpg';
 
 const Voucher = ({ 
   data, 
   onClose, 
-  madrasaName = "Pakunda Islamia Madrsa", 
-  address = "Pakunda, Sonargoan, Narayongonj" 
+  madrasaName = "পাকুন্ডা ইসলামিয়া মাদ্রাসা ও এতিমখানা", 
+  address = "পাকুন্ডা, সোনামুড়ী, নারায়ণগঞ্জ" 
 }) => {
   const { t } = useTranslation();
+  const isBangla = t('fee_report.multiple_view') === "মাল্টিপল ভিউ";
+  const hasItems = data?.feeDetails && data.feeDetails.length > 0;
+  const isVoided = Boolean(data?.isVoided || data?.status === 'Voided');
 
-  const printVoucher = () => {
-    window.print();
+  const handlePrint = () => {
+    const printContent = document.getElementById('printable-voucher');
+    if (!printContent) return;
+
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
+      .map(s => s.outerHTML)
+      .join('');
+
+    doc.open();
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${isBangla ? 'ফি ভাউচার' : 'Fee Voucher'} - ${data?.receiptNo || 'Receipt'}</title>
+          ${styles}
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
+            @page { 
+              size: A4 portrait; 
+              margin: 0; 
+            }
+            html, body {
+              margin: 0 !important;
+              padding: 0 !important;
+              width: 210mm !important;
+              height: 297mm !important;
+              max-height: 297mm !important;
+              overflow: hidden !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              background: white;
+            }
+            .font-arabic { font-family: 'Amiri', serif; }
+            #print-wrap {
+              width: 210mm !important;
+              height: 297mm !important;
+              max-height: 297mm !important;
+              padding: 12mm 15mm 0 15mm !important;
+              box-sizing: border-box !important;
+              display: flex !important;
+              flex-direction: column !important;
+              justify-content: space-between !important;
+              background-color: #f0f3f6 !important;
+              position: relative !important;
+              z-index: 0 !important;
+              overflow: hidden !important;
+              page-break-after: avoid !important;
+              page-break-inside: avoid !important;
+            }
+            #print-wrap .voucher-footer {
+              margin-left: -15mm !important;
+              margin-right: -15mm !important;
+              margin-bottom: 0 !important;
+              margin-top: auto !important;
+            }
+            .clip-voucher-badge {
+              clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+            }
+          </style>
+        </head>
+        <body>
+          <div id="print-wrap">
+            ${printContent.innerHTML}
+          </div>
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000);
+    }, 500);
   };
 
-  const hasItems = data?.feeDetails && data.feeDetails.length > 0;
-  const isBangla = t('fee_report.multiple_view') === "মাল্টিপল ভিউ";
+  const subTotalAmount = Number(data?.subtotal || data?.amount || 0);
+  const discountAmount = Number(data?.discount || 0);
+  const prevDueAmount = Number(data?.previousDue || 0);
+  const totalPayableAmount = Number(data?.netPayable || data?.amount || (subTotalAmount + prevDueAmount - discountAmount));
+  const paidAmountVal = Number(data?.paidAmount || data?.amount || 0);
+  const dueAmountVal = Number(data?.remainingDue || 0);
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-white w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-xl shadow-2xl flex flex-col">
         
-        {/* Header / Actions */}
-        <div className="p-4 bg-slate-50 border-b flex justify-between items-center no-print">
-          <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <Receipt className="w-5 h-5 text-[#00315e]" />
-            {isBangla ? 'টাকা প্রাপ্তির মানি রিসিট' : 'Money Receipt / Voucher'}
-          </h2>
-          <div className="flex gap-3">
+        {/* Modal Top Bar */}
+        <div className="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-md z-20">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#164366] text-white flex items-center justify-center shadow-md">
+              <Receipt className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-base sm:text-lg font-black text-slate-800">
+                {isBangla ? 'অফিসিয়াল ফি ভাউচার ও মানি রিসিট' : 'Official Fee Voucher & Receipt'}
+              </h2>
+              <p className="text-xs text-slate-500 font-medium">
+                #{data?.receiptNo || 'REC'} • {data?.date || new Date().toISOString().split('T')[0]}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
             <button 
-              onClick={printVoucher}
-              className="px-6 py-2 bg-[#00315e] text-white font-bold rounded-xl shadow-lg shadow-[#00315e]/20 hover:bg-[#002140] transition-all flex items-center gap-2 cursor-pointer"
+              onClick={handlePrint}
+              className="px-5 py-2 bg-[#164366] hover:bg-[#0f2e47] text-white text-xs font-bold rounded-lg shadow-md transition-all flex items-center gap-2 cursor-pointer"
             >
               <Printer className="w-4 h-4" />
-              {t('common.print') || 'Print Voucher'}
+              {t('common.print') || (isBangla ? 'রশিদ প্রিন্ট করুন' : 'Print Voucher')}
             </button>
             <button 
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+              className="p-2 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Scrollable Preview Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-slate-100/60 flex justify-center">
+        {/* Scrollable Printable Area */}
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-slate-100 flex justify-center">
           
-          {/* THE VOUCHER CARD */}
+          {/* THE OFFICIAL INSTITUTIONAL VOUCHER */}
           <div 
             id="printable-voucher"
-            className="bg-white w-full max-w-[820px] border border-slate-300 shadow-xl relative overflow-hidden p-6 sm:p-8 flex flex-col font-sans voucher-card rounded-lg"
+            className="w-full max-w-[794px] bg-[#f0f3f6] p-6 sm:p-8 relative z-0 flex flex-col shadow-lg border border-slate-300 rounded-sm"
           >
-            {/* Corner Borders */}
-            <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-[#00315e]/30 rounded-tl-xl"></div>
-            <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-[#00315e]/30 rounded-br-xl"></div>
+            {/* Full Page Logo Watermark */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-[0.06] pointer-events-none z-0 overflow-hidden">
+              <img src={logo} alt="Watermark" className="w-[45%] max-w-xl object-contain grayscale" />
+            </div>
 
-            {/* Header Section */}
-            <div className="flex justify-between items-start border-b-2 border-slate-200 pb-4 relative z-10">
-              <div className="flex gap-3.5 items-center">
-                <div className="w-14 h-14 bg-[#00315e] rounded-xl flex items-center justify-center text-white shadow-md">
-                  <Building2 className="w-8 h-8" />
+            {/* Void / Cancelled Watermark & Banner */}
+            {isVoided && (
+              <>
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-30 select-none overflow-hidden">
+                  <div className="text-rose-600/15 font-black text-6xl sm:text-8xl transform -rotate-45 tracking-widest border-8 border-rose-600/15 rounded-3xl p-6 sm:p-10 uppercase text-center">
+                    <div>CANCELLED</div>
+                    <div className="text-3xl sm:text-5xl mt-2 tracking-normal">বাতিলকৃত</div>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
-                    {data?.madrasaName || madrasaName}
+
+                <div className="bg-rose-50 border-2 border-rose-400 text-rose-800 px-4 py-2.5 rounded-lg mb-4 text-center z-20 shadow-xs relative">
+                  <span className="font-black text-xs sm:text-sm uppercase tracking-wider block">
+                    {isBangla ? '⚠️ এই রিসিটটি বাতিল (VOIDED) করা হয়েছে' : '⚠️ THIS RECEIPT HAS BEEN VOIDED / CANCELLED'}
+                  </span>
+                  {data?.voidReason && (
+                    <span className="text-xs font-semibold text-rose-700 mt-0.5 block">
+                      {isBangla ? 'বাতিলের কারণ:' : 'Reason:'} {data.voidReason}
+                    </span>
+                  )}
+                </div>
+              </>
+            )}
+
+            <style>{`
+              @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@700&display=swap');
+              .font-arabic { font-family: 'Amiri', serif; }
+              .clip-voucher-badge {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);
+              }
+            `}</style>
+
+            {/* Institutional Header */}
+            <div className="flex justify-between items-start border-b-[3px] border-[#164366] pb-2 mb-2 relative z-10">
+              <div className="flex items-center gap-4 sm:gap-6">
+                {/* Logo Circle */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 flex flex-col items-center justify-center overflow-hidden shrink-0">
+                  <img src={logo} alt="Madrasa Logo" className="w-full h-full object-contain" />
+                </div>
+                <div className="text-center pt-1">
+                  <h1 className="text-[22px] sm:text-[26px] leading-none font-arabic font-bold text-[#164366] mb-1">
+                    الْمَدْرَسَةُ الْإِسْلَامِيَّةُ وَدَارُ الْأَيْتَامِ بِنَاكُونْدَا
                   </h1>
-                  <p className="text-xs font-semibold text-slate-500 mt-0.5">
-                    {data?.address || address}
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-800 mb-0.5">
+                    {madrasaName}
+                  </h2>
+                  <p className="text-[12px] sm:text-[13px] font-bold text-slate-700">
+                    {address},
+                  </p>
+                  <p className="text-[12px] sm:text-[13px] font-bold text-slate-700">
+                    স্থাপিত : ২০০০ খ্রি
                   </p>
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="bg-[#00315e]/5 px-3.5 py-1.5 rounded-lg border border-[#00315e]/15 mb-1.5 inline-block">
-                  <p className="text-[10px] font-black text-[#00315e] uppercase tracking-wider">
-                    {isBangla ? 'রিসিট নং' : 'Receipt No'}
+              {/* Right Ribbon Badge */}
+              <div className="absolute right-0 top-[-10px]">
+                <div className="bg-[#164366] text-white w-[85px] sm:w-[90px] pt-3 sm:pt-4 pb-7 sm:pb-8 flex flex-col items-center justify-center relative clip-voucher-badge shadow-sm">
+                  <div className="border border-white/50 p-1 mb-1 rounded">
+                    <QrCode className="w-7 h-7 sm:w-8 sm:h-8" />
+                  </div>
+                  <span className="text-[10px] sm:text-[11px] font-black uppercase text-center leading-tight">
+                    {data?.badgeTitle ? (
+                      data.badgeTitle
+                    ) : (
+                      <>
+                        Fee<br />Voucher
+                      </>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Voice No & Date Bar */}
+            <div className="flex justify-between text-[11px] font-bold text-slate-500 mb-5 uppercase tracking-wider mt-3 relative z-10">
+              <span>VOICE NO: {data?.receiptNo || 'N/A'}</span>
+              <span>DATE: {data?.date || new Date().toISOString().split('T')[0]}</span>
+            </div>
+
+            {/* Guardian Info & Academic Summary Bar with Vertical Divider */}
+            <div className="flex items-stretch justify-between mb-6 px-4 relative z-10">
+              {/* Guardian Info */}
+              <div className="w-5/12 text-center">
+                <h3 className="text-base sm:text-lg font-bold text-slate-700 mb-1">
+                  {data?.donorName ? 'Donor Details' : 'Guardian Details'}
+                </h3>
+                <div>
+                  <p className="text-xl sm:text-2xl font-black text-slate-800">
+                    {data?.guardianName && data.guardianName !== 'N/A' && data.guardianName.trim() !== ''
+                      ? data.guardianName
+                      : (data?.donorName ? data.donorName : 'Father & Lead Guardian')}
                   </p>
-                  <p className="text-base sm:text-lg font-black text-slate-900 font-mono">
-                    #{data?.receiptNo || '2026-0001'}
+                  <p className="text-xs sm:text-sm font-bold text-slate-600 mt-0.5">
+                    {data?.donorName
+                      ? 'Donor Contributor'
+                      : (data?.guardianName && data.guardianName !== 'N/A' && data.guardianName.trim() !== '' ? 'Father & Lead Guardian' : '')}
                   </p>
                 </div>
-                <div className="flex items-center justify-end gap-1.5 text-slate-500 text-xs font-bold">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>{data?.date || new Date().toLocaleDateString()}</span>
+              </div>
+
+              {/* Double Vertical Line Separator */}
+              <div className="flex items-center justify-center w-1/12">
+                <div className="h-full flex gap-1.5 min-h-[55px]">
+                  <div className="w-1.5 h-full bg-[#164366]"></div>
+                  <div className="w-[1.5px] h-full bg-[#164366]"></div>
+                </div>
+              </div>
+
+              {/* Academic Summary */}
+              <div className="w-5/12 text-center">
+                <h3 className="text-base sm:text-lg font-bold text-slate-700 mb-1">
+                  {data?.donorName ? 'Payment Summary' : 'Academic Summary'}
+                </h3>
+                <div className="flex justify-center gap-8">
+                  <div>
+                    <p className="text-lg sm:text-xl font-black text-slate-800">
+                      {data?.year || new Date().getFullYear().toString()}
+                    </p>
+                    <p className="text-xs font-bold text-slate-600 mt-0.5">Academic Year</p>
+                  </div>
+                  <div>
+                    <p className="text-lg sm:text-xl font-black text-slate-800">
+                      {data?.rollNumber ? String(data.rollNumber).padStart(2, '0') : '01'}
+                    </p>
+                    <p className="text-xs font-bold text-slate-600 mt-0.5">
+                      {data?.rollNumber ? 'Student Roll' : 'Student'}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Voucher Title Badge */}
-            <div className="text-center my-4 relative z-10">
-              <span className="bg-[#00315e] text-white px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-sm">
-                {hasItems ? (isBangla ? 'ফি আদায়ের রিসিট' : 'Fee Collection Receipt') : (isBangla ? 'টাকা প্রাপ্তি রশিদ' : 'Money Receipt')}
-              </span>
-            </div>
+            {/* Enrolled Students / Fee Details Table */}
+            <div className="mb-5 relative z-10">
+              <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-2.5">
+                {data?.donorName ? 'Donation Details' : 'Enrolled Students'}
+              </h3>
 
-            {/* Student / Payee Info Bar */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 sm:p-4 mb-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs z-10">
-              <div>
-                <span className="text-slate-400 font-bold uppercase block text-[10px]">
-                  {isBangla ? 'শিক্ষার্থীর নাম' : 'Student Name'}
-                </span>
-                <span className="font-black text-slate-800 text-sm">
-                  {data?.studentName || data?.donorName || 'N/A'}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-400 font-bold uppercase block text-[10px]">
-                  {isBangla ? 'আইডি / রোল' : 'Student ID / Roll'}
-                </span>
-                <span className="font-bold text-slate-800">
-                  {data?.studentId || 'N/A'} {data?.rollNumber ? `(Roll: ${data.rollNumber})` : ''}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-400 font-bold uppercase block text-[10px]">
-                  {isBangla ? 'শ্রেণী / বিভাগ' : 'Class / Section'}
-                </span>
-                <span className="font-bold text-slate-800">
-                  {data?.className || 'N/A'}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-400 font-bold uppercase block text-[10px]">
-                  {isBangla ? 'পেমেন্ট পদ্ধতি' : 'Payment Method'}
-                </span>
-                <span className="font-black text-[#00315e]">
-                  {data?.paymentMethod || 'Cash'} {data?.accountName ? `(${data.accountName})` : ''}
-                </span>
-              </div>
-            </div>
-
-            {/* Itemized Table if Fee Details exist */}
-            {hasItems ? (
-              <div className="border border-slate-200 rounded-lg overflow-hidden mb-4 z-10">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#00315e]/10 text-slate-700 font-black border-b border-slate-200">
-                    <tr>
-                      <th className="py-2 px-3 w-10 text-center">#</th>
-                      <th className="py-2 px-3">{isBangla ? 'ফি এর বিবরণ' : 'Fee Description'}</th>
-                      <th className="py-2 px-3">{isBangla ? 'মাস / সময়কাল' : 'Month / Period'}</th>
-                      <th className="py-2 px-3 text-right">{isBangla ? 'পরিমাণ' : 'Amount'}</th>
+              <div className="border border-[#b8c7d4] bg-transparent">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-[#b8c7d4]">
+                      <th className="p-3 text-xs sm:text-sm font-bold text-slate-800 border-r border-[#b8c7d4]">
+                        {data?.donorName ? 'Donor Name' : 'Student Name'}
+                      </th>
+                      <th className="p-3 text-xs sm:text-sm font-bold text-slate-800 border-r border-[#b8c7d4] text-center">
+                        {data?.donorName ? 'Fund Category' : 'Class'}
+                      </th>
+                      <th className="p-3 text-xs sm:text-sm font-bold text-slate-800 border-r border-[#b8c7d4]">
+                        Fee Details
+                      </th>
+                      <th className="p-3 text-xs sm:text-sm font-bold text-slate-800 text-center">
+                        Subtotal
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
-                    {data.feeDetails.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50/60">
-                        <td className="py-2 px-3 text-center text-slate-400">{idx + 1}</td>
-                        <td className="py-2 px-3 font-bold text-slate-800">{item.head}</td>
-                        <td className="py-2 px-3 text-slate-500">{item.period || item.month || 'Current'}</td>
-                        <td className="py-2 px-3 text-right font-black text-slate-800">৳ {Number(item.amount || 0).toLocaleString()}</td>
-                      </tr>
-                    ))}
-                    {Number(data?.previousDue) > 0 && (
-                      <tr className="bg-amber-50/60 text-amber-900 font-bold">
-                        <td className="py-2 px-3 text-center text-amber-600">★</td>
-                        <td className="py-2 px-3">{isBangla ? 'পূর্বের বকেয়া' : 'Previous Due Balance'}</td>
-                        <td className="py-2 px-3 text-amber-700">{isBangla ? 'অনাদায়ী' : 'Outstanding'}</td>
-                        <td className="py-2 px-3 text-right font-black">৳ {Number(data.previousDue).toLocaleString()}</td>
-                      </tr>
-                    )}
+                  <tbody className="divide-y divide-[#b8c7d4]">
+                    <tr className="bg-transparent">
+                      <td className="p-3.5 border-r border-[#b8c7d4] align-top">
+                        <p className="font-black text-slate-800 text-center text-base sm:text-lg">
+                          {data?.studentName || data?.donorName || 'N/A'}
+                        </p>
+                        <p className="text-[10px] font-bold text-slate-400 text-center mt-1">
+                          ID: {data?.studentId || 'N/A'}
+                        </p>
+                      </td>
+                      <td className="p-3.5 border-r border-[#b8c7d4] font-bold text-slate-800 align-top text-center text-xs sm:text-sm">
+                        {data?.className || data?.purpose || 'N/A'}
+                      </td>
+                      <td className="p-0 border-r border-[#b8c7d4] align-top">
+                        <div className="flex flex-col divide-y divide-[#b8c7d4]">
+                          {hasItems ? (
+                            <>
+                              {data.feeDetails.map((item, idx) => (
+                                <div key={idx} className="px-3.5 py-1.5 flex justify-between text-xs font-bold text-slate-700">
+                                  <span>{item.head} {item.period ? `(${item.period})` : ''}</span>
+                                  <span>৳ {Number(item.amount || 0).toLocaleString()}</span>
+                                </div>
+                              ))}
+                              {prevDueAmount > 0 && (
+                                <div className="px-3.5 py-1.5 flex justify-between text-xs font-bold text-amber-900 bg-amber-50/60">
+                                  <span>পূর্বের বকেয়া (Previous Due)</span>
+                                  <span>৳ {prevDueAmount.toLocaleString()}</span>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <div className="px-3.5 py-2 flex justify-between text-xs font-bold text-slate-700">
+                              <span>{data?.purpose || 'Fee Collection'}</span>
+                              <span>৳ {Number(data?.amount || 0).toLocaleString()}</span>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-3.5 font-black text-slate-800 text-center align-middle text-base sm:text-lg">
+                        ৳ {subTotalAmount.toLocaleString()}
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
-            ) : (
-              <div className="flex items-end gap-2 text-slate-700 mb-4 z-10">
-                <span className="text-xs font-bold whitespace-nowrap">{isBangla ? 'উদ্দেশ্য / বাবদ' : 'Purpose'}:</span>
-                <span className="flex-1 border-b border-dashed border-slate-300 font-bold text-sm px-2 pb-0.5 text-slate-800 italic">
-                  {data?.purpose || 'Fee Collection'}
-                </span>
-              </div>
-            )}
+            </div>
 
-            {/* Financial Totals Grid */}
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 mb-4 z-10">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs mb-3 pb-3 border-b border-slate-200">
-                <div>
-                  <span className="text-slate-400 font-bold uppercase text-[10px] block">
-                    {isBangla ? 'উপমোট' : 'Subtotal'}
-                  </span>
-                  <span className="font-bold text-slate-700 text-sm">
-                    ৳ {Number(data?.subtotal || data?.amount || 0).toLocaleString()}
-                  </span>
+            {/* Financial Totals Breakdown */}
+            <div className="flex justify-end mb-6 relative z-10">
+              <div className="w-60 space-y-1.5">
+                <div className="flex justify-between items-center text-xs sm:text-sm font-bold text-slate-800">
+                  <span>Sub Total</span>
+                  <span className="font-black">৳ {subTotalAmount.toLocaleString()}</span>
                 </div>
-                <div>
-                  <span className="text-slate-400 font-bold uppercase text-[10px] block">
-                    {isBangla ? 'মওকুফ / ছাড়' : 'Discount / Waiver'}
-                  </span>
-                  <span className="font-bold text-rose-600 text-sm">
-                    ৳ {Number(data?.discount || 0).toLocaleString()}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-slate-400 font-bold uppercase text-[10px] block">
-                    {isBangla ? 'নিট প্রদেয়' : 'Net Payable'}
-                  </span>
-                  <span className="font-bold text-slate-800 text-sm">
-                    ৳ {Number(data?.netPayable || data?.amount || 0).toLocaleString()}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-slate-400 font-bold uppercase text-[10px] block">
-                    {isBangla ? 'অবশিষ্ট বকেয়া' : 'Remaining Due'}
-                  </span>
-                  <span className={`font-black text-sm ${Number(data?.remainingDue) > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
-                    ৳ {Number(data?.remainingDue || 0).toLocaleString()}
-                  </span>
-                </div>
-              </div>
-
-              {/* Amount Paid Callout */}
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <Banknote className="w-6 h-6 text-[#00315e]" />
-                  <div>
-                    <span className="text-[10px] font-black text-[#00315e] uppercase tracking-wider block">
-                      {isBangla ? 'পরিশোধিত টাকা (Paid Amount)' : 'Amount Received'}
-                    </span>
-                    <span className="text-2xl font-black text-slate-900 leading-none">
-                      ৳ {Number(data?.amount || data?.paidAmount || 0).toLocaleString()}
-                    </span>
+                {discountAmount > 0 ? (
+                  <div className="flex justify-between items-center text-xs sm:text-sm font-bold text-rose-600">
+                    <span>Discount</span>
+                    <span className="font-black">- ৳ {discountAmount.toLocaleString()}</span>
                   </div>
+                ) : (
+                  <div className="flex justify-between items-center text-xs sm:text-sm font-bold text-slate-800">
+                    <span>Discount</span>
+                    <span className="font-black">0</span>
+                  </div>
+                )}
+                {prevDueAmount > 0 && (
+                  <div className="flex justify-between items-center text-xs sm:text-sm font-bold text-amber-800">
+                    <span>Previous Due</span>
+                    <span className="font-black">+ ৳ {prevDueAmount.toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center text-xs sm:text-sm font-bold text-slate-800 border-t border-slate-300 pt-1 mt-1">
+                  <span>Total Amount</span>
+                  <span className="font-black">৳ {totalPayableAmount.toLocaleString()}</span>
                 </div>
-                <div className="text-right sm:text-right w-full sm:w-auto">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase block">
-                    {isBangla ? 'কথায়' : 'In Words'}
+              </div>
+            </div>
+
+            {/* Signatures & Paid / Due Colored Boxes */}
+            <div className="mt-auto flex justify-between items-end pt-6 pb-2 relative z-10">
+              {/* Accountant Signature */}
+              <div className="text-center w-40 ml-2">
+                <div className="h-14 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" className="h-10 opacity-80">
+                    <path d="M10,80 Q40,10 80,70 T150,60 T220,80 Q250,30 280,60" fill="none" stroke="#164366" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M120,40 Q130,20 140,50" fill="none" stroke="#164366" strokeWidth="3" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <div className="pt-1.5 border-t border-slate-400">
+                  <p className="text-xs sm:text-sm font-bold text-slate-800">একাউন্ট্যান্ট</p>
+                </div>
+              </div>
+
+              {/* Paid & Due Boxes */}
+              <div className="flex h-16 sm:h-20 shadow-sm rounded overflow-hidden">
+                <div className="bg-[#164366] text-white w-28 sm:w-32 px-3 py-2 text-center flex flex-col justify-center border-r border-white/20">
+                  <span className="text-xs sm:text-sm font-bold">Paid</span>
+                  <span className="text-xl sm:text-2xl font-black mt-0.5">
+                    ৳ {paidAmountVal.toLocaleString()}
                   </span>
-                  <span className="text-xs font-bold text-slate-700 italic">
-                    {data?.amountInWords || numberToWordsBDT(data?.amount || data?.paidAmount)}
+                </div>
+                <div className="bg-[#d32f2f] text-white w-28 sm:w-32 px-3 py-2 text-center flex flex-col justify-center">
+                  <span className="text-xs sm:text-sm font-bold">Deu</span>
+                  <span className="text-xl sm:text-2xl font-black mt-0.5">
+                    ৳ {dueAmountVal.toLocaleString()}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Footer / Signatures */}
-            <div className="mt-8 grid grid-cols-2 gap-12 pt-6 relative z-10">
-              <div className="flex flex-col items-center">
-                <div className="w-36 border-b-2 border-slate-300"></div>
-                <span className="text-[10px] font-bold text-slate-500 uppercase mt-1.5">
-                  {isBangla ? 'আদায়কারী / Cashier' : 'Authorized Cashier'}
-                </span>
+            {/* Institutional Footer Strip */}
+            <div className="voucher-footer bg-[#164366] text-white py-2.5 px-6 sm:px-8 flex justify-center items-center gap-8 text-xs font-bold -mx-6 sm:-mx-8 -mb-6 sm:-mb-8 mt-6 shrink-0 relative z-10">
+              <div className="flex items-center gap-2">
+                <Globe className="w-3.5 h-3.5" />
+                <span>www.pakundamadrasa.com</span>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="w-36 border-b-2 border-slate-800"></div>
-                <span className="text-[10px] font-bold text-slate-800 uppercase mt-1.5">
-                  {isBangla ? 'মুহতামিম / Principal' : 'Principal Signature'}
-                </span>
+              <div className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5" />
+                <span>01986544021</span>
               </div>
             </div>
 
           </div>
         </div>
-
-        {/* Print Styles */}
-        <style>
-          {`
-            @media print {
-              body * {
-                visibility: hidden;
-              }
-              #printable-voucher, #printable-voucher * {
-                visibility: visible;
-              }
-              #printable-voucher {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100% !important;
-                max-width: none !important;
-                box-shadow: none !important;
-                border: none !important;
-                padding: 20px !important;
-              }
-              .no-print {
-                display: none !important;
-              }
-            }
-          `}
-        </style>
 
       </div>
     </div>

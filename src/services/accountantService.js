@@ -42,6 +42,11 @@ const accountantService = {
     return response.data;
   },
 
+  voidTransaction: async (transactionId, reason = '') => {
+    const response = await axiosInstance.post(`/fee-management/v1/void-transaction/${transactionId}`, { reason });
+    return response.data;
+  },
+
   getFeeTypes: async () => {
     const response = await axiosInstance.get('/fee-type/v1');
     return response.data;
