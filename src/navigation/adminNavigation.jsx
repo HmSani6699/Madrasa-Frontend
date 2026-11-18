@@ -173,20 +173,19 @@ export const adminNavigation = [
         icon: Banknote,
         children: [
           {
-            name: "Pay Salary",
-            path: "/admin/accounting/payroll/pay",
+            name: "Monthly Payroll",
+            path: "/admin/accounting/payroll/monthly",
+            icon: Calculator,
+          },
+          {
+            name: "Salary Setup",
+            path: "/admin/accounting/payroll/setup",
             icon: DollarSign,
           },
           {
-            name: "Process Salary",
-            path: "/admin/accounting/payroll/process",
-            icon: Calculator,
-          },
-        
-          {
-            name: "Salary History",
-            path: "/admin/accounting/payroll/history",
-            icon: Receipt,
+            name: "Advance & Loans",
+            path: "/admin/accounting/payroll/advance",
+            icon: Wallet,
           },
         ],
       },

@@ -1,10 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   DollarSign,
   Plus,
   Trash2,
   SquarePen,
   X,
+  Search,
+  CheckCircle2,
+  AlertTriangle,
+  User,
+  Users,
+  Building2,
+  Calendar
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-hot-toast";
@@ -15,15 +22,13 @@ const SalarySetup = () => {
   const [loading, setLoading] = useState(false);
   const [salarySetups, setSalarySetups] = useState([]);
   const [staffList, setStaffList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [tabFilter, setTabFilter] = useState("all"); // "all", "configured", "pending"
+
   const [showModal, setShowModal] = useState(false);
   const [editingSetup, setEditingSetup] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedSetup, setSelectedSetup] = useState(null);
-
-  const [filters, setFilters] = useState({
-    staff_id: "",
-    status: ""
-  });
 
   const [formData, setFormData] = useState({
     staff_id: "",
@@ -32,44 +37,35 @@ const SalarySetup = () => {
     medical_allowance: "",
     transport_allowance: "",
     other_allowance: "",
-    effective_from: new Date().toISOString().split('T')[0],
+    effective_from: new Date().toISOString().split("T")[0],
     status: "active"
   });
 
-  useEffect(() => {
-    fetchSalarySetups();
-    fetchStaffList();
-  }, [filters]);
-
-  const fetchSalarySetups = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (filters.staff_id) params.append('staff_id', filters.staff_id);
-      if (filters.status) params.append('status', filters.status);
+      const [setupsRes, staffRes] = await Promise.all([
+        axiosInstance.get("/v1/salary-setup"),
+        axiosInstance.get("/v1/staff")
+      ]);
 
-      const response = await axiosInstance.get(`/v1/salary-setup?${params.toString()}`);
-      if (response.data.success) {
-        setSalarySetups(response.data.data);
+      if (setupsRes.data.success) {
+        setSalarySetups(setupsRes.data.data || []);
+      }
+      if (staffRes.data.success) {
+        setStaffList(staffRes.data.data || []);
       }
     } catch (err) {
-      console.error("Error fetching salary setups:", err);
-      toast.error(err.response?.data?.message || "Failed to fetch salary setups");
+      console.error("Error fetching data:", err);
+      toast.error("তথ্য লোড করতে সমস্যা হয়েছে");
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchStaffList = async () => {
-    try {
-      const response = await axiosInstance.get('/v1/staff');
-      if (response.data.success) {
-        setStaffList(response.data.data);
-      }
-    } catch (err) {
-      console.error("Error fetching staff:", err);
-    }
-  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const calculateTotal = () => {
     const basic = parseFloat(formData.basic_salary) || 0;
@@ -81,36 +77,50 @@ const SalarySetup = () => {
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
+    if (!formData.staff_id) {
+      toast.error("অনুগ্রহ করে কর্মী নির্বাচন করুন");
+      return;
+    }
+    if (!formData.basic_salary || parseFloat(formData.basic_salary) <= 0) {
+      toast.error("অনুগ্রহ করে মূল বেতন লিখুন");
+      return;
+    }
 
+    setLoading(true);
     try {
       if (editingSetup) {
         const response = await axiosInstance.put(`/v1/salary-setup/${editingSetup._id}`, formData);
         if (response.data.success) {
-          toast.success("Salary setup updated successfully!");
+          toast.success("স্যালারি সেটআপ সফলভাবে আপডেট হয়েছে!");
           setShowModal(false);
           resetForm();
-          fetchSalarySetups();
+          fetchData();
         }
       } else {
-        const response = await axiosInstance.post('/v1/salary-setup', formData);
+        const response = await axiosInstance.post("/v1/salary-setup", formData);
         if (response.data.success) {
-          toast.success("Salary setup created successfully!");
+          toast.success("স্যালারি সেটআপ সফলভাবে তৈরি হয়েছে!");
           setShowModal(false);
           resetForm();
-          fetchSalarySetups();
+          fetchData();
         }
       }
     } catch (err) {
       console.error("Salary setup save error:", err);
-      toast.error(err.response?.data?.message || "Failed to save salary setup");
+      toast.error(err.response?.data?.message || "সংরক্ষণ করতে ব্যর্থ হয়েছে");
     } finally {
       setLoading(false);
     }
+  };
+
+  const openNewModalForStaff = (staffId) => {
+    resetForm();
+    setFormData((prev) => ({ ...prev, staff_id: staffId }));
+    setShowModal(true);
   };
 
   const openEditModal = (setup) => {
@@ -122,7 +132,9 @@ const SalarySetup = () => {
       medical_allowance: setup.medical_allowance || "",
       transport_allowance: setup.transport_allowance || "",
       other_allowance: setup.other_allowance || "",
-      effective_from: setup.effective_from ? new Date(setup.effective_from).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      effective_from: setup.effective_from
+        ? new Date(setup.effective_from).toISOString().split("T")[0]
+        : new Date().toISOString().split("T")[0],
       status: setup.status || "active"
     });
     setShowModal(true);
@@ -137,14 +149,14 @@ const SalarySetup = () => {
     try {
       const response = await axiosInstance.delete(`/v1/salary-setup/${selectedSetup._id}`);
       if (response.data.success) {
-        toast.success("Salary setup deleted successfully!");
-        fetchSalarySetups();
+        toast.success("স্যালারি সেটআপ মুছে ফেলা হয়েছে!");
+        fetchData();
       }
       setIsDeleteModalOpen(false);
       setSelectedSetup(null);
     } catch (err) {
       console.error("Delete error:", err);
-      toast.error(err.response?.data?.message || "Failed to delete salary setup");
+      toast.error(err.response?.data?.message || "মুছে ফেলতে ব্যর্থ হয়েছে");
     }
   };
 
@@ -156,273 +168,384 @@ const SalarySetup = () => {
       medical_allowance: "",
       transport_allowance: "",
       other_allowance: "",
-      effective_from: new Date().toISOString().split('T')[0],
+      effective_from: new Date().toISOString().split("T")[0],
       status: "active"
     });
     setEditingSetup(null);
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-BD', {
-      style: 'currency',
-      currency: 'BDT',
+    return new Intl.NumberFormat("en-BD", {
+      style: "currency",
+      currency: "BDT",
       minimumFractionDigits: 0
     }).format(amount || 0);
   };
 
+  // Combine staff with their active salary setup
+  const combinedStaffList = useMemo(() => {
+    return staffList.map((staff) => {
+      const setup = salarySetups.find(
+        (s) => (s.staff_id?._id || s.staff_id?.toString() || s.staff_id) === staff._id.toString()
+      );
+      return {
+        staff,
+        setup: setup || null,
+        hasSetup: !!setup
+      };
+    });
+  }, [staffList, salarySetups]);
+
+  // Filter combined list
+  const filteredList = useMemo(() => {
+    return combinedStaffList.filter((item) => {
+      const staffName = item.staff.name?.toLowerCase() || "";
+      const empId = item.staff.employeeID?.toLowerCase() || "";
+      const role = item.staff.role?.toLowerCase() || "";
+      const desig = item.staff.designation?.toLowerCase() || "";
+
+      const matchesSearch =
+        !searchTerm ||
+        staffName.includes(searchTerm.toLowerCase()) ||
+        empId.includes(searchTerm.toLowerCase()) ||
+        role.includes(searchTerm.toLowerCase()) ||
+        desig.includes(searchTerm.toLowerCase());
+
+      const matchesTab =
+        tabFilter === "all" ||
+        (tabFilter === "configured" && item.hasSetup) ||
+        (tabFilter === "pending" && !item.hasSetup);
+
+      return matchesSearch && matchesTab;
+    });
+  }, [combinedStaffList, searchTerm, tabFilter]);
+
+  const configuredCount = combinedStaffList.filter((i) => i.hasSetup).length;
+  const pendingCount = combinedStaffList.filter((i) => !i.hasSetup).length;
+
   return (
-    <div className="animate-in fade-in duration-500">
+    <div className="animate-in fade-in duration-500 space-y-6 pb-20">
       {/* Header */}
-      <div className="flex items-center justify-between mb-5 w-full">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
             <DollarSign className="w-8 h-8 text-[#00315e]" />
-            Salary Setup
+            Salary Setup (বেতন কাঠামো নির্ধারণ)
           </h1>
           <p className="text-[14px] text-slate-500 font-bold mt-1">
-            Manage Staff Salary Configurations
+            Configure Staff Basic Salaries, Allowances, and Compensation Packages
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <select
-              value={filters.staff_id}
-              onChange={(e) => setFilters(prev => ({ ...prev, staff_id: e.target.value }))}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#00315e] transition-all text-sm font-bold"
-            >
-              <option value="">All Staff</option>
-              {staffList.map(staff => (
-                <option key={staff._id} value={staff._id}>{staff.name}</option>
-              ))}
-            </select>
+        <button
+          onClick={() => {
+            resetForm();
+            setShowModal(true);
+          }}
+          className="px-5 py-2.5 bg-[#00315e] hover:bg-[#002547] text-white rounded-[8px] font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer self-start md:self-auto"
+        >
+          <Plus className="w-4 h-4" />
+          Add Salary Setup (নতুন বেতন নির্ধারণ)
+        </button>
+      </div>
 
-            <select
-              value={filters.status}
-              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-              className="px-4 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#00315e] transition-all text-sm font-bold"
-            >
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white rounded-[8px] p-5 shadow-lg border border-slate-100 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">মোট কর্মী সংখ্যা</p>
+            <p className="text-2xl font-black text-slate-900 mt-1">{staffList.length} জন</p>
+            <p className="text-[11px] font-bold text-slate-400 mt-1">সকল শিক্ষক ও কর্মচারী</p>
           </div>
-          <button
-            onClick={() => {
-              resetForm();
-              setShowModal(true);
-            }}
-            className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2 whitespace-nowrap"
-          >
-            <Plus className="w-4 h-4" />
-            Add Setup
-          </button>
+          <div className="w-12 h-12 bg-blue-50 text-[#00315e] rounded-xl flex items-center justify-center">
+            <Users className="w-6 h-6" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[8px] p-5 shadow-lg border border-slate-100 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider">বেতন নির্ধারিত (Configured)</p>
+            <p className="text-2xl font-black text-emerald-700 mt-1">{configuredCount} জন</p>
+            <p className="text-[11px] font-bold text-emerald-600 mt-1">পে-রোলে যুক্ত হওয়ার উপযোগী</p>
+          </div>
+          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+            <CheckCircle2 className="w-6 h-6" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[8px] p-5 shadow-lg border border-slate-100 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-bold text-amber-600 uppercase tracking-wider">বেতন বাকি (Pending Setup)</p>
+            <p className="text-2xl font-black text-amber-700 mt-1">{pendingCount} জন</p>
+            <p className="text-[11px] font-bold text-amber-600 mt-1">এখনো স্যালারি নির্ধারণ করা হয়নি</p>
+          </div>
+          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6" />
+          </div>
         </div>
       </div>
 
-      {/* Salary List Table */}
-      <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 overflow-hidden relative">
+      {/* Control Bar */}
+      <div className="bg-white p-4 rounded-[8px] border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search Staff by Name, ID, Designation..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-[8px] text-sm outline-none focus:ring-1 focus:ring-[#00315e] transition-all font-medium"
+          />
+        </div>
+
+        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-[8px] self-end md:self-auto">
+          {[
+            { id: "all", label: `সকল স্টাফ (${staffList.length})` },
+            { id: "configured", label: `নির্ধারিত (${configuredCount})` },
+            { id: "pending", label: `বাকি (${pendingCount})` }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setTabFilter(tab.id)}
+              className={`px-3 py-1.5 text-xs font-bold rounded-[6px] transition-all cursor-pointer ${
+                tabFilter === tab.id
+                  ? "bg-white text-[#00315e] shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Salary Setup Table */}
+      <div className="bg-white rounded-[8px] shadow-xl border border-slate-200 overflow-hidden">
         {loading ? (
-          <div className="flex-1 flex flex-col items-center justify-center py-20">
+          <div className="py-20 flex flex-col items-center justify-center">
             <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-slate-500 font-bold">Loading salary setups...</p>
+            <p className="text-slate-500 font-bold">স্যালারি সেটআপ লোড হচ্ছে...</p>
           </div>
-        ) : salarySetups.length === 0 ? (
-          <div className="py-20 text-center">
-            <DollarSign className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-500 font-bold text-lg">No salary setups found</p>
+        ) : filteredList.length === 0 ? (
+          <div className="py-20 text-center space-y-3">
+            <DollarSign className="w-16 h-16 text-slate-300 mx-auto" />
+            <p className="text-base font-bold text-slate-600">কোনো কর্মীর রেকর্ড পাওয়া যায়নি</p>
           </div>
         ) : (
-          <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
-            <table className="w-full">
-              <thead className="bg-[#00315e24]">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-[#00315e24] text-slate-800 text-[11px] uppercase font-black tracking-wider whitespace-nowrap">
                 <tr>
-                  <th className="px-6 py-3.5 text-left text-[12px] font-black">Staff</th>
-                  <th className="px-6 py-3.5 text-center text-[12px] font-black">Basic</th>
-                  <th className="px-6 py-3.5 text-center text-[12px] font-black">House Rent</th>
-                  <th className="px-6 py-3.5 text-center text-[12px] font-black">Medical</th>
-                  <th className="px-6 py-3.5 text-center text-[12px] font-black">Transport</th>
-                  <th className="px-6 py-3.5 text-center text-[12px] font-black">Total</th>
-                  <th className="px-6 py-3.5 text-center text-[12px] font-black">Status</th>
-                  <th className="px-6 py-3.5 text-center text-[12px] font-black">Action</th>
+                  <th className="px-4 py-3.5">#</th>
+                  <th className="px-4 py-3.5">কর্মীর তথ্য (Staff Info)</th>
+                  <th className="px-4 py-3.5 text-right">মূল বেতন (Basic)</th>
+                  <th className="px-4 py-3.5 text-right">বাড়ি ভাড়া (House)</th>
+                  <th className="px-4 py-3.5 text-right">চিকিৎসা (Medical)</th>
+                  <th className="px-4 py-3.5 text-right">যাতায়াত (Transport)</th>
+                  <th className="px-4 py-3.5 text-right">অন্যান্য (Other)</th>
+                  <th className="px-4 py-3.5 text-right">সর্বমোট বেতন (Gross)</th>
+                  <th className="px-4 py-3.5 text-center">স্ট্যাটাস</th>
+                  <th className="px-4 py-3.5 text-center">অ্যাকশন</th>
                 </tr>
               </thead>
-              <tbody className="divide-y-2 divide-slate-50">
-                {salarySetups.map((setup) => (
-                  <tr
-                    key={setup._id}
-                    className="group hover:bg-amber-50/10 transition-all duration-300"
-                  >
-                    <td className="px-6 py-3.5">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-black text-slate-800">
-                          {setup.staff_info?.name || "Unknown Staff"}
-                        </span>
-                        <span className="text-xs font-bold text-slate-500">
-                          {setup.staff_info?.role || "Staff"}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-3.5 text-center">
-                      <span className="text-sm font-bold text-slate-600">
-                        {formatCurrency(setup.basic_salary)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3.5 text-center">
-                      <span className="text-sm font-bold text-slate-600">
-                        {formatCurrency(setup.house_rent)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3.5 text-center">
-                      <span className="text-sm font-bold text-slate-600">
-                        {formatCurrency(setup.medical_allowance)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3.5 text-center">
-                      <span className="text-sm font-bold text-slate-600">
-                        {formatCurrency(setup.transport_allowance)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3.5 text-center">
-                      <span className="text-sm font-black text-[#00315e]">
-                        {formatCurrency(setup.total_salary)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3.5 text-center">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                          setup.status === "active"
-                            ? "bg-blue-50 text-blue-700 border-blue-100"
-                            : "bg-rose-50 text-rose-700 border-rose-100"
-                        }`}
-                      >
-                        <div
-                          className={`w-1.5 h-1.5 rounded-full ${
-                            setup.status === "active" ? "bg-blue-500" : "bg-rose-500"
-                          }`}
-                        />
-                        {setup.status}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-3 justify-center">
-                        <button className="cursor-pointer" onClick={() => openEditModal(setup)}>
-                          <SquarePen className="w-4 h-4 text-[#00315e]" />
-                        </button>
-                        <button className="cursor-pointer" onClick={() => openDeleteModal(setup)}>
-                          <Trash2 className="w-4 h-4 text-red-500" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-slate-100 text-xs font-bold text-slate-700 whitespace-nowrap">
+                {filteredList.map((item, idx) => {
+                  const { staff, setup, hasSetup } = item;
+
+                  return (
+                    <tr key={staff._id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="px-4 py-3.5 text-slate-400">{idx + 1}</td>
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center font-black text-[#00315e] border border-slate-200">
+                            {staff.photo ? (
+                              <img src={staff.photo} alt={staff.name} className="w-full h-full object-cover rounded-full" />
+                            ) : (
+                              (staff.name || "S").charAt(0)
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-black text-slate-900">{staff.name}</p>
+                            <p className="text-[10px] text-slate-400 uppercase">
+                              {staff.employeeID ? `${staff.employeeID} • ` : ""}{staff.designation || staff.role || "Staff"}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3.5 text-right text-slate-800">
+                        {hasSetup ? formatCurrency(setup.basic_salary) : "-"}
+                      </td>
+                      <td className="px-4 py-3.5 text-right text-slate-600">
+                        {hasSetup ? formatCurrency(setup.house_rent) : "-"}
+                      </td>
+                      <td className="px-4 py-3.5 text-right text-slate-600">
+                        {hasSetup ? formatCurrency(setup.medical_allowance) : "-"}
+                      </td>
+                      <td className="px-4 py-3.5 text-right text-slate-600">
+                        {hasSetup ? formatCurrency(setup.transport_allowance) : "-"}
+                      </td>
+                      <td className="px-4 py-3.5 text-right text-slate-600">
+                        {hasSetup && setup.other_allowance > 0 ? formatCurrency(setup.other_allowance) : "-"}
+                      </td>
+
+                      <td className="px-4 py-3.5 text-right font-black text-[#00315e] text-sm">
+                        {hasSetup ? formatCurrency(setup.total_salary) : "নির্ধারিত নয়"}
+                      </td>
+
+                      <td className="px-4 py-3.5 text-center">
+                        {hasSetup ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            Configured
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                            Pending Setup
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3.5 text-center">
+                        {hasSetup ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => openEditModal(setup)}
+                              className="p-1.5 bg-[#00315e24] hover:bg-[#00315e33] text-[#00315e] rounded-[6px] cursor-pointer"
+                              title="সম্পাদনা করুন"
+                            >
+                              <SquarePen className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => openDeleteModal(setup)}
+                              className="p-1.5 hover:bg-rose-50 text-rose-500 rounded-[6px] cursor-pointer"
+                              title="মুছে ফেলুন"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => openNewModalForStaff(staff._id)}
+                            className="px-3 py-1 bg-[#00315e] hover:bg-[#002547] text-white rounded-[6px] text-[11px] font-bold cursor-pointer transition-colors shadow-sm"
+                          >
+                            + Setup Salary
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
       </div>
 
-      {/* Add/Edit Modal */}
+      {/* Add / Edit Salary Setup Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-6 sm:p-10">
-          <div className="bg-white rounded-[8px] w-full max-w-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] animate-in fade-in zoom-in duration-300 overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 border-b-2 border-slate-100 flex items-center justify-between bg-white">
-              <h2 className="text-xl font-black text-slate-800 tracking-tight">
-                {editingSetup ? "Update Salary Setup" : "Add New Salary Setup"}
-              </h2>
+        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[120] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[16px] w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in duration-200">
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+              <div>
+                <h2 className="text-base font-black text-slate-800">
+                  {editingSetup ? "বেতন কাঠামো পরিবর্তন (Update Salary Setup)" : "নতুন বেতন নির্ধারণ (Add Salary Setup)"}
+                </h2>
+                <p className="text-xs font-bold text-slate-400">Define basic pay scale and standard allowances</p>
+              </div>
               <button
                 onClick={() => {
                   setShowModal(false);
                   resetForm();
                 }}
-                className="p-2 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full cursor-pointer"
               >
-                <X className="w-5 h-5 text-slate-400" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="p-6 overflow-y-auto flex flex-col gap-4">
               <SelectInputField
-                title={'Staff'}
-                options={staffList.map(s => ({ value: s._id, label: `${s.name} - ${s.role}` }))}
+                title={"কর্মী নির্বাচন (Staff)"}
+                options={staffList.map((s) => ({
+                  value: s._id,
+                  label: `${s.name} - ${s.employeeID ? `[${s.employeeID}] ` : ""}${s.designation || s.role}`
+                }))}
                 value={formData.staff_id}
-                setValue={(val) => handleInputChange('staff_id', val)}
+                setValue={(val) => handleInputChange("staff_id", val)}
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField
-                  title={'Basic Salary'}
-                  placeholder={'0.00'}
-                  type={'number'}
+                  title={"মূল বেতন (Basic Salary) *"}
+                  placeholder={"0.00"}
+                  type={"number"}
                   value={formData.basic_salary}
-                  setValue={(val) => handleInputChange('basic_salary', val)}
+                  setValue={(val) => handleInputChange("basic_salary", val)}
                 />
                 <InputField
-                  title={'House Rent'}
-                  placeholder={'0.00'}
-                  type={'number'}
+                  title={"বাড়ি ভাড়া (House Rent)"}
+                  placeholder={"0.00"}
+                  type={"number"}
                   value={formData.house_rent}
-                  setValue={(val) => handleInputChange('house_rent', val)}
+                  setValue={(val) => handleInputChange("house_rent", val)}
                 />
                 <InputField
-                  title={'Medical Allowance'}
-                  placeholder={'0.00'}
-                  type={'number'}
+                  title={"চিকিৎসা ভাতা (Medical Allowance)"}
+                  placeholder={"0.00"}
+                  type={"number"}
                   value={formData.medical_allowance}
-                  setValue={(val) => handleInputChange('medical_allowance', val)}
+                  setValue={(val) => handleInputChange("medical_allowance", val)}
                 />
                 <InputField
-                  title={'Transport Allowance'}
-                  placeholder={'0.00'}
-                  type={'number'}
+                  title={"যাতায়াত ভাতা (Transport Allowance)"}
+                  placeholder={"0.00"}
+                  type={"number"}
                   value={formData.transport_allowance}
-                  setValue={(val) => handleInputChange('transport_allowance', val)}
+                  setValue={(val) => handleInputChange("transport_allowance", val)}
                 />
                 <InputField
-                  title={'Other Allowance'}
-                  placeholder={'0.00'}
-                  type={'number'}
+                  title={"অন্যান্য বিশেষ ভাতা (Other Allowance)"}
+                  placeholder={"0.00"}
+                  type={"number"}
                   value={formData.other_allowance}
-                  setValue={(val) => handleInputChange('other_allowance', val)}
+                  setValue={(val) => handleInputChange("other_allowance", val)}
                 />
                 <InputField
-                  title={'Effective From'}
-                  placeholder={'Select Date'}
-                  type={'date'}
+                  title={"কার্যকরের তারিখ (Effective From)"}
+                  type={"date"}
                   value={formData.effective_from}
-                  setValue={(val) => handleInputChange('effective_from', val)}
+                  setValue={(val) => handleInputChange("effective_from", val)}
                 />
               </div>
 
-              <SelectInputField
-                title={'Status'}
-                options={[{ value: "active", label: "Active" }, { value: "inactive", label: "Inactive" }]}
-                value={formData.status}
-                setValue={(val) => handleInputChange('status', val)}
-              />
-
-              <div className="mt-2 bg-[#00315e]/5 rounded-xl p-4 border border-[#00315e]/20 flex justify-between items-center">
-                <span className="text-sm font-bold text-slate-600">Total Salary</span>
-                <span className="text-xl font-black text-[#00315e]">{formatCurrency(calculateTotal())}</span>
+              {/* Total Salary Preview */}
+              <div className="bg-[#00315e]/5 rounded-[8px] p-4 border border-[#00315e]/20 flex justify-between items-center">
+                <div>
+                  <span className="text-xs font-black text-slate-500 uppercase block">সর্বমোট মাসিক বেতন (Total Gross)</span>
+                  <span className="text-[11px] font-bold text-slate-400">Basic + All Allowances</span>
+                </div>
+                <span className="text-2xl font-black text-[#00315e]">{formatCurrency(calculateTotal())}</span>
               </div>
             </div>
 
-            <div className="p-6 border-t-2 border-slate-100 bg-slate-50 flex justify-end gap-4">
+            <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
               <button
                 onClick={() => {
                   setShowModal(false);
                   resetForm();
                 }}
-                className="px-6 py-3 font-bold text-slate-600 hover:bg-white rounded-xl transition-all border-2 border-transparent hover:border-slate-200 cursor-pointer"
+                className="px-5 py-2 font-bold text-slate-600 hover:bg-white rounded-[8px] border border-slate-200 cursor-pointer text-xs"
               >
-                Cancel
+                বাতিল (Cancel)
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="px-8 py-3 bg-[#00315e] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-lg transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="px-6 py-2 bg-[#00315e] hover:bg-[#002547] text-white font-bold rounded-[8px] text-xs shadow-md cursor-pointer disabled:opacity-50"
               >
-                {loading ? "Saving..." : (editingSetup ? "Update Setup" : "Add Setup")}
+                {loading ? "সংরক্ষণ হচ্ছে..." : editingSetup ? "আপডেট করুন (Update Setup)" : "সংরক্ষণ করুন (Save Setup)"}
               </button>
             </div>
           </div>
@@ -431,32 +554,30 @@ const SalarySetup = () => {
 
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-6">
-          <div className="bg-white rounded-[8px] w-full max-w-md shadow-2xl animate-in fade-in zoom-in duration-300 overflow-hidden">
-            <div className="p-8 text-center space-y-6">
-              <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto">
-                <Trash2 className="w-8 h-8" />
-              </div>
-              <div className="space-y-2">
-                <h2 className="text-xl font-bold text-slate-800">Confirm Deletion</h2>
-                <p className="text-slate-500">
-                  Are you sure you want to delete this salary setup for <span className="font-bold text-slate-700">{selectedSetup?.staff_info?.name}</span>?
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setIsDeleteModalOpen(false)}
-                  className="flex-1 py-2 bg-slate-100 text-slate-600 rounded-[8px] font-bold cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="flex-1 py-2 bg-red-500 text-white rounded-[8px] font-bold cursor-pointer"
-                >
-                  Delete
-                </button>
-              </div>
+        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[130] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[16px] w-full max-w-sm shadow-2xl p-6 text-center space-y-4 animate-in zoom-in duration-200">
+            <div className="w-14 h-14 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+              <Trash2 className="w-7 h-7" />
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-slate-800">সেটআপ মুছে ফেলবেন?</h2>
+              <p className="text-xs font-bold text-slate-500 mt-1">
+                এই কর্মীর বেতন কাঠামো মুছে ফেলতে নিশ্চিত?
+              </p>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="flex-1 py-2 bg-slate-100 text-slate-600 rounded-[8px] font-bold text-xs cursor-pointer"
+              >
+                বাতিল
+              </button>
+              <button
+                onClick={handleDelete}
+                className="flex-1 py-2 bg-rose-600 text-white rounded-[8px] font-bold text-xs cursor-pointer hover:bg-rose-700 shadow-md"
+              >
+                হ্যাঁ, মুছুন
+              </button>
             </div>
           </div>
         </div>

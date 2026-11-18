@@ -105,8 +105,9 @@ import ExamAttendanceReport from "../Pages/Admin/ExamAttendanceReport";
 import SettingsPage from "../Pages/Admin/SettingsPage";
 import DonationEntry from "../Pages/Accounting/DonationEntry";
 import FeeCollection from "../Pages/Accounting/FeeCollection";
-import FeeSetup from "../Pages/Accounting/FeeType";
 import PayrollProcess from "../Pages/Accounting/PayrollProcess";
+import MonthlyPayroll from "../Pages/Accounting/MonthlyPayroll";
+import AdvanceLoans from "../Pages/Accounting/AdvanceLoans";
 import DuesPending from "../Pages/Admin/DuesPending";
 import DonationHistory from "../Pages/Accounting/DonationHistory";
 import SalaryHistory from "../Pages/Accounting/SalaryHistory";
@@ -359,11 +360,20 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/accounting/fees/type") {
         element = <FeeType />;
       }
+      if (item.path === "/admin/accounting/payroll/monthly") {
+        element = <MonthlyPayroll />;
+      }
+      if (item.path === "/admin/accounting/payroll/setup") {
+        element = <SalarySetup />;
+      }
+      if (item.path === "/admin/accounting/payroll/advance") {
+        element = <AdvanceLoans />;
+      }
       if (item.path === "/admin/accounting/payroll/process") {
-        element = <PayrollProcess />;
+        element = <MonthlyPayroll />;
       }
       if (item.path === "/admin/accounting/payroll/pay") {
-        element = <PaySalary />;
+        element = <MonthlyPayroll />;
       }
       if (item.path === "/admin/accounting/payroll/history") {
         element = <SalaryHistory />;

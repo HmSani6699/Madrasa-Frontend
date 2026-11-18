@@ -10,7 +10,8 @@ import {
     CreditCard,
     DollarSign,
     Settings,
-    FileText
+    FileText,
+    Calculator
   } from "lucide-react";
   
   export const accountingNavigation = [
@@ -23,15 +24,17 @@ import {
       name: "Fees Collection",
       icon: Wallet,
       children: [
-        { name: "Collect Fees", path: "/admin/reports/fees", icon: DollarSign }, // Using admin path as placeholder for now, ideally needs a collection page
+        { name: "Collect Fees", path: "/admin/accounting/fees/collect", icon: DollarSign },
+        { name: "Fee Type", path: "/admin/accounting/fees/type", icon: Settings },
       ]
     },
     {
       name: "Payroll",
       icon: Banknote,
       children: [
-        { name: "Employee Salaries", path: "/admin/employee/list", icon: Users },
-        { name: "Salary Slip", path: "/admin/certificate/employee", icon: Receipt },
+        { name: "Monthly Payroll", path: "/admin/accounting/payroll/monthly", icon: Calculator },
+        { name: "Salary Setup", path: "/admin/accounting/payroll/setup", icon: DollarSign },
+        { name: "Advance & Loans", path: "/admin/accounting/payroll/advance", icon: Wallet },
       ]
     },
     {

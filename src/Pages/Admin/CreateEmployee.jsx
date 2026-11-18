@@ -27,6 +27,7 @@ import {
   FileText,
   Upload,
   Image as ImageIcon,
+  DollarSign,
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-hot-toast";
@@ -114,6 +115,13 @@ const CreateEmployee = () => {
     accountNo: "",
     mobileMethods: ["Bkash"], // Options: "Bkash", "Nagad", "Rocket"
     mobileNumber: "",
+
+    // Salary Details (Optional at Creation)
+    basic_salary: "",
+    house_rent: "",
+    medical_allowance: "",
+    transport_allowance: "",
+    other_allowance: "",
   });
 
   const handleInputChange = (field, value) => {
@@ -655,6 +663,60 @@ const CreateEmployee = () => {
               </p>
             </div>
           )}
+        </SectionContainer>
+
+        {/* Salary & Compensation Section (Optional) */}
+        <SectionContainer id="salary" title="Salary & Compensation (ঐচ্ছিক বেতন কাঠামো)" icon={DollarSign}>
+          <p className="text-xs font-bold text-slate-500 mb-6 bg-[#00315e24] p-3 rounded-[8px]">
+            💡 <span className="font-black text-[#00315e]">নোট:</span> নিয়োগের সময়ই বেতন চূড়ান্ত হয়ে থাকলে নিচের ফিল্ডগুলো পূরণ করুন। অন্যথায় এটি খালি রাখতে পারেন এবং পরবর্তীতে <span className="font-black text-[#00315e]">"Salary Setup"</span> মেনু থেকে নির্ধারণ করতে পারবেন।
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <FormInput
+              label="Basic Salary (মূল বেতন)"
+              field="basic_salary"
+              type="number"
+              placeholder="0.00"
+              data={formData}
+              setter={handleInputChange}
+              icon={DollarSign}
+            />
+            <FormInput
+              label="House Rent (বাড়ি ভাড়া ভাতা)"
+              field="house_rent"
+              type="number"
+              placeholder="0.00"
+              data={formData}
+              setter={handleInputChange}
+              icon={Building2}
+            />
+            <FormInput
+              label="Medical Allowance (চিকিৎসা ভাতা)"
+              field="medical_allowance"
+              type="number"
+              placeholder="0.00"
+              data={formData}
+              setter={handleInputChange}
+              icon={Droplets}
+            />
+            <FormInput
+              label="Transport Allowance (যাতায়াত ভাতা)"
+              field="transport_allowance"
+              type="number"
+              placeholder="0.00"
+              data={formData}
+              setter={handleInputChange}
+              icon={Briefcase}
+            />
+            <FormInput
+              label="Other Allowance (অন্যান্য ভাতা)"
+              field="other_allowance"
+              type="number"
+              placeholder="0.00"
+              data={formData}
+              setter={handleInputChange}
+              icon={Plus}
+            />
+          </div>
         </SectionContainer>
 
         {/* Floating Action Bar */}
