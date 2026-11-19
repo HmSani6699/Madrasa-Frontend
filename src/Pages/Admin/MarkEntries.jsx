@@ -231,7 +231,7 @@ const MarkEntries = () => {
       <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between mb-5 gap-4">
         <div className="mb-2 lg:mb-0">
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <BookOpen className="w-8 h-8 text-[#00315e]" />
+            <BookOpen className="w-8 h-8 text-[#1C7D5A]" />
             Mark Entries
           </h1>
           <p className="text-[14px] text-slate-500 font-bold mt-1">
@@ -254,7 +254,7 @@ const MarkEntries = () => {
               <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-[320px] bg-white rounded-[8px] shadow-2xl border border-slate-200 z-50 p-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <h3 className="font-black text-slate-800 text-sm flex items-center gap-2">
-                    <Filter className="w-4 h-4 text-[#00315e]" />
+                    <Filter className="w-4 h-4 text-[#1C7D5A]" />
                     Filter Options
                   </h3>
                   <button
@@ -285,7 +285,7 @@ const MarkEntries = () => {
                 <div className="pt-2">
                   <button
                     onClick={handleApplyFilters}
-                    className="w-full py-2 bg-[#00315e] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-sm transition-all cursor-pointer text-sm"
+                    className="w-full py-2 bg-[#1C7D5A] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-sm transition-all cursor-pointer text-sm"
                   >
                     Apply Filters
                   </button>
@@ -299,7 +299,7 @@ const MarkEntries = () => {
             disabled={isSaving || students.length === 0}
             className={`w-full sm:w-auto px-6 h-[42px] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap transition-colors font-bold text-sm ${isSaving || students.length === 0
                 ? "bg-slate-300 cursor-not-allowed"
-                : "bg-[#00315e] hover:bg-blue-900"
+                : "bg-[#1C7D5A] hover:bg-blue-900"
               }`}
           >
             <Save className="w-4 h-4" />
@@ -311,14 +311,14 @@ const MarkEntries = () => {
       {/* Table Section */}
       {loading ? (
         <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 border border-gray-200 mb-20 p-16 flex flex-col items-center justify-center text-center animate-in fade-in">
-          <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <h3 className="text-xl font-black text-slate-800 mb-1">Loading Data</h3>
           <p className="text-slate-500 font-bold">Please wait while we fetch the students and marks.</p>
         </div>
       ) : students.length === 0 ? (
         <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 border border-gray-200 mb-20 p-16 flex flex-col items-center justify-center text-center animate-in fade-in">
           <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-5 border-4 border-blue-100/50">
-            <Filter className="w-10 h-10 text-[#00315e]" />
+            <Filter className="w-10 h-10 text-[#1C7D5A]" />
           </div>
           <h3 className="text-xl font-black text-slate-800 mb-2">No Students Loaded</h3>
           <p className="text-slate-500 font-bold max-w-md">
@@ -351,7 +351,7 @@ const MarkEntries = () => {
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-[#00315e24]">
+              <thead className="bg-[#1C7D5A18]">
                 <tr>
                   <th className="px-8 py-3 text-left text-[12px] font-black text-slate-800 uppercase tracking-widest">
                     Roll
@@ -386,7 +386,7 @@ const MarkEntries = () => {
                       className="group hover:bg-blue-50/30 transition-colors duration-300"
                     >
                       <td className="px-8 py-4">
-                        <span className="text-sm font-black text-[#00315e] tracking-tight">
+                        <span className="text-sm font-black text-[#1C7D5A] tracking-tight">
                           {student.roll_number || "N/A"}
                         </span>
                       </td>
@@ -418,7 +418,7 @@ const MarkEntries = () => {
                             }
                             className={`w-24 px-4 py-2 bg-white border border-slate-200 rounded-[8px] text-sm font-bold text-center focus:outline-none transition-all ${student.status === "inactive"
                                 ? "opacity-30 bg-slate-50"
-                                : "focus:border-[#00315e] focus:ring-1 focus:ring-[#00315e]"
+                                : "focus:border-[#1C7D5A] focus:ring-1 focus:ring-[#1C7D5A]"
                               }`}
                             placeholder="00"
                           />

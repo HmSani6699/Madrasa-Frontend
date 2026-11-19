@@ -70,6 +70,21 @@ const adminService = {
   processSmsRecharge: async (id, status) => {
     const response = await axiosInstance.put(`${endpoints.admin.smsRecharges}/${id}`, { status });
     return response.data;
+  },
+
+  getDemoRequests: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.admin.demoRequests, { params });
+    return response.data;
+  },
+
+  updateDemoRequestStatus: async (id, data) => {
+    const response = await axiosInstance.patch(endpoints.admin.updateDemoRequestStatus(id), data);
+    return response.data;
+  },
+
+  deleteDemoRequest: async (id) => {
+    const response = await axiosInstance.delete(endpoints.admin.deleteDemoRequest(id));
+    return response.data;
   }
 };
 

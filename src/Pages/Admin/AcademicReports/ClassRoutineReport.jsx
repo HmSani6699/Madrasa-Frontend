@@ -76,7 +76,7 @@ const ClassRoutineReport = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 flex items-center gap-3">
-            <Clock className="w-8 h-8 text-[#00315e]" />
+            <Clock className="w-8 h-8 text-[#1C7D5A]" />
             Class Routine & Load Report
           </h1>
           <p className="text-sm text-slate-500 font-bold mt-1">
@@ -93,7 +93,7 @@ const ClassRoutineReport = () => {
           <div className="relative">
             <button
               onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}
-              className="px-4 py-2 bg-[#00315e] border border-slate-200 text-white rounded-lg cursor-pointer flex items-center gap-2  transition-all font-bold text-sm"
+              className="px-4 py-2 bg-[#1C7D5A] border border-slate-200 text-white rounded-lg cursor-pointer flex items-center gap-2  transition-all font-bold text-sm"
             >
               <Filter size={18} />
               Filter
@@ -105,7 +105,7 @@ const ClassRoutineReport = () => {
 
                 <div className="flex flex-col gap-3">
                   <select
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#00315e]/20 outline-none text-sm font-medium"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#1C7D5A]/20 outline-none text-sm font-medium"
                     value={selectedClass}
                     onChange={(e) => setSelectedClass(e.target.value)}
                   >
@@ -116,7 +116,7 @@ const ClassRoutineReport = () => {
                   </select>
 
                   <select
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#00315e]/20 outline-none text-sm font-medium"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#1C7D5A]/20 outline-none text-sm font-medium"
                     value={selectedSection}
                     onChange={(e) => setSelectedSection(e.target.value)}
                   >
@@ -137,7 +137,7 @@ const ClassRoutineReport = () => {
                   <button
                     onClick={() => { handleFilter(); setIsFilterModalOpen(false); }}
                     disabled={loading}
-                    className="px-6 py-2 bg-[#00315e] text-white font-bold rounded-lg hover:bg-[#00315e]/90 transition-colors flex items-center justify-center min-w-[100px] text-sm gap-2"
+                    className="px-6 py-2 bg-[#1C7D5A] text-white font-bold rounded-lg hover:bg-[#1C7D5A]/90 transition-colors flex items-center justify-center min-w-[100px] text-sm gap-2"
                   >
                     {loading ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -157,12 +157,12 @@ const ClassRoutineReport = () => {
 
       {/* Report Content */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-6 bg-[#00315e]/5 border-b border-slate-200 flex justify-between items-center">
+        <div className="p-6 bg-[#1C7D5A]/5 border-b border-slate-200 flex justify-between items-center">
           <div>
             <h2 className="text-lg font-black text-slate-800">Weekly Routine</h2>
             <p className="text-sm font-medium text-slate-500">Class: {selectedClass || 'All'} | Section: {selectedSection || 'All'}</p>
           </div>
-          <Calendar className="w-10 h-10 text-[#00315e] opacity-20" />
+          <Calendar className="w-10 h-10 text-[#1C7D5A] opacity-20" />
         </div>
         <div className="overflow-x-auto">
           {scheduleData.length > 0 ? (
@@ -180,13 +180,13 @@ const ClassRoutineReport = () => {
             <tbody>
               {routineData.map((row, index) => (
                 <tr key={index} className="hover:bg-blue-50/30 transition-colors">
-                  <td className="p-4 border-b border-r border-slate-200 font-bold text-sm text-[#00315e] bg-slate-50/50 sticky left-0 z-10">
+                  <td className="p-4 border-b border-r border-slate-200 font-bold text-sm text-[#1C7D5A] bg-slate-50/50 sticky left-0 z-10">
                     {row.day}
                   </td>
                   {row.periods.map((period, pIndex) => (
                     <td key={pIndex} className="p-4 border-b border-slate-200 text-center">
                       <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100 flex flex-col gap-1 min-w-[120px]">
-                        <span className="font-black text-sm text-[#00315e]">{period.subject}</span>
+                        <span className="font-black text-sm text-[#1C7D5A]">{period.subject}</span>
                         <span className="text-[11px] font-bold text-slate-500 opacity-80">{period.time}</span>
                         {period.teacher && <span className="text-[10px] font-bold uppercase tracking-wide bg-white px-2 py-0.5 rounded border border-blue-100 mt-1 text-slate-600">{period.teacher}</span>}
                       </div>

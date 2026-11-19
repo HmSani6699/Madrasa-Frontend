@@ -39,7 +39,7 @@ const MySchedule = () => {
     const doc = new jsPDF({ orientation: 'landscape' });
 
     doc.setFontSize(18);
-    doc.setTextColor(0, 189, 127); // #00bd7f
+    doc.setTextColor(0, 189, 127); // #1C7D5A
     doc.text(t('teacher.schedule.my_class_routine'), 14, 15);
     doc.setFontSize(10);
     doc.setTextColor(100);
@@ -68,7 +68,7 @@ const MySchedule = () => {
       body: tableRows,
       startY: 30,
       styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak', halign: 'center', valign: 'middle' },
-      headStyles: { fillColor: [0, 189, 127], textColor: 255, fontStyle: 'bold' }, // #00bd7f
+      headStyles: { fillColor: [0, 189, 127], textColor: 255, fontStyle: 'bold' }, // #1C7D5A
       columnStyles: { 0: { fontStyle: 'bold', fillColor: [240, 240, 240] } },
       theme: 'grid'
     });
@@ -83,8 +83,8 @@ const MySchedule = () => {
         {/* Header Section */}
         <div className="bg-white rounded-[20px] p-6 md:p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-[#00bd7f]/10 rounded-2xl flex items-center justify-center border border-[#00bd7f]/20 shadow-sm">
-              <Calendar className="w-7 h-7 text-[#00bd7f]" />
+            <div className="w-14 h-14 bg-[#1C7D5A]/10 rounded-2xl flex items-center justify-center border border-[#1C7D5A]/20 shadow-sm">
+              <Calendar className="w-7 h-7 text-[#1C7D5A]" />
             </div>
             <div>
               <h1 className="text-2xl font-black text-slate-800 tracking-tight">{t('teacher.schedule.my_class_routine')}</h1>
@@ -94,7 +94,7 @@ const MySchedule = () => {
           
            <button 
             onClick={handleDownloadPDF}
-            className="group px-6 py-3 bg-slate-900 hover:bg-[#00bd7f] text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-[#00bd7f]/30 active:scale-95 flex items-center gap-2.5 text-sm uppercase tracking-widest"
+            className="group px-6 py-3 bg-slate-900 hover:bg-[#1C7D5A] text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-[#1C7D5A]/30 active:scale-95 flex items-center gap-2.5 text-sm uppercase tracking-widest"
           >
             <Download className="w-4 h-4 group-hover:animate-bounce" />
             {t('teacher.schedule.download_pdf')}
@@ -135,10 +135,10 @@ const MySchedule = () => {
                           {period ? (
                             <div 
                               onClick={() => setSelectedPeriod({ ...period, day, periodIndex })}
-                              className="h-full p-3 rounded-xl bg-[#00bd7f]/5 border border-[#00bd7f]/20 hover:border-[#00bd7f] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group/card"
+                              className="h-full p-3 rounded-xl bg-[#1C7D5A]/5 border border-[#1C7D5A]/20 hover:border-[#1C7D5A] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group/card"
                             >
                               <div>
-                                <h4 className="font-bold text-slate-800 text-sm leading-tight mb-1 group-hover/card:text-[#00bd7f] transition-colors line-clamp-2">
+                                <h4 className="font-bold text-slate-800 text-sm leading-tight mb-1 group-hover/card:text-[#1C7D5A] transition-colors line-clamp-2">
                                   {period.subject}
                                 </h4>
                                 <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
@@ -146,7 +146,7 @@ const MySchedule = () => {
                                   <span className="truncate">{period.class}</span>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#00bd7f] bg-white px-2 py-1 rounded-md w-fit border border-[#00bd7f]/20">
+                              <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#1C7D5A] bg-white px-2 py-1 rounded-md w-fit border border-[#1C7D5A]/20">
                                 <MapPin className="w-3 h-3" />
                                 {period.room}
                               </div>
@@ -172,10 +172,10 @@ const MySchedule = () => {
       {selectedPeriod && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-[2rem] w-full max-w-md shadow-2xl border border-white/20 relative overflow-hidden animate-in zoom-in-95 duration-200">
-             <div className="absolute top-0 left-0 w-full h-32 bg-[#00bd7f] flex items-center justify-center px-6">
+             <div className="absolute top-0 left-0 w-full h-32 bg-[#1C7D5A] flex items-center justify-center px-6">
                 <div className="w-full flex justify-between items-start">
                    <div className="text-white">
-                      <p className="text-[#00bd7f] font-black text-[10px] uppercase tracking-widest bg-white px-3 py-1 rounded-full mb-2 inline-block shadow-sm">
+                      <p className="text-[#1C7D5A] font-black text-[10px] uppercase tracking-widest bg-white px-3 py-1 rounded-full mb-2 inline-block shadow-sm">
                         {t('teacher.schedule.period_details')}
                       </p>
                       <h2 className="text-3xl font-black tracking-tight">{selectedPeriod.subject}</h2>

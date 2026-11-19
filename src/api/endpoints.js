@@ -1,4 +1,7 @@
 const endpoints = {
+  demo: {
+    submit: '/demo-request',
+  },
   auth: {
     login: '/auth/v1/login',
     refreshToken: '/auth/v1/refresh-token',
@@ -11,6 +14,9 @@ const endpoints = {
     plans: '/super-admin/v1/plans',
     smsRecharges: '/super-admin/v1/sms/recharges',
     smsRates: '/super-admin/v1/sms/rates',
+    demoRequests: '/super-admin/v1/demo-requests',
+    updateDemoRequestStatus: (id) => `/super-admin/v1/demo-requests/${id}/status`,
+    deleteDemoRequest: (id) => `/super-admin/v1/demo-requests/${id}`,
   },
   teacher: {
     students: '/v1/students',

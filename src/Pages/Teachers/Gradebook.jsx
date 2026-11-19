@@ -59,7 +59,7 @@ const Gradebook = () => {
             <SelectInputField title={'Subject'} options={[{value:"A"},{value:"B"},{value:"C"}]}/>
          
           <div className="lg:mt-[25px]">
-              <button className="w-full flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all">
+              <button className="w-full flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all">
               <Plus className="w-4 h-4" />
               Filter
             </button>

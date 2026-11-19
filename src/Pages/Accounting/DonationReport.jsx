@@ -127,7 +127,7 @@ const DonationReport = () => {
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-outfit relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-rose-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-[#00bd7f]/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-[#1C7D5A]/5 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="max-w-[1500px] mx-auto p-4 md:p-10 relative z-10 space-y-10">
         
@@ -141,9 +141,9 @@ const DonationReport = () => {
           <div className="bg-white/50 backdrop-blur-md p-4 px-8 rounded-2xl border border-white shadow-xl flex items-center gap-4">
              <div className="text-right">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('donation_report.selected_total')}</p>
-                <p className="text-2xl font-black text-[#00bd7f]">৳ {totalAmount.toLocaleString()}</p>
+                <p className="text-2xl font-black text-[#1C7D5A]">৳ {totalAmount.toLocaleString()}</p>
              </div>
-             <div className="w-10 h-10 bg-[#00bd7f]/10 rounded-xl flex items-center justify-center text-[#00bd7f]">
+             <div className="w-10 h-10 bg-[#1C7D5A]/10 rounded-xl flex items-center justify-center text-[#1C7D5A]">
                 <HeartHandshake className="w-6 h-6" />
              </div>
           </div>
@@ -175,7 +175,7 @@ const DonationReport = () => {
                onChange={(val) => setSelectedMonth(val)}
             />
           </div>
-          <button className="bg-[#00bd7f] text-white h-[48px] rounded-xl text-xs font-black tracking-widest shadow-lg shadow-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mb-0.5">
+          <button className="bg-[#1C7D5A] text-white h-[48px] rounded-xl text-xs font-black tracking-widest shadow-lg shadow-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mb-0.5">
             <Filter className="w-4 h-4" /> {t('donation_report.apply_filters')}
           </button>
         </div>
@@ -184,14 +184,14 @@ const DonationReport = () => {
         <div className="bg-white shadow-2xl rounded-[32px] border border-slate-100 overflow-hidden">
           <div className="p-8 border-b border-slate-50 flex justify-between items-center">
              <h3 className="text-xl font-black text-slate-900 flex items-center gap-3">
-               <ClipboardList className="w-6 h-6 text-[#00bd7f]" />
+               <ClipboardList className="w-6 h-6 text-[#1C7D5A]" />
                {t('donation_report.records_title')}
              </h3>
              <div className="flex gap-3">
                 <button className="flex items-center gap-2 px-5 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-black hover:bg-slate-100 transition-all border border-slate-100">
                    <Printer className="w-4 h-4" /> {t('donation_report.print_all')}
                 </button>
-                <button className="flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-[#00bd7f] rounded-xl text-xs font-black hover:bg-emerald-100 transition-all border border-emerald-100">
+                <button className="flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-[#1C7D5A] rounded-xl text-xs font-black hover:bg-emerald-100 transition-all border border-emerald-100">
                    <Download className="w-4 h-4" /> {t('donation_report.export_excel')}
                 </button>
              </div>
@@ -232,11 +232,11 @@ const DonationReport = () => {
                        <p className="text-[10px] font-black text-slate-400 uppercase mt-0.5">{getMethodLabel(donation.paymentMethod)}</p>
                     </td>
                     <td className="px-8 py-6 text-center">
-                      <p className="text-lg font-black text-[#00bd7f]">৳ {donation.amount.toLocaleString()}</p>
+                      <p className="text-lg font-black text-[#1C7D5A]">৳ {donation.amount.toLocaleString()}</p>
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                         <button title="Print Receipt" className="p-2.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-[#00bd7f] border border-slate-100 shadow-sm"><Printer className="w-4 h-4" /></button>
+                         <button title="Print Receipt" className="p-2.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-[#1C7D5A] border border-slate-100 shadow-sm"><Printer className="w-4 h-4" /></button>
                          <button title="View Details" className="p-2.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-rose-500 border border-slate-100 shadow-sm"><MoreHorizontal className="w-4 h-4" /></button>
                       </div>
                     </td>
@@ -259,7 +259,7 @@ const DonationReport = () => {
 
       {/* Decorative Blur Overlays */}
       <div className="fixed top-[20%] left-[-5%] w-[350px] h-[350px] bg-rose-500/5 rounded-full blur-[100px] z-0 pointer-events-none"></div>
-      <div className="fixed bottom-[10%] right-[-5%] w-[350px] h-[350px] bg-[#00bd7f]/5 rounded-full blur-[100px] z-0 pointer-events-none"></div>
+      <div className="fixed bottom-[10%] right-[-5%] w-[350px] h-[350px] bg-[#1C7D5A]/5 rounded-full blur-[100px] z-0 pointer-events-none"></div>
     </div>
   );
 };

@@ -27,7 +27,7 @@ const ClassSubjectAssignmentReport = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 flex items-center gap-3">
-            <BookMarked className="w-8 h-8 text-[#00315e]" />
+            <BookMarked className="w-8 h-8 text-[#1C7D5A]" />
             Subject Assignment Report
           </h1>
           <p className="text-sm text-slate-500 font-bold mt-1">
@@ -39,7 +39,7 @@ const ClassSubjectAssignmentReport = () => {
             <Download size={18} />
             Export
           </button>
-          <button className="px-4 py-2 bg-[#00315e] text-white rounded-lg flex items-center gap-2 hover:bg-[#00315e]/90 transition-colors font-bold text-sm">
+          <button className="px-4 py-2 bg-[#1C7D5A] text-white rounded-lg flex items-center gap-2 hover:bg-[#1C7D5A]/90 transition-colors font-bold text-sm">
             <Printer size={18} />
             Print Report
           </button>
@@ -50,7 +50,7 @@ const ClassSubjectAssignmentReport = () => {
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center gap-4">
         <div className="flex-1 min-w-[200px]">
           <select 
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#00315e]/20 outline-none text-sm font-medium"
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#1C7D5A]/20 outline-none text-sm font-medium"
             value={selectedClass}
             onChange={(e) => setSelectedClass(e.target.value)}
           >
@@ -63,7 +63,7 @@ const ClassSubjectAssignmentReport = () => {
         <button
           onClick={handleFilter}
           disabled={loading}
-          className="px-8 py-2.5 bg-[#00315e] text-white rounded-lg font-bold text-sm hover:bg-[#00315e]/90 transition-all min-w-[120px] flex justify-center items-center gap-2"
+          className="px-8 py-2.5 bg-[#1C7D5A] text-white rounded-lg font-bold text-sm hover:bg-[#1C7D5A]/90 transition-all min-w-[120px] flex justify-center items-center gap-2"
         >
           {loading ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -78,7 +78,7 @@ const ClassSubjectAssignmentReport = () => {
 
       {/* Report Content */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-6 bg-[#00315e]/5 border-b border-slate-200">
+        <div className="p-6 bg-[#1C7D5A]/5 border-b border-slate-200">
            <h2 className="text-lg font-black text-slate-800">Assignment Details</h2>
         </div>
         <div className="overflow-x-auto">
@@ -95,7 +95,7 @@ const ClassSubjectAssignmentReport = () => {
             <tbody>
               {assignmentData.map((item, index) => (
                 <tr key={index} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="p-4 font-bold text-sm text-[#00315e]">
+                  <td className="p-4 font-bold text-sm text-[#1C7D5A]">
                     {item.className}
                   </td>
                   <td className="p-4 font-bold text-sm text-slate-600 text-center">
@@ -106,7 +106,7 @@ const ClassSubjectAssignmentReport = () => {
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                       <div className="w-6 h-6 rounded-full bg-blue-100 text-[#00315e] flex items-center justify-center">
+                       <div className="w-6 h-6 rounded-full bg-blue-100 text-[#1C7D5A] flex items-center justify-center">
                          <Users size={12} />
                        </div>
                        <span className="font-medium text-sm text-slate-600">{item.teacher}</span>

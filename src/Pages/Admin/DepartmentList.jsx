@@ -105,7 +105,7 @@ const DepartmentList = () => {
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-32 -mt-32 opacity-40" />
         <div className="flex items-center gap-5 relative z-10">
           <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center shadow-inner">
-            <Building2 className="w-8 h-8 text-[#00bd7f]" />
+            <Building2 className="w-8 h-8 text-[#1C7D5A]" />
           </div>
           <div>
             <h1 className="text-2xl sm:text-4xl font-black text-slate-800 tracking-tight">
@@ -118,7 +118,7 @@ const DepartmentList = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#00bd7f] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all z-10 relative cursor-pointer"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-sm font-black bg-[#1C7D5A] text-white rounded-2xl shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all z-10 relative cursor-pointer"
         >
           <Plus className="w-5 h-5" /> New Department
         </button>
@@ -222,7 +222,7 @@ const DepartmentList = () => {
             >
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                  <Building2 className="w-3.5 h-3.5 text-[#00bd7f]" />{" "}
+                  <Building2 className="w-3.5 h-3.5 text-[#1C7D5A]" />{" "}
                   Department Name
                 </label>
                 <input
@@ -231,7 +231,7 @@ const DepartmentList = () => {
                   autoFocus
                   defaultValue={editDept?.name || ""}
                   placeholder="e.g. Arabic Foundation"
-                  className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent focus:border-[#00bd7f] focus:bg-white rounded-2xl outline-none font-bold text-slate-800 transition-all shadow-inner"
+                  className="w-full px-5 py-4 bg-slate-50 border-2 border-transparent focus:border-[#1C7D5A] focus:bg-white rounded-2xl outline-none font-bold text-slate-800 transition-all shadow-inner"
                 />
               </div>
               <div className="flex gap-4">
@@ -247,7 +247,7 @@ const DepartmentList = () => {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-4 bg-[#00bd7f] text-white font-black rounded-2xl shadow-xl shadow-blue-200 hover:scale-[1.02] transition-all uppercase text-xs tracking-widest"
+                  className="flex-1 py-4 bg-[#1C7D5A] text-white font-black rounded-2xl shadow-xl shadow-blue-200 hover:scale-[1.02] transition-all uppercase text-xs tracking-widest"
                 >
                   Save
                 </button>

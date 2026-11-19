@@ -168,7 +168,7 @@ const StudentAcademicReport = () => {
               onClick={() => { setActiveTab('single'); setShowReport(false); }}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-xl transition-all font-medium ${
                 activeTab === 'single'
-                  ? 'bg-[#00315e] text-white shadow-md'
+                  ? 'bg-[#1C7D5A] text-white shadow-md'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -179,7 +179,7 @@ const StudentAcademicReport = () => {
               onClick={() => { setActiveTab('class'); setShowReport(false); }}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-xl transition-all font-medium ${
                 activeTab === 'class'
-                  ? 'bg-[#00315e] text-white shadow-md'
+                  ? 'bg-[#1C7D5A] text-white shadow-md'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -192,7 +192,7 @@ const StudentAcademicReport = () => {
           <div className="relative">
             <button
               onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}
-              className="px-6 py-2.5 bg-white border border-gray-200 text-[#00315e] font-bold rounded-xl cursor-pointer flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm"
+              className="px-6 py-2.5 bg-white border border-gray-200 text-[#1C7D5A] font-bold rounded-xl cursor-pointer flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm"
             >
               <Filter className="h-4 w-4" /> Filter
             </button>
@@ -243,7 +243,7 @@ const StudentAcademicReport = () => {
                   <button
                     onClick={handleFilter}
                     disabled={loading}
-                    className="px-6 py-2 bg-[#00315e] text-white font-bold rounded-lg hover:bg-[#00315e]/90 transition-colors flex items-center justify-center min-w-[100px]"
+                    className="px-6 py-2 bg-[#1C7D5A] text-white font-bold rounded-lg hover:bg-[#1C7D5A]/90 transition-colors flex items-center justify-center min-w-[100px]"
                   >
                     {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Apply"}
                   </button>
@@ -257,7 +257,7 @@ const StudentAcademicReport = () => {
       {/* Loading State */}
       {loading && (
         <div className="flex flex-col items-center justify-center py-32">
-          <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin"></div>
           <p className="text-gray-500 font-bold mt-4 animate-pulse">Fetching Reports...</p>
         </div>
       )}
@@ -268,11 +268,11 @@ const StudentAcademicReport = () => {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Student Profile Overview */}
             <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-center gap-6 relative">
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-[#00315e] shrink-0 overflow-hidden border-2 border-white shadow-sm">
+              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-[#1C7D5A] shrink-0 overflow-hidden border-2 border-white shadow-sm">
                 {studentProfile?.photo ? (
                   <img src={studentProfile.photo} alt="Student" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-[#00315e] flex items-center justify-center">
+                  <div className="w-full h-full bg-[#1C7D5A] flex items-center justify-center">
                      <User size={32} className="text-white" />
                   </div>
                 )}
@@ -298,10 +298,10 @@ const StudentAcademicReport = () => {
                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/30">
                   <h3 className="font-bold text-gray-700">{t('student_academic_report_page.student_report', 'Student Report')}</h3>
                   <div className="flex items-center gap-3">
-                    <button title={t('common.save', 'Save')} className="p-1.5 text-gray-500 hover:text-[#00315e] transition-colors">
+                    <button title={t('common.save', 'Save')} className="p-1.5 text-gray-500 hover:text-[#1C7D5A] transition-colors">
                       <Save size={18} />
                     </button>
-                    <button title={t('common.print', 'Print')} className="p-1.5 text-gray-500 hover:text-[#00315e] transition-colors">
+                    <button title={t('common.print', 'Print')} className="p-1.5 text-gray-500 hover:text-[#1C7D5A] transition-colors">
                       <Printer size={18} />
                     </button>
                   </div>
@@ -329,7 +329,7 @@ const StudentAcademicReport = () => {
                            {report.total_marks || '-'}
                          </td>
                          <td className="border-b border-gray-100 p-4 text-center">
-                           <span className="bg-[#00315e]/10 text-[#00315e] px-3 py-1 rounded-md font-bold">
+                           <span className="bg-[#1C7D5A]/10 text-[#1C7D5A] px-3 py-1 rounded-md font-bold">
                              {report.marks_obtained || '-'}
                            </span>
                          </td>
@@ -367,7 +367,7 @@ const StudentAcademicReport = () => {
         showReport ? (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Class Overview Header */}
-            <div className="bg-[#00315e] p-6 rounded-3xl text-white shadow-lg relative overflow-hidden">
+            <div className="bg-[#1C7D5A] p-6 rounded-3xl text-white shadow-lg relative overflow-hidden">
                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-black uppercase tracking-tight">Class Overview</h2>
@@ -388,10 +388,10 @@ const StudentAcademicReport = () => {
                <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/30">
                   <h3 className="font-bold text-gray-700 uppercase tracking-tight text-sm">Performance Grid</h3>
                   <div className="flex items-center gap-3">
-                    <button title="Download" className="p-2 text-gray-400 hover:text-[#00315e] transition-all hover:scale-110">
+                    <button title="Download" className="p-2 text-gray-400 hover:text-[#1C7D5A] transition-all hover:scale-110">
                       <Download size={20} />
                     </button>
-                    <button title="Share" className="p-2 text-gray-400 hover:text-[#00315e] transition-all hover:scale-110">
+                    <button title="Share" className="p-2 text-gray-400 hover:text-[#1C7D5A] transition-all hover:scale-110">
                       <Share2 size={20} />
                     </button>
                   </div>
@@ -425,7 +425,7 @@ const StudentAcademicReport = () => {
                            return (
                              <td key={subIdx} className="border-b border-gray-100 p-4 text-center">
                                {mark !== undefined ? (
-                                 <span className="font-bold text-[#00315e]">{mark}</span>
+                                 <span className="font-bold text-[#1C7D5A]">{mark}</span>
                                ) : (
                                  <span className="text-gray-300">-</span>
                                )}

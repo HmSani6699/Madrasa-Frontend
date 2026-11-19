@@ -118,7 +118,7 @@ const GuardianSubjectList = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Layers className="w-8 h-8 text-[#00bd7f]" />
+            <Layers className="w-8 h-8 text-[#1C7D5A]" />
             Subjects
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
@@ -143,7 +143,7 @@ const GuardianSubjectList = () => {
                     toast.success("Exporting as PDF...");
                     setIsExportModalOpen(false);
                   }}
-                  className="hover:text-[#00bd7f] transition-colors cursor-pointer text-left"
+                  className="hover:text-[#1C7D5A] transition-colors cursor-pointer text-left"
                 >  
                   Export as PDF
                 </button>
@@ -152,7 +152,7 @@ const GuardianSubjectList = () => {
                     toast.success("Exporting as Excel...");
                     setIsExportModalOpen(false);
                   }}
-                  className="hover:text-[#00bd7f] transition-colors cursor-pointer text-left"
+                  className="hover:text-[#1C7D5A] transition-colors cursor-pointer text-left"
                 >
                   Export as Excel
                 </button>
@@ -211,7 +211,7 @@ const GuardianSubjectList = () => {
 
                         <button
                             onClick={() => setIsFilterModalOpen(false)}
-                            className=" px-4 py-2 bg-[#00bd7f] text-white rounded-[8px] cursor-pointer"
+                            className=" px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer"
                         >
                             Apply
                         </button>
@@ -285,7 +285,7 @@ const GuardianSubjectList = () => {
                     <div className="flex items-center gap-3 justify-center">
                       <button 
                         onClick={() => openSyllabusModal(sub)}
-                        className="cursor-pointer text-center bg-[#00bd7f] hover:bg-[#00a871] transition-colors text-white px-3 py-1.5 rounded-[6px] text-xs font-bold"
+                        className="cursor-pointer text-center bg-[#1C7D5A] hover:bg-[#00a871] transition-colors text-white px-3 py-1.5 rounded-[6px] text-xs font-bold"
                       >
                         View Syllabus
                       </button>

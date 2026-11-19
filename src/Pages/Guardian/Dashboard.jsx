@@ -49,7 +49,7 @@ const GuardianDashboard = () => {
     <div className="space-y-8 pb-12 animate-in fade-in duration-700">
       {/* Welcome & Parent Profile Quick View */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[20px] p-6  text-white shadow-2xl relative overflow-hidden group">
+        <div className="lg:col-span-2 bg-gradient-to-br from-[#1C7D5A] to-[#123628] rounded-[20px] p-6 text-white shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-white/10 transition-all duration-700"></div>
           <div className="relative z-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -140,7 +140,7 @@ const GuardianDashboard = () => {
           <div className="bg-white rounded-[20px] p-6  border-2 border-slate-50 shadow-sm overflow-hidden relative group">
              <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-4">
-                   <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-[#00bd7f]">
+                   <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-[#1C7D5A]">
                       <Users className="w-5 h-5" />
                    </div>
                    <h2 className="text-2xl font-black text-slate-800 tracking-tight ">My Children</h2>
@@ -169,7 +169,7 @@ const GuardianDashboard = () => {
                             <h4 className={`text-xl font-black mb-1 ${activeChild.id === child.id ? 'text-white' : 'text-slate-800'}`}>
                                {child.name}
                             </h4>
-                            <p className={`text-[10px] font-black uppercase tracking-widest ${activeChild.id === child.id ? 'text-emerald-400' : 'text-[#00bd7f]'}`}>
+                            <p className={`text-[10px] font-black uppercase tracking-widest ${activeChild.id === child.id ? 'text-emerald-400' : 'text-[#1C7D5A]'}`}>
                                Class {child.class || "Top"} • Roll {child.roll || "01"}
                             </p>
                             <div className="flex items-center gap-2 mt-3">

@@ -253,7 +253,7 @@ const TabulationSheet = () => {
       <div className="flex items-center justify-between mb-5 w-full relative z-50">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Table className="w-8 h-8 text-[#00315e]" />
+            <Table className="w-8 h-8 text-[#1C7D5A]" />
             Tabulation Sheet
           </h1>
           <p className="text-[14px] text-slate-500 font-bold mt-1">
@@ -265,7 +265,7 @@ const TabulationSheet = () => {
           <div className="relative">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] font-bold hover:bg-blue-900 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] font-bold hover:bg-blue-900 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Filter className="h-4 w-4" /> Filter
             </button>
@@ -274,7 +274,7 @@ const TabulationSheet = () => {
               <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-[320px] bg-white rounded-[8px] shadow-2xl border border-slate-200 z-50 p-5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <h3 className="font-black text-slate-800 text-sm flex items-center gap-2">
-                    <Filter className="w-4 h-4 text-[#00315e]" />
+                    <Filter className="w-4 h-4 text-[#1C7D5A]" />
                     Filter Options
                   </h3>
                   <button
@@ -315,7 +315,7 @@ const TabulationSheet = () => {
                   </button>
                   <button
                     onClick={handleGenerate}
-                    className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] font-bold hover:bg-blue-900 transition-all flex items-center justify-center gap-2 cursor-pointer text-sm w-full"
+                    className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] font-bold hover:bg-blue-900 transition-all flex items-center justify-center gap-2 cursor-pointer text-sm w-full"
                   >
                     Generate
                   </button>
@@ -328,14 +328,14 @@ const TabulationSheet = () => {
             <>
               <button 
                 onClick={exportToCSV}
-                className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] font-bold shadow-sm hover:bg-blue-900 transition-all flex items-center justify-center gap-2"
+                className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] font-bold shadow-sm hover:bg-blue-900 transition-all flex items-center justify-center gap-2"
               >
                 <FileText className="w-4 h-4" />
                 Export CSV
               </button>
               <button 
                 onClick={() => setIsPreviewOpen(true)}
-                className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] font-bold shadow-sm hover:bg-blue-900 transition-all flex items-center justify-center gap-2"
+                className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] font-bold shadow-sm hover:bg-blue-900 transition-all flex items-center justify-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 Export PDF
@@ -348,7 +348,7 @@ const TabulationSheet = () => {
       {/* Main Content Area */}
       {loading ? (
         <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 border border-gray-200 mb-20 p-16 flex flex-col items-center justify-center text-center animate-in fade-in">
-          <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <h3 className="text-xl font-black text-slate-800 mb-1">Loading Data</h3>
           <p className="text-slate-500 font-bold">Please wait while we generate the tabulation sheet.</p>
         </div>
@@ -356,13 +356,13 @@ const TabulationSheet = () => {
         <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 overflow-hidden relative animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="overflow-x-auto rounded-t-[8px]">
             <table className="w-full border-collapse">
-              <thead className="bg-[#00315e24]">
+              <thead className="bg-[#1C7D5A18]">
                 <tr className="whitespace-nowrap">
                   <th className="px-6 py-3.5 text-left text-[12px] font-black text-slate-800">Student Particulars</th>
                   {subjects.map(subject => (
                     <th key={subject._id} className="px-4 py-3.5 text-center text-[12px] font-black text-slate-800">{subject.name}</th>
                   ))}
-                  <th className="px-4 py-3.5 text-center text-[12px] font-black text-[#00315e] bg-blue-50/50">Grand Total</th>
+                  <th className="px-4 py-3.5 text-center text-[12px] font-black text-[#1C7D5A] bg-blue-50/50">Grand Total</th>
                   <th className="px-4 py-3.5 text-center text-[12px] font-black text-slate-800">GPA</th>
                   <th className="px-6 py-3.5 text-center text-[12px] font-black text-slate-800">Result</th>
                 </tr>
@@ -400,7 +400,7 @@ const TabulationSheet = () => {
                         </td>
                       ))}
                       <td className="px-4 py-4 text-center bg-blue-50/30 whitespace-nowrap">
-                        <p className="text-sm font-black text-[#00315e]">{student.totalMarks}</p>
+                        <p className="text-sm font-black text-[#1C7D5A]">{student.totalMarks}</p>
                       </td>
                       <td className="px-4 py-4 text-center whitespace-nowrap">
                         <p className="text-sm font-black text-slate-800">{student.gpa}</p>
@@ -421,9 +421,9 @@ const TabulationSheet = () => {
       ) : (
         <div className="bg-white rounded-[12px] shadow-sm border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center animate-in fade-in duration-500 py-[50px]">
           <div className="relative mb-8 group cursor-pointer" onClick={() => setIsFilterOpen(true)}>
-            <div className="absolute inset-0 bg-[#00315e]/10 rounded-full animate-ping opacity-75"></div>
-            <div className="relative w-24 h-24 bg-[#00315e]/5 rounded-full flex items-center justify-center border-4 border-white shadow-xl transition-transform group-hover:scale-110 duration-300">
-              <Filter className="w-10 h-10 text-[#00315e]" />
+            <div className="absolute inset-0 bg-[#1C7D5A]/10 rounded-full animate-ping opacity-75"></div>
+            <div className="relative w-24 h-24 bg-[#1C7D5A]/5 rounded-full flex items-center justify-center border-4 border-white shadow-xl transition-transform group-hover:scale-110 duration-300">
+              <Filter className="w-10 h-10 text-[#1C7D5A]" />
             </div>
           </div>
           <h2 className="text-2xl md:text-2xl font-black text-slate-800 mb-4 tracking-tight">
@@ -524,7 +524,7 @@ const TabulationSheet = () => {
                                 window.print();
                                 el.style.display = 'none';
                               }} 
-                              className="flex items-center gap-3 px-8 py-4 bg-[#00315e] text-white rounded-2xl font-black text-sm hover:bg-blue-900 shadow-xl shadow-blue-100 transition-all"
+                              className="flex items-center gap-3 px-8 py-4 bg-[#1C7D5A] text-white rounded-2xl font-black text-sm hover:bg-blue-900 shadow-xl shadow-blue-100 transition-all"
                             >
                                 <Printer className="w-5 h-5" /> Print Sheet
                             </button>

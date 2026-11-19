@@ -126,7 +126,7 @@ const MainLayout = () => {
         <Navbar onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
         {/* Main Content Area */}
-        <main className="flex-1 p-4 md:p-8 bg-[#00315e0d] dark:bg-[#00315e0d] transition-colors duration-300">
+        <main className="flex-1 p-4 md:p-8 bg-[#123628]/[0.02] dark:bg-[#123628]/[0.05] transition-colors duration-300">
           <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>

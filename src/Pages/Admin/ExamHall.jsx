@@ -65,7 +65,7 @@ const ExamHall = () => {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="w-full md:w-auto px-8 py-4  bg-[#00bd7f] text-white rounded-xl hover:bg-[#009b68] transition-all shadow-sm cursor-pointer flex items-center justify-center gap-3"
+          className="w-full md:w-auto px-8 py-4  bg-[#1C7D5A] text-white rounded-xl hover:bg-[#123628] transition-all shadow-sm cursor-pointer flex items-center justify-center gap-3"
         >
           <Plus className="w-5 h-5" />
           Add Exam Hall

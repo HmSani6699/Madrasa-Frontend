@@ -112,7 +112,7 @@ const IncomeExpenseReport = () => {
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-outfit relative overflow-hidden">
       {/* Background Blurs */}
       <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[35%] h-[35%] bg-[#00bd7f]/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[35%] h-[35%] bg-[#1C7D5A]/5 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="max-w-[1500px] mx-auto p-4 md:p-10 relative z-10 space-y-10">
         
@@ -131,7 +131,7 @@ const IncomeExpenseReport = () => {
              <button className="flex items-center gap-2 px-6 py-3 bg-white text-slate-600 rounded-2xl text-[13px] font-black shadow-lg shadow-slate-200/50 border border-slate-100 hover:bg-slate-50 transition-all">
                <Printer className="w-4 h-4" /> {t('income_expense_report.print_statement')}
              </button>
-             <button className="flex items-center gap-2 px-6 py-3 bg-[#00bd7f] text-white rounded-2xl text-[13px] font-black shadow-lg shadow-emerald-200/50 hover:scale-[1.02] active:scale-[0.98] transition-all">
+             <button className="flex items-center gap-2 px-6 py-3 bg-[#1C7D5A] text-white rounded-2xl text-[13px] font-black shadow-lg shadow-emerald-200/50 hover:scale-[1.02] active:scale-[0.98] transition-all">
                <Download className="w-4 h-4" /> {t('income_expense_report.export_report')}
              </button>
           </div>
@@ -140,12 +140,12 @@ const IncomeExpenseReport = () => {
         {/* Analytics Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
            <div className="bg-white/60 backdrop-blur-xl border border-white p-8 rounded-[32px] shadow-xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-8 text-[#00bd7f]/10 group-hover:scale-110 transition-transform duration-500">
+              <div className="absolute top-0 right-0 p-8 text-[#1C7D5A]/10 group-hover:scale-110 transition-transform duration-500">
                 <TrendingUp className="w-20 h-20" />
               </div>
               <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2">{t('income_expense_report.total_income')}</p>
               <h2 className="text-4xl font-black text-slate-900 mb-4">৳ {stats.income.toLocaleString()}</h2>
-              <div className="flex items-center gap-2 text-[#00bd7f] text-xs font-bold">
+              <div className="flex items-center gap-2 text-[#1C7D5A] text-xs font-bold">
                  <div className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center">
                     <ArrowUpRight className="w-4 h-4" />
                  </div>
@@ -167,7 +167,7 @@ const IncomeExpenseReport = () => {
               </div>
            </div>
 
-           <div className={`p-8 rounded-[32px] shadow-xl relative overflow-hidden group border transition-all duration-500 ${stats.balance >= 0 ? "bg-[#00bd7f] text-white border-white/20" : "bg-slate-900 text-white border-slate-800"}`}>
+           <div className={`p-8 rounded-[32px] shadow-xl relative overflow-hidden group border transition-all duration-500 ${stats.balance >= 0 ? "bg-[#1C7D5A] text-white border-white/20" : "bg-slate-900 text-white border-slate-800"}`}>
               <div className="absolute top-0 right-0 p-8 text-white/10 group-hover:scale-110 transition-transform duration-500">
                 <Activity className="w-20 h-20" />
               </div>
@@ -287,7 +287,7 @@ const IncomeExpenseReport = () => {
       </div>
 
       {/* Background Ornaments */}
-      <div className="fixed top-[-5%] left-[-5%] w-[450px] h-[450px] bg-[#00bd7f]/5 rounded-full blur-[100px] z-0 pointer-events-none"></div>
+      <div className="fixed top-[-5%] left-[-5%] w-[450px] h-[450px] bg-[#1C7D5A]/5 rounded-full blur-[100px] z-0 pointer-events-none"></div>
       <div className="fixed bottom-[-5%] right-[-5%] w-[450px] h-[450px] bg-blue-500/5 rounded-full blur-[100px] z-0 pointer-events-none"></div>
     </div>
   );

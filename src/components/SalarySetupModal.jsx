@@ -99,7 +99,7 @@ const SalarySetupModal = ({ isOpen, onClose, madrasa }) => {
           <button
             onClick={() => onClose(false)}
             type="submit"
-            className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-4 text-base font-black bg-[#00bd7f] text-white rounded-2xl hover:bg-[#009b68] transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-1 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-3 px-12 py-4 text-base font-black bg-[#1C7D5A] text-white rounded-2xl hover:bg-[#123628] transition-all shadow-xl shadow-emerald-500/30 hover:-translate-y-1 cursor-pointer"
           >
             <CheckCircle2 className="w-6 h-6" />
             {t('salary_setup.save')}

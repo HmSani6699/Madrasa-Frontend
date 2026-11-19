@@ -91,13 +91,13 @@ const OverallHomeworkReport = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 flex items-center gap-3">
-            <ClipboardList className="w-8 h-8 text-[#00315e]" />
+            <ClipboardList className="w-8 h-8 text-[#1C7D5A]" />
             Homework Report
           </h1>
           <div className="flex items-center gap-2 text-sm text-slate-500 font-bold mt-1">
-            <span className="hover:text-[#00315e] cursor-pointer transition-colors">Dashboard</span>
+            <span className="hover:text-[#1C7D5A] cursor-pointer transition-colors">Dashboard</span>
             <span>/</span>
-            <span className="hover:text-[#00315e] cursor-pointer transition-colors">Academic Reports</span>
+            <span className="hover:text-[#1C7D5A] cursor-pointer transition-colors">Academic Reports</span>
             <span>/</span>
             <span className="text-slate-800">Homework Report</span>
           </div>
@@ -115,7 +115,7 @@ const OverallHomeworkReport = () => {
           <div className="relative">
             <button
               onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}
-              className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] flex items-center gap-2 hover:bg-[#00315e]/90 transition-colors font-bold text-sm cursor-pointer"
+              className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] flex items-center gap-2 hover:bg-[#1C7D5A]/90 transition-colors font-bold text-sm cursor-pointer"
             >
               <Filter size={18} />
               Filter
@@ -214,7 +214,7 @@ const OverallHomeworkReport = () => {
                   <button
                     onClick={handleFilter}
                     disabled={loading || !selectedClass}
-                    className={`flex-1 py-2 text-white rounded-[8px] font-bold text-sm transition-all flex justify-center items-center gap-2 ${(!selectedClass) ? 'bg-slate-300 cursor-not-allowed' : 'bg-[#00315e] hover:bg-[#00315e]/90 cursor-pointer shadow-md'}`}
+                    className={`flex-1 py-2 text-white rounded-[8px] font-bold text-sm transition-all flex justify-center items-center gap-2 ${(!selectedClass) ? 'bg-slate-300 cursor-not-allowed' : 'bg-[#1C7D5A] hover:bg-[#1C7D5A]/90 cursor-pointer shadow-md'}`}
                   >
                     {loading ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -332,7 +332,7 @@ const OverallHomeworkReport = () => {
 
           {/* Report Content */}
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-6 bg-[#00315e]/5 border-b border-slate-200 flex justify-between items-center">
+            <div className="p-6 bg-[#1C7D5A]/5 border-b border-slate-200 flex justify-between items-center">
               <h2 className="text-lg font-black text-slate-800">
                 {activeTab === "class" ? "Subject Breakdown" : "Student Performance"}
               </h2>
@@ -367,7 +367,7 @@ const OverallHomeworkReport = () => {
                               <div
                                 className={`h-full rounded-full ${
                                   item.submissionRate >= 85 ? 'bg-emerald-500' :
-                                  item.submissionRate < 70 ? 'bg-amber-500' : 'bg-[#00315e]'
+                                  item.submissionRate < 70 ? 'bg-amber-500' : 'bg-[#1C7D5A]'
                                 }`}
                                 style={{ width: `${item.submissionRate}%` }}
                               ></div>
@@ -427,18 +427,18 @@ const OverallHomeworkReport = () => {
       ) : (
         <div className="flex flex-col items-center justify-center py-24 px-4 bg-white/60 backdrop-blur-md border border-blue-100 rounded-[8px] shadow-sm border-dashed">
           <div className="relative group">
-            <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-[#00315e] rounded-full blur opacity-25 group-hover:opacity-40 transition-opacity duration-500 animate-pulse"></div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-[#1C7D5A] rounded-full blur opacity-25 group-hover:opacity-40 transition-opacity duration-500 animate-pulse"></div>
             <div className="relative w-24 h-24 bg-white border border-blue-50 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-500">
-              <ClipboardList className="w-10 h-10 text-[#00315e]" />
+              <ClipboardList className="w-10 h-10 text-[#1C7D5A]" />
             </div>
           </div>
-          <h3 className="mt-6 text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#00315e] to-blue-600 text-center">
+          <h3 className="mt-6 text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#1C7D5A] to-blue-600 text-center">
             Homework Report
           </h3>
           <div className="mt-3 flex items-center gap-2 bg-blue-50/80 px-4 py-2.5 rounded-xl border border-blue-100">
             <Filter className="w-4 h-4 text-blue-500" />
             <p className="text-sm font-bold text-slate-600 text-center">
-              Please filter by <span className="text-[#00315e]">Class</span> to view the comprehensive report.
+              Please filter by <span className="text-[#1C7D5A]">Class</span> to view the comprehensive report.
             </p>
           </div>
         </div>

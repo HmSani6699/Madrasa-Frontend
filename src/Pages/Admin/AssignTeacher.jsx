@@ -195,7 +195,7 @@ const AssignTeacher = () => {
       {/* Header */}
       <div className="bg-white rounded-[2.5rem] border-2 border-slate-200 p-8 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
         <div className="flex items-center gap-6">
-          <div className="w-16 h-16 bg-[#00bd7f] text-white rounded-2xl flex items-center justify-center border-2 border-blue-100">
+          <div className="w-16 h-16 bg-[#1C7D5A] text-white rounded-2xl flex items-center justify-center border-2 border-blue-100">
             <UserCheck className="w-8 h-8 text-white" />
           </div>
           <div>
@@ -210,7 +210,7 @@ const AssignTeacher = () => {
 
         <button
           onClick={openAddModal}
-          className="w-full md:w-auto px-8 py-4 bg-[#00bd7f] text-white rounded-2xl font-black shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer"
+          className="w-full md:w-auto px-8 py-4 bg-[#1C7D5A] text-white rounded-2xl font-black shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer"
         >
           <UserPlus className="w-5 h-5" />
           New Assignment
@@ -258,7 +258,7 @@ const AssignTeacher = () => {
       {/* Assignment Grid */}
       {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading assignments...</p>
           </div>
       ) : (
@@ -401,7 +401,7 @@ const AssignTeacher = () => {
           <div className="bg-white rounded-[2.5rem] w-full max-w-xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden">
             <div className="p-8 border-b-2 border-slate-50 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#00bd7f] text-white rounded-2xl flex items-center justify-center border-2 border-blue-100">
+                <div className="w-12 h-12 bg-[#1C7D5A] text-white rounded-2xl flex items-center justify-center border-2 border-blue-100">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <h2 className="text-2xl font-black text-slate-800">
@@ -481,7 +481,7 @@ const AssignTeacher = () => {
                 </button>
                 <button
                   onClick={handleAction}
-                  className="flex-1 py-4 bg-[#00bd7f] text-white font-black rounded-2xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02]   transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-4 bg-[#1C7D5A] text-white font-black rounded-2xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02]   transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <CheckCircle2 className="w-5 h-5" />{" "}
                   {modalType === "add" ? "Save" : "Save Updates"}

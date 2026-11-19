@@ -52,13 +52,13 @@ const SyllabusCoverageReport = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-800 flex items-center gap-3">
-            <ClipboardList className="w-8 h-8 text-[#00315e]" />
+            <ClipboardList className="w-8 h-8 text-[#1C7D5A]" />
             Syllabus Coverage Report
           </h1>
           <div className="flex items-center gap-2 text-sm text-slate-500 font-bold mt-1">
-            <span className="hover:text-[#00315e] cursor-pointer transition-colors">Dashboard</span>
+            <span className="hover:text-[#1C7D5A] cursor-pointer transition-colors">Dashboard</span>
             <span>/</span>
-            <span className="hover:text-[#00315e] cursor-pointer transition-colors">Academic Reports</span>
+            <span className="hover:text-[#1C7D5A] cursor-pointer transition-colors">Academic Reports</span>
             <span>/</span>
             <span className="text-slate-800">Syllabus Coverage</span>
           </div>
@@ -73,7 +73,7 @@ const SyllabusCoverageReport = () => {
           <div className="relative">
             <button
               onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}
-              className="px-4 py-2 bg-[#00315e] text-white rounded-lg flex items-center gap-2 hover:bg-[#00315e]/90 transition-colors font-bold text-sm cursor-pointer"
+              className="px-4 py-2 bg-[#1C7D5A] text-white rounded-lg flex items-center gap-2 hover:bg-[#1C7D5A]/90 transition-colors font-bold text-sm cursor-pointer"
             >
               <Filter size={18} />
               Filter
@@ -91,7 +91,7 @@ const SyllabusCoverageReport = () => {
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-600">Class</label>
                   <select
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-1 focus:ring-[#00315e] outline-none text-sm"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-1 focus:ring-[#1C7D5A] outline-none text-sm"
                     value={selectedClass}
                     onChange={(e) => setSelectedClass(e.target.value)}
                   >
@@ -105,7 +105,7 @@ const SyllabusCoverageReport = () => {
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-600">Exam</label>
                   <select
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-1 focus:ring-[#00315e] outline-none text-sm"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-1 focus:ring-[#1C7D5A] outline-none text-sm"
                     value={selectedExam}
                     onChange={(e) => setSelectedExam(e.target.value)}
                   >
@@ -126,7 +126,7 @@ const SyllabusCoverageReport = () => {
                   <button
                     onClick={handleFilter}
                     disabled={loading}
-                    className="w-full py-2 bg-[#00315e] text-white rounded-lg font-bold text-sm hover:bg-[#00315e]/90 transition-all flex justify-center items-center gap-2 cursor-pointer"
+                    className="w-full py-2 bg-[#1C7D5A] text-white rounded-lg font-bold text-sm hover:bg-[#1C7D5A]/90 transition-all flex justify-center items-center gap-2 cursor-pointer"
                   >
                     {loading ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -149,7 +149,7 @@ const SyllabusCoverageReport = () => {
           {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden group">
-              <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
               <div className="z-[10]">
                 <p className="text-2xl font-black text-slate-800 mb-1">6</p>
                 <p className="text-xs font-bold text-slate-500 uppercase ">Total Subjects</p>
@@ -159,7 +159,7 @@ const SyllabusCoverageReport = () => {
               </div>
             </div>
             <div className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden group">
-              <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
               <div className="z-[10]">
                 <p className="text-2xl font-black text-slate-800 mb-1">1</p>
                 <p className="text-xs font-bold text-slate-500 uppercase ">Completed</p>
@@ -169,7 +169,7 @@ const SyllabusCoverageReport = () => {
               </div>
             </div>
             <div className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden group">
-              <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
               <div className="z-[10]">
                 <p className="text-2xl font-black text-slate-800 mb-1">5</p>
                 <p className="text-xs font-bold text-slate-500 uppercase ">In Progress</p>
@@ -182,7 +182,7 @@ const SyllabusCoverageReport = () => {
 
           {/* Report Content */}
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-6 bg-[#00315e]/5 border-b border-slate-200">
+            <div className="p-6 bg-[#1C7D5A]/5 border-b border-slate-200">
               <h2 className="text-lg font-black text-slate-800">Coverage Details</h2>
             </div>
             <div className="overflow-x-auto">
@@ -213,7 +213,7 @@ const SyllabusCoverageReport = () => {
                           <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                             <div
                               className={`h-full rounded-full ${item.percentage === 100 ? 'bg-emerald-500' :
-                                item.percentage < 60 ? 'bg-amber-500' : 'bg-[#00315e]'
+                                item.percentage < 60 ? 'bg-amber-500' : 'bg-[#1C7D5A]'
                                 }`}
                               style={{ width: `${item.percentage}%` }}
                             ></div>
@@ -224,7 +224,7 @@ const SyllabusCoverageReport = () => {
                       <td className="p-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest ${item.status === 'Completed' ? 'bg-emerald-50 text-emerald-600' :
                           item.status === 'Behind' ? 'bg-amber-50 text-amber-600' :
-                            'bg-blue-50 text-[#00315e]'
+                            'bg-blue-50 text-[#1C7D5A]'
                           }`}>
                           {item.status}
                         </span>
@@ -239,18 +239,18 @@ const SyllabusCoverageReport = () => {
       ) : (
         <div className="flex flex-col items-center justify-center py-24 px-4 bg-white/60 backdrop-blur-md border border-blue-100 rounded-3xl shadow-sm border-dashed">
           <div className="relative group">
-            <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-[#00315e] rounded-full blur opacity-25 group-hover:opacity-40 transition-opacity duration-500 animate-pulse"></div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-blue-400 to-[#1C7D5A] rounded-full blur opacity-25 group-hover:opacity-40 transition-opacity duration-500 animate-pulse"></div>
             <div className="relative w-24 h-24 bg-white border border-blue-50 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-500">
-              <ClipboardList className="w-10 h-10 text-[#00315e]" />
+              <ClipboardList className="w-10 h-10 text-[#1C7D5A]" />
             </div>
           </div>
-          <h3 className="mt-6 text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#00315e] to-blue-600 text-center">
+          <h3 className="mt-6 text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#1C7D5A] to-blue-600 text-center">
             সিলেবাস রিপোর্ট
           </h3>
           <div className="mt-3 flex items-center gap-2 bg-blue-50/80 px-4 py-2.5 rounded-xl border border-blue-100">
             <Filter className="w-4 h-4 text-blue-500" />
             <p className="text-sm font-bold text-slate-600 text-center">
-              বিস্তারিত রিপোর্ট দেখতে <span className="text-[#00315e]">ক্লাস</span> এবং <span className="text-[#00315e]">পরীক্ষা</span> নির্বাচন করে ফিল্টার করুন
+              বিস্তারিত রিপোর্ট দেখতে <span className="text-[#1C7D5A]">ক্লাস</span> এবং <span className="text-[#1C7D5A]">পরীক্ষা</span> নির্বাচন করে ফিল্টার করুন
             </p>
           </div>
         </div>

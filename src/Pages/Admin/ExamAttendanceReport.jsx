@@ -307,7 +307,7 @@ const ExamAttendanceReport = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <GraduationCap className="w-8 h-8 text-[#00315e]" />
+            <GraduationCap className="w-8 h-8 text-[#1C7D5A]" />
             {t("reports_page.exam_attendance") || "Exam Attendance Report"}
           </h1>
           <p className="text-[14px] text-slate-500 font-bold mt-1">
@@ -321,13 +321,13 @@ const ExamAttendanceReport = () => {
           {reportData && (
             <div className="hidden sm:flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-[8px] text-xs font-bold text-slate-600 shadow-sm">
               <span className="text-slate-400">Exam:</span>
-              <span className="text-[#00315e] font-black">{selectedExamName}</span>
+              <span className="text-[#1C7D5A] font-black">{selectedExamName}</span>
               <span className="text-slate-300">•</span>
               <span className="text-slate-400">Class:</span>
-              <span className="text-[#00315e] font-black">{selectedClassName}</span>
+              <span className="text-[#1C7D5A] font-black">{selectedClassName}</span>
               <span className="text-slate-300">•</span>
               <span className="text-slate-400">Date:</span>
-              <span className="text-[#00315e] font-black">{selectedDate}</span>
+              <span className="text-[#1C7D5A] font-black">{selectedDate}</span>
             </div>
           )}
 
@@ -336,12 +336,12 @@ const ExamAttendanceReport = () => {
             type="button"
             onClick={() => setShowFilter((prev) => !prev)}
             className={`px-4 py-2.5 rounded-[8px] text-xs md:text-sm font-black flex items-center gap-2 transition-all border shadow-sm cursor-pointer ${showFilter || reportData
-                ? "bg-[#00315e] text-white border-[#00315e] hover:bg-[#002244]"
+                ? "bg-[#1C7D5A] text-white border-[#1C7D5A] hover:bg-[#123628]"
                 : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
               }`}
           >
             <Filter
-              className={`w-4 h-4 ${showFilter || reportData ? "text-white" : "text-[#00315e]"
+              className={`w-4 h-4 ${showFilter || reportData ? "text-white" : "text-[#1C7D5A]"
                 }`}
             />
             <span>Filter</span>
@@ -360,8 +360,8 @@ const ExamAttendanceReport = () => {
               {/* Dropdown Header */}
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-md bg-[#00315e]/10 flex items-center justify-center">
-                    <GraduationCap className="w-4 h-4 text-[#00315e]" />
+                  <div className="w-7 h-7 rounded-md bg-[#1C7D5A]/10 flex items-center justify-center">
+                    <GraduationCap className="w-4 h-4 text-[#1C7D5A]" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-slate-800">
@@ -387,13 +387,13 @@ const ExamAttendanceReport = () => {
                 {/* Exam Name */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-600 uppercase flex items-center gap-1.5">
-                    <GraduationCap className="w-3.5 h-3.5 text-[#00315e]" />
+                    <GraduationCap className="w-3.5 h-3.5 text-[#1C7D5A]" />
                     {t("reports_page.exam_name") || "Exam Name"} <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={selectedExamId}
                     onChange={(e) => setSelectedExamId(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   >
                     <option value="">Select Exam</option>
                     {exams.map((ex) => (
@@ -407,13 +407,13 @@ const ExamAttendanceReport = () => {
                 {/* Class */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-600 uppercase flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5 text-[#00315e]" />
+                    <Users className="w-3.5 h-3.5 text-[#1C7D5A]" />
                     {t("common.class") || "Class"}
                   </label>
                   <select
                     value={selectedClassId}
                     onChange={(e) => setSelectedClassId(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   >
                     <option value="">All Classes</option>
                     {classes.map((c) => (
@@ -427,13 +427,13 @@ const ExamAttendanceReport = () => {
                 {/* Section */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-600 uppercase flex items-center gap-1.5">
-                    <Filter className="w-3.5 h-3.5 text-[#00315e]" />
+                    <Filter className="w-3.5 h-3.5 text-[#1C7D5A]" />
                     {t("common.section") || "Section"}
                   </label>
                   <select
                     value={selectedSectionId}
                     onChange={(e) => setSelectedSectionId(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   >
                     <option value="">All Sections</option>
                     {sections.map((s) => (
@@ -447,14 +447,14 @@ const ExamAttendanceReport = () => {
                 {/* Exam Date */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-600 uppercase flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-[#00315e]" />
+                    <Calendar className="w-3.5 h-3.5 text-[#1C7D5A]" />
                     {t("reports_page.exam_date") || "Exam Date"} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   />
                 </div>
               </div>
@@ -492,7 +492,7 @@ const ExamAttendanceReport = () => {
                       }
                     }}
                     disabled={loading || !selectedDate}
-                    className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] text-xs font-black hover:bg-[#002244] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-slate-200"
+                    className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] text-xs font-black hover:bg-[#123628] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-slate-200"
                   >
                     <Filter className="w-3.5 h-3.5" />
                     {loading
@@ -509,7 +509,7 @@ const ExamAttendanceReport = () => {
       {/* Loading State */}
       {loading && !reportData && (
         <div className="bg-white rounded-[8px] p-16 border border-slate-200 shadow-sm flex flex-col items-center justify-center">
-          <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+          <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
           <p className="text-slate-500 font-bold">Generating Exam Attendance Report...</p>
         </div>
       )}
@@ -521,8 +521,8 @@ const ExamAttendanceReport = () => {
             {
               label: `${t("reports_page.candidate_count") || "Total Candidates"}`,
               value: reportData.totals.total,
-              color: "text-[#00315e]",
-              bg: "bg-[#00315e24]",
+              color: "text-[#1C7D5A]",
+              bg: "bg-[#1C7D5A18]",
             },
             {
               label: `${t("reports_page.present") || "Present"}`,
@@ -577,7 +577,7 @@ const ExamAttendanceReport = () => {
                     setSearchTerm(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all text-sm font-medium"
+                  className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all text-sm font-medium"
                 />
               </div>
             </div>
@@ -587,25 +587,25 @@ const ExamAttendanceReport = () => {
               <button
                 onClick={handleCopy}
                 title="Copy List"
-                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#00315e24] hover:text-[#00315e] hover:border-[#00315e]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
+                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#1C7D5A18] hover:text-[#1C7D5A] hover:border-[#1C7D5A]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
               >
-                <Copy className="w-4 h-4 text-[#00315e]" />
+                <Copy className="w-4 h-4 text-[#1C7D5A]" />
                 <span className="hidden sm:inline">Copy</span>
               </button>
               <button
                 onClick={handleExportCSV}
                 title="Export CSV"
-                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#00315e24] hover:text-[#00315e] hover:border-[#00315e]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
+                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#1C7D5A18] hover:text-[#1C7D5A] hover:border-[#1C7D5A]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
               >
-                <FileSpreadsheet className="w-4 h-4 text-[#00315e]" />
+                <FileSpreadsheet className="w-4 h-4 text-[#1C7D5A]" />
                 <span>Excel/CSV</span>
               </button>
               <button
                 onClick={handlePrint}
                 title="Print Report"
-                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#00315e24] hover:text-[#00315e] hover:border-[#00315e]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
+                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#1C7D5A18] hover:text-[#1C7D5A] hover:border-[#1C7D5A]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
               >
-                <Printer className="w-4 h-4 text-[#00315e]" />
+                <Printer className="w-4 h-4 text-[#1C7D5A]" />
                 <span>Print</span>
               </button>
             </div>
@@ -638,9 +638,9 @@ const ExamAttendanceReport = () => {
                   paginatedCandidates.map((item) => (
                     <tr
                       key={item.id}
-                      className="hover:bg-[#00315e]/[0.02] transition-colors group"
+                      className="hover:bg-[#1C7D5A]/[0.02] transition-colors group"
                     >
-                      <td className="border-b border-r border-slate-200 p-3.5 font-black text-sm text-[#00315e]">
+                      <td className="border-b border-r border-slate-200 p-3.5 font-black text-sm text-[#1C7D5A]">
                         #{item.roll}
                       </td>
                       <td className="border-b border-r border-slate-200 p-3.5">
@@ -653,7 +653,7 @@ const ExamAttendanceReport = () => {
                       </td>
                       <td className="border-b border-r border-slate-200 p-3.5 text-center text-xs font-bold text-slate-700">
                         <span className="inline-flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-[6px] border border-slate-200">
-                          <MapPin className="w-3 h-3 text-[#00315e]" />
+                          <MapPin className="w-3 h-3 text-[#1C7D5A]" />
                           {item.hall}
                         </span>
                       </td>
@@ -708,7 +708,7 @@ const ExamAttendanceReport = () => {
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  className="p-2 border border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  className="p-2 border border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -718,8 +718,8 @@ const ExamAttendanceReport = () => {
                       key={i + 1}
                       onClick={() => setCurrentPage(i + 1)}
                       className={`w-8 h-8 rounded-[8px] text-xs font-black transition-all border ${currentPage === i + 1
-                          ? "bg-[#00315e] border-[#00315e] text-white cursor-pointer"
-                          : "bg-white border-slate-200 text-slate-600 hover:border-[#00315e] hover:text-[#00315e] cursor-pointer"
+                          ? "bg-[#1C7D5A] border-[#1C7D5A] text-white cursor-pointer"
+                          : "bg-white border-slate-200 text-slate-600 hover:border-[#1C7D5A] hover:text-[#1C7D5A] cursor-pointer"
                         }`}
                     >
                       {i + 1}
@@ -729,7 +729,7 @@ const ExamAttendanceReport = () => {
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  className="p-2 border border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  className="p-2 border border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -742,8 +742,8 @@ const ExamAttendanceReport = () => {
       {/* Empty Initial State */}
       {!reportData && !loading && (
         <div className="bg-white rounded-[8px] p-12 border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center">
-          <div className="w-16 h-16 bg-[#00315e24] rounded-full flex items-center justify-center mb-4">
-            <GraduationCap className="w-8 h-8 text-[#00315e]" />
+          <div className="w-16 h-16 bg-[#1C7D5A18] rounded-full flex items-center justify-center mb-4">
+            <GraduationCap className="w-8 h-8 text-[#1C7D5A]" />
           </div>
           <h3 className="text-base font-black text-slate-800 mb-1">
             No Report Generated Yet
@@ -754,7 +754,7 @@ const ExamAttendanceReport = () => {
           <button
             type="button"
             onClick={() => setShowFilter(true)}
-            className="px-5 py-2.5 bg-[#00315e] text-white rounded-[8px] text-xs font-black hover:bg-[#002244] active:scale-95 transition-all flex items-center gap-2 cursor-pointer shadow-md shadow-slate-200"
+            className="px-5 py-2.5 bg-[#1C7D5A] text-white rounded-[8px] text-xs font-black hover:bg-[#123628] active:scale-95 transition-all flex items-center gap-2 cursor-pointer shadow-md shadow-slate-200"
           >
             <Filter className="w-4 h-4" />
             Open Filter

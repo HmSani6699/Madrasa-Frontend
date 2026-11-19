@@ -21,8 +21,8 @@ import {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <span className="px-3 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-full text-[10px] font-black uppercase tracking-widest">Education Secretary</span>
-                <span className="px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest">Active Session 2026</span>
+                <span className="px-3 py-1 bg-[#1C7D5A]/10 text-[#1C7D5A] border border-[#1C7D5A]/20 rounded-full text-[10px] font-black uppercase tracking-widest">Education Secretary (তালিমাত)</span>
+                <span className="px-3 py-1 bg-[#EAB33C]/15 text-[#123628] border border-[#EAB33C]/30 rounded-full text-[10px] font-black uppercase tracking-widest">Active Session 2026</span>
               </div>
               <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight uppercase">Academic Control Center</h1>
               <p className="text-slate-500 font-bold mt-2">Manage curriculum, examinations, and faculty performance</p>
@@ -71,7 +71,7 @@ import {
             
             {/* Exam & Curriculum Status */}
             <div className="lg:col-span-2 space-y-8">
-               <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
+               <div className="bg-[#123628] rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
                   
                   <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">

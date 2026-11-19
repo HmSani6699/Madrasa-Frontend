@@ -148,7 +148,7 @@ const GradesRange = () => {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Award className="w-8 h-8 text-[#00315e]" />
+            <Award className="w-8 h-8 text-[#1C7D5A]" />
             Grade Management
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
@@ -171,7 +171,7 @@ const GradesRange = () => {
           </div>
           <button
             onClick={openAddModal}
-            className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2 whitespace-nowrap"
+            className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center gap-2 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             Add Grade
@@ -183,7 +183,7 @@ const GradesRange = () => {
       <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 overflow-hidden relative">
         <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
           <table className="w-full">
-            <thead className="bg-[#00315e24]">
+            <thead className="bg-[#1C7D5A18]">
               <tr className="whitespace-nowrap">
                 <th className="whitespace-nowrap px-10 py-3 text-left text-[12px] font-black ">ID</th>
                 <th className="whitespace-nowrap px-10 py-3 text-center text-[12px] font-black ">Grade Name</th>
@@ -212,7 +212,7 @@ const GradesRange = () => {
                   <tr key={grade._id} className="group hover:bg-amber-50/10 transition-all duration-300">
                     <td className="px-10 py-3 whitespace-nowrap"><span className="text-sm font-bold text-slate-500">{i + 1}</span></td>
                     <td className="px-10 py-3 whitespace-nowrap text-center"><span className="text-[15px] font-black text-slate-800">{grade.name}</span></td>
-                    <td className="px-10 py-3 whitespace-nowrap text-center"><span className="text-sm font-bold text-[#00315e]">{Number(grade.grade_point).toFixed(2)}</span></td>
+                    <td className="px-10 py-3 whitespace-nowrap text-center"><span className="text-sm font-bold text-[#1C7D5A]">{Number(grade.grade_point).toFixed(2)}</span></td>
                     <td className="px-10 py-3 whitespace-nowrap text-center"><span className="text-sm font-semibold text-slate-600">{grade.min_marks}%</span></td>
                     <td className="px-10 py-3 whitespace-nowrap text-center"><span className="text-sm font-semibold text-slate-600">{grade.max_marks}%</span></td>
                     <td className="px-10 py-3 whitespace-nowrap text-center">
@@ -227,7 +227,7 @@ const GradesRange = () => {
                     <td className="px-10 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-3 justify-center">
                         <button className="cursor-pointer" onClick={() => openEditModal(grade)}>
-                          <SquarePen className="w-4 h-4 text-[#00315e]" />
+                          <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                         </button>
                         <button className="cursor-pointer" onClick={() => openDeleteModal(grade)}>
                           <Trash2 className="w-4 h-4 text-red-500" />
@@ -288,7 +288,7 @@ const GradesRange = () => {
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[12px] font-black text-slate-700 uppercase">Comment (Optional)</label>
                   <textarea
-                    className="w-full px-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:border-[#00315e] transition-all"
+                    className="w-full px-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:border-[#1C7D5A] transition-all"
                     placeholder="e.g. Outstanding"
                     rows="3"
                     value={formData.remarks}
@@ -298,7 +298,7 @@ const GradesRange = () => {
               </div>
               <div className="p-6 border-t-2 border-slate-100 bg-slate-50 flex justify-end gap-4 mt-5 -mx-5 -mb-5 rounded-b-[8px]">
                 <button onClick={() => setIsModalOpen(false)} className="px-6 py-3 font-bold text-slate-600 hover:bg-white rounded-xl transition-all border-2 border-transparent hover:border-slate-200 cursor-pointer">Cancel</button>
-                <button onClick={handleAction} className="px-8 py-3 bg-[#00315e] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-lg transition-all flex items-center gap-2 cursor-pointer">
+                <button onClick={handleAction} className="px-8 py-3 bg-[#1C7D5A] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-lg transition-all flex items-center gap-2 cursor-pointer">
                   {modalType === "add" ? "Save Grade" : "Update Grade"}
                 </button>
               </div>

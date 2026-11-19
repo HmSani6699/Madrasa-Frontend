@@ -157,6 +157,8 @@ import EBooks from "../Pages/Students/EBooks";
 import StudentProfilePage from "../Pages/Students/Profile";
 import FeeType from "../Pages/Accounting/FeeType";
 import Home from "../Pages/Home/Home";
+import FreeDemo from "../Pages/FreeDemo/FreeDemo";
+import DemoRequests from "../Pages/SuperAdmin/DemoRequests";
 
 // Helper to flatten routes
 const flattenRoutes = (navItems) => {
@@ -540,6 +542,10 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
+    path: "/free-demo",
+    element: <FreeDemo />,
+  },
+  {
     path: "/:slug",
     element: <PortalLayout />,
     children: [
@@ -573,6 +579,7 @@ const router = createBrowserRouter([
             element: <ProtectedRoute allowedRoles={["super_admin"]} />,
             children: [
               { path: "/super-admin", element: <SuperAdminDashboard /> },
+              { path: "/super-admin/demo-requests", element: <DemoRequests /> },
               { path: "/super-admin/madrasas", element: <MadrasaList /> },
               { path: "/super-admin/settings", element: <Settings /> },
               { path: "/super-admin/plans", element: <PlanList /> },

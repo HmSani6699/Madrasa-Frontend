@@ -88,14 +88,14 @@ const SettingsPage = () => {
   };
 
   const Toggle = ({ enabled, onChange, label, description }) => (
-    <div className="flex items-center justify-between p-6 bg-slate-50 border border-slate-100 rounded-3xl group hover:bg-white hover:border-[#00bd7f15] hover:shadow-lg hover:shadow-[#00bd7f08] transition-all cursor-pointer" onClick={onChange}>
+    <div className="flex items-center justify-between p-6 bg-slate-50 border border-slate-100 rounded-3xl group hover:bg-white hover:border-[#1C7D5A15] hover:shadow-lg hover:shadow-[#1C7D5A08] transition-all cursor-pointer" onClick={onChange}>
       <div className="flex items-center gap-4">
         <div>
           <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">{label}</h4>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{description}</p>
         </div>
       </div>
-      <div className={`w-14 h-8 rounded-full relative transition-all duration-300 ${enabled ? 'bg-[#00bd7f] shadow-inner' : 'bg-slate-200 shadow-inner'}`}>
+      <div className={`w-14 h-8 rounded-full relative transition-all duration-300 ${enabled ? 'bg-[#1C7D5A] shadow-inner' : 'bg-slate-200 shadow-inner'}`}>
         <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${enabled ? 'translate-x-6' : 'translate-x-0'}`} />
       </div>
     </div>
@@ -108,15 +108,15 @@ const SettingsPage = () => {
         {/* Header Section */}
         <div className="bg-white rounded-[20px] border border-slate-200 p-8 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 bg-[#00bd7f]/10 rounded-2xl flex items-center justify-center border border-[#00bd7f]/20 shadow-inner">
-              <Settings className="w-8 h-8 text-[#00bd7f] animate-spin-slow" />
+            <div className="w-16 h-16 bg-[#1C7D5A]/10 rounded-2xl flex items-center justify-center border border-[#1C7D5A]/20 shadow-inner">
+              <Settings className="w-8 h-8 text-[#1C7D5A] animate-spin-slow" />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight uppercase">{t("settings_page.system_settings")}</h1>
              
             </div>
           </div>
-          <button className="flex items-center gap-2 px-8 py-3 bg-[#00bd7f] text-white font-black rounded-xl shadow-xl shadow-[#00bd7f]/20 hover:bg-[#009b68] hover:scale-[1.02] active:scale-95 transition-all">
+          <button className="flex items-center gap-2 px-8 py-3 bg-[#1C7D5A] text-white font-black rounded-xl shadow-xl shadow-[#1C7D5A]/20 hover:bg-[#123628] hover:scale-[1.02] active:scale-95 transition-all">
             <Save className="w-5 h-5" />
             {t("common.save_changes")}
           </button>
@@ -133,11 +133,11 @@ const SettingsPage = () => {
                           onClick={() => setActiveTab(tab.id)}
                           className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-black transition-all ${
                             activeTab === tab.id 
-                              ? 'bg-[#00bd7f]/10 text-[#00bd7f] shadow-sm' 
+                              ? 'bg-[#1C7D5A]/10 text-[#1C7D5A] shadow-sm' 
                               : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
                           }`}
                        >
-                          <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-[#00bd7f]' : 'text-slate-400'}`} />
+                          <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-[#1C7D5A]' : 'text-slate-400'}`} />
                           <span className="text-sm tracking-tight">{tab.label}</span>
                        </button>
                     ))}
@@ -154,8 +154,8 @@ const SettingsPage = () => {
                   {activeTab === "SMS" && (
                    <div className="space-y-8 animate-in fade-in duration-300">
                       <div className="flex items-center gap-4 mb-2 pb-6 border-b border-slate-50">
-                         <div className="w-12 h-12 bg-[#00bd7f]/10 rounded-2xl flex items-center justify-center border border-[#00bd7f]/20">
-                             <MessageSquare className="w-6 h-6 text-[#00bd7f]" />
+                         <div className="w-12 h-12 bg-[#1C7D5A]/10 rounded-2xl flex items-center justify-center border border-[#1C7D5A]/20">
+                             <MessageSquare className="w-6 h-6 text-[#1C7D5A]" />
                          </div>
                          <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">{t("settings_page.sms_trigger_mgmt")}</h2>
@@ -191,8 +191,8 @@ const SettingsPage = () => {
                  {activeTab === "Profile" && (
                    <div className="space-y-10 animate-in fade-in duration-300">
                       <div className="flex items-center gap-4 mb-2 pb-6 border-b border-slate-50">
-                         <div className="w-12 h-12 bg-[#00bd7f]/10 rounded-2xl flex items-center justify-center border border-[#00bd7f]/20">
-                             <Building2 className="w-6 h-6 text-[#00bd7f]" />
+                         <div className="w-12 h-12 bg-[#1C7D5A]/10 rounded-2xl flex items-center justify-center border border-[#1C7D5A]/20">
+                             <Building2 className="w-6 h-6 text-[#1C7D5A]" />
                          </div>
                          <div>
                             <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">{t("settings_page.inst_identity")}</h2>
@@ -202,7 +202,7 @@ const SettingsPage = () => {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
                          <div className="space-y-6">
-                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider underline decoration-[#00bd7f] decoration-4 underline-offset-8 italic mb-8">{t("settings_page.admin_details")}</h3>
+                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider underline decoration-[#1C7D5A] decoration-4 underline-offset-8 italic mb-8">{t("settings_page.admin_details")}</h3>
                             <div className="space-y-6">
                                <div className="space-y-2">
                                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">{t("settings_page.admin_name")}</label>
@@ -295,8 +295,8 @@ const SettingsPage = () => {
                       
                       {/* Section Title */}
                       <div className="flex items-center gap-4 mb-2 pb-6 border-b border-slate-100">
-                        <div className="w-14 h-14 bg-[#00bd7f]/10 rounded-2xl flex items-center justify-center border border-[#00bd7f]/20 shadow-inner">
-                          <ShieldCheck className="w-7 h-7 text-[#00bd7f]" />
+                        <div className="w-14 h-14 bg-[#1C7D5A]/10 rounded-2xl flex items-center justify-center border border-[#1C7D5A]/20 shadow-inner">
+                          <ShieldCheck className="w-7 h-7 text-[#1C7D5A]" />
                         </div>
                         <div>
                           <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">SaaS License & Subscription</h2>
@@ -313,9 +313,9 @@ const SettingsPage = () => {
                             <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Active Membership License
                           </h3>
                           
-                          <div className="relative overflow-hidden bg-gradient-to-br from-[#0b1329] via-[#121c33] to-[#060c1c] rounded-[2rem] p-8 shadow-xl shadow-slate-900/20 border border-white/10 text-white flex flex-col justify-between aspect-[1.586/1] w-full max-w-md mx-auto group hover:scale-[1.01] hover:shadow-2xl hover:shadow-[#00bd7f]/5 transition-all duration-300">
+                          <div className="relative overflow-hidden bg-gradient-to-br from-[#0b1329] via-[#121c33] to-[#060c1c] rounded-[2rem] p-8 shadow-xl shadow-slate-900/20 border border-white/10 text-white flex flex-col justify-between aspect-[1.586/1] w-full max-w-md mx-auto group hover:scale-[1.01] hover:shadow-2xl hover:shadow-[#1C7D5A]/5 transition-all duration-300">
                             {/* Holographic light reflections */}
-                            <div className="absolute top-0 right-0 w-60 h-60 bg-gradient-to-bl from-[#00bd7f]/15 to-blue-500/5 rounded-full filter blur-3xl opacity-60 pointer-events-none group-hover:opacity-80 transition-opacity" />
+                            <div className="absolute top-0 right-0 w-60 h-60 bg-gradient-to-bl from-[#1C7D5A]/15 to-blue-500/5 rounded-full filter blur-3xl opacity-60 pointer-events-none group-hover:opacity-80 transition-opacity" />
                             <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-gradient-to-tr from-purple-500/10 to-transparent rounded-full filter blur-2xl opacity-40 pointer-events-none" />
 
                             {/* Card Top */}
@@ -382,7 +382,7 @@ const SettingsPage = () => {
                                   className={`h-full rounded-full bg-gradient-to-r shadow-md transition-all duration-1000 ${
                                     utilizationPercentage >= 90
                                       ? "from-amber-500 to-rose-500 shadow-rose-500/20"
-                                      : "from-[#00bd7f] to-blue-500 shadow-[#00bd7f]/20"
+                                      : "from-[#1C7D5A] to-blue-500 shadow-[#1C7D5A]/20"
                                   }`}
                                   style={{ width: `${utilizationPercentage}%` }}
                                 />
@@ -408,7 +408,7 @@ const SettingsPage = () => {
                             <div className="pt-2">
                               <a 
                                 href="mailto:support@mms.com"
-                                className="inline-flex items-center gap-1.5 bg-[#00bd7f] hover:bg-[#009b68] text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-lg shadow-[#00bd7f]/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wider"
+                                className="inline-flex items-center gap-1.5 bg-[#1C7D5A] hover:bg-[#123628] text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-lg shadow-[#1C7D5A]/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wider"
                               >
                                 Contact Super Admin
                               </a>

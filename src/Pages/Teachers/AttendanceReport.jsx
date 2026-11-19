@@ -38,7 +38,7 @@ const TeacherAttendanceReport = () => {
             <SelectInputField title={'Date'} options={[{value:"Last 7 days"},{value:"Last 15 days"},{value:"Last 30 days"}]}/>
          
           <div className="lg:mt-[25px]">
-              <button className="w-full flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all">
+              <button className="w-full flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all">
               <Plus className="w-4 h-4" />
               Filter
             </button>
@@ -89,8 +89,8 @@ const TeacherAttendanceReport = () => {
                         
                           <td className="px-6 md:px-10 py-3 md:py-3 text-right">
                             <div className="flex justify-end gap-2">
-                                <button className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-[#00bd7f] border border-slate-100"><Printer className="w-4 h-4" /></button>
-                                <button className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-[#00bd7f] border border-slate-100"><Download className="w-4 h-4" /></button>
+                                <button className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-[#1C7D5A] border border-slate-100"><Printer className="w-4 h-4" /></button>
+                                <button className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-[#1C7D5A] border border-slate-100"><Download className="w-4 h-4" /></button>
                               </div>
                           </td>
                        </tr>

@@ -147,7 +147,7 @@ const ExamTerm = () => {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <CalendarDays className="w-8 h-8 text-[#00315e]" />
+            <CalendarDays className="w-8 h-8 text-[#1C7D5A]" />
             Exam Name List
           </h1>
           <div className="flex items-center gap-2 text-[14px] text-slate-500 font-bold mt-1">
@@ -155,7 +155,7 @@ const ExamTerm = () => {
             <span>/</span>
             <span>Examination</span>
             <span>/</span>
-            <span className="text-[#00315e]">Exam Name List</span>
+            <span className="text-[#1C7D5A]">Exam Name List</span>
           </div>
         </div>
 
@@ -174,7 +174,7 @@ const ExamTerm = () => {
           </div>
           <button
             onClick={openAddModal}
-            className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2 whitespace-nowrap"
+            className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center gap-2 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             Add Exam
@@ -186,14 +186,14 @@ const ExamTerm = () => {
       <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 overflow-hidden relative min-h-[400px]">
         {isLoading ? (
           <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-10">
-            <Loader2 className="w-8 h-8 text-[#00315e] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#1C7D5A] animate-spin" />
           </div>
         ) : null}
 
         {!isLoading && filteredTerms.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 px-4">
             <div className="w-24 h-24 bg-blue-50 text-blue-300 rounded-full flex items-center justify-center mb-5 animate-pulse">
-              <CalendarDays className="w-12 h-12 text-[#00315e]/40" />
+              <CalendarDays className="w-12 h-12 text-[#1C7D5A]/40" />
             </div>
             <h3 className="text-xl font-black text-slate-700 mb-2">কোনো পরীক্ষার টার্ম পাওয়া যায়নি</h3>
             <p className="text-slate-500 font-medium text-center max-w-md">
@@ -203,7 +203,7 @@ const ExamTerm = () => {
         ) : (
           <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
             <table className="w-full">
-              <thead className="bg-[#00315e24]">
+              <thead className="bg-[#1C7D5A18]">
                 <tr>
                   <th className="px-10 py-3 text-left text-[12px] font-black">ID</th>
                   <th className="px-10 py-3 text-center text-[12px] font-black">Exam Name</th>
@@ -245,7 +245,7 @@ const ExamTerm = () => {
                     <td className="px-10 py-3 text-center">
                       <div className="flex items-center gap-3 justify-center">
                         <button className="cursor-pointer" onClick={() => openEditModal(term)}>
-                          <SquarePen className="w-4 h-4 text-[#00315e]" />
+                          <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                         </button>
                         <button className="cursor-pointer" onClick={() => handleDeleteClick(term)}>
                           <Trash2 className="w-4 h-4 text-red-500" />
@@ -324,7 +324,7 @@ const ExamTerm = () => {
                 <button
                   onClick={handleSave}
                   disabled={isSubmitting}
-                  className="px-8 py-3 bg-[#00315e] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-lg transition-all flex items-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="px-8 py-3 bg-[#1C7D5A] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-lg transition-all flex items-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

@@ -125,7 +125,7 @@ const TeacherSchedule = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50/50">
-        <div className="w-12 h-12 border-4 border-[#00315e]/20 border-t-[#00315e] rounded-full animate-spin mb-4"></div>
+        <div className="w-12 h-12 border-4 border-[#1C7D5A]/20 border-t-[#1C7D5A] rounded-full animate-spin mb-4"></div>
         <p className="text-slate-500 font-medium tracking-wide">Loading teacher database...</p>
       </div>
     );
@@ -137,7 +137,7 @@ const TeacherSchedule = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-black text-[#2d3748] flex items-center gap-2">
-            <Calendar className="w-6 h-6 text-[#00315e]" />
+            <Calendar className="w-6 h-6 text-[#1C7D5A]" />
             Teacher Routine
           </h1>
           <div className="flex items-center gap-2 text-sm font-bold text-slate-400 mt-1">
@@ -153,7 +153,7 @@ const TeacherSchedule = () => {
           <div className="relative teacher-selector-container">
             <button
               onClick={() => setIsTeacherDropdownOpen(!isTeacherDropdownOpen)}
-              className="px-4 py-2 bg-[#00315e] text-white border border-slate-200 rounded-[8px]  transition-all flex items-center gap-2 font-bold text-sm cursor-pointer"
+              className="px-4 py-2 bg-[#1C7D5A] text-white border border-slate-200 rounded-[8px]  transition-all flex items-center gap-2 font-bold text-sm cursor-pointer"
             >
               <Filter className="w-5 h-5" />
               Filter Teachers
@@ -166,7 +166,7 @@ const TeacherSchedule = () => {
                     <input
                       type="text"
                       placeholder="Search by name or ID..."
-                      className="w-full pl-9 pr-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#00315e] transition-all text-sm"
+                      className="w-full pl-9 pr-4 py-2 bg-[#1C7D5A18] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] transition-all text-sm"
                       value={teacherSearchQuery}
                       onChange={(e) => setTeacherSearchQuery(e.target.value)}
                       onClick={(e) => e.stopPropagation()}
@@ -182,14 +182,14 @@ const TeacherSchedule = () => {
                         return (
                           <div
                             key={t._id}
-                            className={`flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-all ${isSelected ? "bg-[#00315e]/10" : "hover:bg-slate-50"}`}
+                            className={`flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-all ${isSelected ? "bg-[#1C7D5A]/10" : "hover:bg-slate-50"}`}
                             onClick={(e) => {
                               e.stopPropagation();
                               toggleTeacherSelection(t._id);
                             }}
                           >
                             <div className="flex items-center gap-3">
-                              <div className={`w-7 h-7 rounded-md overflow-hidden flex items-center justify-center font-bold text-xs shrink-0 ${isSelected ? 'bg-[#00315e] text-white' : 'bg-slate-200 text-slate-500'}`}>
+                              <div className={`w-7 h-7 rounded-md overflow-hidden flex items-center justify-center font-bold text-xs shrink-0 ${isSelected ? 'bg-[#1C7D5A] text-white' : 'bg-slate-200 text-slate-500'}`}>
                                 {t.photo ? (
                                   <img src={t.photo} alt={t.name} className="w-full h-full object-cover" />
                                 ) : (
@@ -197,10 +197,10 @@ const TeacherSchedule = () => {
                                 )}
                               </div>
                               <div>
-                                <p className={`text-sm font-bold ${isSelected ? 'text-[#00315e]' : 'text-slate-700'}`}>{t.name}</p>
+                                <p className={`text-sm font-bold ${isSelected ? 'text-[#1C7D5A]' : 'text-slate-700'}`}>{t.name}</p>
                               </div>
                             </div>
-                            {isSelected && <Check className="w-4 h-4 text-[#00315e]" />}
+                            {isSelected && <Check className="w-4 h-4 text-[#1C7D5A]" />}
                           </div>
                         );
                       })
@@ -219,7 +219,7 @@ const TeacherSchedule = () => {
                     Clear All
                   </button>
                   <button
-                    className="text-xs font-bold bg-[#00315e] cursor-pointer text-white rounded-[6px] px-4 py-1.5 hover:bg-blue-900"
+                    className="text-xs font-bold bg-[#1C7D5A] cursor-pointer text-white rounded-[6px] px-4 py-1.5 hover:bg-blue-900"
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsTeacherDropdownOpen(false);
@@ -245,8 +245,8 @@ const TeacherSchedule = () => {
               const teacher = teachers.find(t => t._id === id);
               if (!teacher) return null;
               return (
-                <div key={id} className="flex items-center gap-1.5 bg-[#00315e]/5 border border-[#00315e]/20 text-[#00315e] pl-1.5 pr-1 py-1 rounded-[6px] shadow-sm">
-                  <div className="w-5 h-5 rounded overflow-hidden bg-white/50 border border-[#00315e]/10 flex items-center justify-center shrink-0">
+                <div key={id} className="flex items-center gap-1.5 bg-[#1C7D5A]/5 border border-[#1C7D5A]/20 text-[#1C7D5A] pl-1.5 pr-1 py-1 rounded-[6px] shadow-sm">
+                  <div className="w-5 h-5 rounded overflow-hidden bg-white/50 border border-[#1C7D5A]/10 flex items-center justify-center shrink-0">
                     {teacher.photo ? (
                       <img src={teacher.photo} alt={teacher.name} className="w-full h-full object-cover" />
                     ) : (
@@ -256,7 +256,7 @@ const TeacherSchedule = () => {
                   <span className="text-xs font-bold max-w-[100px] truncate">{teacher.name.split(' ')[0]}</span>
                   <button
                     onClick={(e) => removeTeacher(id, e)}
-                    className="w-4 h-4 rounded-sm hover:bg-[#00315e]/10 flex items-center justify-center text-[#00315e] transition-colors"
+                    className="w-4 h-4 rounded-sm hover:bg-[#1C7D5A]/10 flex items-center justify-center text-[#1C7D5A] transition-colors"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -274,7 +274,7 @@ const TeacherSchedule = () => {
         <div className="px-6 pb-6 mt-4">
           {scheduleLoading ? (
             <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+              <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
               <p className="text-slate-500 font-bold">Loading schedule...</p>
             </div>
           ) : selectedTeacherIds.length === 0 ? (
@@ -305,11 +305,11 @@ const TeacherSchedule = () => {
 
                 return (
                   <div key={day} className="flex flex-col gap-4">
-                    <div className="bg-[#00315e]/5 px-4 py-2.5 rounded-[8px] mb-3 border border-[#00315e]/10 flex flex-col items-center justify-center gap-1.5 shadow-sm">
-                      <h3 className="font-black text-[#00315e] text-[15px] leading-none">
+                    <div className="bg-[#1C7D5A]/5 px-4 py-2.5 rounded-[8px] mb-3 border border-[#1C7D5A]/10 flex flex-col items-center justify-center gap-1.5 shadow-sm">
+                      <h3 className="font-black text-[#1C7D5A] text-[15px] leading-none">
                         {day}
                       </h3>
-                      <span className="text-[10px] font-bold uppercase tracking-wider bg-white text-[#00315e] px-2.5 py-0.5 rounded-full shadow-sm border border-[#00315e]/10">
+                      <span className="text-[10px] font-bold uppercase tracking-wider bg-white text-[#1C7D5A] px-2.5 py-0.5 rounded-full shadow-sm border border-[#1C7D5A]/10">
                         {daySchedule.length} {daySchedule.length === 1 ? 'Class' : 'Classes'}
                       </span>
                     </div>

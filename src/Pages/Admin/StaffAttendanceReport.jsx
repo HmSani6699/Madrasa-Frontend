@@ -410,7 +410,7 @@ const StaffAttendanceReport = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#00315e]" />
+            <Users className="w-8 h-8 text-[#1C7D5A]" />
             {t("reports_page.staff_attendance") || "Staff Attendance Report"}
           </h1>
           <p className="text-[14px] text-slate-500 font-bold mt-1">
@@ -424,10 +424,10 @@ const StaffAttendanceReport = () => {
           {reportData && (
             <div className="hidden sm:flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-[8px] text-xs font-bold text-slate-600 shadow-sm">
               <span className="text-slate-400">Dept:</span>
-              <span className="text-[#00315e] font-black">{selectedDepartmentName}</span>
+              <span className="text-[#1C7D5A] font-black">{selectedDepartmentName}</span>
               <span className="text-slate-300">•</span>
               <span className="text-slate-400">Month:</span>
-              <span className="text-[#00315e] font-black">{selectedMonth}</span>
+              <span className="text-[#1C7D5A] font-black">{selectedMonth}</span>
             </div>
           )}
 
@@ -437,13 +437,13 @@ const StaffAttendanceReport = () => {
             onClick={() => setShowFilter((prev) => !prev)}
             className={`px-4 py-2.5 rounded-[8px] text-xs md:text-sm font-black flex items-center gap-2 transition-all border shadow-sm cursor-pointer ${
               showFilter || reportData
-                ? "bg-[#00315e] text-white border-[#00315e] hover:bg-[#002244]"
+                ? "bg-[#1C7D5A] text-white border-[#1C7D5A] hover:bg-[#123628]"
                 : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300"
             }`}
           >
             <Filter
               className={`w-4 h-4 ${
-                showFilter || reportData ? "text-white" : "text-[#00315e]"
+                showFilter || reportData ? "text-white" : "text-[#1C7D5A]"
               }`}
             />
             <span>Filter</span>
@@ -463,8 +463,8 @@ const StaffAttendanceReport = () => {
               {/* Dropdown Header */}
               <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-md bg-[#00315e]/10 flex items-center justify-center">
-                    <Filter className="w-4 h-4 text-[#00315e]" />
+                  <div className="w-7 h-7 rounded-md bg-[#1C7D5A]/10 flex items-center justify-center">
+                    <Filter className="w-4 h-4 text-[#1C7D5A]" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-slate-800">
@@ -490,13 +490,13 @@ const StaffAttendanceReport = () => {
                 {/* Department */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-600 uppercase flex items-center gap-1.5">
-                    <Briefcase className="w-3.5 h-3.5 text-[#00315e]" />
+                    <Briefcase className="w-3.5 h-3.5 text-[#1C7D5A]" />
                     {t("reports_page.staff_dept") || "Department / Role"}
                   </label>
                   <select
                     value={selectedDepartment}
                     onChange={(e) => setSelectedDepartment(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   >
                     <option value="all">All Departments</option>
                     {departments.map((d) => (
@@ -510,14 +510,14 @@ const StaffAttendanceReport = () => {
                 {/* Month */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-600 uppercase flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-[#00315e]" />
+                    <Calendar className="w-3.5 h-3.5 text-[#1C7D5A]" />
                     {t("common.month") || "Month"} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="month"
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-200 text-slate-900 rounded-[8px] text-sm font-bold outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   />
                 </div>
               </div>
@@ -553,7 +553,7 @@ const StaffAttendanceReport = () => {
                       }
                     }}
                     disabled={loading || !selectedMonth}
-                    className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] text-xs font-black hover:bg-[#002244] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-slate-200"
+                    className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] text-xs font-black hover:bg-[#123628] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-slate-200"
                   >
                     <Filter className="w-3.5 h-3.5" />
                     {loading
@@ -570,7 +570,7 @@ const StaffAttendanceReport = () => {
       {/* Loading State */}
       {loading && !reportData && (
         <div className="bg-white rounded-[8px] p-16 border border-slate-200 shadow-sm flex flex-col items-center justify-center">
-          <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+          <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
           <p className="text-slate-500 font-bold">Generating Staff Attendance Report...</p>
         </div>
       )}
@@ -582,8 +582,8 @@ const StaffAttendanceReport = () => {
             {
               label: "Total Staff",
               value: reportData.staff.length,
-              color: "text-[#00315e]",
-              bg: "bg-[#00315e24]",
+              color: "text-[#1C7D5A]",
+              bg: "bg-[#1C7D5A18]",
             },
             {
               label: `${t("reports_page.present") || "Present"} (P)`,
@@ -644,7 +644,7 @@ const StaffAttendanceReport = () => {
                     setSearchTerm(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all text-sm font-medium"
+                  className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all text-sm font-medium"
                 />
               </div>
             </div>
@@ -669,17 +669,17 @@ const StaffAttendanceReport = () => {
               <button
                 onClick={handleExportCSV}
                 title="Export CSV"
-                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#00315e24] hover:text-[#00315e] hover:border-[#00315e]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
+                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#1C7D5A18] hover:text-[#1C7D5A] hover:border-[#1C7D5A]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
               >
-                <FileSpreadsheet className="w-4 h-4 text-[#00315e]" />
+                <FileSpreadsheet className="w-4 h-4 text-[#1C7D5A]" />
                 <span>Excel/CSV</span>
               </button>
               <button
                 onClick={handlePrint}
                 title="Print Report"
-                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#00315e24] hover:text-[#00315e] hover:border-[#00315e]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
+                className="px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-[#1C7D5A18] hover:text-[#1C7D5A] hover:border-[#1C7D5A]/30 rounded-[8px] transition-all flex items-center gap-2 text-xs font-bold shadow-sm cursor-pointer"
               >
-                <Printer className="w-4 h-4 text-[#00315e]" />
+                <Printer className="w-4 h-4 text-[#1C7D5A]" />
                 <span>Print</span>
               </button>
             </div>
@@ -728,13 +728,13 @@ const StaffAttendanceReport = () => {
                   paginatedStaff.map((s) => (
                     <tr
                       key={s.id}
-                      className="hover:bg-[#00315e]/[0.02] transition-colors group"
+                      className="hover:bg-[#1C7D5A]/[0.02] transition-colors group"
                     >
                       <td className="border-b border-r border-slate-200 p-3 sticky left-0 bg-white group-hover:bg-[#fcfdfd] z-10">
                         <div className="font-bold text-slate-800 text-xs">
                           {s.name}
                         </div>
-                        <div className="text-[10px] text-[#00315e] font-black uppercase mt-0.5">
+                        <div className="text-[10px] text-[#1C7D5A] font-black uppercase mt-0.5">
                           {s.designation}
                         </div>
                       </td>
@@ -823,7 +823,7 @@ const StaffAttendanceReport = () => {
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  className="p-2 border border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  className="p-2 border border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -834,8 +834,8 @@ const StaffAttendanceReport = () => {
                       onClick={() => setCurrentPage(i + 1)}
                       className={`w-8 h-8 rounded-[8px] text-xs font-black transition-all border ${
                         currentPage === i + 1
-                          ? "bg-[#00315e] border-[#00315e] text-white cursor-pointer"
-                          : "bg-white border-slate-200 text-slate-600 hover:border-[#00315e] hover:text-[#00315e] cursor-pointer"
+                          ? "bg-[#1C7D5A] border-[#1C7D5A] text-white cursor-pointer"
+                          : "bg-white border-slate-200 text-slate-600 hover:border-[#1C7D5A] hover:text-[#1C7D5A] cursor-pointer"
                       }`}
                     >
                       {i + 1}
@@ -845,7 +845,7 @@ const StaffAttendanceReport = () => {
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  className="p-2 border border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  className="p-2 border border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -858,8 +858,8 @@ const StaffAttendanceReport = () => {
       {/* Empty Initial State */}
       {!reportData && !loading && (
         <div className="bg-white rounded-[8px] p-12 border border-slate-200 shadow-sm text-center flex flex-col items-center justify-center">
-          <div className="w-16 h-16 bg-[#00315e24] rounded-full flex items-center justify-center mb-4">
-            <Users className="w-8 h-8 text-[#00315e]" />
+          <div className="w-16 h-16 bg-[#1C7D5A18] rounded-full flex items-center justify-center mb-4">
+            <Users className="w-8 h-8 text-[#1C7D5A]" />
           </div>
           <h3 className="text-base font-black text-slate-800 mb-1">
             No Report Generated Yet
@@ -870,7 +870,7 @@ const StaffAttendanceReport = () => {
           <button
             type="button"
             onClick={() => setShowFilter(true)}
-            className="px-5 py-2.5 bg-[#00315e] text-white rounded-[8px] text-xs font-black hover:bg-[#002244] active:scale-95 transition-all flex items-center gap-2 cursor-pointer shadow-md shadow-slate-200"
+            className="px-5 py-2.5 bg-[#1C7D5A] text-white rounded-[8px] text-xs font-black hover:bg-[#123628] active:scale-95 transition-all flex items-center gap-2 cursor-pointer shadow-md shadow-slate-200"
           >
             <Filter className="w-4 h-4" />
             Open Filter

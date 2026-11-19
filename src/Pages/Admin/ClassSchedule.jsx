@@ -430,7 +430,7 @@ const ClassSchedule = () => {
                     options={classes.map(c => ({ value: c._id, label: c.name }))}
                     value={filterClassId}
                     setValue={setFilterClassId}
-                    bgColor={'bg-[#00315e24]'}
+                    bgColor={'bg-[#1C7D5A18]'}
                   />
                   <SelectInputField
                     title={'Section'}
@@ -440,7 +440,7 @@ const ClassSchedule = () => {
                     }).map(s => ({ value: s._id, label: s.name }))}
                     value={filterSectionId}
                     setValue={setFilterSectionId}
-                    bgColor={'bg-[#00315e24]'}
+                    bgColor={'bg-[#1C7D5A18]'}
                   />
                 </div>
                 <div className="flex items-end justify-end gap-3 mt-2">
@@ -456,7 +456,7 @@ const ClassSchedule = () => {
                       setSelectedSectionId(filterSectionId);
                       setIsFilterModalOpen(false);
                     }}
-                    className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer font-bold text-sm"
+                    className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer font-bold text-sm"
                   >
                     Apply
                   </button>
@@ -466,7 +466,7 @@ const ClassSchedule = () => {
           </div>
           <button
             onClick={handleAddSlot}
-            className="px-6 py-2 bg-[#00315e] text-white rounded-[8px] flex items-center gap-2 hover:bg-[#002240] transition-all font-bold text-sm cursor-pointer"
+            className="px-6 py-2 bg-[#1C7D5A] text-white rounded-[8px] flex items-center gap-2 hover:bg-[#123628] transition-all font-bold text-sm cursor-pointer"
           >
             <Plus className="w-5 h-5" />
             Add Time Table
@@ -507,7 +507,7 @@ const ClassSchedule = () => {
             <div className="flex gap-4 w-full  overflow-x-auto">
               {days.map((day, dayIndex) => (
                 <div key={day} className="flex flex-col gap-4">
-                  <h3 className="font-black text-[#00315e] bg-[#00315e24] px-4 py-2 rounded-[8px] text-[15px] mb-2 text-center border border-[#00315e]/10">{day}</h3>
+                  <h3 className="font-black text-[#1C7D5A] bg-[#1C7D5A18] px-4 py-2 rounded-[8px] text-[15px] mb-2 text-center border border-[#1C7D5A]/10">{day}</h3>
                   <div className="space-y-4">
                     {getSlotsByDay(day).length > 0 ? (
                       getSlotsByDay(day).map((slot, slotIndex) => (
@@ -574,7 +574,7 @@ const ClassSchedule = () => {
               value={selectedClassId}
               setValue={setSelectedClassId}
               options={classes.map(c => ({ value: c._id, label: c.name }))}
-              bgColor={'bg-[#00315e24]'}
+              bgColor={'bg-[#1C7D5A18]'}
             />
             <SelectInputField
               title={'Section'}
@@ -584,7 +584,7 @@ const ClassSchedule = () => {
                 const cls = classes.find(c => c._id === selectedClassId);
                 return (s.class_id?._id || s.class_id) === selectedClassId || (cls && cls.section_id === s._id);
               }).map(s => ({ value: s._id, label: s.name }))}
-              bgColor={'bg-[#00315e24]'}
+              bgColor={'bg-[#1C7D5A18]'}
             />
             <SelectInputField
               title={'Duration(min)'}
@@ -594,7 +594,7 @@ const ClassSchedule = () => {
                 { value: "40 min", label: "40 min" },
                 { value: "1 hr", label: "1 hr" }
               ]}
-              bgColor={'bg-[#00315e24]'}
+              bgColor={'bg-[#1C7D5A18]'}
             />
           </div>
 
@@ -606,10 +606,10 @@ const ClassSchedule = () => {
                 <button
                   key={day}
                   onClick={() => handleTabChange(day)}
-                  className={`px-8 py-3 text-sm font-black transition-all relative ${activeTab === day ? "text-[#00315e]" : "text-slate-400 hover:text-slate-600"}`}
+                  className={`px-8 py-3 text-sm font-black transition-all relative ${activeTab === day ? "text-[#1C7D5A]" : "text-slate-400 hover:text-slate-600"}`}
                 >
                   {day}
-                  {activeTab === day && <div className="absolute bottom-0 left-0 w-full h-1 bg-[#00315e] rounded-t-full shadow-lg shadow-[#00315e]/50" />}
+                  {activeTab === day && <div className="absolute bottom-0 left-0 w-full h-1 bg-[#1C7D5A] rounded-t-full shadow-lg shadow-[#1C7D5A]/50" />}
                 </button>
               ))}
             </div>
@@ -632,7 +632,7 @@ const ClassSchedule = () => {
                       newRows[index].subjectId = e.target.value;
                       setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                     }}
-                    className="w-full px-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-4 py-2 bg-[#1C7D5A18] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   >
                     <option value="">--Select--</option>
 
@@ -656,7 +656,7 @@ const ClassSchedule = () => {
                       newRows[index].teacherId = e.target.value;
                       setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                     }}
-                    className="w-full px-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-4 py-2 bg-[#1C7D5A18] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   >
                     <option value="">--Select--</option>
 
@@ -685,7 +685,7 @@ const ClassSchedule = () => {
                       newRows[index].timeFrom = e.target.value;
                       setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                     }}
-                    className="w-full px-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-4 py-2 bg-[#1C7D5A18] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
 
                   />
                 </div>
@@ -704,7 +704,7 @@ const ClassSchedule = () => {
                       newRows[index].timeTo = e.target.value;
                       setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                     }}
-                    className="w-full px-4 py-2 bg-[#00315e24] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+                    className="w-full px-4 py-2 bg-[#1C7D5A18] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
 
                   />
                 </div>
@@ -729,7 +729,7 @@ const ClassSchedule = () => {
                         const newRows = [...modalRowsByDay[activeTab], { ...initialRows }];
                         setModalRowsByDay({ ...modalRowsByDay, [activeTab]: newRows });
                       }}
-                      className="p-2 text-[#00315e] hover:bg-[#00315e]/10 rounded-lg transition-colors"
+                      className="p-2 text-[#1C7D5A] hover:bg-[#1C7D5A]/10 rounded-lg transition-colors"
                     >
                       <CirclePlus className="w-6 h-6" />
                     </button>
@@ -748,7 +748,7 @@ const ClassSchedule = () => {
             </button>
             <button
               onClick={handleSubmit}
-              className="px-8 py-2.5 bg-[#00315e] text-white rounded-[8px] shadow-md hover:bg-[#002240] transition-all"
+              className="px-8 py-2.5 bg-[#1C7D5A] text-white rounded-[8px] shadow-md hover:bg-[#123628] transition-all"
             >
               {currentSlot?._id ? "Update Time Table" : "Add Time Table"}
             </button>
@@ -780,7 +780,7 @@ const ClassSchedule = () => {
             <button
               onClick={handleExport}
               disabled={loading}
-              className="px-6 py-2 bg-[#00315e] text-white rounded-[8px] flex items-center gap-2 hover:bg-[#002240] transition-all font-bold text-sm cursor-pointer disabled:opacity-50"
+              className="px-6 py-2 bg-[#1C7D5A] text-white rounded-[8px] flex items-center gap-2 hover:bg-[#123628] transition-all font-bold text-sm cursor-pointer disabled:opacity-50"
             >
               <FileDown className="w-4 h-4" />
               {loading ? "Exporting..." : "Download PDF"}

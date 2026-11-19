@@ -242,7 +242,7 @@ const ClassSyllabus = () => {
               margin-bottom: 20px;
             }
             .meta p { margin: 0; }
-            .meta span { color: #00315e; }
+            .meta span { color: #1C7D5A; }
             .content { 
               margin-top: 30px; 
               font-size: 15px;
@@ -349,7 +349,7 @@ const ClassSyllabus = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <ClipboardList className="w-8 h-8 text-[#00315e]" />
+            <ClipboardList className="w-8 h-8 text-[#1C7D5A]" />
             Class Syllabus
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
@@ -397,7 +397,7 @@ const ClassSyllabus = () => {
 
           <button
             onClick={openAddModal}
-            className="w-full md:w-auto px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
+            className="w-full md:w-auto px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             Add Syllabus
@@ -409,7 +409,7 @@ const ClassSyllabus = () => {
       <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 overflow-hidden relative">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading syllabuses...</p>
           </div>
         ) : filteredSyllabuses.length === 0 ? (
@@ -422,7 +422,7 @@ const ClassSyllabus = () => {
         ) : (
           <div className="overflow-x-auto rounded-[8px]">
             <table className="w-full">
-              <thead className="bg-[#00315e24]">
+              <thead className="bg-[#1C7D5A18]">
                 <tr>
                   <th className="px-10 py-3.5 text-left text-[12px] font-black">
                     ID
@@ -476,18 +476,18 @@ const ClassSyllabus = () => {
                     </td>
                     <td>
                       <div className="flex items-center gap-2 justify-center">
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#00315e]/5 hover:bg-[#00315e]/10 transition-colors cursor-pointer" onClick={() => openViewModal(syllabus)} title="View">
-                          <Eye className="w-4 h-4 text-[#00315e]" />
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1C7D5A]/5 hover:bg-[#1C7D5A]/10 transition-colors cursor-pointer" onClick={() => openViewModal(syllabus)} title="View">
+                          <Eye className="w-4 h-4 text-[#1C7D5A]" />
                         </button>
 
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#00315e]/5 hover:bg-[#00315e]/10 transition-colors cursor-pointer" onClick={() => openEditModal(syllabus)} title="Edit">
-                          <SquarePen className="w-4 h-4 text-[#00315e]" />
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1C7D5A]/5 hover:bg-[#1C7D5A]/10 transition-colors cursor-pointer" onClick={() => openEditModal(syllabus)} title="Edit">
+                          <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                         </button>
                         <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 transition-colors cursor-pointer" onClick={() => openDeleteModal(syllabus)} title="Delete">
                           <Trash2 className="w-4 h-4 text-red-500" />
                         </button>
-                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#00315e]/5 hover:bg-[#00315e]/10 transition-colors cursor-pointer" onClick={() => handleDownload(syllabus)} title="Download">
-                          <Download className="w-4 h-4 text-[#00315e]" />
+                        <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1C7D5A]/5 hover:bg-[#1C7D5A]/10 transition-colors cursor-pointer" onClick={() => handleDownload(syllabus)} title="Download">
+                          <Download className="w-4 h-4 text-[#1C7D5A]" />
                         </button>
                       </div>
                     </td>
@@ -556,7 +556,7 @@ const ClassSyllabus = () => {
 
                 <button
                   onClick={handleAction}
-                  className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
+                  className=" px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer"
                 >
                   {modalType === "add" ? "Add Syllabus" : "Update Syllabus"}
                 </button>

@@ -183,7 +183,7 @@ const StudentAttendance = () => {
       <div className=" rounded-[8px]  mb-4 flex flex-col md:flex-row justify-between items-center gap-6 ">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
-            <Calendar className="w-8 h-8 text-[#00315e]" />
+            <Calendar className="w-8 h-8 text-[#1C7D5A]" />
             Student Attendance
           </h1>
           <p className="text-slate-500 font-bold mt-1">Manage daily attendance records</p>
@@ -226,7 +226,7 @@ const StudentAttendance = () => {
               <select
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
-                className="w-full bg-[#00315e24] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#00315e] outline-none transition-all"
+                className="w-full bg-[#1C7D5A18] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
               >
                 <option value="">Select class</option>
                 {classes.map(c => (
@@ -241,7 +241,7 @@ const StudentAttendance = () => {
               <select
                 value={selectedSectionId}
                 onChange={(e) => setSelectedSectionId(e.target.value)}
-                className="w-full bg-[#00315e24] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#00315e] outline-none transition-all"
+                className="w-full bg-[#1C7D5A18] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
               >
                 <option value="">Select Section</option>
                 {sections.filter(s => {
@@ -260,14 +260,14 @@ const StudentAttendance = () => {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full bg-[#00315e24] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#00315e] outline-none transition-all"
+                className="w-full bg-[#1C7D5A18] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
               />
             </div>
             <div className="space-y-2 sm:col-span-3 flex justify-end">
               <button
                 onClick={fetchData}
                 disabled={loading}
-                className="px-8 py-2.5 cursor-pointer bg-[#00315e] text-white font-black rounded-[8px] shadow-lg shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                className="px-8 py-2.5 cursor-pointer bg-[#1C7D5A] text-white font-black rounded-[8px] shadow-lg shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
               >
                 {loading ? "Loading..." : "Filter"}
               </button>
@@ -317,7 +317,7 @@ const StudentAttendance = () => {
                       placeholder="Search students..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-[#00315e24] border-none rounded-[8px] text-sm font-bold outline-none focus:ring-1 focus:ring-[#00315e] transition-all"
+                      className="w-full pl-10 pr-4 py-2 bg-[#1C7D5A18] border-none rounded-[8px] text-sm font-bold outline-none focus:ring-1 focus:ring-[#1C7D5A] transition-all"
                     />
                   </div>
 
@@ -331,7 +331,7 @@ const StudentAttendance = () => {
                     <button
                       onClick={handleSave}
                       disabled={loading}
-                      className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-[#00315e] text-white rounded-[8px] shadow-lg shadow-slate-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                      className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-[#1C7D5A] text-white rounded-[8px] shadow-lg shadow-slate-200 flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       <Save className="w-3.5 h-3.5" />
                       {loading ? "Saving..." : "Save Attendance"}
@@ -342,7 +342,7 @@ const StudentAttendance = () => {
                 {/* Table */}
                 <div className="overflow-x-auto rounded-t-[8px] bg-white">
                   <table className="w-full">
-                    <thead className="bg-[#00315e24]">
+                    <thead className="bg-[#1C7D5A18]">
                       <tr>
                         <th className="px-10 py-3.5 text-left text-[12px] font-black">Role</th>
                         <th className="px-10 py-3.5 text-left text-[12px] font-black">Student Name</th>
@@ -399,8 +399,8 @@ const StudentAttendance = () => {
       ) : (
         /* Biometric View */
         <div className="bg-white rounded-3xl border-2 border-slate-200 shadow-sm p-8 text-center space-y-8 min-h-[400px] flex flex-col items-center justify-center">
-          <div className="w-24 h-24 bg-[#00315e24] rounded-full flex items-center justify-center animate-pulse">
-            <Fingerprint className="w-12 h-12 text-[#00315e]" />
+          <div className="w-24 h-24 bg-[#1C7D5A18] rounded-full flex items-center justify-center animate-pulse">
+            <Fingerprint className="w-12 h-12 text-[#1C7D5A]" />
           </div>
 
           <div className="max-w-md space-y-4">
@@ -415,7 +415,7 @@ const StudentAttendance = () => {
               <Upload className="w-5 h-5 text-slate-500" />
               Upload CSV/Excel
             </button>
-            <button className="flex-1 px-8 py-4 bg-[#00315e] text-white font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all">
+            <button className="flex-1 px-8 py-4 bg-[#1C7D5A] text-white font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all">
               <RefreshCw className="w-5 h-5" />
               Sync Now
             </button>

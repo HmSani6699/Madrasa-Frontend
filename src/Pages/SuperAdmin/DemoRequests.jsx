@@ -1,0 +1,526 @@
+import { useState, useEffect } from "react";
+import {
+  Search,
+  Filter,
+  MessageCircle,
+  Phone,
+  Building2,
+  User,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Trash2,
+  Edit,
+  ExternalLink,
+  MapPin,
+  RefreshCw,
+  Eye,
+  X,
+  FileText
+} from "lucide-react";
+import adminService from "../../services/adminService";
+import { toast } from "react-hot-toast";
+
+const STATUS_CONFIG = {
+  pending: {
+    label: "অপেক্ষমাণ",
+    badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+    dotClass: "bg-amber-500"
+  },
+  contacted: {
+    label: "যোগাযোগ সম্পন্ন",
+    badgeClass: "bg-blue-50 text-blue-700 border-blue-200",
+    dotClass: "bg-blue-500"
+  },
+  portal_created: {
+    label: "পোর্টাল প্রদান করা হয়েছে",
+    badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    dotClass: "bg-emerald-600"
+  },
+  rejected: {
+    label: "বাতিল",
+    badgeClass: "bg-rose-50 text-rose-700 border-rose-200",
+    dotClass: "bg-rose-500"
+  }
+};
+
+const DemoRequests = () => {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  // Detail Modal State
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [editingNotes, setEditingNotes] = useState("");
+  const [editingStatus, setEditingStatus] = useState("pending");
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    fetchRequests();
+  }, [statusFilter]);
+
+  const fetchRequests = async () => {
+    try {
+      setLoading(true);
+      const res = await adminService.getDemoRequests({
+        status: statusFilter,
+        search: searchTerm
+      });
+      if (res.success) {
+        setRequests(res.data || []);
+      }
+    } catch (err) {
+      console.error("Failed to load demo requests:", err);
+      toast.error("ডেমো আবেদন তালিকা লোড করতে সমস্যা হয়েছে");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    fetchRequests();
+  };
+
+  const handleOpenDetail = (item) => {
+    setSelectedRequest(item);
+    setEditingNotes(item.adminNotes || "");
+    setEditingStatus(item.status || "pending");
+    setIsDetailOpen(true);
+  };
+
+  const handleStatusUpdate = async (id, newStatus, newNotes) => {
+    try {
+      setIsUpdating(true);
+      const res = await adminService.updateDemoRequestStatus(id, {
+        status: newStatus,
+        adminNotes: newNotes
+      });
+      if (res.success) {
+        toast.success("স্ট্যাটাস সফলভাবে আপডেট হয়েছে");
+        setRequests((prev) =>
+          prev.map((r) =>
+            r._id === id
+              ? { ...r, status: newStatus, adminNotes: newNotes, updatedAt: new Date() }
+              : r
+          )
+        );
+        if (selectedRequest && selectedRequest._id === id) {
+          setSelectedRequest((prev) => ({
+            ...prev,
+            status: newStatus,
+            adminNotes: newNotes
+          }));
+        }
+      }
+    } catch (err) {
+      console.error("Update failed:", err);
+      toast.error("আপডেট করতে ব্যর্থ হয়েছে");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("আপনি কি নিশ্চিতভাবে এই আবেদনটি মুছে ফেলতে চান?")) return;
+
+    try {
+      const res = await adminService.deleteDemoRequest(id);
+      if (res.success) {
+        toast.success("আবেদন মুছে ফেলা হয়েছে");
+        setRequests((prev) => prev.filter((r) => r._id !== id));
+        if (selectedRequest && selectedRequest._id === id) {
+          setIsDetailOpen(false);
+        }
+      }
+    } catch (err) {
+      console.error("Delete failed:", err);
+      toast.error("মুছে ফেলতে ব্যর্থ হয়েছে");
+    }
+  };
+
+  const generateWhatsAppLink = (item) => {
+    let phone = (item.whatsapp || "").replace(/[\s\-+]/g, "");
+    if (phone.startsWith("0")) {
+      phone = "88" + phone;
+    }
+    const message = encodeURIComponent(
+      `আসসালামু আলাইকুম ${item.applicantName || ""} সাহেব। মাদ্রাসা সেবা (Madrasa Sheba) সফটওয়্যার থেকে যোগাযোগ করছি।\nআপনার মাদ্রাসা "${item.madrasaName}"-এর জন্য ফ্রি ডেমো আবেদনের প্রেক্ষিতে আমরা আপনার সাথে কানেক্ট হতে পেরে আনন্দিত। ডেমো পোর্টাল সেটআপ ও বিস্তারিত জানার জন্য আপনি কি এখন ফ্রি আছেন?`
+    );
+    return `https://wa.me/${phone}?text=${message}`;
+  };
+
+  return (
+    <div className="space-y-6 font-bangla animate-fade-in pb-12">
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <span>ফ্রি ডেমো আবেদনসমূহ</span>
+            <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full">
+              {requests.length} টি আবেদন
+            </span>
+          </h1>
+          <p className="text-gray-500 text-sm mt-0.5">
+            নতুন ইউজারদের সাথে হোয়াটসঅ্যাপে যোগাযোগ করুন এবং পোর্টাল অ্যাক্সেস প্রদান করুন।
+          </p>
+        </div>
+
+        <button
+          onClick={fetchRequests}
+          className="inline-flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-xs cursor-pointer active:scale-95 self-start md:self-auto"
+        >
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-emerald-600" : ""}`} />
+          <span>রিফ্রেশ</span>
+        </button>
+      </div>
+
+      {/* Filter and Search Bar */}
+      <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        {/* Status Filter Buttons */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+          <button
+            onClick={() => setStatusFilter("all")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              statusFilter === "all"
+                ? "bg-[#1C7D5A] text-white shadow-xs"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            সবগুলো ({requests.length})
+          </button>
+          <button
+            onClick={() => setStatusFilter("pending")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              statusFilter === "pending"
+                ? "bg-amber-600 text-white shadow-xs"
+                : "bg-amber-50 text-amber-700 hover:bg-amber-100"
+            }`}
+          >
+            অপেক্ষমাণ
+          </button>
+          <button
+            onClick={() => setStatusFilter("contacted")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              statusFilter === "contacted"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+            }`}
+          >
+            যোগাযোগ সম্পন্ন
+          </button>
+          <button
+            onClick={() => setStatusFilter("portal_created")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              statusFilter === "portal_created"
+                ? "bg-emerald-700 text-white shadow-xs"
+                : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
+            }`}
+          >
+            পোর্টাল প্রদান করা হয়েছে
+          </button>
+        </div>
+
+        {/* Search Input */}
+        <form onSubmit={handleSearchSubmit} className="relative min-w-[260px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="মাদ্রাসা, নাম বা ফোন দিয়ে খুঁজুন..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 bg-gray-50/50 hover:bg-white"
+          />
+        </form>
+      </div>
+
+      {/* Requests Table */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
+        {loading ? (
+          <div className="p-12 text-center text-gray-400">
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-emerald-600" />
+            <p className="text-sm">ডেমো আবেদন লোড হচ্ছে...</p>
+          </div>
+        ) : requests.length === 0 ? (
+          <div className="p-16 text-center text-gray-500">
+            <Building2 className="w-12 h-12 stroke-1 mx-auto mb-3 text-gray-300" />
+            <p className="text-base font-semibold text-gray-700">কোনো আবেদন পাওয়া যায়নি</p>
+            <p className="text-xs text-gray-400 mt-1">
+              ইউজাররা ফ্রি ডেমোর ফর্ম পূরণ করলে তা এখানে স্বয়ংক্রিয়ভাবে প্রদর্শিত হবে।
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-600">
+              <thead className="bg-gray-50/80 border-b border-gray-200 text-gray-700 font-bold text-xs uppercase tracking-wider">
+                <tr>
+                  <th className="py-3.5 px-4">মাদ্রাসার তথ্য</th>
+                  <th className="py-3.5 px-4">আবেদনকারী</th>
+                  <th className="py-3.5 px-4">হোয়াটসঅ্যাপ যোগাযোগ</th>
+                  <th className="py-3.5 px-4">অবস্থান ও সাইজ</th>
+                  <th className="py-3.5 px-4">স্ট্যাটাস</th>
+                  <th className="py-3.5 px-4">আবেদনের তারিখ</th>
+                  <th className="py-3.5 px-4 text-right">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {requests.map((item) => {
+                  const cfg = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
+                  return (
+                    <tr
+                      key={item._id}
+                      className="hover:bg-emerald-50/20 transition-colors group cursor-pointer"
+                      onClick={() => handleOpenDetail(item)}
+                    >
+                      {/* Madrasa info */}
+                      <td className="py-3.5 px-4">
+                        <div className="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">
+                          {item.madrasaName}
+                        </div>
+                        <div className="text-xs text-gray-500 flex items-center gap-1.5 mt-0.5">
+                          <span className="inline-block px-2 py-0.5 bg-gray-100 rounded text-[11px] font-medium text-gray-600">
+                            {item.madrasaType}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Applicant info */}
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-gray-800">{item.applicantName}</div>
+                        <div className="text-xs text-gray-500">{item.designation}</div>
+                      </td>
+
+                      {/* WhatsApp contact */}
+                      <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={generateWhatsAppLink(item)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow-xs transition-all active:scale-95"
+                            title="সরাসরি হোয়াটসঅ্যাপে চ্যাট করুন"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                            <span>{item.whatsapp}</span>
+                          </a>
+                        </div>
+                      </td>
+
+                      {/* Location & size */}
+                      <td className="py-3.5 px-4">
+                        <div className="text-xs font-semibold text-gray-700 flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                          <span>{item.district}</span>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5">{item.studentCount}</div>
+                      </td>
+
+                      {/* Status */}
+                      <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
+                        <span
+                          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${cfg.badgeClass}`}
+                        >
+                          <span className={`w-1.5 h-1.5 rounded-full ${cfg.dotClass}`} />
+                          <span>{cfg.label}</span>
+                        </span>
+                      </td>
+
+                      {/* Date */}
+                      <td className="py-3.5 px-4 text-xs text-gray-500 whitespace-nowrap">
+                        {item.createdAt
+                          ? new Date(item.createdAt).toLocaleDateString("bn-BD", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric"
+                            })
+                          : "-"}
+                      </td>
+
+                      {/* Actions */}
+                      <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => handleOpenDetail(item)}
+                            className="p-1.5 hover:bg-gray-100 text-gray-600 rounded-lg transition-colors cursor-pointer"
+                            title="বিস্তারিত দেখুন ও নোট যোগ করুন"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item._id)}
+                            className="p-1.5 hover:bg-rose-50 text-rose-500 rounded-lg transition-colors cursor-pointer"
+                            title="আবেদন মুছে ফেলুন"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Detail & Action Modal */}
+      {isDetailOpen && selectedRequest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
+            {/* Close Button */}
+            <button
+              onClick={() => setIsDetailOpen(false)}
+              className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Title */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-[#1C7D5A] flex items-center justify-center shrink-0">
+                <Building2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">{selectedRequest.madrasaName}</h3>
+                <p className="text-xs text-gray-500">
+                  আবেদনের আইডি: <span className="font-mono">{selectedRequest._id}</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Direct WhatsApp Callout */}
+            <div className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-between gap-3">
+              <div>
+                <div className="text-xs font-semibold text-emerald-800">হোয়াটসঅ্যাপ যোগাযোগ:</div>
+                <div className="text-base font-bold text-emerald-950 font-mono mt-0.5">
+                  {selectedRequest.whatsapp}
+                </div>
+              </div>
+              <a
+                href={generateWhatsAppLink(selectedRequest)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-xs transition-all active:scale-95 shrink-0"
+              >
+                <MessageCircle className="w-4 h-4 fill-white" />
+                <span>হোয়াটসঅ্যাপে চ্যাট করুন</span>
+              </a>
+            </div>
+
+            {/* Details Grid */}
+            <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-2xl text-xs sm:text-sm mb-6 border border-gray-100">
+              <div>
+                <span className="text-gray-400 block text-xs">আবেদনকারী:</span>
+                <span className="font-semibold text-gray-800">
+                  {selectedRequest.applicantName} ({selectedRequest.designation})
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-400 block text-xs">মাদ্রাসার ধরন:</span>
+                <span className="font-semibold text-gray-800">{selectedRequest.madrasaType}</span>
+              </div>
+              <div>
+                <span className="text-gray-400 block text-xs">ছাত্র-ছাত্রী সংখ্যা:</span>
+                <span className="font-semibold text-gray-800">{selectedRequest.studentCount}</span>
+              </div>
+              <div>
+                <span className="text-gray-400 block text-xs">জেলা ও ঠিকানা:</span>
+                <span className="font-semibold text-gray-800">
+                  {selectedRequest.district} {selectedRequest.address ? `, ${selectedRequest.address}` : ""}
+                </span>
+              </div>
+              {selectedRequest.phone && (
+                <div>
+                  <span className="text-gray-400 block text-xs">বিকল্প ফোন:</span>
+                  <span className="font-mono font-medium text-gray-800">{selectedRequest.phone}</span>
+                </div>
+              )}
+              <div>
+                <span className="text-gray-400 block text-xs">আবেদনের সময়:</span>
+                <span className="text-gray-700">
+                  {new Date(selectedRequest.createdAt).toLocaleString("bn-BD")}
+                </span>
+              </div>
+            </div>
+
+            {/* User Note */}
+            {selectedRequest.notes && (
+              <div className="mb-6 p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-900">
+                <span className="font-bold block mb-1">গ্রাহকের বিশেষ বার্তা:</span>
+                <p className="italic">{selectedRequest.notes}</p>
+              </div>
+            )}
+
+            {/* Status Update Form */}
+            <div className="space-y-4 pt-4 border-t border-gray-100">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase">
+                  আবেদন স্ট্যাটাস পরিবর্তন করুন
+                </label>
+                <select
+                  value={editingStatus}
+                  onChange={(e) => setEditingStatus(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 bg-white"
+                >
+                  <option value="pending">অপেক্ষমাণ (Pending)</option>
+                  <option value="contacted">যোগাযোগ সম্পন্ন (Contacted)</option>
+                  <option value="portal_created">পোর্টাল প্রদান করা হয়েছে (Portal Created)</option>
+                  <option value="rejected">বাতিল (Rejected)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase">
+                  অ্যাডমিন নোট / মন্তব্য (টিমের অভ্যন্তরীণ ব্যবহারের জন্য)
+                </label>
+                <textarea
+                  rows="3"
+                  placeholder="উদাঃ হোয়াটসঅ্যাপে কথা হয়েছে, পোর্টাল ইউজারনেম ও পাসওয়ার্ড দেওয়া হয়েছে..."
+                  value={editingNotes}
+                  onChange={(e) => setEditingNotes(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 bg-white resize-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-between gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => handleDelete(selectedRequest._id)}
+                  className="text-rose-600 hover:bg-rose-50 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>আবেদন মুছুন</span>
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsDetailOpen(false)}
+                    className="border border-gray-200 hover:bg-gray-50 text-gray-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer"
+                  >
+                    বন্ধ করুন
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isUpdating}
+                    onClick={() =>
+                      handleStatusUpdate(selectedRequest._id, editingStatus, editingNotes)
+                    }
+                    className="bg-[#1C7D5A] hover:bg-[#0a6646] active:scale-95 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {isUpdating ? "সংরক্ষণ হচ্ছে..." : "আপডেট সংরক্ষণ করুন"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default DemoRequests;

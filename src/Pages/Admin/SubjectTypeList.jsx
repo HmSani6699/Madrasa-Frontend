@@ -147,7 +147,7 @@ const SubjectTypeList = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <BookOpen className="w-8 h-8 text-[#00315e]" />
+            <BookOpen className="w-8 h-8 text-[#1C7D5A]" />
             Subject Types
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
@@ -196,7 +196,7 @@ const SubjectTypeList = () => {
 
                   <button
                     onClick={() => setIsFilterModalOpen(false)}
-                    className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
+                    className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer"
                   >
                     Apply
                   </button>
@@ -206,7 +206,7 @@ const SubjectTypeList = () => {
           </div>
           <button
             onClick={openAddModal}
-            className="w-full md:w-auto px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
+            className="w-full md:w-auto px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             Add Subject Type
@@ -218,7 +218,7 @@ const SubjectTypeList = () => {
       <div className="bg-white rounded-[8px]  shadow-xl shadow-slate-100/50 overflow-hidden relative">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading Subject Types...</p>
           </div>
         ) : subjects.length === 0 ? (
@@ -231,7 +231,7 @@ const SubjectTypeList = () => {
         ) : (
           <div className="overflow-x-auto  rounded-[8px]">
             <table className="w-full">
-              <thead className="bg-[#00315e24]">
+              <thead className="bg-[#1C7D5A18]">
                 <tr>
                   <th className="px-10 py-3.5 text-left text-[12px] font-black">
                     Subject Name
@@ -280,7 +280,7 @@ const SubjectTypeList = () => {
                     <td>
                       <div className="flex items-center gap-3 justify-center">
                         <button className="cursor-pointer" onClick={() => openEditModal(sub)}>
-                          <SquarePen className="w-4 h-4  text-[#00315e]" />
+                          <SquarePen className="w-4 h-4  text-[#1C7D5A]" />
                         </button>
                         <button className="cursor-pointer" onClick={() => openDeleteModal(sub)}>
                           <Trash2 className="w-4 h-4 text-red-500" />
@@ -342,7 +342,7 @@ const SubjectTypeList = () => {
 
                 <button
                   onClick={handleAction}
-                  className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
+                  className=" px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer"
                 >
                   {modalType === "add" ? "Add Subject Type" : "Update Subject Type"}
                 </button>

@@ -61,7 +61,7 @@ const StudentProfile = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-10 h-10 animate-spin text-[#00bd7f]" />
+        <Loader2 className="w-10 h-10 animate-spin text-[#1C7D5A]" />
       </div>
     );
   }
@@ -71,7 +71,7 @@ const StudentProfile = () => {
       <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
         <AlertCircle className="w-12 h-12 text-rose-500" />
         <h2 className="text-xl font-bold text-slate-800">Student Profile Not Found</h2>
-        <Link to="/admin/student/list" className="text-[#00bd7f] font-bold hover:underline">Back to Student List</Link>
+        <Link to="/admin/student/list" className="text-[#1C7D5A] font-bold hover:underline">Back to Student List</Link>
       </div>
     );
   }
@@ -109,7 +109,7 @@ const StudentProfile = () => {
           </button> */}
           <button
             onClick={() => navigate(`/admin/student/list`)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#00315e] text-white font-bold rounded-[8px] shadow-lg  hover:scale-[1.02] transition-all cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#1C7D5A] text-white font-bold rounded-[8px] shadow-lg  hover:scale-[1.02] transition-all cursor-pointer"
           >
             <User className="w-4 h-4" />
             Student List
@@ -136,7 +136,7 @@ const StudentProfile = () => {
                 </span>
               </div>
               <p className="text-slate-500 font-bold flex items-center justify-center lg:justify-start gap-2">
-                <GraduationCap className="w-4 h-4 text-[#00bd7f]" />
+                <GraduationCap className="w-4 h-4 text-[#1C7D5A]" />
                 {student.class} • {student.section} • Roll No: {student.rollNo}
               </p>
             </div>
@@ -172,7 +172,7 @@ const StudentProfile = () => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`cursor-pointer flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all ${activeTab === tab.id
-              ? 'bg-[#00315e] text-white shadow-lg'
+              ? 'bg-[#1C7D5A] text-white shadow-lg'
               : 'text-slate-600 hover:bg-white/50'
               }`}
           >
@@ -214,7 +214,7 @@ const StudentProfile = () => {
               <div className="bg-white p-8 rounded-[2rem] border-2 border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between mb-8">
                   <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-[#00bd7f]" />
+                    <TrendingUp className="w-5 h-5 text-[#1C7D5A]" />
                     Marks Distribution
                   </h3>
                 </div>
@@ -223,11 +223,11 @@ const StudentProfile = () => {
                     <div key={i} className="space-y-2">
                       <div className="flex justify-between text-sm font-bold">
                         <span className="text-slate-700">{m.subject}</span>
-                        <span className="text-[#00bd7f]">{m.marks}/100</span>
+                        <span className="text-[#1C7D5A]">{m.marks}/100</span>
                       </div>
                       <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-emerald-400 to-[#00bd7f] rounded-full"
+                          className="h-full bg-gradient-to-r from-emerald-400 to-[#1C7D5A] rounded-full"
                           style={{ width: `${m.marks}%` }}
                         />
                       </div>
@@ -271,20 +271,20 @@ const StudentProfile = () => {
                 <div className="space-y-3">
                   <a href={`tel:${student.phone}`} className="flex items-center gap-3 p-3 rounded-2xl bg-[#e6f4ef] hover:bg-[#d9ede6] transition-all group">
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                      <Phone className="w-4 h-4 text-[#00bd7f]" />
+                      <Phone className="w-4 h-4 text-[#1C7D5A]" />
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-slate-400 uppercase">Call Student</p>
-                      <p className="text-sm font-black text-slate-700 group-hover:text-[#00bd7f]">{student.phone}</p>
+                      <p className="text-sm font-black text-slate-700 group-hover:text-[#1C7D5A]">{student.phone}</p>
                     </div>
                   </a>
                   <a href={`mailto:${student.email}`} className="flex items-center gap-3 p-3 rounded-2xl bg-[#e6f4ef] hover:bg-[#d9ede6] transition-all group">
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                      <Mail className="w-4 h-4 text-[#00bd7f]" />
+                      <Mail className="w-4 h-4 text-[#1C7D5A]" />
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-slate-400 uppercase">Send Email</p>
-                      <p className="text-sm font-black text-slate-700 group-hover:text-[#00bd7f] truncate w-32">{student.email}</p>
+                      <p className="text-sm font-black text-slate-700 group-hover:text-[#1C7D5A] truncate w-32">{student.email}</p>
                     </div>
                   </a>
                 </div>
@@ -298,7 +298,7 @@ const StudentProfile = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white p-8 rounded-[15px] shadow-sm space-y-6">
               <h3 className="text-lg font-black text-slate-800 flex items-center gap-2 border-b-2 border-slate-100 pb-4">
-                <User className="w-5 h-5 text-[#00bd7f]" />
+                <User className="w-5 h-5 text-[#1C7D5A]" />
                 Personal Details
               </h3>
               <div className="grid grid-cols-2 gap-6">
@@ -312,7 +312,7 @@ const StudentProfile = () => {
 
             <div className="bg-white p-8 rounded-[15px] shadow-sm space-y-6">
               <h3 className="text-lg font-black text-slate-800 flex items-center gap-2 border-b-2 border-slate-100 pb-4">
-                <Users className="w-5 h-5 text-[#00bd7f]" />
+                <Users className="w-5 h-5 text-[#1C7D5A]" />
                 Guardian Information
               </h3>
               <div className="space-y-6">
@@ -398,7 +398,7 @@ const StudentProfile = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-5">
                             <FileText className="text-[14px]" />
-                            <DownloadIcon className="text-[14px] text-[#00bd7f]" />
+                            <DownloadIcon className="text-[14px] text-[#1C7D5A]" />
                           </div>
                         </td>
                       </tr>
@@ -416,7 +416,7 @@ const StudentProfile = () => {
             <div className="bg-white p-8 rounded-[15px] shadow-sm space-y-6">
               <div className="flex items-center justify-between border-b-2 border-slate-100 pb-4">
                 <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-[#00bd7f]" />
+                  <BookOpen className="w-5 h-5 text-[#1C7D5A]" />
                   Exam Reports
                 </h3>
                 <button className="p-2 border border-slate-100 rounded-xl hover:bg-slate-50 transition-all text-slate-500"><Download className="w-4 h-4" /></button>
@@ -440,7 +440,7 @@ const StudentProfile = () => {
                         <span className="text-sm font-bold text-slate-700">{m.subject}</span>
                         <div className="flex gap-4 items-center">
                           <span className="text-xs font-black text-slate-400">{m.marks}/100</span>
-                          <span className="w-8 text-center text-sm font-black text-[#00bd7f]">{m.grade}</span>
+                          <span className="w-8 text-center text-sm font-black text-[#1C7D5A]">{m.grade}</span>
                         </div>
                       </div>
                     ))}
@@ -451,14 +451,14 @@ const StudentProfile = () => {
 
             <div className="bg-white p-8 rounded-[15px] shadow-sm space-y-6 text-center">
               <h3 className="text-lg font-black text-slate-800 flex items-center gap-2 border-b-2 border-slate-100 pb-4 text-left">
-                <Clock className="w-5 h-5 text-[#00bd7f]" />
+                <Clock className="w-5 h-5 text-[#1C7D5A]" />
                 Attendance Pulse
               </h3>
               <div className="py-10 flex flex-col items-center justify-center">
                 <div className="relative w-48 h-48 mb-6">
                   <svg className="w-full h-full transform -rotate-90">
                     <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-slate-100" />
-                    <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" strokeDasharray={2 * Math.PI * 80} strokeDashoffset={2 * Math.PI * 80 * (1 - student.academic.attendance / 100)} className="text-[#00bd7f]" />
+                    <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" strokeDasharray={2 * Math.PI * 80} strokeDashoffset={2 * Math.PI * 80 * (1 - student.academic.attendance / 100)} className="text-[#1C7D5A]" />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <p className="text-4xl font-black text-slate-800">{student.academic.attendance}%</p>
@@ -484,9 +484,9 @@ const StudentProfile = () => {
               { name: "Guardian NID", size: "850 KB", date: "2025-01-10" },
               { name: "Admission Form", size: "3.1 MB", date: "2025-01-11" }
             ].map((doc, i) => (
-              <div key={i} className="bg-white p-4 rounded-[8px] shadow-sm hover:border-[#00bd7f] transition-all group cursor-pointer">
+              <div key={i} className="bg-white p-4 rounded-[8px] shadow-sm hover:border-[#1C7D5A] transition-all group cursor-pointer">
                 <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#e6f4ef] transition-colors">
-                  <FileText className="w-6 h-6 text-slate-400 group-hover:text-[#00bd7f]" />
+                  <FileText className="w-6 h-6 text-slate-400 group-hover:text-[#1C7D5A]" />
                 </div>
                 <h4 className="text-sm font-black text-slate-800 mb-1">{doc.name}</h4>
                 <p className="text-xs font-bold text-slate-500 flex justify-between">
@@ -562,7 +562,7 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
           {/* Section: Personal Info */}
           <div className="space-y-6">
             <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2 border-b-2 border-slate-50 pb-4">
-              <User className="w-4 h-4 text-[#00bd7f]" /> Personal Information
+              <User className="w-4 h-4 text-[#1C7D5A]" /> Personal Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="space-y-2">
@@ -570,7 +570,7 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
                 <input
                   value={formData.firstName}
                   onChange={e => setFormData({ ...formData, firstName: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -578,7 +578,7 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
                 <input
                   value={formData.lastName}
                   onChange={e => setFormData({ ...formData, lastName: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -586,7 +586,7 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
                 <input
                   value={formData.bloodGroup}
                   onChange={e => setFormData({ ...formData, bloodGroup: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -594,7 +594,7 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
                 <input
                   value={formData.phone}
                   onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                 />
               </div>
               <div className="space-y-2 md:col-span-2">
@@ -602,7 +602,7 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
                 <input
                   value={formData.address}
                   onChange={e => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                 />
               </div>
             </div>
@@ -611,7 +611,7 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
           {/* Section: Guardian Info */}
           <div className="space-y-6">
             <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2 border-b-2 border-slate-50 pb-4">
-              <Users className="w-4 h-4 text-[#00bd7f]" /> Guardian Information
+              <Users className="w-4 h-4 text-[#1C7D5A]" /> Guardian Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Father's Info */}
@@ -622,13 +622,13 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
                     value={formData.guardian.father.name}
                     onChange={e => setFormData({ ...formData, guardian: { ...formData.guardian, father: { ...formData.guardian.father, name: e.target.value } } })}
                     placeholder="Name"
-                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                   />
                   <input
                     value={formData.guardian.father.phone}
                     onChange={e => setFormData({ ...formData, guardian: { ...formData.guardian, father: { ...formData.guardian.father, phone: e.target.value } } })}
                     placeholder="Phone"
-                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                   />
                 </div>
               </div>
@@ -640,13 +640,13 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
                     value={formData.guardian.mother.name}
                     onChange={e => setFormData({ ...formData, guardian: { ...formData.guardian, mother: { ...formData.guardian.mother, name: e.target.value } } })}
                     placeholder="Name"
-                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                   />
                   <input
                     value={formData.guardian.mother.phone}
                     onChange={e => setFormData({ ...formData, guardian: { ...formData.guardian, mother: { ...formData.guardian.mother, phone: e.target.value } } })}
                     placeholder="Phone"
-                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#00bd7f] transition-all font-bold text-sm"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm"
                   />
                 </div>
               </div>
@@ -656,7 +656,7 @@ const EditProfileModal = ({ student, onClose, onSave }) => {
 
         <div className="sticky bottom-0 bg-white border-t-2 border-slate-100 p-8 flex justify-end gap-3 z-10">
           <button onClick={onClose} className="px-8 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 rounded-2xl transition-all">Cancel</button>
-          <button onClick={onSave} className="px-10 py-3 bg-[#00bd7f] text-white text-sm font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:scale-[1.02] transition-all">Save Profile Changes</button>
+          <button onClick={onSave} className="px-10 py-3 bg-[#1C7D5A] text-white text-sm font-black rounded-2xl shadow-xl shadow-emerald-500/20 hover:scale-[1.02] transition-all">Save Profile Changes</button>
         </div>
       </div>
     </div>

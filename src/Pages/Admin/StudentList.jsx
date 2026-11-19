@@ -195,7 +195,7 @@ const StudentList = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#00315e]" />
+            <Users className="w-8 h-8 text-[#1C7D5A]" />
             Student Management
           </h1>
 
@@ -262,7 +262,7 @@ const StudentList = () => {
 
                   <button
                     onClick={applyFilters}
-                    className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
+                    className=" px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer"
                   >
                     Apply
                   </button>
@@ -275,7 +275,7 @@ const StudentList = () => {
             <Link to="/admin/admission/create" className="w-full sm:w-auto">
               <button
 
-                className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
+                className="w-full px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Add Student
@@ -322,7 +322,7 @@ const StudentList = () => {
             key={idx}
             className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden"
           >
-            <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
 
             <div className="z-[10]">
               <p className="text-2xl font-black text-slate-800 mb-1">{stat.value}</p>
@@ -348,7 +348,7 @@ const StudentList = () => {
       <div className="bg-white rounded-[10px]  shadow-xl shadow-slate-100/50 overflow-hidden relative mt-8">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading students...</p>
           </div>
         ) : filteredStudents.length === 0 ? (
@@ -364,7 +364,7 @@ const StudentList = () => {
 
 
               <table className="w-full">
-                <thead className="bg-[#00315e24]">
+                <thead className="bg-[#1C7D5A18]">
                   <tr className="whitespace-nowrap">
                     <th className="px-10 py-3.5 text-left text-[12px] font-black">
                       Student ID
@@ -424,7 +424,7 @@ const StudentList = () => {
                           <p className="text-sm font-bold text-slate-700">
                             {student.classInfo?.name || "N/A"} ({student.sectionInfo?.name || "N/A"})
                           </p>
-                          <p className="text-xs font-black text-blue-[#00315e]">
+                          <p className="text-xs font-black text-blue-[#1C7D5A]">
                             Roll: {student.roll_number || student.rollNo}
                           </p>
                         </div>
@@ -465,10 +465,10 @@ const StudentList = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-4">
                           <button className="cursor-pointer" onClick={() => handleAction("View Profile", student)}>
-                            <Eye className="w-5 h-5 text-[#00315e]" />
+                            <Eye className="w-5 h-5 text-[#1C7D5A]" />
                           </button>
                           <button className="cursor-pointer" onClick={() => handleAction("Edit Info", student)}>
-                            <SquarePen className="w-4 h-4 text-[#00315e]" />
+                            <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                           </button>
                           <button className="cursor-pointer" onClick={() => handleAction("Delete Record", student)}>
                             <Trash2 className="w-4 h-4 text-red-500" />
@@ -509,7 +509,7 @@ const StudentList = () => {
                       key={i + 1}
                       onClick={() => setCurrentPage(i + 1)}
                       className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
-                        ? "bg-[#00315e] border-[#00315e] text-white cursor-pointer"
+                        ? "bg-[#1C7D5A] border-[#1C7D5A] text-white cursor-pointer"
                         : "bg-white border-slate-200 text-slate-600 hover:border-blue-500 hover:text-blue-600 cursor-pointer"
                         }`}
                     >
@@ -795,7 +795,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                        <Home className="w-4 h-4 text-[#00315e]" />
+                        <Home className="w-4 h-4 text-[#1C7D5A]" />
                       </div>
                       <span className="font-bold text-sm text-slate-700">{type?.name}</span>
                     </div>
@@ -814,7 +814,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                           handleFieldChange("fees", currentFees);
                         }}
                       />
-                      <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#00315e]"></div>
+                      <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#1C7D5A]"></div>
                     </label>
                   </div>
 
@@ -830,7 +830,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
                           handleFieldChange("fees", currentFees);
                         }}
                         placeholder="0.00"
-                        className="w-full pl-7 pr-3 py-2 bg-[#f8fafc] border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-[#00315e]"
+                        className="w-full pl-7 pr-3 py-2 bg-[#f8fafc] border border-slate-200 rounded-lg text-sm font-bold text-slate-700 outline-none focus:border-[#1C7D5A]"
                       />
                     </div>
                   )}
@@ -864,7 +864,7 @@ const EditModal = ({ student, classes, sections: allSections, feeTypes, onClose,
             <button
               onClick={handleUpdate}
               disabled={loading}
-              className="px-8 py-2.5 bg-[#00315e] text-white text-sm font-black rounded-xl shadow-lg shadow-blue-100 disabled:opacity-50 hover:bg-[#009b68] transition-all"
+              className="px-8 py-2.5 bg-[#1C7D5A] text-white text-sm font-black rounded-xl shadow-lg shadow-blue-100 disabled:opacity-50 hover:bg-[#123628] transition-all"
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>
@@ -1005,7 +1005,7 @@ const IDCardModal = ({ student, onClose }) => (
         <div className="w-full mt-6">
           <button
             onClick={() => alert("Downloading ID Card...")}
-            className="w-full flex items-center justify-center gap-2 py-3 bg-[#00315e] text-white font-black rounded-xl shadow-lg shadow-blue-100 hover:scale-[1.02] transition-all"
+            className="w-full flex items-center justify-center gap-2 py-3 bg-[#1C7D5A] text-white font-black rounded-xl shadow-lg shadow-blue-100 hover:scale-[1.02] transition-all"
           >
             <Download className="w-4 h-4" />
             Download PDF

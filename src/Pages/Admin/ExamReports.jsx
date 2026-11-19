@@ -44,17 +44,17 @@ const ExamReports = () => {
                  <div className="space-y-3">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Select Session</label>
                     <div className="relative group">
-                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none cursor-pointer group-hover:border-slate-300 transition-all shadow-sm">
+                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#1C7D5A] outline-none appearance-none cursor-pointer group-hover:border-slate-300 transition-all shadow-sm">
                           <option>Academic Session 2026</option>
                           <option>Academic Session 2025</option>
                        </select>
-                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none group-focus-within:text-[#00bd7f]" />
+                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none group-focus-within:text-[#1C7D5A]" />
                     </div>
                  </div>
                  <div className="space-y-3">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Department</label>
                     <div className="relative group">
-                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none cursor-pointer shadow-sm">
+                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#1C7D5A] outline-none appearance-none cursor-pointer shadow-sm">
                           <option>Hifz Department</option>
                           <option>Mishkat Department</option>
                        </select>
@@ -64,7 +64,7 @@ const ExamReports = () => {
                  <div className="space-y-3">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Section</label>
                     <div className="relative group">
-                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none cursor-pointer shadow-sm">
+                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#1C7D5A] outline-none appearance-none cursor-pointer shadow-sm">
                           <option>Section A</option>
                           <option>Section B</option>
                        </select>
@@ -102,7 +102,7 @@ const ExamReports = () => {
                          <th className="px-4 py-6 text-center border-r border-slate-100">Fiqh</th>
                          <th className="px-4 py-6 text-center border-r border-slate-100">Arabic</th>
                          <th className="px-4 py-6 text-center border-r border-slate-100">English</th>
-                         <th className="px-10 py-6 text-center bg-[#f0f9f6] text-[#00bd7f]">Grand Total</th>
+                         <th className="px-10 py-6 text-center bg-[#f0f9f6] text-[#1C7D5A]">Grand Total</th>
                          <th className="px-6 py-6 text-center">GPA</th>
                          <th className="px-6 py-6 text-center">Result</th>
                          <th className="px-10 py-6 text-right">Actions</th>
@@ -113,7 +113,7 @@ const ExamReports = () => {
                          <tr key={i} className="group hover:bg-slate-50/30 transition-all">
                             <td className="px-8 py-6 border-r border-slate-50">
                                <div className="flex items-center gap-4">
-                                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-black text-slate-400 group-hover:bg-[#e6f4ef] group-hover:text-[#00bd7f] transition-all text-xs">#{i}</div>
+                                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-black text-slate-400 group-hover:bg-[#e6f4ef] group-hover:text-[#1C7D5A] transition-all text-xs">#{i}</div>
                                   <div>
                                      <p className="text-sm font-black text-slate-800 tracking-tight">Abdullah Al-Mamun</p>
                                      <p className="text-[10px] font-bold text-slate-400 tracking-widest">ROLL: 20260{i}</p>
@@ -126,18 +126,18 @@ const ExamReports = () => {
                                </td>
                             ))}
                             <td className="px-10 py-6 text-center bg-[#f0f9f6]/30 border-r border-slate-50">
-                               <p className="text-sm font-black text-[#00bd7f]">{450 - (i * 5)}/500</p>
+                               <p className="text-sm font-black text-[#1C7D5A]">{450 - (i * 5)}/500</p>
                             </td>
                             <td className="px-6 py-6 text-center border-r border-slate-50">
                                <p className="text-sm font-black text-slate-800">{(5.0 - (i * 0.1)).toFixed(2)}</p>
                             </td>
                             <td className="px-6 py-6 text-center border-r border-slate-50">
-                               <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${i > 6 ? 'bg-rose-50 text-rose-500 border border-rose-100' : 'bg-emerald-50 text-[#00bd7f] border border-emerald-100'}`}>
+                               <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${i > 6 ? 'bg-rose-50 text-rose-500 border border-rose-100' : 'bg-emerald-50 text-[#1C7D5A] border border-emerald-100'}`}>
                                   {i > 6 ? 'Failed' : 'Passed'}
                                </span>
                             </td>
                             <td className="px-10 py-6 text-right space-x-1">
-                               <button className="p-2 bg-white border border-slate-200 rounded-lg text-slate-400 hover:text-[#00bd7f] hover:border-[#00bd7f] transition-all">
+                               <button className="p-2 bg-white border border-slate-200 rounded-lg text-slate-400 hover:text-[#1C7D5A] hover:border-[#1C7D5A] transition-all">
                                   <Printer className="w-3.5 h-3.5" />
                                </button>
                                <button className="p-2 bg-white border border-slate-200 rounded-lg text-slate-400 hover:text-blue-500 hover:border-blue-200 transition-all">
@@ -166,7 +166,7 @@ const ExamReports = () => {
                          <tr key={i} className="group hover:bg-slate-50/50 transition-all uppercase">
                             <td className="px-10 py-6">
                                <div className="flex items-center gap-4">
-                                  <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:scale-110 group-hover:bg-[#e6f4ef] group-hover:text-[#00bd7f] transition-all">ZF</div>
+                                  <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:scale-110 group-hover:bg-[#e6f4ef] group-hover:text-[#1C7D5A] transition-all">ZF</div>
                                   <div>
                                      <p className="text-sm font-black text-slate-800 tracking-tight">Zaid Bin Harith</p>
                                      <p className="text-[10px] font-bold text-slate-400 tracking-widest italic">Roll: 10{i + 3}</p>
@@ -176,16 +176,16 @@ const ExamReports = () => {
                             <td className="px-10 py-6 text-center">
                                <p className="text-sm font-black text-slate-600 font-mono tracking-tighter">{840 + (i * 10)} / 1000</p>
                             </td>
-                            <td className="px-10 py-6 text-center text-sm font-black text-[#00bd7f]">{84 + i}.5%</td>
+                            <td className="px-10 py-6 text-center text-sm font-black text-[#1C7D5A]">{84 + i}.5%</td>
                             <td className="px-10 py-6 text-center">
-                               <span className="px-4 py-1.5 bg-emerald-50 text-[#00bd7f] border border-emerald-100 rounded-lg text-[10px] font-black tracking-widest">A+ EXCELLENT</span>
+                               <span className="px-4 py-1.5 bg-emerald-50 text-[#1C7D5A] border border-emerald-100 rounded-lg text-[10px] font-black tracking-widest">A+ EXCELLENT</span>
                             </td>
                             <td className="px-10 py-6 text-center font-black text-slate-800 text-sm">{i}st</td>
                             <td className="px-10 py-6 text-right space-x-2">
-                               <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#00bd7f] hover:border-[#00bd7f] shadow-sm transition-all inline-flex items-center gap-2 group-hover:bg-[#e6f4ef]">
+                               <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#1C7D5A] hover:border-[#1C7D5A] shadow-sm transition-all inline-flex items-center gap-2 group-hover:bg-[#e6f4ef]">
                                   <Printer className="w-4 h-4" />
                                </button>
-                               <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#00bd7f] hover:border-[#00bd7f] shadow-sm transition-all">
+                               <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#1C7D5A] hover:border-[#1C7D5A] shadow-sm transition-all">
                                   <FileText className="w-4 h-4" />
                                </button>
                             </td>
@@ -200,7 +200,7 @@ const ExamReports = () => {
            <div className="p-10 border-t border-slate-100 bg-slate-50/30 flex justify-center">
               <div className="flex items-center gap-12">
                  <div className="flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#00bd7f]"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#1C7D5A]"></div>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Passed (92%)</span>
                  </div>
                  <div className="flex items-center gap-3">

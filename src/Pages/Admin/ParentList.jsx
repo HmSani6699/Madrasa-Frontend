@@ -229,7 +229,7 @@ const ParentList = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#00315e]" />
+            <Users className="w-8 h-8 text-[#1C7D5A]" />
             Parents Management
           </h1>
         </div>
@@ -283,7 +283,7 @@ const ParentList = () => {
 
                   <button
 
-                    className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
+                    className=" px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer"
                   >
                     Apply
                   </button>
@@ -296,7 +296,7 @@ const ParentList = () => {
           <div>
             <button
               onClick={() => setShowAddModal(true)}
-              className="w-full flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00315e] text-white rounded-[8px] hover:shadow-xl  hover:scale-[1.02] transition-all cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-[8px] hover:shadow-xl  hover:scale-[1.02] transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               Add Parent
@@ -319,7 +319,7 @@ const ParentList = () => {
             value: parents.length,
             icon: Contact,
             color: "text-blue-600",
-            bg: "bg-[#00315e1c]",
+            bg: "bg-[#1C7D5A1c]",
           },
           {
             label: "Active Portal",
@@ -341,7 +341,7 @@ const ParentList = () => {
             key={idx}
             className="bg-white rounded-[8px]  p-5 flex items-center justify-between shadow-lg relative  overflow-hidden"
           >
-            <div className="absolute -top-[10%] -left-[40%] h-[287px] w-[350px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="absolute -top-[10%] -left-[40%] h-[287px] w-[350px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
             <div className="relative z-[10]">
 
               <p className="text-2xl font-black text-slate-800">{stat.value}</p>
@@ -363,7 +363,7 @@ const ParentList = () => {
       <div className="bg-white rounded-[8px]  shadow-sm overflow-hidden flex flex-col">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#00315e]/5 border-b border-slate-200">
+            <thead className="bg-[#1C7D5A]/5 border-b border-slate-200">
               <tr className="white-space-nowrap">
                 <th className="px-6 py-4 text-left text-xs font-black text-slate-600 uppercase tracking-wider white-space-nowrap">
                   ID
@@ -420,7 +420,7 @@ const ParentList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
-                      <Briefcase className="w-3.5 h-3.5 text-[#00315e]" />
+                      <Briefcase className="w-3.5 h-3.5 text-[#1C7D5A]" />
                       {parent.occupation}
                     </div>
                   </td>
@@ -433,7 +433,7 @@ const ParentList = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="space-y-1 text-xs font-bold text-slate-600">
                       <div className="flex items-center gap-1.5">
-                        <Phone className="w-3.5 h-3.5 text-[#00315e]" />
+                        <Phone className="w-3.5 h-3.5 text-[#1C7D5A]" />
                         {parent.phone}
                       </div>
 
@@ -459,12 +459,12 @@ const ParentList = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-4">
                       <button className="cursor-pointer" onClick={() => setViewParent(parent)}>
-                        <Eye className="w-5 h-5 text-[#00315e]" />
+                        <Eye className="w-5 h-5 text-[#1C7D5A]" />
                       </button>
                       <button className="cursor-pointer" onClick={() =>
                         handleAction("Edit Info", parent)
                       }>
-                        <SquarePen className="w-4 h-4 text-[#00315e]" />
+                        <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                       </button>
                       <button className="cursor-pointer" onClick={() =>
                         handleAction("Delete Record", parent)}>
@@ -479,7 +479,7 @@ const ParentList = () => {
         </div>
 
         {/* Pagination Controls */}
-        <div className="bg-[#00315e]/5 px-6 py-4 border-t-2 border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="bg-[#1C7D5A]/5 px-6 py-4 border-t-2 border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
             Showing{" "}
             <span className="text-slate-900">
@@ -496,7 +496,7 @@ const ParentList = () => {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="p-2 border-1 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="p-2 border-1 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -506,8 +506,8 @@ const ParentList = () => {
                   key={i + 1}
                   onClick={() => setCurrentPage(i + 1)}
                   className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
-                    ? "bg-[#00315e] border-[#00315e] text-white "
-                    : "bg-white border-slate-200 text-slate-600 hover:border-[#00315e] hover:text-[#00315e]"
+                    ? "bg-[#1C7D5A] border-[#1C7D5A] text-white "
+                    : "bg-white border-slate-200 text-slate-600 hover:border-[#1C7D5A] hover:text-[#1C7D5A]"
                     }`}
                 >
                   {i + 1}
@@ -517,7 +517,7 @@ const ParentList = () => {
             <button
               disabled={currentPage === totalPages || totalPages === 0}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="p-2 border-1 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="p-2 border-1 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -680,7 +680,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, fatherName: e.target.value })
                 }
                 placeholder="Enter father name"
-                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#00315e] transition-all"
+                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#1C7D5A] transition-all"
               />
             </div>
             <div className="space-y-2">
@@ -694,7 +694,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, motherName: e.target.value })
                 }
                 placeholder="Enter Mother name"
-                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#00315e] transition-all"
+                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#1C7D5A] transition-all"
               />
             </div>
             <div className="space-y-2">
@@ -707,7 +707,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, fatherOccupation: e.target.value })
                 }
                 placeholder="Father's Occupation"
-                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#00315e] transition-all"
+                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#1C7D5A] transition-all"
               />
             </div>
             <div className="space-y-2">
@@ -720,7 +720,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, motherOccupation: e.target.value })
                 }
                 placeholder="Mother's Occupation"
-                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#00315e] transition-all"
+                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#1C7D5A] transition-all"
               />
             </div>
             <div className="space-y-2">
@@ -734,7 +734,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, contact: e.target.value })
                 }
                 placeholder="019XXXXXXXX"
-                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#00315e] transition-all"
+                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#1C7D5A] transition-all"
               />
             </div>
             <div className="space-y-2">
@@ -747,7 +747,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, motherContact: e.target.value })
                 }
                 placeholder="019XXXXXXXX"
-                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#00315e] transition-all"
+                className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#1C7D5A] transition-all"
               />
             </div>
             {/* <div className="space-y-2 md:col-span-3">
@@ -761,7 +761,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 placeholder="example@mail.com"
-                 className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#00315e] transition-all"
+                 className="w-full px-4 py-2 bg-[#fff] dark:bg-[#fff] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-blue-500 focus:border-[#1C7D5A] transition-all"
               />
             </div> */}
             <div className="space-y-2 md:col-span-3">
@@ -776,7 +776,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   setFormData({ ...formData, address: e.target.value })
                 }
                 placeholder="Address"
-                className="w-full px-4 py-3 bg-emerald-50/50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#00315e] transition-all font-bold text-sm text-slate-700 placeholder:text-slate-400 resize-none"
+                className="w-full px-4 py-3 bg-emerald-50/50 border-2 border-slate-100 rounded-xl outline-none focus:border-[#1C7D5A] transition-all font-bold text-sm text-slate-700 placeholder:text-slate-400 resize-none"
               />
             </div>
           </div>
@@ -793,10 +793,10 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   />
                 ) : (
                   <div className="w-24 h-24 rounded-2xl bg-emerald-50/50 flex items-center justify-center border-2 border-emerald-200 border-dashed">
-                    <ImagePlus className="w-8 h-8 text-[#00315e]" />
+                    <ImagePlus className="w-8 h-8 text-[#1C7D5A]" />
                   </div>
                 )}
-                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00315e] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#001f3f] transition-colors z-10">
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#1C7D5A] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#123628] transition-colors z-10">
                   <Upload className="w-4 h-4" />
                   <input
                     type="file"
@@ -824,10 +824,10 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   />
                 ) : (
                   <div className="w-24 h-24 rounded-2xl bg-emerald-50/50 flex items-center justify-center border-2 border-emerald-200 border-dashed">
-                    <ImagePlus className="w-8 h-8 text-[#00315e]" />
+                    <ImagePlus className="w-8 h-8 text-[#1C7D5A]" />
                   </div>
                 )}
-                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00315e] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#001f3f] transition-colors z-10">
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#1C7D5A] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#123628] transition-colors z-10">
                   <Upload className="w-4 h-4" />
                   <input
                     type="file"
@@ -855,10 +855,10 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
                   />
                 ) : (
                   <div className="w-24 h-24 rounded-2xl bg-emerald-50/50 flex items-center justify-center border-2 border-emerald-200 border-dashed">
-                    <UserCheck className="w-8 h-8 text-[#00315e]" />
+                    <UserCheck className="w-8 h-8 text-[#1C7D5A]" />
                   </div>
                 )}
-                <label className="absolute -bottom-2 -right-2 p-2 bg-[#00315e] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#001f3f] transition-colors z-10">
+                <label className="absolute -bottom-2 -right-2 p-2 bg-[#1C7D5A] text-white rounded-xl shadow-lg cursor-pointer hover:bg-[#123628] transition-colors z-10">
                   <Upload className="w-4 h-4" />
                   <input
                     type="file"
@@ -887,7 +887,7 @@ const ParentFormModal = ({ parent, onClose, onSave, title }) => {
           </button>
           <button
             type="submit"
-            className="px-10 py-3 bg-[#00315e] text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+            className="px-10 py-3 bg-[#1C7D5A] text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
           >
             <FileText className="w-4 h-4" />
             Save
@@ -911,7 +911,7 @@ const ParentViewModal = ({ parent, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Profile Banner */}
-        <div className="h-32 bg-gradient-to-r from-[#00315e] to-blue-800 relative">
+        <div className="h-32 bg-gradient-to-r from-[#1C7D5A] to-blue-800 relative">
           <div className="absolute -bottom-12 left-8 p-1 bg-white rounded-3xl shadow-xl">
             <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-slate-50">
               <img
@@ -923,7 +923,7 @@ const ParentViewModal = ({ parent, onClose }) => {
           </div>
           <button
             onClick={onClose}
-            className="absolute top-6 right-6 p-2 bg-white/20 hover:bg-white text-white hover:text-[#00315e] rounded-xl transition-all backdrop-blur-md"
+            className="absolute top-6 right-6 p-2 bg-white/20 hover:bg-white text-white hover:text-[#1C7D5A] rounded-xl transition-all backdrop-blur-md"
           >
             <X className="w-5 h-5" />
           </button>
@@ -935,7 +935,7 @@ const ParentViewModal = ({ parent, onClose }) => {
               <h2 className="text-3xl font-black text-slate-800 tracking-tight">
                 {parent.name}
               </h2>
-              <p className="flex items-center justify-center md:justify-start gap-2 text-[#00315e] font-black uppercase text-xs tracking-widest mt-1">
+              <p className="flex items-center justify-center md:justify-start gap-2 text-[#1C7D5A] font-black uppercase text-xs tracking-widest mt-1">
                 <Briefcase className="w-3 h-3" /> {parent.occupation}
               </p>
             </div>
@@ -957,7 +957,7 @@ const ParentViewModal = ({ parent, onClose }) => {
               <div className="space-y-3">
                 <div className="flex items-center gap-4 group">
                   <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
-                    <Phone className="w-4 h-4 text-[#00315e]" />
+                    <Phone className="w-4 h-4 text-[#1C7D5A]" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black text-slate-400 uppercase">
@@ -970,7 +970,7 @@ const ParentViewModal = ({ parent, onClose }) => {
                 </div>
                 <div className="flex items-center gap-4 group">
                   <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
-                    <Mail className="w-4 h-4 text-[#00315e]" />
+                    <Mail className="w-4 h-4 text-[#1C7D5A]" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black text-slate-400 uppercase">
@@ -989,7 +989,7 @@ const ParentViewModal = ({ parent, onClose }) => {
               </h4>
               <div className="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl group hover:bg-emerald-50/30 transition-all border-2 border-transparent hover:border-emerald-100">
                 <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-transform">
-                  <MapPin className="w-4 h-4 text-[#00315e]" />
+                  <MapPin className="w-4 h-4 text-[#1C7D5A]" />
                 </div>
                 <p className="text-sm font-bold text-slate-600 leading-relaxed">
                   {parent.address}
@@ -1001,7 +1001,7 @@ const ParentViewModal = ({ parent, onClose }) => {
           {/* Linked Students Section */}
           <div className="space-y-4 pt-6 border-t-2 border-slate-50">
             <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-              <Users className="w-3.5 h-3.5 text-[#00315e]" /> Associated
+              <Users className="w-3.5 h-3.5 text-[#1C7D5A]" /> Associated
               Students ({parent.childrenCount})
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1020,7 +1020,7 @@ const ParentViewModal = ({ parent, onClose }) => {
                     <p className="text-xs font-black text-slate-800">
                       {student.nameInDeshi || student.nameInEnglish}
                     </p>
-                    <p className="text-[10px] font-bold text-[#00315e]">
+                    <p className="text-[10px] font-bold text-[#1C7D5A]">
                       Class: {student.class || "N/A"} • Roll {student.rollNumber || "N/A"}
                     </p>
                   </div>

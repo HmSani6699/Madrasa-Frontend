@@ -38,7 +38,7 @@ const GuardianAttendance = () => {
       <div className="bg-white rounded-[20px] p-5 border-2 border-slate-50 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
         <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl opacity-50"></div>
         <div className="flex items-center gap-6 relative z-10">
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 rounded-2xl md:rounded-3xl flex items-center justify-center border-2 border-emerald-100 shadow-inner text-[#00bd7f]">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 rounded-2xl md:rounded-3xl flex items-center justify-center border-2 border-emerald-100 shadow-inner text-[#1C7D5A]">
             <CalendarDays className="w-8 h-8 md:w-10 md:h-10" />
           </div>
           <div>
@@ -46,7 +46,7 @@ const GuardianAttendance = () => {
            
           </div>
         </div>
-        <button className="relative z-10 px-8 py-3 bg-[#00bd7f] text-white rounded-[8px] font-black  tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 active:scale-95 flex items-center gap-3">
+        <button className="relative z-10 px-8 py-3 bg-[#1C7D5A] text-white rounded-[8px] font-black  tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 active:scale-95 flex items-center gap-3">
           <Download className="w-4 h-4" />
           Export 
         </button>
@@ -55,7 +55,7 @@ const GuardianAttendance = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {stats.map((stat, i) => (
-          <div key={i} className="bg-white p-8 rounded-[20px] border-2 border-slate-50 shadow-sm flex items-center gap-6 group hover:border-[#00bd7f]/30 transition-all cursor-default">
+          <div key={i} className="bg-white p-8 rounded-[20px] border-2 border-slate-50 shadow-sm flex items-center gap-6 group hover:border-[#1C7D5A]/30 transition-all cursor-default">
             <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform`}>
               <stat.icon className="w-7 h-7" />
             </div>

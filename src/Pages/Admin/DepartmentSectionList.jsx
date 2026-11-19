@@ -138,7 +138,7 @@ const DepartmentSectionList = () => {
       <div className="bg-white rounded-3xl border-2 border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
-            <School className="w-8 h-8 text-[#00bd7f]" />
+            <School className="w-8 h-8 text-[#1C7D5A]" />
             Department & Section
           </h1>
           <p className="text-slate-500 font-bold mt-1">
@@ -152,7 +152,7 @@ const DepartmentSectionList = () => {
               resetForm();
               setIsAddClassModalOpen(true);
             }}
-            className="flex-1 md:flex-none px-6 py-3 bg-[#00bd7f] text-white rounded-2xl font-black shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+            className="flex-1 md:flex-none px-6 py-3 bg-[#1C7D5A] text-white rounded-2xl font-black shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
           >
             <Plus className="w-5 h-5" />
             Add Class
@@ -181,7 +181,7 @@ const DepartmentSectionList = () => {
             label: "Total Capacity",
             value: classes.reduce((acc, c) => acc + c.studentCount, 0),
             icon: Users,
-            color: "text-[#00bd7f]",
+            color: "text-[#1C7D5A]",
             bg: "bg-emerald-50",
           },
         ].map((stat, i) => (
@@ -212,7 +212,7 @@ const DepartmentSectionList = () => {
             placeholder="Search classes or levels..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold outline-none focus:border-[#00bd7f] transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold outline-none focus:border-[#1C7D5A] transition-all"
           />
         </div>
       </div>
@@ -222,7 +222,7 @@ const DepartmentSectionList = () => {
         {filteredClasses.map((cls) => (
           <div
             key={cls.id}
-            className="group bg-white rounded-[2rem] border-2 border-slate-200 shadow-sm hover:shadow-xl hover:border-[#00bd7f]/30 transition-all duration-300 flex flex-col"
+            className="group bg-white rounded-[2rem] border-2 border-slate-200 shadow-sm hover:shadow-xl hover:border-[#1C7D5A]/30 transition-all duration-300 flex flex-col"
           >
             <div className="p-8 space-y-6">
               <div className="flex justify-between items-start">
@@ -272,7 +272,7 @@ const DepartmentSectionList = () => {
                       key={idx}
                       className="px-4 py-2 bg-slate-50 border-2 border-slate-100 rounded-xl text-xs font-black text-slate-600 flex items-center gap-2 group/sec"
                     >
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#00bd7f]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#1C7D5A]" />
                       {sec}
                       <button
                         onClick={() => removeSection(cls.id, sec)}
@@ -287,7 +287,7 @@ const DepartmentSectionList = () => {
                       setSelectedClass(cls);
                       setIsAddSectionModalOpen(true);
                     }}
-                    className="px-4 py-2 border-2 border-dashed border-slate-300 rounded-xl text-xs font-black text-slate-400 hover:border-[#00bd7f] hover:text-[#00bd7f] transition-all"
+                    className="px-4 py-2 border-2 border-dashed border-slate-300 rounded-xl text-xs font-black text-slate-400 hover:border-[#1C7D5A] hover:text-[#1C7D5A] transition-all"
                   >
                     + Add
                   </button>
@@ -307,7 +307,7 @@ const DepartmentSectionList = () => {
                   setSelectedClass(cls);
                   setIsDetailsModalOpen(true);
                 }}
-                className="flex items-center gap-2 text-xs font-black text-[#00bd7f] hover:underline"
+                className="flex items-center gap-2 text-xs font-black text-[#1C7D5A] hover:underline"
               >
                 View Details <ChevronRight className="w-4 h-4" />
               </button>
@@ -321,10 +321,10 @@ const DepartmentSectionList = () => {
             resetForm();
             setIsAddClassModalOpen(true);
           }}
-          className="bg-slate-50/50 rounded-[2rem] border-4 border-dashed border-slate-200 flex flex-col items-center justify-center p-12 hover:border-[#00bd7f]/50 hover:bg-emerald-50/20 transition-all group min-h-[300px]"
+          className="bg-slate-50/50 rounded-[2rem] border-4 border-dashed border-slate-200 flex flex-col items-center justify-center p-12 hover:border-[#1C7D5A]/50 hover:bg-emerald-50/20 transition-all group min-h-[300px]"
         >
           <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform mb-4 border-2 border-slate-100">
-            <Plus className="w-8 h-8 text-slate-300 group-hover:text-[#00bd7f]" />
+            <Plus className="w-8 h-8 text-slate-300 group-hover:text-[#1C7D5A]" />
           </div>
           <p className="text-lg font-black text-slate-400 group-hover:text-slate-600">
             Create New Class
@@ -361,7 +361,7 @@ const DepartmentSectionList = () => {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   placeholder="e.g. Class 7 or Fazil 1st Year"
-                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-[#00bd7f] outline-none"
+                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-[#1C7D5A] outline-none"
                 />
               </div>
               <div className="grid grid-cols-1 gap-4">
@@ -378,7 +378,7 @@ const DepartmentSectionList = () => {
                         studentCount: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-[#00bd7f] outline-none"
+                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-[#1C7D5A] outline-none"
                   />
                 </div>
               </div>
@@ -396,7 +396,7 @@ const DepartmentSectionList = () => {
                   onClick={
                     isEditClassModalOpen ? handleEditClass : handleAddClass
                   }
-                  className="flex-1 py-4 bg-[#00bd7f] text-white font-black rounded-2xl shadow-xl shadow-emerald-200 transition-all"
+                  className="flex-1 py-4 bg-[#1C7D5A] text-white font-black rounded-2xl shadow-xl shadow-emerald-200 transition-all"
                 >
                   {isEditClassModalOpen ? "Save Changes" : "Create Class"}
                 </button>
@@ -421,7 +421,7 @@ const DepartmentSectionList = () => {
             </div>
             <div className="p-5 space-y-6">
               {/* <div className="text-center">
-                <div className="w-16 h-16 bg-emerald-50 text-[#00bd7f] rounded-2xl flex items-center justify-center mx-auto mb-4 border-2 border-emerald-100">
+                <div className="w-16 h-16 bg-emerald-50 text-[#1C7D5A] rounded-2xl flex items-center justify-center mx-auto mb-4 border-2 border-emerald-100">
                   <Layers className="w-8 h-8" />
                 </div>
                 <p className="text-sm font-bold text-slate-500">
@@ -439,12 +439,12 @@ const DepartmentSectionList = () => {
                   value={newSectionName}
                   onChange={(e) => setNewSectionName(e.target.value)}
                   placeholder="e.g. Section D or Afternoon"
-                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-[#00bd7f] outline-none"
+                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-[#1C7D5A] outline-none"
                 />
               </div>
               <button
                 onClick={handleAddSection}
-                className="w-full py-4 bg-[#00bd7f] text-white font-black rounded-2xl shadow-xl shadow-emerald-200 transition-all"
+                className="w-full py-4 bg-[#1C7D5A] text-white font-black rounded-2xl shadow-xl shadow-emerald-200 transition-all"
               >
                 Add Now
               </button>
@@ -496,7 +496,7 @@ const DepartmentSectionList = () => {
           <div className="bg-white rounded-[2.5rem] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-8 border-b-2 border-slate-50 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-emerald-50 text-[#00bd7f] rounded-2xl flex items-center justify-center border-2 border-emerald-100">
+                <div className="w-12 h-12 bg-emerald-50 text-[#1C7D5A] rounded-2xl flex items-center justify-center border-2 border-emerald-100">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
@@ -545,7 +545,7 @@ const DepartmentSectionList = () => {
                     Status
                   </p>
                   <div className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#00bd7f] animate-pulse" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#1C7D5A] animate-pulse" />
                     <p className="text-sm font-black text-slate-800 uppercase tracking-widest">
                       Operational
                     </p>
@@ -564,7 +564,7 @@ const DepartmentSectionList = () => {
                       className="p-4 bg-slate-50 rounded-2xl border-2 border-slate-100 flex items-center justify-between group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center font-black text-xs text-[#00bd7f] shadow-sm">
+                        <div className="w-8 h-8 bg-white rounded-xl flex items-center justify-center font-black text-xs text-[#1C7D5A] shadow-sm">
                           {String.fromCharCode(65 + idx)}
                         </div>
                         <span className="font-bold text-slate-700">{s}</span>

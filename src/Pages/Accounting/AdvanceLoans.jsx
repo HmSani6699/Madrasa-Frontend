@@ -140,7 +140,7 @@ const AdvanceLoans = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Wallet className="w-8 h-8 text-[#00315e]" />
+            <Wallet className="w-8 h-8 text-[#1C7D5A]" />
             Advance & Loans (অগ্রিম বেতন ও ঋণ)
           </h1>
           <p className="text-[14px] text-slate-500 font-bold mt-1">
@@ -150,7 +150,7 @@ const AdvanceLoans = () => {
 
         <button
           onClick={() => setShowModal(true)}
-          className="px-5 py-2.5 bg-[#00315e] hover:bg-[#002547] text-white rounded-[8px] font-bold text-sm flex items-center gap-2 shadow-sm cursor-pointer transition-all self-start md:self-auto"
+          className="px-5 py-2.5 bg-[#1C7D5A] hover:bg-[#123628] text-white rounded-[8px] font-bold text-sm flex items-center gap-2 shadow-sm cursor-pointer transition-all self-start md:self-auto"
         >
           <Plus className="w-4 h-4" />
           Give Advance (নতুন অগ্রিম দিন)
@@ -165,7 +165,7 @@ const AdvanceLoans = () => {
             <p className="text-2xl font-black text-slate-900 mt-1">{formatCurrency(totalGiven)}</p>
             <p className="text-[11px] font-bold text-slate-400 mt-1">মোট লেনদেন: {advances.length}টি</p>
           </div>
-          <div className="w-12 h-12 bg-blue-50 text-[#00315e] rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-blue-50 text-[#1C7D5A] rounded-xl flex items-center justify-center">
             <Wallet className="w-6 h-6" />
           </div>
         </div>
@@ -202,7 +202,7 @@ const AdvanceLoans = () => {
             placeholder="Search by Name, Employee ID or Reason..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-[8px] text-sm outline-none focus:ring-1 focus:ring-[#00315e] transition-all font-medium"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-[8px] text-sm outline-none focus:ring-1 focus:ring-[#1C7D5A] transition-all font-medium"
           />
         </div>
 
@@ -217,7 +217,7 @@ const AdvanceLoans = () => {
               onClick={() => setStatusFilter(tab.id)}
               className={`px-3 py-1.5 text-xs font-bold rounded-[6px] transition-all cursor-pointer ${
                 statusFilter === tab.id
-                  ? "bg-white text-[#00315e] shadow-sm"
+                  ? "bg-white text-[#1C7D5A] shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -231,7 +231,7 @@ const AdvanceLoans = () => {
       <div className="bg-white rounded-[8px] shadow-xl border border-slate-200 overflow-hidden">
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">অগ্রিমের তথ্য লোড হচ্ছে...</p>
           </div>
         ) : filteredAdvances.length === 0 ? (
@@ -242,7 +242,7 @@ const AdvanceLoans = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-[#00315e24] text-slate-800 text-[11px] uppercase font-black tracking-wider whitespace-nowrap">
+              <thead className="bg-[#1C7D5A18] text-slate-800 text-[11px] uppercase font-black tracking-wider whitespace-nowrap">
                 <tr>
                   <th className="px-4 py-3.5">#</th>
                   <th className="px-4 py-3.5">কর্মীর তথ্য (Staff)</th>
@@ -265,7 +265,7 @@ const AdvanceLoans = () => {
                       <td className="px-4 py-3.5 text-slate-400">{idx + 1}</td>
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-black text-[#00315e] border border-slate-200">
+                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-black text-[#1C7D5A] border border-slate-200">
                             {(staff.name || "S").charAt(0)}
                           </div>
                           <div>
@@ -323,7 +323,7 @@ const AdvanceLoans = () => {
           <div className="bg-white rounded-[16px] w-full max-w-lg shadow-2xl overflow-hidden animate-in zoom-in duration-200">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-50 text-[#00315e] rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-blue-50 text-[#1C7D5A] rounded-xl flex items-center justify-center">
                   <Wallet className="w-5 h-5" />
                 </div>
                 <div>
@@ -348,7 +348,7 @@ const AdvanceLoans = () => {
                   required
                   value={formData.staff_id}
                   onChange={(e) => setFormData({ ...formData, staff_id: e.target.value })}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-bold text-slate-800 outline-none focus:ring-1 focus:ring-[#00315e] bg-white"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-bold text-slate-800 outline-none focus:ring-1 focus:ring-[#1C7D5A] bg-white"
                 >
                   <option value="">কর্মচারী নির্বাচন করুন...</option>
                   {staffList.map((s) => (
@@ -371,7 +371,7 @@ const AdvanceLoans = () => {
                     placeholder="0"
                     value={formData.amount}
                     onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-base font-black text-slate-900 outline-none focus:ring-1 focus:ring-[#00315e]"
+                    className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-base font-black text-slate-900 outline-none focus:ring-1 focus:ring-[#1C7D5A]"
                   />
                 </div>
 
@@ -384,7 +384,7 @@ const AdvanceLoans = () => {
                     required
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-bold text-slate-800 outline-none focus:ring-1 focus:ring-[#00315e]"
+                    className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-bold text-slate-800 outline-none focus:ring-1 focus:ring-[#1C7D5A]"
                   />
                 </div>
               </div>
@@ -396,7 +396,7 @@ const AdvanceLoans = () => {
                 <select
                   value={formData.payment_method}
                   onChange={(e) => setFormData({ ...formData, payment_method: e.target.value })}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-bold text-slate-800 outline-none focus:ring-1 focus:ring-[#00315e] bg-white"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-bold text-slate-800 outline-none focus:ring-1 focus:ring-[#1C7D5A] bg-white"
                 >
                   <option value="Cash">ক্যাশ (Cash)</option>
                   <option value="Bank">ব্যাংক ট্রান্সফার (Bank Transfer)</option>
@@ -413,7 +413,7 @@ const AdvanceLoans = () => {
                   placeholder="যেমন: পারিবারিক প্রয়োজনে অগ্রিম গ্রহণ"
                   value={formData.reason}
                   onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-medium text-slate-700 outline-none focus:ring-1 focus:ring-[#00315e]"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-medium text-slate-700 outline-none focus:ring-1 focus:ring-[#1C7D5A]"
                 />
               </div>
 
@@ -428,7 +428,7 @@ const AdvanceLoans = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2 bg-[#00315e] hover:bg-[#002547] text-white font-black text-xs rounded-[8px] flex items-center gap-2 shadow-md cursor-pointer disabled:opacity-50"
+                  className="px-6 py-2 bg-[#1C7D5A] hover:bg-[#123628] text-white font-black text-xs rounded-[8px] flex items-center gap-2 shadow-md cursor-pointer disabled:opacity-50"
                 >
                   {saving ? "সংরক্ষণ হচ্ছে..." : "অগ্রিম প্রদান নিশ্চিত করুন"}
                 </button>

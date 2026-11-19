@@ -51,7 +51,7 @@ const PayslipPrintModal = ({ data, onClose }) => {
         {/* Modal Top Bar (Hidden on Print) */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50 print:hidden">
           <div className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-[#00315e]" />
+            <Award className="w-5 h-5 text-[#1C7D5A]" />
             <h3 className="text-base font-black text-slate-800">
               বেতন স্লিপ প্রিভিউ (Salary Slip Preview)
             </h3>
@@ -59,7 +59,7 @@ const PayslipPrintModal = ({ data, onClose }) => {
           <div className="flex items-center gap-3">
             <button
               onClick={handlePrint}
-              className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] font-bold text-xs flex items-center gap-2 hover:bg-[#002547] transition-all shadow-md cursor-pointer"
+              className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] font-bold text-xs flex items-center gap-2 hover:bg-[#123628] transition-all shadow-md cursor-pointer"
             >
               <Printer className="w-4 h-4" />
               প্রিন্ট করুন (Print Slip)
@@ -84,7 +84,7 @@ const PayslipPrintModal = ({ data, onClose }) => {
             <p className="text-xs font-bold text-slate-500 mt-1 uppercase tracking-wider">
               {madrasa?.address || "ঢাকা, বাংলাদেশ"} • {madrasa?.phone || "Phone: +880 1700-000000"}
             </p>
-            <div className="mt-3 inline-block bg-[#00315e] text-white px-5 py-1 rounded-full text-xs font-black uppercase tracking-widest print:border print:border-black print:text-black print:bg-transparent">
+            <div className="mt-3 inline-block bg-[#1C7D5A] text-white px-5 py-1 rounded-full text-xs font-black uppercase tracking-widest print:border print:border-black print:text-black print:bg-transparent">
               কর্মচারী বেতন রশিদ / SALARY PAYSLIP
             </div>
           </div>
@@ -95,7 +95,7 @@ const PayslipPrintModal = ({ data, onClose }) => {
               রশিদ নং: <span className="font-black text-slate-900">{payroll?.voucher_no || `PAY-${payroll?._id?.toString().slice(-6).toUpperCase()}`}</span>
             </div>
             <div>
-              বেতনের মাস: <span className="font-black text-[#00315e]">{getMonthName(payroll?.month)}, {payroll?.year}</span>
+              বেতনের মাস: <span className="font-black text-[#1C7D5A]">{getMonthName(payroll?.month)}, {payroll?.year}</span>
             </div>
             <div>
               তারিখ: <span className="font-black text-slate-900">{new Date(payroll?.created_at || Date.now()).toLocaleDateString('en-GB')}</span>
@@ -127,7 +127,7 @@ const PayslipPrintModal = ({ data, onClose }) => {
             
             {/* Earnings Section */}
             <div className="border border-slate-200 rounded-[8px] overflow-hidden">
-              <div className="bg-[#00315e24] px-4 py-2.5 font-black text-xs text-[#00315e] uppercase tracking-wide">
+              <div className="bg-[#1C7D5A18] px-4 py-2.5 font-black text-xs text-[#1C7D5A] uppercase tracking-wide">
                 উপার্জন ও ভাতাসমূহ (Earnings / Allowances)
               </div>
               <table className="w-full text-xs">
@@ -218,7 +218,7 @@ const PayslipPrintModal = ({ data, onClose }) => {
               </p>
             </div>
             <div className="text-right">
-              <span className="text-2xl sm:text-3xl font-black text-[#00315e]">
+              <span className="text-2xl sm:text-3xl font-black text-[#1C7D5A]">
                 {formatCurrency(netPayable)}
               </span>
             </div>
@@ -285,7 +285,7 @@ const PayslipPrintModal = ({ data, onClose }) => {
           </button>
           <button
             onClick={handlePrint}
-            className="px-6 py-2.5 bg-[#00315e] text-white font-bold rounded-[8px] text-xs flex items-center gap-2 hover:bg-[#002547] transition-all shadow-md cursor-pointer"
+            className="px-6 py-2.5 bg-[#1C7D5A] text-white font-bold rounded-[8px] text-xs flex items-center gap-2 hover:bg-[#123628] transition-all shadow-md cursor-pointer"
           >
             <Printer className="w-4 h-4" />
             প্রিন্ট করুন (Print Slip)

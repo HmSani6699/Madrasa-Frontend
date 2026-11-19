@@ -108,7 +108,7 @@ const SalaryReport = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-outfit relative overflow-hidden">
       {/* Dynamic Background Elements */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#00bd7f]/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#1C7D5A]/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="max-w-[1500px] mx-auto p-4 md:p-10 relative z-10 space-y-10">
@@ -123,13 +123,13 @@ const SalaryReport = () => {
           <div className="bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-white shadow-xl flex items-center gap-1">
             <button 
               onClick={() => setViewMode("single")}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-2 ${viewMode === "single" ? "bg-[#00bd7f] text-white shadow-lg shadow-emerald-200" : "text-slate-500 hover:bg-slate-100"}`}
+              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-2 ${viewMode === "single" ? "bg-[#1C7D5A] text-white shadow-lg shadow-emerald-200" : "text-slate-500 hover:bg-slate-100"}`}
             >
               <User className="w-4 h-4" /> {t('salary_report.individual_report')}
             </button>
             <button 
               onClick={() => setViewMode("multi")}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-2 ${viewMode === "multi" ? "bg-[#00bd7f] text-white shadow-lg shadow-emerald-200" : "text-slate-500 hover:bg-slate-100"}`}
+              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-2 ${viewMode === "multi" ? "bg-[#1C7D5A] text-white shadow-lg shadow-emerald-200" : "text-slate-500 hover:bg-slate-100"}`}
             >
               <Users className="w-4 h-4" /> {t('salary_report.multi_staff_view')}
             </button>
@@ -163,7 +163,7 @@ const SalaryReport = () => {
             />
           </div>
 
-          <button className="bg-[#00bd7f] text-white px-10 py-3.5 rounded-[12px] text-xs font-black tracking-widest shadow-xl shadow-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all mb-1">
+          <button className="bg-[#1C7D5A] text-white px-10 py-3.5 rounded-[12px] text-xs font-black tracking-widest shadow-xl shadow-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all mb-1">
             {t('salary_report.generate')}
           </button>
         </div>
@@ -175,13 +175,13 @@ const SalaryReport = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in slide-in-from-bottom-5 duration-700 bg-white shadow-xl rounded-[24px] p-8 border border-slate-100">
                 {/* Profile Section */}
                 <div className="lg:border-r border-slate-100 pr-0 lg:pr-8 flex flex-col items-center text-center space-y-6">
-                  <div className="w-24 h-24 bg-gradient-to-br from-[#00bd7f] to-emerald-600 rounded-[28px] flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-emerald-200">
+                  <div className="w-24 h-24 bg-gradient-to-br from-[#1C7D5A] to-emerald-600 rounded-[28px] flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-emerald-200">
                     {filteredData[0]?.avatar}
                   </div>
                   
                   <div>
                     <h3 className="text-2xl font-black text-slate-900 leading-tight">{filteredData[0]?.name}</h3>
-                    <p className="text-sm font-bold text-[#00bd7f] uppercase tracking-widest mt-1">{filteredData[0]?.id}</p>
+                    <p className="text-sm font-bold text-[#1C7D5A] uppercase tracking-widest mt-1">{filteredData[0]?.id}</p>
                   </div>
 
                   <div className="flex flex-wrap justify-center gap-2">
@@ -220,7 +220,7 @@ const SalaryReport = () => {
                         {filteredData[0]?.salaries.map((salary, idx) => (
                           <tr key={idx} className="hover:bg-slate-50/50 transition-all duration-300 group">
                             <td className="px-6 py-5">
-                              <span className="text-sm font-black text-slate-800 group-hover:text-[#00bd7f] transition-colors">{getMonthLabel(salary.month)}</span>
+                              <span className="text-sm font-black text-slate-800 group-hover:text-[#1C7D5A] transition-colors">{getMonthLabel(salary.month)}</span>
                               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase flex items-center gap-1.5">
                                 <Calendar className="w-3 h-3" /> {salary.date}
                               </p>
@@ -229,7 +229,7 @@ const SalaryReport = () => {
                               <p className="text-sm font-black text-slate-900">৳ {salary.basic + salary.allowance}</p>
                               <p className="text-[10px] font-bold text-rose-400">{t('salary_report.deduction_label', { amount: salary.deductions })}</p>
                             </td>
-                            <td className="px-6 py-5 text-center text-sm font-black text-[#00bd7f]">৳ {salary.net}</td>
+                            <td className="px-6 py-5 text-center text-sm font-black text-[#1C7D5A]">৳ {salary.net}</td>
                             <td className="px-6 py-5 text-center">
                               <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusStyle(salary.status)}`}>
                                 {getStatusLabel(salary.status)}
@@ -237,8 +237,8 @@ const SalaryReport = () => {
                             </td>
                             <td className="px-6 py-5">
                               <div className="flex justify-end gap-2">
-                                <button className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-[#00bd7f] border border-slate-100"><Printer className="w-4 h-4" /></button>
-                                <button className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-[#00bd7f] border border-slate-100"><Download className="w-4 h-4" /></button>
+                                <button className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-[#1C7D5A] border border-slate-100"><Printer className="w-4 h-4" /></button>
+                                <button className="p-2.5 hover:bg-slate-100 rounded-xl transition-all text-slate-400 hover:text-[#1C7D5A] border border-slate-100"><Download className="w-4 h-4" /></button>
                               </div>
                             </td>
                           </tr>
@@ -261,7 +261,7 @@ const SalaryReport = () => {
             <div className="space-y-6">
               {filteredData.map((emp, i) => (
                 <div key={i} className="bg-white shadow-lg rounded-[24px] p-6 border border-slate-100 flex flex-col md:flex-row items-center gap-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
-                  <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-[#00bd7f] text-xl font-black shrink-0">
+                  <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-[#1C7D5A] text-xl font-black shrink-0">
                     {emp.avatar}
                   </div>
                   <div className="flex-1 text-center md:text-left">
@@ -278,7 +278,7 @@ const SalaryReport = () => {
                       <p className="text-lg font-black text-slate-900">৳ {emp.salaries.filter(s => s.status === "paid").reduce((acc, curr) => acc + curr.net, 0)}</p>
                     </div>
                   </div>
-                  <button className="px-6 py-3 bg-slate-50 hover:bg-[#00bd7f] hover:text-white text-slate-600 rounded-xl text-xs font-black transition-all border border-slate-100 flex items-center gap-2">
+                  <button className="px-6 py-3 bg-slate-50 hover:bg-[#1C7D5A] hover:text-white text-slate-600 rounded-xl text-xs font-black transition-all border border-slate-100 flex items-center gap-2">
                     {t('salary_report.view_details')} <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -289,7 +289,7 @@ const SalaryReport = () => {
       </div>
 
       {/* Decorative Blur Overlays */}
-      <div className="fixed top-[20%] left-[-5%] w-[300px] h-[300px] bg-[#00bd7f]/10 rounded-full blur-[100px] rotate-45 z-0 pointer-events-none"></div>
+      <div className="fixed top-[20%] left-[-5%] w-[300px] h-[300px] bg-[#1C7D5A]/10 rounded-full blur-[100px] rotate-45 z-0 pointer-events-none"></div>
       <div className="fixed bottom-[10%] right-[-5%] w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[120px] z-0 pointer-events-none"></div>
     </div>
   );

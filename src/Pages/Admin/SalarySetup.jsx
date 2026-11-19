@@ -229,7 +229,7 @@ const SalarySetup = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <DollarSign className="w-8 h-8 text-[#00315e]" />
+            <DollarSign className="w-8 h-8 text-[#1C7D5A]" />
             Salary Setup (বেতন কাঠামো নির্ধারণ)
           </h1>
           <p className="text-[14px] text-slate-500 font-bold mt-1">
@@ -242,7 +242,7 @@ const SalarySetup = () => {
             resetForm();
             setShowModal(true);
           }}
-          className="px-5 py-2.5 bg-[#00315e] hover:bg-[#002547] text-white rounded-[8px] font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer self-start md:self-auto"
+          className="px-5 py-2.5 bg-[#1C7D5A] hover:bg-[#123628] text-white rounded-[8px] font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer self-start md:self-auto"
         >
           <Plus className="w-4 h-4" />
           Add Salary Setup (নতুন বেতন নির্ধারণ)
@@ -257,7 +257,7 @@ const SalarySetup = () => {
             <p className="text-2xl font-black text-slate-900 mt-1">{staffList.length} জন</p>
             <p className="text-[11px] font-bold text-slate-400 mt-1">সকল শিক্ষক ও কর্মচারী</p>
           </div>
-          <div className="w-12 h-12 bg-blue-50 text-[#00315e] rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-blue-50 text-[#1C7D5A] rounded-xl flex items-center justify-center">
             <Users className="w-6 h-6" />
           </div>
         </div>
@@ -294,7 +294,7 @@ const SalarySetup = () => {
             placeholder="Search Staff by Name, ID, Designation..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-[8px] text-sm outline-none focus:ring-1 focus:ring-[#00315e] transition-all font-medium"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-[8px] text-sm outline-none focus:ring-1 focus:ring-[#1C7D5A] transition-all font-medium"
           />
         </div>
 
@@ -309,7 +309,7 @@ const SalarySetup = () => {
               onClick={() => setTabFilter(tab.id)}
               className={`px-3 py-1.5 text-xs font-bold rounded-[6px] transition-all cursor-pointer ${
                 tabFilter === tab.id
-                  ? "bg-white text-[#00315e] shadow-sm"
+                  ? "bg-white text-[#1C7D5A] shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
@@ -323,7 +323,7 @@ const SalarySetup = () => {
       <div className="bg-white rounded-[8px] shadow-xl border border-slate-200 overflow-hidden">
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">স্যালারি সেটআপ লোড হচ্ছে...</p>
           </div>
         ) : filteredList.length === 0 ? (
@@ -334,7 +334,7 @@ const SalarySetup = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-[#00315e24] text-slate-800 text-[11px] uppercase font-black tracking-wider whitespace-nowrap">
+              <thead className="bg-[#1C7D5A18] text-slate-800 text-[11px] uppercase font-black tracking-wider whitespace-nowrap">
                 <tr>
                   <th className="px-4 py-3.5">#</th>
                   <th className="px-4 py-3.5">কর্মীর তথ্য (Staff Info)</th>
@@ -357,7 +357,7 @@ const SalarySetup = () => {
                       <td className="px-4 py-3.5 text-slate-400">{idx + 1}</td>
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center font-black text-[#00315e] border border-slate-200">
+                          <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center font-black text-[#1C7D5A] border border-slate-200">
                             {staff.photo ? (
                               <img src={staff.photo} alt={staff.name} className="w-full h-full object-cover rounded-full" />
                             ) : (
@@ -389,7 +389,7 @@ const SalarySetup = () => {
                         {hasSetup && setup.other_allowance > 0 ? formatCurrency(setup.other_allowance) : "-"}
                       </td>
 
-                      <td className="px-4 py-3.5 text-right font-black text-[#00315e] text-sm">
+                      <td className="px-4 py-3.5 text-right font-black text-[#1C7D5A] text-sm">
                         {hasSetup ? formatCurrency(setup.total_salary) : "নির্ধারিত নয়"}
                       </td>
 
@@ -412,7 +412,7 @@ const SalarySetup = () => {
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => openEditModal(setup)}
-                              className="p-1.5 bg-[#00315e24] hover:bg-[#00315e33] text-[#00315e] rounded-[6px] cursor-pointer"
+                              className="p-1.5 bg-[#1C7D5A18] hover:bg-[#1C7D5A33] text-[#1C7D5A] rounded-[6px] cursor-pointer"
                               title="সম্পাদনা করুন"
                             >
                               <SquarePen className="w-4 h-4" />
@@ -428,7 +428,7 @@ const SalarySetup = () => {
                         ) : (
                           <button
                             onClick={() => openNewModalForStaff(staff._id)}
-                            className="px-3 py-1 bg-[#00315e] hover:bg-[#002547] text-white rounded-[6px] text-[11px] font-bold cursor-pointer transition-colors shadow-sm"
+                            className="px-3 py-1 bg-[#1C7D5A] hover:bg-[#123628] text-white rounded-[6px] text-[11px] font-bold cursor-pointer transition-colors shadow-sm"
                           >
                             + Setup Salary
                           </button>
@@ -521,12 +521,12 @@ const SalarySetup = () => {
               </div>
 
               {/* Total Salary Preview */}
-              <div className="bg-[#00315e]/5 rounded-[8px] p-4 border border-[#00315e]/20 flex justify-between items-center">
+              <div className="bg-[#1C7D5A]/5 rounded-[8px] p-4 border border-[#1C7D5A]/20 flex justify-between items-center">
                 <div>
                   <span className="text-xs font-black text-slate-500 uppercase block">সর্বমোট মাসিক বেতন (Total Gross)</span>
                   <span className="text-[11px] font-bold text-slate-400">Basic + All Allowances</span>
                 </div>
-                <span className="text-2xl font-black text-[#00315e]">{formatCurrency(calculateTotal())}</span>
+                <span className="text-2xl font-black text-[#1C7D5A]">{formatCurrency(calculateTotal())}</span>
               </div>
             </div>
 
@@ -543,7 +543,7 @@ const SalarySetup = () => {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="px-6 py-2 bg-[#00315e] hover:bg-[#002547] text-white font-bold rounded-[8px] text-xs shadow-md cursor-pointer disabled:opacity-50"
+                className="px-6 py-2 bg-[#1C7D5A] hover:bg-[#123628] text-white font-bold rounded-[8px] text-xs shadow-md cursor-pointer disabled:opacity-50"
               >
                 {loading ? "সংরক্ষণ হচ্ছে..." : editingSetup ? "আপডেট করুন (Update Setup)" : "সংরক্ষণ করুন (Save Setup)"}
               </button>

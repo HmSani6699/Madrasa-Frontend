@@ -13,9 +13,9 @@ const TeachersDashboard = () => {
    const { t } = useTranslation();
 
    const stats = [
-      { label: t('teacher.dashboard.total_class'), value: "12", icon: BookOpen, color: "text-[#00bd7f]", bg: "bg-[#00bd7f]/10" },
-      { label: t('teacher.dashboard.total_subject'), value: "12", icon: BookOpen, color: "text-[#00bd7f]", bg: "bg-[#00bd7f]/10" },
-      { label: t('teacher.dashboard.my_students'), value: "128", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+      { label: t('teacher.dashboard.total_class'), value: "12", icon: BookOpen, color: "text-[#1C7D5A]", bg: "bg-[#1C7D5A]/10" },
+      { label: t('teacher.dashboard.total_subject'), value: "12", icon: BookOpen, color: "text-[#EAB33C]", bg: "bg-[#EAB33C]/10" },
+      { label: t('teacher.dashboard.my_students'), value: "128", icon: Users, color: "text-[#123628]", bg: "bg-[#123628]/10" },
    ];
 
    // Mock data - in a real app this might come from an API or also be localized if needed
@@ -57,14 +57,14 @@ const TeachersDashboard = () => {
                    </div>
                    <h2 className="text-lg md:text-xl font-black text-slate-800 tracking-tight ">{t('teacher.dashboard.todays_class')}</h2>
                 </div>
-                <button className="w-full sm:w-auto text-[10px] font-black text-[#00bd7f] uppercase tracking-widest hover:underline flex items-center justify-center sm:justify-start gap-2">
+                <button className="w-full sm:w-auto text-[10px] font-black text-[#1C7D5A] uppercase tracking-widest hover:underline flex items-center justify-center sm:justify-start gap-2">
                    {t('teacher.dashboard.weekly_overview')} <ChevronRight className="w-4 h-4" />
                 </button>
              </div>
 
              <div className="space-y-4 md:space-y-4">
                 {schedule.map((item, i) => (
-                   <div key={i} className={`group p-5 md:p-5 rounded-[20px] md:rounded-[20px] border border-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-6 transition-all hover:bg-slate-50 ${item.status === 'ongoing' ? 'bg-[#00bd7f]/5 border-[#00bd7f]/20 shadow-lg shadow-[#00bd7f]/10' : ''}`}>
+                   <div key={i} className={`group p-5 md:p-5 rounded-[20px] md:rounded-[20px] border border-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-6 transition-all hover:bg-slate-50 ${item.status === 'ongoing' ? 'bg-[#1C7D5A]/5 border-[#1C7D5A]/20 shadow-lg shadow-[#1C7D5A]/10' : ''}`}>
                       <div className="flex items-center gap-6">
                          <div className="text-center shrink-0 w-16">
                             <p className="text-sm md:text-lg font-black text-slate-800 leading-none mb-1 whitespace-nowrap">{item.time}</p>
@@ -85,7 +85,7 @@ const TeachersDashboard = () => {
                       </div>
                       <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto mt-0 pt-4 sm:pt-0 sm:border-0 border-t border-slate-100">
                          <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${
-                            item.status === 'ongoing' ? 'bg-[#00bd7f] text-white border-[#00bd7f]' :
+                            item.status === 'ongoing' ? 'bg-[#1C7D5A] text-white border-[#1C7D5A]' :
                             item.status === 'finished' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                             'bg-slate-50 text-slate-400 border-slate-100'
                          }`}>
@@ -102,7 +102,7 @@ const TeachersDashboard = () => {
 
           {/* Action Center / Notices */}
           <div className="space-y-6 md:space-y-10">
-             <div className="bg-[#00bd7f] rounded-[20px] md:rounded-[20px] p-5 md:p-5 text-white shadow-xl shadow-[#00bd7f]/20 relative overflow-hidden group">
+             <div className="bg-[#1C7D5A] rounded-[20px] md:rounded-[20px] p-5 md:p-5 text-white shadow-xl shadow-[#1C7D5A]/20 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-[5rem] -mr-8 -mt-8 blur-2xl"></div>
                 <h3 className="text-lg md:text-xl font-black tracking-tight uppercase mb-6 flex items-center gap-3">
                    <Bell className="w-6 h-6" /> {t('teacher.dashboard.notices')}
@@ -117,7 +117,7 @@ const TeachersDashboard = () => {
                       <p className="text-sm font-bold leading-snug">Approval pending for midterm leave (Next Week)</p>
                    </div>
                 </div>
-                <button className="w-full mt-8 md:mt-10 py-4 bg-white text-[#00bd7f] rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all shadow-lg active:scale-95 leading-none">
+                <button className="w-full mt-8 md:mt-10 py-4 bg-white text-[#1C7D5A] rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all shadow-lg active:scale-95 leading-none">
                    {t('teacher.dashboard.view_all_notifications')}
                 </button>
              </div>

@@ -51,7 +51,7 @@ const StudentReports = () => {
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-50 rounded-full -ml-24 -mb-24 opacity-50 blur-3xl"></div>
           
           <div className="flex items-center gap-6 relative z-10">
-            <div className="w-16 h-16 bg-[#00bd7f] rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200">
+            <div className="w-16 h-16 bg-[#1C7D5A] rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-200">
               <BarChart3 className="w-8 h-8 text-white" />
             </div>
             <div>
@@ -75,12 +75,12 @@ const StudentReports = () => {
         {/* Executive Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
            {stats.map((stat, idx) => (
-              <div key={idx} className="bg-white rounded-[2.2rem] border-2 border-slate-100 p-6 shadow-sm hover:shadow-md hover:border-[#00bd7f]/30 transition-all duration-300 group">
+              <div key={idx} className="bg-white rounded-[2.2rem] border-2 border-slate-100 p-6 shadow-sm hover:shadow-md hover:border-[#1C7D5A]/30 transition-all duration-300 group">
                  <div className="flex justify-between items-center mb-6">
                     <div className="p-3 bg-slate-50 rounded-xl group-hover:bg-[#e6f4ef] transition-colors">
-                       <FileText className="w-5 h-5 text-slate-400 group-hover:text-[#00bd7f]" />
+                       <FileText className="w-5 h-5 text-slate-400 group-hover:text-[#1C7D5A]" />
                     </div>
-                    <span className={`text-[10px] font-black px-3 py-1 rounded-full ${stat.trend === 'up' ? 'bg-emerald-50 text-[#00bd7f]' : 'bg-slate-50 text-slate-400 uppercase letter-spacing-widest'}`}>
+                    <span className={`text-[10px] font-black px-3 py-1 rounded-full ${stat.trend === 'up' ? 'bg-emerald-50 text-[#1C7D5A]' : 'bg-slate-50 text-slate-400 uppercase letter-spacing-widest'}`}>
                       {stat.delta}
                     </span>
                  </div>
@@ -101,7 +101,7 @@ const StudentReports = () => {
                  onClick={() => setActiveTab(tab.id)}
                  className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-black transition-all ${
                    activeTab === tab.id 
-                     ? "bg-[#00bd7f] text-white shadow-lg shadow-emerald-100 scale-[1.02]" 
+                     ? "bg-[#1C7D5A] text-white shadow-lg shadow-emerald-100 scale-[1.02]" 
                      : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
                  }`}
                >
@@ -113,8 +113,8 @@ const StudentReports = () => {
 
           <div className="flex gap-4 w-full xl:w-auto">
             <div className="relative group flex-1 xl:w-72">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-[#00bd7f] transition-colors" />
-               <input className="bg-white border-2 border-slate-100 rounded-2xl pl-12 pr-6 py-4 text-sm font-bold focus:border-[#00bd7f] outline-none w-full shadow-sm transition-all" placeholder="Search records..." />
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-[#1C7D5A] transition-colors" />
+               <input className="bg-white border-2 border-slate-100 rounded-2xl pl-12 pr-6 py-4 text-sm font-bold focus:border-[#1C7D5A] outline-none w-full shadow-sm transition-all" placeholder="Search records..." />
             </div>
             <button className="px-6 py-4 bg-white border-2 border-slate-100 text-slate-600 rounded-2xl flex items-center gap-2 font-black text-[11px] uppercase tracking-widest hover:bg-slate-50 transition-all">
               <Filter className="w-4 h-4" />
@@ -173,12 +173,12 @@ const StudentReports = () => {
                           <td className="px-10 py-7 text-center font-black text-slate-800">{row.total}</td>
                           <td className="px-10 py-7 text-center">
                              <div className="w-full bg-slate-100 rounded-full h-1.5 max-w-[100px] mx-auto overflow-hidden">
-                                <div className="bg-[#00bd7f] h-full rounded-full" style={{ width: row.cap }}></div>
+                                <div className="bg-[#1C7D5A] h-full rounded-full" style={{ width: row.cap }}></div>
                              </div>
                              <span className="text-[10px] font-bold text-slate-400 mt-1 block">{row.cap} Capacity</span>
                           </td>
                           <td className="px-10 py-7 text-right">
-                             <button className="p-2.5 bg-white border-2 border-slate-100 rounded-xl text-slate-400 hover:text-[#00bd7f] hover:border-[#00bd7f] transition-all">
+                             <button className="p-2.5 bg-white border-2 border-slate-100 rounded-xl text-slate-400 hover:text-[#1C7D5A] hover:border-[#1C7D5A] transition-all">
                                 <MoreHorizontal className="w-4 h-4" />
                              </button>
                           </td>
@@ -197,7 +197,7 @@ const StudentReports = () => {
                          </td>
                          <td className="px-10 py-7 text-center font-black text-slate-800 uppercase text-sm">{row.sub}</td>
                          <td className="px-10 py-7 text-center font-bold text-slate-600">{row.count}</td>
-                         <td className="px-10 py-7 text-center font-black text-[#00bd7f]">{row.perc}</td>
+                         <td className="px-10 py-7 text-center font-black text-[#1C7D5A]">{row.perc}</td>
                          <td className="px-10 py-7 text-right text-[10px] font-bold text-slate-400 uppercase tracking-widest">Normal Range</td>
                       </tr>
                     ))}
@@ -222,7 +222,7 @@ const StudentReports = () => {
                          <td className="px-10 py-7 text-center font-medium text-slate-500 text-sm">{row.reason}</td>
                          <td className="px-10 py-7 text-center font-mono text-xs text-slate-400">{row.date}</td>
                          <td className="px-10 py-7 text-right">
-                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${row.status.includes('Completed') ? 'bg-emerald-50 text-[#00bd7f] border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
+                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${row.status.includes('Completed') ? 'bg-emerald-50 text-[#1C7D5A] border-emerald-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>
                                {row.status}
                             </span>
                          </td>
@@ -236,8 +236,8 @@ const StudentReports = () => {
            <div className="p-10 bg-slate-50/50 flex flex-col md:flex-row justify-between items-center border-t-2 border-slate-100 gap-6">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Confidential Principal Report • Academic Session 2026</p>
               <div className="flex items-center gap-4">
-                 <button className="px-6 py-3 bg-white border-2 border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-[#00bd7f] hover:border-[#00bd7f] transition-all rounded-xl">Previous Data</button>
-                 <button className="px-6 py-3 bg-white border-2 border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-[#00bd7f] hover:border-[#00bd7f] transition-all rounded-xl">Next Data</button>
+                 <button className="px-6 py-3 bg-white border-2 border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-[#1C7D5A] hover:border-[#1C7D5A] transition-all rounded-xl">Previous Data</button>
+                 <button className="px-6 py-3 bg-white border-2 border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-[#1C7D5A] hover:border-[#1C7D5A] transition-all rounded-xl">Next Data</button>
               </div>
            </div>
         </div>

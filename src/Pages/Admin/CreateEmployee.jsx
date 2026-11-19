@@ -242,7 +242,7 @@ const CreateEmployee = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#00315e]" />
+            <Users className="w-8 h-8 text-[#1C7D5A]" />
             New Staff
           </h1>
         </div>
@@ -250,7 +250,7 @@ const CreateEmployee = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/admin/employee/list")}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#00315e] text-white rounded-[8px] hover:bg-[#00315e] transition-all shadow-sm cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-[8px] hover:bg-[#1C7D5A] transition-all shadow-sm cursor-pointer"
           >
             <User className="w-4 h-4" /> All Staff List
           </button>
@@ -418,7 +418,7 @@ const CreateEmployee = () => {
                 Profile Picture
               </label>
               <div
-                className="relative group border-2 border-dashed border-slate-200 rounded-[8px] bg-[#00315e24] hover:bg-[#00315e33] hover:border-[#00315e] transition-all p-12 text-center cursor-pointer"
+                className="relative group border-2 border-dashed border-slate-200 rounded-[8px] bg-[#1C7D5A18] hover:bg-[#1C7D5A33] hover:border-[#1C7D5A] transition-all p-12 text-center cursor-pointer"
                 onClick={() => document.getElementById("photo-upload").click()}
               >
                 <input
@@ -452,7 +452,7 @@ const CreateEmployee = () => {
                 ) : (
                   <div className="flex flex-col items-center gap-4">
                     <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
-                      <Upload className="w-10 h-10 text-[#00315e]" />
+                      <Upload className="w-10 h-10 text-[#1C7D5A]" />
                     </div>
                     <div>
                       <h4 className="text-xl font-black text-slate-800 mb-1">
@@ -606,7 +606,7 @@ const CreateEmployee = () => {
               <div className="space-y-4">
                 <label className="text-slate-500 text-[14px] font-black tracking-widest flex items-center gap-3 transition-colors">
                   Mobile Banking Methods{" "}
-                  <span className="text-[#00bd7f]">*</span>
+                  <span className="text-[#1C7D5A]">*</span>
                 </label>
                 <div className="flex flex-wrap gap-4">
                   {["Bkash", "Nagad", "Rocket"].map((method) => (
@@ -621,8 +621,8 @@ const CreateEmployee = () => {
                         handleInputChange("mobileMethods", newMethods);
                       }}
                       className={`px-6 py-3 rounded-[8px] font-bold text-sm transition-all flex items-center gap-2 border-2 ${formData.mobileMethods?.includes(method)
-                        ? "bg-[#00315e] border-[#00315e] text-white shadow-lg "
-                        : "bg-[#00315e24] border-transparent text-slate-600 hover:border-slate-300"
+                        ? "bg-[#1C7D5A] border-[#1C7D5A] text-white shadow-lg "
+                        : "bg-[#1C7D5A18] border-transparent text-slate-600 hover:border-slate-300"
                         }`}
                     >
                       <div
@@ -632,7 +632,7 @@ const CreateEmployee = () => {
                           }`}
                       >
                         {formData.mobileMethods?.includes(method) && (
-                          <ShieldCheck className="w-3 h-3 text-[#00315e]" />
+                          <ShieldCheck className="w-3 h-3 text-[#1C7D5A]" />
                         )}
                       </div>
                       {method}
@@ -667,8 +667,8 @@ const CreateEmployee = () => {
 
         {/* Salary & Compensation Section (Optional) */}
         <SectionContainer id="salary" title="Salary & Compensation (ঐচ্ছিক বেতন কাঠামো)" icon={DollarSign}>
-          <p className="text-xs font-bold text-slate-500 mb-6 bg-[#00315e24] p-3 rounded-[8px]">
-            💡 <span className="font-black text-[#00315e]">নোট:</span> নিয়োগের সময়ই বেতন চূড়ান্ত হয়ে থাকলে নিচের ফিল্ডগুলো পূরণ করুন। অন্যথায় এটি খালি রাখতে পারেন এবং পরবর্তীতে <span className="font-black text-[#00315e]">"Salary Setup"</span> মেনু থেকে নির্ধারণ করতে পারবেন।
+          <p className="text-xs font-bold text-slate-500 mb-6 bg-[#1C7D5A18] p-3 rounded-[8px]">
+            💡 <span className="font-black text-[#1C7D5A]">নোট:</span> নিয়োগের সময়ই বেতন চূড়ান্ত হয়ে থাকলে নিচের ফিল্ডগুলো পূরণ করুন। অন্যথায় এটি খালি রাখতে পারেন এবং পরবর্তীতে <span className="font-black text-[#1C7D5A]">"Salary Setup"</span> মেনু থেকে নির্ধারণ করতে পারবেন।
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FormInput
@@ -730,7 +730,7 @@ const CreateEmployee = () => {
           </button>
           <button
             type="submit"
-            className="flex-1 md:flex-none px-8 py-3 bg-[#00315e] text-white font-bold rounded-[8px] shadow-sm hover:scale-[1.02] transition-all text-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+            className="flex-1 md:flex-none px-8 py-3 bg-[#1C7D5A] text-white font-bold rounded-[8px] shadow-sm hover:scale-[1.02] transition-all text-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
           >
             <Save className="w-4 h-4" /> Save
           </button>
@@ -746,10 +746,10 @@ const CreateEmployee = () => {
 const SectionContainer = ({ title, icon: Icon, children }) => (
   <div className="bg-white dark:bg-white rounded-[8px] p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow mb-6">
     <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
-      <div className="w-10 h-10 rounded-xl bg-[#00315e24] flex items-center justify-center">
-        <Icon className="w-5 h-5 text-[#00315e]" />
+      <div className="w-10 h-10 rounded-xl bg-[#1C7D5A18] flex items-center justify-center">
+        <Icon className="w-5 h-5 text-[#1C7D5A]" />
       </div>
-      <h2 className="text-xl font-black text-[#00315e]">
+      <h2 className="text-xl font-black text-[#1C7D5A]">
         {title}
       </h2>
     </div>
@@ -781,7 +781,7 @@ const FormInput = ({
         onChange={(e) => setter(field, e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="w-full px-4 py-2 bg-[#00315e24] dark:bg-[#00315e24] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all"
+        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
       />
     </div>
   </div>
@@ -805,7 +805,7 @@ const FormSelect = ({
         value={data[field]}
         onChange={(e) => setter(field, e.target.value)}
         required={required}
-        className="w-full px-4 py-2 bg-[#00315e24] dark:bg-[#00315e24] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all appearance-none cursor-pointer"
+        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all appearance-none cursor-pointer"
       >
         {options.map((opt) => (
           <option key={opt} value={opt}>
@@ -840,7 +840,7 @@ const FormTextarea = ({
         placeholder={placeholder}
         required={required}
         rows={2}
-        className="w-full px-4 py-2 bg-[#00315e24] dark:bg-[#00315e24] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#00315e] focus:border-[#00315e] transition-all resize-none"
+        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all resize-none"
       />
     </div>
   </div>

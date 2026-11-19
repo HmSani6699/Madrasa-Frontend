@@ -176,7 +176,7 @@ const EmployeeList = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Users className="w-8 h-8 text-[#00315e]" />
+            <Users className="w-8 h-8 text-[#1C7D5A]" />
             Employee Management
           </h1>
         </div>
@@ -195,7 +195,7 @@ const EmployeeList = () => {
 
           <div className="flex gap-3 w-full md:w-auto">
             <Link to="/admin/employee/create" className="w-full sm:w-auto">
-              <button className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2">
+              <button className="w-full px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center gap-2">
                 <Plus className="w-4 h-4" />
                 Add Staff
               </button>
@@ -233,7 +233,7 @@ const EmployeeList = () => {
             key={idx}
             className="bg-white rounded-[8px] p-5 flex items-center justify-between shadow-lg relative overflow-hidden"
           >
-            <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
 
             <div className="z-[10]">
               <p className="text-2xl font-black text-slate-800 mb-1">{stat.value}</p>
@@ -254,7 +254,7 @@ const EmployeeList = () => {
       <div className="bg-white rounded-[10px] shadow-xl shadow-slate-100/50 overflow-hidden relative mt-8">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading staff data...</p>
           </div>
         ) : filteredEmployees.length === 0 ? (
@@ -268,7 +268,7 @@ const EmployeeList = () => {
           <>
             <div className="overflow-x-auto rounded-t-[8px]">
               <table className="w-full">
-                <thead className="bg-[#00315e24]">
+                <thead className="bg-[#1C7D5A18]">
                   <tr className="whitespace-nowrap">
                     <th className="px-10 py-3.5 text-left text-[12px] font-black">
                       Employee ID
@@ -321,14 +321,14 @@ const EmployeeList = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-3 py-1 bg-blue-50 text-[#00315e] rounded-md text-xs font-bold uppercase">
+                        <span className="px-3 py-1 bg-blue-50 text-[#1C7D5A] rounded-md text-xs font-bold uppercase">
                           {emp.department}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="space-y-1 text-xs font-bold text-slate-600">
                           <div className="flex items-center gap-1.5">
-                            <Phone className="w-3.5 h-3.5 text-[#00315e]" />
+                            <Phone className="w-3.5 h-3.5 text-[#1C7D5A]" />
                             {emp.phone}
                           </div>
                         </div>
@@ -358,10 +358,10 @@ const EmployeeList = () => {
                               setViewEmp(emp);
                             }}
                           >
-                            <Eye className="w-5 h-5 text-[#00315e]" />
+                            <Eye className="w-5 h-5 text-[#1C7D5A]" />
                           </button>
                           <Link to={`/admin/employee/create?id=${emp._id}`} className="cursor-pointer">
-                            <SquarePen className="w-4 h-4 text-[#00315e]" />
+                            <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                           </Link>
                           <button
                             className="cursor-pointer"
@@ -398,7 +398,7 @@ const EmployeeList = () => {
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -408,8 +408,8 @@ const EmployeeList = () => {
                       key={i + 1}
                       onClick={() => setCurrentPage(i + 1)}
                       className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
-                        ? "bg-[#00315e] border-[#00315e] text-white cursor-pointer"
-                        : "bg-white border-slate-200 text-slate-600 hover:border-[#00315e] hover:text-[#00315e] cursor-pointer"
+                        ? "bg-[#1C7D5A] border-[#1C7D5A] text-white cursor-pointer"
+                        : "bg-white border-slate-200 text-slate-600 hover:border-[#1C7D5A] hover:text-[#1C7D5A] cursor-pointer"
                         }`}
                     >
                       {i + 1}
@@ -419,7 +419,7 @@ const EmployeeList = () => {
                 <button
                   disabled={currentPage === Math.max(1, Math.ceil(filteredEmployees.length / itemsPerPage))}
                   onClick={() => setCurrentPage((p) => Math.min(Math.max(1, Math.ceil(filteredEmployees.length / itemsPerPage)), p + 1))}
-                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>

@@ -169,8 +169,8 @@ const GuardianExamSchedule = () => {
         {/* Header Section */}
         <div className="bg-white rounded-[1.5rem] p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-[#00bd7f]/10 rounded-xl flex items-center justify-center border border-[#00bd7f]/20">
-              <ClipboardCheck className="w-7 h-7 text-[#00bd7f]" />
+            <div className="w-14 h-14 bg-[#1C7D5A]/10 rounded-xl flex items-center justify-center border border-[#1C7D5A]/20">
+              <ClipboardCheck className="w-7 h-7 text-[#1C7D5A]" />
             </div>
             <div>
               <h1 className="text-2xl font-black text-slate-800 tracking-tight">Examination Routine</h1>
@@ -181,7 +181,7 @@ const GuardianExamSchedule = () => {
           <div className="flex gap-3">
             <button 
                onClick={handleDownloadPDF}
-               className="px-6 py-3 bg-[#00bd7f] text-white rounded-xl font-bold shadow-lg shadow-[#00bd7f]/20 hover:bg-[#00a870] transition-all flex items-center gap-2"
+               className="px-6 py-3 bg-[#1C7D5A] text-white rounded-xl font-bold shadow-lg shadow-[#1C7D5A]/20 hover:bg-[#00a870] transition-all flex items-center gap-2"
             >
                <Download className="w-4 h-4" />
                Download PDF
@@ -266,7 +266,7 @@ const GuardianExamSchedule = () => {
                     </li>
                     <li className="flex items-start gap-3 text-sm text-slate-600 font-medium">
                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 shrink-0"></span>
-                       {t('teacher.exam.instruction_4')} <span className="text-[#00bd7f] font-bold">08/10/2025</span>.
+                       {t('teacher.exam.instruction_4')} <span className="text-[#1C7D5A] font-bold">08/10/2025</span>.
                     </li>
                  </ul>
               </div>

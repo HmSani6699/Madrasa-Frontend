@@ -315,7 +315,7 @@ const ExamScheduleList = () => {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-5 w-full gap-4">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <BookOpen className="w-8 h-8 text-[#00315e]" />
+            <BookOpen className="w-8 h-8 text-[#1C7D5A]" />
             Exam Schedules
           </h1>
           <div className="flex items-center gap-2 text-sm text-slate-500 mt-1 ">
@@ -323,7 +323,7 @@ const ExamScheduleList = () => {
             <span>/</span>
             <span>Examination</span>
             <span>/</span>
-            <span className="text-[#00315e] font-semibold">Exam Schedule</span>
+            <span className="text-[#1C7D5A] font-semibold">Exam Schedule</span>
           </div>
         </div>
 
@@ -389,7 +389,7 @@ const ExamScheduleList = () => {
                   </button>
                   <button
                     onClick={() => setIsFilterOpen(false)}
-                    className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer text-sm font-semibold"
+                    className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer text-sm font-semibold"
                   >
                     Apply
                   </button>
@@ -410,7 +410,7 @@ const ExamScheduleList = () => {
             )}
             <button
               onClick={openAddModal}
-              className="w-full sm:w-auto px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap transition-all"
+              className="w-full sm:w-auto px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap transition-all"
             >
               <Plus className="w-4 h-4" />
               Add Schedule
@@ -423,7 +423,7 @@ const ExamScheduleList = () => {
       <div className="bg-white rounded-[8px] shadow-xl shadow-slate-100/50 overflow-hidden relative mt-8">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading schedules...</p>
           </div>
         ) : filteredSchedules.length === 0 ? (
@@ -437,7 +437,7 @@ const ExamScheduleList = () => {
           <>
             <div className="overflow-x-auto rounded-t-[8px]">
               <table className="w-full">
-                <thead className="bg-[#00315e24]">
+                <thead className="bg-[#1C7D5A18]">
                   <tr className="whitespace-nowrap">
                     <th className="px-6 py-4 text-left">
                       <input type="checkbox" className="rounded border-slate-300 text-blue-500 focus:ring-blue-500" />
@@ -458,7 +458,7 @@ const ExamScheduleList = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-[8px] bg-blue-50 flex items-center justify-center text-[#00315e]">
+                          <div className="w-10 h-10 rounded-[8px] bg-blue-50 flex items-center justify-center text-[#1C7D5A]">
                             <BookOpen className="w-5 h-5" />
                           </div>
                           <div>
@@ -494,7 +494,7 @@ const ExamScheduleList = () => {
                         <div className="flex justify-end gap-2">
                           <button
                             onClick={() => openEditModal(schedule)}
-                            className="cursor-pointer p-1 text-slate-400 hover:text-[#00315e]"
+                            className="cursor-pointer p-1 text-slate-400 hover:text-[#1C7D5A]"
                           >
                             <SquarePen className="w-4 h-4" />
                           </button>
@@ -520,7 +520,7 @@ const ExamScheduleList = () => {
                 <button className="p-2 border-2 border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-blue-500 hover:text-blue-600 transition-all">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <button className="w-10 h-10 rounded-[8px] text-xs font-black transition-all border-2 bg-[#00315e] border-[#00315e] text-white cursor-pointer">
+                <button className="w-10 h-10 rounded-[8px] text-xs font-black transition-all border-2 bg-[#1C7D5A] border-[#1C7D5A] text-white cursor-pointer">
                   1
                 </button>
                 <button className="p-2 border-2 border-slate-200 rounded-[8px] bg-white text-slate-600 hover:bg-slate-50 hover:border-blue-500 hover:text-blue-600 transition-all">
@@ -555,7 +555,7 @@ const ExamScheduleList = () => {
                       value={formData.exam_id}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none bg-white text-sm transition-all"
+                      className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none bg-white text-sm transition-all"
                     >
                       <option value="">Select Exam</option>
                       {examNames.map(e => <option key={e._id} value={e._id}>{e.name}</option>)}
@@ -568,7 +568,7 @@ const ExamScheduleList = () => {
                       value={formData.class_id}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none bg-white text-sm transition-all"
+                      className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none bg-white text-sm transition-all"
                     >
                       <option value="">Select Class</option>
                       {classes.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
@@ -585,7 +585,7 @@ const ExamScheduleList = () => {
                           onChange={handleInputChange}
                           required
                           disabled={!formData.class_id}
-                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none bg-white text-sm transition-all disabled:bg-slate-50 disabled:text-slate-400"
+                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none bg-white text-sm transition-all disabled:bg-slate-50 disabled:text-slate-400"
                         >
                           <option value="">Select Subject</option>
                           {subjects.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
@@ -599,7 +599,7 @@ const ExamScheduleList = () => {
                           value={formData.exam_date}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none text-sm text-slate-700 transition-all"
+                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none text-sm text-slate-700 transition-all"
                         />
                       </div>
 
@@ -611,7 +611,7 @@ const ExamScheduleList = () => {
                           value={formData.start_time}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none text-sm text-slate-700 transition-all"
+                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none text-sm text-slate-700 transition-all"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -622,7 +622,7 @@ const ExamScheduleList = () => {
                           value={formData.end_time}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none text-sm text-slate-700 transition-all"
+                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none text-sm text-slate-700 transition-all"
                         />
                       </div>
 
@@ -632,7 +632,7 @@ const ExamScheduleList = () => {
                           name="room_no"
                           value={formData.room_no}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none text-sm transition-all"
+                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none text-sm transition-all"
                           placeholder="e.g. 101"
                         />
                       </div>
@@ -643,7 +643,7 @@ const ExamScheduleList = () => {
                           name="full_marks"
                           value={formData.full_marks}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none text-sm transition-all"
+                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none text-sm transition-all"
                           placeholder="100"
                         />
                       </div>
@@ -654,7 +654,7 @@ const ExamScheduleList = () => {
                           name="pass_marks"
                           value={formData.pass_marks}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#00315e] focus:ring-4 focus:ring-blue-50 outline-none text-sm transition-all"
+                          className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-[#1C7D5A] focus:ring-4 focus:ring-blue-50 outline-none text-sm transition-all"
                           placeholder="33"
                         />
                       </div>
@@ -666,7 +666,7 @@ const ExamScheduleList = () => {
                   <div className="mt-6 border border-slate-200 rounded-[8px] overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full">
-                        <thead className="bg-[#00315e24]">
+                        <thead className="bg-[#1C7D5A18]">
                           <tr className="whitespace-nowrap">
                             <th className="px-4 py-3 text-left text-xs font-black text-slate-800 uppercase tracking-wider">Subject</th>
                             <th className="px-4 py-3 text-left text-xs font-black text-slate-800 uppercase tracking-wider">Date *</th>
@@ -688,7 +688,7 @@ const ExamScheduleList = () => {
                                   type="date"
                                   value={subjectSchedules[subject._id]?.exam_date || ""}
                                   onChange={(e) => handleSubjectScheduleChange(subject._id, 'exam_date', e.target.value)}
-                                  className="w-[130px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#00315e] outline-none text-sm text-slate-700"
+                                  className="w-[130px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#1C7D5A] outline-none text-sm text-slate-700"
                                 />
                               </td>
                               <td className="px-2 py-2">
@@ -696,7 +696,7 @@ const ExamScheduleList = () => {
                                   type="time"
                                   value={subjectSchedules[subject._id]?.start_time || ""}
                                   onChange={(e) => handleSubjectScheduleChange(subject._id, 'start_time', e.target.value)}
-                                  className="w-[110px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#00315e] outline-none text-sm text-slate-700"
+                                  className="w-[110px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#1C7D5A] outline-none text-sm text-slate-700"
                                 />
                               </td>
                               <td className="px-2 py-2">
@@ -704,7 +704,7 @@ const ExamScheduleList = () => {
                                   type="time"
                                   value={subjectSchedules[subject._id]?.end_time || ""}
                                   onChange={(e) => handleSubjectScheduleChange(subject._id, 'end_time', e.target.value)}
-                                  className="w-[110px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#00315e] outline-none text-sm text-slate-700"
+                                  className="w-[110px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#1C7D5A] outline-none text-sm text-slate-700"
                                 />
                               </td>
                               <td className="px-2 py-2">
@@ -713,7 +713,7 @@ const ExamScheduleList = () => {
                                   value={subjectSchedules[subject._id]?.room_no || ""}
                                   onChange={(e) => handleSubjectScheduleChange(subject._id, 'room_no', e.target.value)}
                                   placeholder="101"
-                                  className="w-[70px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#00315e] outline-none text-sm text-slate-700"
+                                  className="w-[70px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#1C7D5A] outline-none text-sm text-slate-700"
                                 />
                               </td>
                               <td className="px-2 py-2">
@@ -721,7 +721,7 @@ const ExamScheduleList = () => {
                                   type="number"
                                   value={subjectSchedules[subject._id]?.full_marks || 100}
                                   onChange={(e) => handleSubjectScheduleChange(subject._id, 'full_marks', e.target.value)}
-                                  className="w-[60px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#00315e] outline-none text-sm text-slate-700"
+                                  className="w-[60px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#1C7D5A] outline-none text-sm text-slate-700"
                                 />
                               </td>
                               <td className="px-2 py-2">
@@ -729,7 +729,7 @@ const ExamScheduleList = () => {
                                   type="number"
                                   value={subjectSchedules[subject._id]?.pass_marks || 33}
                                   onChange={(e) => handleSubjectScheduleChange(subject._id, 'pass_marks', e.target.value)}
-                                  className="w-[60px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#00315e] outline-none text-sm text-slate-700"
+                                  className="w-[60px] px-2 py-1.5 rounded-[6px] border border-slate-200 focus:border-[#1C7D5A] outline-none text-sm text-slate-700"
                                 />
                               </td>
                             </tr>
@@ -751,7 +751,7 @@ const ExamScheduleList = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2.5 rounded-[8px] bg-[#00315e] text-white font-semibold hover:bg-[#002244] shadow-lg shadow-blue-200 transition-all text-sm flex items-center gap-2 disabled:opacity-70 cursor-pointer"
+                  className="px-6 py-2.5 rounded-[8px] bg-[#1C7D5A] text-white font-semibold hover:bg-[#123628] shadow-lg shadow-blue-200 transition-all text-sm flex items-center gap-2 disabled:opacity-70 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

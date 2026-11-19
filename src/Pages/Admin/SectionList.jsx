@@ -138,7 +138,7 @@ const SectionList = () => {
       <div className="flex items-center justify-between mb-5">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Shapes className="w-8 h-8 text-[#00315e]" />
+            <Shapes className="w-8 h-8 text-[#1C7D5A]" />
             Section Management
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
@@ -161,7 +161,7 @@ const SectionList = () => {
           </div>
           <button
             onClick={openAddModal}
-            className="px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2 whitespace-nowrap"
+            className="px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center gap-2 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             Add Section
@@ -173,7 +173,7 @@ const SectionList = () => {
       <div className="bg-white rounded-[8px]  shadow-xl shadow-slate-100/50 overflow-hidden relative">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading sections...</p>
           </div>
         ) : filteredSections?.length === 0 ? (
@@ -187,7 +187,7 @@ const SectionList = () => {
           <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
 
             <table className="w-full">
-              <thead className="bg-[#00315e24]">
+              <thead className="bg-[#1C7D5A18]">
                 <tr>
                   <th className="px-10 py-3 text-left text-[12px] font-black ">
                     ID
@@ -240,7 +240,7 @@ const SectionList = () => {
                     <td>
                       <div className="flex items-center gap-3 justify-center">
                         <button className="cursor-pointer" onClick={() => openEditModal(sec)}>
-                          <SquarePen className="w-4 h-4 text-[#00315e]" />
+                          <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                         </button>
                         <button className="cursor-pointer" onClick={() => openDeleteModal(sec)}>
                           <Trash2 className="w-4 w-4 text-red-500" />
@@ -305,7 +305,7 @@ const SectionList = () => {
                 </button>
                 <button
                   onClick={handleAction}
-                  className="px-8 py-3 bg-[#00315e] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-8 py-3 bg-[#1C7D5A] hover:bg-blue-900 text-white font-bold rounded-[8px] shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                 >
                   {modalType === "add" ? "Add Section" : "Update Section"}
                 </button>

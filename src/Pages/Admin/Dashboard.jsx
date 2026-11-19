@@ -81,7 +81,7 @@ const AdminDashboard = () => {
     0
   );
 
-  const chartColors = ["#00315e", "#0f766e", "#f59e0b", "#ef4444"];
+  const chartColors = ["#1C7D5A", "#EAB33C", "#123628", "#3b82f6"];
 
   const stats = [
     {
@@ -152,7 +152,7 @@ const AdminDashboard = () => {
             key={index}
             className="bg-white p-6 rounded-[8px] shadow-sm hover:shadow-md transition-shadow flex items-center justify-between relative overflow-hidden "
           >
-             <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+             <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
             <div clsassName=" relative z-20 flex flex-col items-start">
               <h3 className="text-3xl font-bold text-slate-800 tracking-tight mb-1  relative z-20">
                 {stat.value}

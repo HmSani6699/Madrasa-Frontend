@@ -156,7 +156,7 @@ const OnlineAdmissionList = () => {
 
 
         <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-          <FileText className="w-8 h-8 text-[#00315e]" />
+          <FileText className="w-8 h-8 text-[#1C7D5A]" />
           Online Admission Applications
         </h1>
 
@@ -218,7 +218,7 @@ const OnlineAdmissionList = () => {
 
                   <button
 
-                    className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
+                    className=" px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer"
                   >
                     Apply
                   </button>
@@ -232,7 +232,7 @@ const OnlineAdmissionList = () => {
             <Link to="/admin/admission/create" className="w-full sm:w-auto">
               <button
 
-                className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
+                className="w-full px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Add Student
@@ -249,7 +249,7 @@ const OnlineAdmissionList = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-[10px]  shadow-lg p-6 relative overflow-hidden">
-          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
           <div className="flex items-center justify-between relative z-[10]">
             <div>
 
@@ -267,7 +267,7 @@ const OnlineAdmissionList = () => {
         </div>
 
         <div className="bg-white rounded-[10px]  shadow-lg p-6 relative overflow-hidden">
-          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
           <div className="flex items-center justify-between relative z-[10]">
             <div>
 
@@ -285,7 +285,7 @@ const OnlineAdmissionList = () => {
         </div>
 
         <div className="bg-white rounded-[10px]  shadow-lg p-6 relative overflow-hidden">
-          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
           <div className="flex items-center justify-between relative z-[10]">
             <div>
 
@@ -303,7 +303,7 @@ const OnlineAdmissionList = () => {
         </div>
 
         <div className="bg-white rounded-[10px]  shadow-lg p-6 relative overflow-hidden">
-          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+          <div className="absolute -top-[5%] -left-[30%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
           <div className="flex items-center justify-between relative z-[10]">
             <div>
 
@@ -328,7 +328,7 @@ const OnlineAdmissionList = () => {
       <div className="bg-white  rounded-[10px] border border-gray-100 shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#00315e]/5 border-gray-100 dark:border-slate-700">
+            <thead className="bg-[#1C7D5A]/5 border-gray-100 dark:border-slate-700">
               <tr className="cursor-pointer whitespace-nowrap">
                 <th className="px-6 py-4 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
                   Student
@@ -363,7 +363,7 @@ const OnlineAdmissionList = () => {
                     <div className="flex flex-col gap-4">
                       {(app.students || (app.student ? [app.student] : [])).filter(Boolean).map((student, idx) => (
                         <div key={idx} className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-slate-50 text-[#00315e] rounded-full flex items-center justify-center font-black overflow-hidden border border-slate-200">
+                          <div className="w-10 h-10 bg-slate-50 text-[#1C7D5A] rounded-full flex items-center justify-center font-black overflow-hidden border border-slate-200">
                             <img
                               src={student.photo || ""}
                               alt={student.name || student.firstName || "N/A"}
@@ -386,7 +386,7 @@ const OnlineAdmissionList = () => {
                     <div className="flex flex-col gap-4">
                       {(app.students || (app.student ? [app.student] : [])).filter(Boolean).map((student, idx) => (
                         <div key={idx} className="h-10 flex items-center">
-                          <span className="inline-block px-3 py-1 bg-[#00315e]/10 text-[#00315e] text-xs font-bold rounded-lg border border-[#00315e]/20">
+                          <span className="inline-block px-3 py-1 bg-[#1C7D5A]/10 text-[#1C7D5A] text-xs font-bold rounded-lg border border-[#1C7D5A]/20">
                             {classesMap[student.appliedClass] || classesMap[student.class] || student.appliedClass || student.class || "N/A"}
                           </span>
                         </div>
@@ -404,11 +404,11 @@ const OnlineAdmissionList = () => {
                   <td className="px-6 py-4 whitespace-nowrap align-top pt-[26px]">
                     <div className="space-y-2">
                       <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
-                        <Phone className="w-3 h-3 text-[#00315e]" />
+                        <Phone className="w-3 h-3 text-[#1C7D5A]" />
                         {app.guardian?.fatherContact || app.student?.phone || "N/A"}
                       </p>
                       <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1 max-w-[200px]" title={app.guardian?.address}>
-                        <MapPin className="w-3 h-3 text-[#00bd7f] shrink-0" />
+                        <MapPin className="w-3 h-3 text-[#1C7D5A] shrink-0" />
                         <span className="truncate">{app.guardian?.address || "N/A"}</span>
                       </p>
                     </div>
@@ -423,7 +423,7 @@ const OnlineAdmissionList = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-center align-top pt-5">
                     <button
                       onClick={() => setSelectedApplication(app)}
-                      className="inline-flex items-center gap-2 bg-[#00315e] text-white px-5 py-2 rounded-lg  transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 bg-[#1C7D5A] text-white px-5 py-2 rounded-lg  transition-all cursor-pointer"
                     >
                       <Eye className="w-3 h-3" />
                       View Details

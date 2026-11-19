@@ -31,7 +31,7 @@ const StudentDashboard = () => {
            <div className="absolute top-0 right-0 w-64 h-full bg-slate-50 rounded-bl-[10rem] -mr-10 -mt-10 opacity-50"></div>
            <div className="flex flex-col lg:flex-row justify-between items-center gap-8 relative z-10">
               <div className="flex items-center gap-4 md:gap-8">
-                <div className="w-16 h-16 md:w-24 md:h-24 bg-slate-900 rounded-[2rem] md:rounded-[3rem] p-1 shadow-2xl">
+                <div className="w-16 h-16 md:w-24 md:h-24 bg-[#123628] rounded-[2rem] md:rounded-[3rem] p-1 shadow-2xl">
                    <div className="w-full h-full bg-slate-800 rounded-[1.5rem] md:rounded-[2.5rem] flex items-center justify-center font-black text-white text-2xl md:text-3xl border-2 border-white/10 uppercase shadow-inner">
                       AM
                    </div>
@@ -54,7 +54,7 @@ const StudentDashboard = () => {
                        <h4 className="text-base font-black text-slate-800">12 Days</h4>
                     </div>
                  </div>
-                 <div className="px-6 py-4 bg-slate-900 rounded-2xl md:rounded-3xl shadow-xl shadow-slate-200 flex items-center gap-4 group cursor-pointer hover:bg-slate-800 transition-all">
+                 <div className="px-6 py-4 bg-[#123628] rounded-2xl md:rounded-3xl shadow-xl shadow-slate-200 flex items-center gap-4 group cursor-pointer hover:bg-[#123628]/90 transition-all">
                     <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white border border-white/5">
                        <Trophy className="w-5 h-5" />
                     </div>
@@ -69,7 +69,7 @@ const StudentDashboard = () => {
 
         {/* Action Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-           <div className="bg-emerald-600 p-8 rounded-[2.5rem] shadow-xl shadow-emerald-100 group relative overflow-hidden cursor-pointer hover:-translate-y-1 transition-all">
+           <div className="bg-[#1C7D5A] p-8 rounded-[2.5rem] shadow-xl shadow-emerald-900/10 group relative overflow-hidden cursor-pointer hover:-translate-y-1 transition-all">
               <BookOpen className="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 -rotate-12 group-hover:rotate-0 transition-transform duration-700" />
               <div className="relative z-10">
                  <p className="text-[10px] font-black text-emerald-100 uppercase tracking-widest mb-6">Homework Status</p>

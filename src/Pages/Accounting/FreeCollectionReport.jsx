@@ -96,7 +96,7 @@ const FreeCollectionReport = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-800 font-outfit relative overflow-hidden">
       {/* Dynamic Background Elements */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#00bd7f]/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#1C7D5A]/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="max-w-[1500px] mx-auto p-4 md:p-10 relative z-10 space-y-10">
@@ -110,13 +110,13 @@ const FreeCollectionReport = () => {
           <div className="bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-white shadow-xl flex items-center gap-1">
             <button 
               onClick={() => setViewMode("single")}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-2 ${viewMode === "single" ? "bg-[#00bd7f] text-white shadow-lg shadow-emerald-200" : "text-slate-500 hover:bg-slate-100"}`}
+              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-2 ${viewMode === "single" ? "bg-[#1C7D5A] text-white shadow-lg shadow-emerald-200" : "text-slate-500 hover:bg-slate-100"}`}
             >
               <User className="w-4 h-4" /> {t('fee_report.single_view')}
             </button>
             <button 
               onClick={() => setViewMode("multi")}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-2 ${viewMode === "multi" ? "bg-[#00bd7f] text-white shadow-lg shadow-emerald-200" : "text-slate-500 hover:bg-slate-100"}`}
+              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 flex items-center gap-2 ${viewMode === "multi" ? "bg-[#1C7D5A] text-white shadow-lg shadow-emerald-200" : "text-slate-500 hover:bg-slate-100"}`}
             >
               <Users className="w-4 h-4" /> {t('fee_report.multiple_view')}
             </button>
@@ -131,7 +131,7 @@ const FreeCollectionReport = () => {
            <SelectInputField title={t('common.date') || 'Date'} options={months}/>
           <SelectInputField title={t('fee_report.fee_type')} options={feeCategories}/>
 
-          <button className="bg-[#00bd7f] text-white px-10 py-3.5 rounded-[10px] text-xs font-black  tracking-widest shadow-xl shadow-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all mt-5.5">
+          <button className="bg-[#1C7D5A] text-white px-10 py-3.5 rounded-[10px] text-xs font-black  tracking-widest shadow-xl shadow-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all mt-5.5">
             {t('student_academic_report_page.filter')}
           </button>
         </div> : <div className="bg-white/70 backdrop-blur-xl border border-white/40 p-3 rounded-[20px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] flex  items-center gap-4">
@@ -140,7 +140,7 @@ const FreeCollectionReport = () => {
           ]} />
           <SelectInputField title={t('common.date') || 'Date'} options={months} />
             <SelectInputField title={t('fee_report.fee_type')} options={feeCategories} />
-          <button className="bg-[#00bd7f] text-white px-10 py-3.5 rounded-[10px] text-xs font-black  tracking-widest shadow-xl shadow-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all mt-5.5">
+          <button className="bg-[#1C7D5A] text-white px-10 py-3.5 rounded-[10px] text-xs font-black  tracking-widest shadow-xl shadow-emerald-100 hover:scale-[1.02] active:scale-[0.98] transition-all mt-5.5">
             {t('student_academic_report_page.filter')}
           </button>
         </div> }
@@ -152,7 +152,7 @@ const FreeCollectionReport = () => {
              {/* Profile Card */}
             <div className="space-y-4 flex flex-col items-center text-center border-r-2 border-emerald-600">
              
-                <div className="w-[70px] h-[70px] bg-[#00bd7f] rounded-[20px] flex items-center justify-center   ">
+                <div className="w-[70px] h-[70px] bg-[#1C7D5A] rounded-[20px] flex items-center justify-center   ">
                   
               </div>
               
@@ -198,7 +198,7 @@ const FreeCollectionReport = () => {
                         {filteredData[0]?.fees.map((fee, idx) => (
                           <tr key={idx} className="hover:bg-slate-50/50 transition-all duration-300 group">
                             <td className="px-8 py-2 whitespace-nowrap">
-                              <span className="text-sm font-black text-slate-800 group-hover:text-[#00bd7f] transition-colors">{fee.category}</span>
+                              <span className="text-sm font-black text-slate-800 group-hover:text-[#1C7D5A] transition-colors">{fee.category}</span>
                               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase">{fee.month}</p>
                             </td>
                             <td className="px-8 py-2 text-center text-sm font-black text-slate-900 whitespace-nowrap">৳ {fee.actual}</td>
@@ -227,7 +227,7 @@ const FreeCollectionReport = () => {
              {/* Profile Card */}
             <div className="space-y-4 flex flex-col items-center text-center border-r-2 border-emerald-600">
              
-                <div className="w-[70px] h-[70px] bg-[#00bd7f] rounded-[20px] flex items-center justify-center   ">
+                <div className="w-[70px] h-[70px] bg-[#1C7D5A] rounded-[20px] flex items-center justify-center   ">
                   
               </div>
               
@@ -273,7 +273,7 @@ const FreeCollectionReport = () => {
                         {student.fees.map((fee, idx) => (
                           <tr key={idx} className="hover:bg-slate-50/50 transition-all duration-300 group">
                             <td className="px-8 py-2 whitespace-nowrap">
-                              <span className="text-sm font-black text-slate-800 group-hover:text-[#00bd7f] transition-colors">{fee.category}</span>
+                              <span className="text-sm font-black text-slate-800 group-hover:text-[#1C7D5A] transition-colors">{fee.category}</span>
                               <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase">{fee.month}</p>
                             </td>
                             <td className="px-8 py-2 text-center text-sm font-black text-slate-900 whitespace-nowrap">৳ {fee.actual}</td>
@@ -298,7 +298,7 @@ const FreeCollectionReport = () => {
       </div>
       
       {/* Decorative Blur Overlays */}
-      <div className="fixed top-[20%] left-[-5%] w-[300px] h-[300px] bg-[#00bd7f]/10 rounded-full blur-[100px] rotate-45 z-0 pointer-events-none"></div>
+      <div className="fixed top-[20%] left-[-5%] w-[300px] h-[300px] bg-[#1C7D5A]/10 rounded-full blur-[100px] rotate-45 z-0 pointer-events-none"></div>
       <div className="fixed bottom-[10%] right-[-5%] w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[120px] z-0 pointer-events-none"></div>
     </div>
   );

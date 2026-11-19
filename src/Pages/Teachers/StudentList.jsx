@@ -28,8 +28,8 @@ const StudentList = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-[20px] border border-slate-200 shadow-sm">
            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[#00bd7f]/10 rounded-xl flex items-center justify-center border border-[#00bd7f]/20">
-                 <Users className="w-6 h-6 text-[#00bd7f]" />
+              <div className="w-12 h-12 bg-[#1C7D5A]/10 rounded-xl flex items-center justify-center border border-[#1C7D5A]/20">
+                 <Users className="w-6 h-6 text-[#1C7D5A]" />
               </div>
               <div>
                  <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight">{t('teacher.students.student_directory')}</h1>
@@ -39,11 +39,11 @@ const StudentList = () => {
 
            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <div className="relative group">
-                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#00bd7f] transition-colors" />
+                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-[#1C7D5A] transition-colors" />
                  <input 
                     type="text" 
                     placeholder={t('teacher.students.search_students')} 
-                    className="w-full sm:w-64 pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00bd7f]/20 focus:border-[#00bd7f] transition-all text-sm font-medium"
+                    className="w-full sm:w-64 pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1C7D5A]/20 focus:border-[#1C7D5A] transition-all text-sm font-medium"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                  />
@@ -81,7 +81,7 @@ const StudentList = () => {
                                 <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-xs ring-2 ring-white shadow-sm">
                                    {student.name.charAt(0)}
                                 </div>
-                                <span className="font-bold text-slate-700 text-sm group-hover:text-[#00bd7f] transition-colors">{student.name}</span>
+                                <span className="font-bold text-slate-700 text-sm group-hover:text-[#1C7D5A] transition-colors">{student.name}</span>
                              </div>
                           </td>
                           <td className="px-6 py-4">
@@ -108,7 +108,7 @@ const StudentList = () => {
                           </td>
                           <td className="px-6 py-4 text-right">
                              <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button className="p-2 text-slate-400 hover:text-[#00bd7f] hover:bg-[#00bd7f]/5 rounded-lg transition-all" title={t('teacher.students.view_profile')}>
+                                <button className="p-2 text-slate-400 hover:text-[#1C7D5A] hover:bg-[#1C7D5A]/5 rounded-lg transition-all" title={t('teacher.students.view_profile')}>
                                    <Eye className="w-4 h-4" />
                                 </button>
                                 <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title={t('teacher.students.message_guardian')}>

@@ -43,7 +43,7 @@ const FeesReports = () => {
         <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 bg-[#e6f4ef] rounded-2xl flex items-center justify-center border border-emerald-100 shadow-inner">
-              <DollarSign className="w-8 h-8 text-[#00bd7f]" />
+              <DollarSign className="w-8 h-8 text-[#1C7D5A]" />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight text-uppercase">Revenue Insights</h1>
@@ -56,7 +56,7 @@ const FeesReports = () => {
                <Calendar className="w-5 h-5" />
                Period Selector
             </button>
-            <button className="flex-[2] lg:flex-none px-8 py-4 bg-[#00bd7f] text-white rounded-2xl font-black shadow-xl shadow-emerald-100 hover:bg-[#009b68] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]">
+            <button className="flex-[2] lg:flex-none px-8 py-4 bg-[#1C7D5A] text-white rounded-2xl font-black shadow-xl shadow-emerald-100 hover:bg-[#123628] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]">
               <Download className="w-5 h-5" />
               Consolidated PDF
             </button>
@@ -74,13 +74,13 @@ const FeesReports = () => {
               <div key={idx} className="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm group hover:border-emerald-200 transition-all">
                  <div className="flex justify-between items-center mb-4">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 group-hover:bg-[#e6f4ef] group-hover:text-[#00bd7f] transition-colors">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-50 text-slate-400 group-hover:bg-[#e6f4ef] group-hover:text-[#1C7D5A] transition-colors">
                        <stat.icon className="w-4 h-4" />
                     </div>
                  </div>
                  <div className="flex items-end justify-between">
                     <h4 className="text-3xl font-black text-slate-800 tracking-tight">{stat.value}</h4>
-                    <span className={`text-[10px] font-black ${stat.delta.includes('+') ? 'text-[#00bd7f]' : 'text-rose-500'}`}>{stat.delta}</span>
+                    <span className={`text-[10px] font-black ${stat.delta.includes('+') ? 'text-[#1C7D5A]' : 'text-rose-500'}`}>{stat.delta}</span>
                  </div>
               </div>
            ))}
@@ -94,7 +94,7 @@ const FeesReports = () => {
                onClick={() => setActiveTab(tab.id)}
                className={`flex items-center gap-3 px-6 py-4 rounded-[2rem] font-black transition-all ${
                  activeTab === tab.id 
-                   ? "bg-[#00bd7f] text-white shadow-lg shadow-emerald-100 scale-[1.02]" 
+                   ? "bg-[#1C7D5A] text-white shadow-lg shadow-emerald-100 scale-[1.02]" 
                    : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
                }`}
              >
@@ -111,17 +111,17 @@ const FeesReports = () => {
                  <div className="space-y-3">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Academic Level</label>
                     <div className="relative group">
-                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none cursor-pointer group-hover:border-slate-300 transition-all shadow-sm">
+                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#1C7D5A] outline-none appearance-none cursor-pointer group-hover:border-slate-300 transition-all shadow-sm">
                           <option>Hifz Section</option>
                           <option>Mishkat Section</option>
                        </select>
-                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none group-focus-within:text-[#00bd7f]" />
+                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none group-focus-within:text-[#1C7D5A]" />
                     </div>
                  </div>
                  <div className="space-y-3">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Fee Category</label>
                     <div className="relative group">
-                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none cursor-pointer shadow-sm">
+                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#1C7D5A] outline-none appearance-none cursor-pointer shadow-sm">
                           <option>Admission Fees</option>
                           <option>Tuition Fees</option>
                           <option>Hostel Fees</option>
@@ -132,7 +132,7 @@ const FeesReports = () => {
                  <div className="space-y-3">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Payment Status</label>
                     <div className="relative group">
-                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none cursor-pointer shadow-sm">
+                       <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#1C7D5A] outline-none appearance-none cursor-pointer shadow-sm">
                           <option>All Transactions</option>
                           <option>Fully Paid</option>
                           <option>Partially Paid</option>
@@ -143,7 +143,7 @@ const FeesReports = () => {
                  </div>
                  <div className="flex items-end">
                     <button className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all flex items-center justify-center gap-3">
-                       <Filter className="w-4 h-4 text-[#00bd7f]" />
+                       <Filter className="w-4 h-4 text-[#1C7D5A]" />
                        Filter Ledger
                     </button>
                  </div>
@@ -170,7 +170,7 @@ const FeesReports = () => {
                           </td>
                           <td className="px-10 py-6">
                              <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:scale-110 group-hover:bg-[#e6f4ef] group-hover:text-[#00bd7f] transition-all">OK</div>
+                                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:scale-110 group-hover:bg-[#e6f4ef] group-hover:text-[#1C7D5A] transition-all">OK</div>
                                 <div>
                                    <p className="text-sm font-black text-slate-800 tracking-tight">Omar Kadri</p>
                                    <p className="text-[10px] font-bold text-slate-400 tracking-widest italic">Hifz / Sec B</p>
@@ -188,13 +188,13 @@ const FeesReports = () => {
                           </td>
                           <td className="px-10 py-6 text-center">
                              <span className={`px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest border ${
-                                i % 3 === 0 ? 'bg-amber-50 text-amber-500 border-amber-100' : 'bg-emerald-50 text-[#00bd7f] border-emerald-100'
+                                i % 3 === 0 ? 'bg-amber-50 text-amber-500 border-amber-100' : 'bg-emerald-50 text-[#1C7D5A] border-emerald-100'
                              }`}>
                                 {i % 3 === 0 ? 'Partial Settlement' : 'Fully Settled'}
                              </span>
                           </td>
                           <td className="px-10 py-6 text-right">
-                             <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#00bd7f] hover:border-[#00bd7f] transition-all shadow-sm">
+                             <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#1C7D5A] hover:border-[#1C7D5A] transition-all shadow-sm">
                                 <Printer className="w-4 h-4" />
                              </button>
                           </td>
@@ -208,7 +208,7 @@ const FeesReports = () => {
            <div className="p-10 border-t border-slate-100 bg-slate-50/30 flex flex-col md:flex-row justify-between items-center gap-8">
               <div className="flex gap-12">
                  <div className="flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#00bd7f]"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#1C7D5A]"></div>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Invoiced Value: ৳ 4.2M</span>
                  </div>
                  <div className="flex items-center gap-3">

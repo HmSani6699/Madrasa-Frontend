@@ -109,7 +109,7 @@ const AttendanceReports = () => {
   const presentPercentage = totalRecords > 0 ? ((presentCount / totalRecords) * 100).toFixed(1) : 0;
 
   const stats = [
-    { label: t("reports_page.avg_attendance"), value: `${presentPercentage}%`, delta: 'Rate', icon: UserCheck, color: 'text-[#00bd7f]', bg: 'bg-[#00bd7f]/10' },
+    { label: t("reports_page.avg_attendance"), value: `${presentPercentage}%`, delta: 'Rate', icon: UserCheck, color: 'text-[#1C7D5A]', bg: 'bg-[#1C7D5A]/10' },
     { label: t("reports_page.morning_lates"), value: lateCount, delta: 'Count', icon: Clock, color: 'text-rose-500', bg: 'bg-rose-50' },
     { label: "Absences", value: absentCount, delta: 'Count', icon: TrendingUp, color: 'text-amber-600', bg: 'bg-amber-50' },
     { label: t("reports_page.leave_tracking"), value: leaveCount, delta: 'Active', icon: PieChart, color: 'text-indigo-600', bg: 'bg-indigo-50' }
@@ -122,8 +122,8 @@ const AttendanceReports = () => {
         {/* Header Section */}
         <div className="bg-white rounded-[20px] border border-slate-200 p-8 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 bg-[#00bd7f]/10 rounded-2xl flex items-center justify-center border border-[#00bd7f]/20 shadow-inner">
-              <CalendarCheck className="w-8 h-8 text-[#00bd7f]" />
+            <div className="w-16 h-16 bg-[#1C7D5A]/10 rounded-2xl flex items-center justify-center border border-[#1C7D5A]/20 shadow-inner">
+              <CalendarCheck className="w-8 h-8 text-[#1C7D5A]" />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight uppercase">{t("reports_page.presence_analytics")}</h1>
@@ -135,8 +135,8 @@ const AttendanceReports = () => {
         {/* Holistic Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
            {stats.map((stat, idx) => (
-              <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm group hover:border-[#00bd7f]/30 transition-all cursor-default relative overflow-hidden">
-                 <div className="absolute top-0 right-0 w-16 h-16 bg-slate-50 rounded-bl-full -mr-8 -mt-8 opacity-20 group-hover:bg-[#00bd7f]/10 group-hover:opacity-100 transition-all"></div>
+              <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm group hover:border-[#1C7D5A]/30 transition-all cursor-default relative overflow-hidden">
+                 <div className="absolute top-0 right-0 w-16 h-16 bg-slate-50 rounded-bl-full -mr-8 -mt-8 opacity-20 group-hover:bg-[#1C7D5A]/10 group-hover:opacity-100 transition-all"></div>
                  <div className="flex justify-between items-center mb-6 relative z-10">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color} transition-all`}>
@@ -146,7 +146,7 @@ const AttendanceReports = () => {
                  <div className="flex items-end justify-between relative z-10">
                     <h4 className="text-3xl font-black text-slate-800 tracking-tight">{stat.value}</h4>
                     <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
-                      stat.delta === 'Rate' ? 'bg-emerald-50 text-[#00bd7f]' : 'bg-slate-100 text-slate-400'
+                      stat.delta === 'Rate' ? 'bg-emerald-50 text-[#1C7D5A]' : 'bg-slate-100 text-slate-400'
                     }`}>{stat.delta}</span>
                  </div>
               </div>
@@ -163,7 +163,7 @@ const AttendanceReports = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-3 px-8 py-4 rounded-xl font-black transition-all text-[11px] uppercase tracking-widest ${
                     activeTab === tab.id 
-                      ? "bg-[#00bd7f] text-white shadow-xl shadow-[#00bd7f]/20 scale-[1.03]" 
+                      ? "bg-[#1C7D5A] text-white shadow-xl shadow-[#1C7D5A]/20 scale-[1.03]" 
                       : "text-slate-400 hover:bg-white hover:text-slate-600 shadow-sm border border-transparent hover:border-slate-100"
                   }`}
                 >
@@ -182,7 +182,7 @@ const AttendanceReports = () => {
                      <select 
                         value={selectedClassId}
                         onChange={(e) => setSelectedClassId(e.target.value)}
-                        className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black uppercase tracking-widest outline-none focus:border-[#00bd7f]"
+                        className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black uppercase tracking-widest outline-none focus:border-[#1C7D5A]"
                      >
                         <option value="">All Classes</option>
                         {classes.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
@@ -190,7 +190,7 @@ const AttendanceReports = () => {
                      <select
                         value={selectedSectionId} 
                         onChange={(e) => setSelectedSectionId(e.target.value)}
-                        className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black uppercase tracking-widest outline-none focus:border-[#00bd7f]"
+                        className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-black uppercase tracking-widest outline-none focus:border-[#1C7D5A]"
                      >
                         <option value="">All Sections</option>
                         {filteredSections.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
@@ -219,7 +219,7 @@ const AttendanceReports = () => {
                     )}
                  </div>
 
-                 <button onClick={fetchReport} className="px-6 py-3 bg-[#00bd7f] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-200">
+                 <button onClick={fetchReport} className="px-6 py-3 bg-[#1C7D5A] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-200">
                     Apply Filter
                  </button>
               </div>
@@ -229,12 +229,12 @@ const AttendanceReports = () => {
            <div className="overflow-x-auto">
               {loading ? (
                   <div className="flex justify-center py-20">
-                      <div className="w-10 h-10 border-4 border-[#00bd7f] border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-10 h-10 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin"></div>
                   </div>
               ) : (
               <table className="w-full border-collapse">
                  <thead>
-                    <tr className="bg-[#00bd7f]/5 border-b border-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-widest whitespace-nowrap">
+                    <tr className="bg-[#1C7D5A]/5 border-b border-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-widest whitespace-nowrap">
                        <th className="px-10 py-6 text-left">{t("reports_page.entity_specs")}</th>
                        <th className="px-10 py-6 text-center">{t("reports_page.lifecycle_status")}</th>
                        <th className="px-10 py-6 text-center">Date</th>
@@ -249,15 +249,15 @@ const AttendanceReports = () => {
                        <tr key={record._id || i} className="group hover:bg-slate-50/50 transition-all uppercase cursor-pointer">
                           <td className="px-10 py-6 text-left">
                              <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:bg-[#00bd7f]/10 group-hover:text-[#00bd7f] transition-all border border-transparent group-hover:border-[#00bd7f]/20">
+                                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center font-black text-slate-400 group-hover:bg-[#1C7D5A]/10 group-hover:text-[#1C7D5A] transition-all border border-transparent group-hover:border-[#1C7D5A]/20">
                                     {(i + 1).toString().padStart(2, '0')}
                                 </div>
                                 <div>
-                                   <p className="text-sm font-black text-slate-800 tracking-tight group-hover:text-[#00bd7f] transition-colors">
+                                   <p className="text-sm font-black text-slate-800 tracking-tight group-hover:text-[#1C7D5A] transition-colors">
                                        {record.student?.firstName ? `${record.student.firstName} ${record.student.lastName}` : (record.student?.name || "Unknown")}
                                        {record.employee?.name}
                                    </p>
-                                   <p className="text-[9px] font-black text-slate-400 tracking-widest italic mt-0.5 underline decoration-[#00bd7f]/20">
+                                   <p className="text-[9px] font-black text-slate-400 tracking-widest italic mt-0.5 underline decoration-[#1C7D5A]/20">
                                        ID: {record.student?.studentID || record.employee?.employeeID || "N/A"}
                                    </p>
                                 </div>
@@ -269,7 +269,7 @@ const AttendanceReports = () => {
                                   ? "bg-rose-50 text-rose-500 border-rose-100 shadow-sm" 
                                   : record.status === 'late'
                                     ? "bg-amber-50 text-amber-500 border-amber-100 shadow-sm" 
-                                    : "bg-[#00bd7f]/10 text-[#00bd7f] border-[#00bd7f]/20 shadow-sm"
+                                    : "bg-[#1C7D5A]/10 text-[#1C7D5A] border-[#1C7D5A]/20 shadow-sm"
                              }`}>
                                 <Activity className="w-3 h-3" />
                                 {record.status?.toUpperCase()}
@@ -294,7 +294,7 @@ const AttendanceReports = () => {
            <div className="p-10 bg-slate-50/10 flex flex-col md:flex-row justify-between items-center border-t border-slate-100 gap-6">
               <div className="flex items-center gap-12 text-[10px] font-black uppercase tracking-widest text-slate-400">
                  <div className="flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#00bd7f]"></div> Present
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#1C7D5A]"></div> Present
                  </div>
                  <div className="flex items-center gap-3">
                     <div className="w-2.5 h-2.5 rounded-full bg-rose-500"></div> Absent

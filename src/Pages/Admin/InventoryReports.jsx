@@ -44,7 +44,7 @@ const InventoryReports = () => {
         <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-6">
             <div className="w-16 h-16 bg-[#e6f4ef] rounded-2xl flex items-center justify-center border border-emerald-100 shadow-inner">
-              <Package className="w-8 h-8 text-[#00bd7f]" />
+              <Package className="w-8 h-8 text-[#1C7D5A]" />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight text-uppercase">Asset Intelligence</h1>
@@ -54,10 +54,10 @@ const InventoryReports = () => {
 
           <div className="flex gap-4 w-full lg:w-auto">
              <button className="flex-1 lg:flex-none px-8 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black hover:bg-slate-200 transition-all flex items-center justify-center gap-3 border border-slate-200 uppercase tracking-widest text-[11px]">
-               <Calendar className="w-5 h-5 text-[#00bd7f]" />
+               <Calendar className="w-5 h-5 text-[#1C7D5A]" />
                Range Query
             </button>
-            <button className="flex-[2] lg:flex-none px-8 py-4 bg-[#00bd7f] text-white rounded-2xl font-black shadow-xl shadow-emerald-100 hover:bg-[#009b68] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]">
+            <button className="flex-[2] lg:flex-none px-8 py-4 bg-[#1C7D5A] text-white rounded-2xl font-black shadow-xl shadow-emerald-100 hover:bg-[#123628] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[11px]">
               <Download className="w-5 h-5" />
               Inventory Export
             </button>
@@ -72,7 +72,7 @@ const InventoryReports = () => {
                onClick={() => setActiveTab(tab.id)}
                className={`flex items-center gap-3 px-6 py-4 rounded-[2rem] font-black transition-all ${
                  activeTab === tab.id 
-                   ? "bg-[#00bd7f] text-white shadow-lg shadow-emerald-100 scale-[1.02]" 
+                   ? "bg-[#1C7D5A] text-white shadow-lg shadow-emerald-100 scale-[1.02]" 
                    : "text-slate-400 hover:bg-slate-50 hover:text-slate-600"
                }`}
              >
@@ -102,19 +102,19 @@ const InventoryReports = () => {
               <div className="space-y-3">
                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Asset Category</label>
                  <div className="relative group">
-                    <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none cursor-pointer group-hover:border-slate-300 transition-all shadow-sm">
+                    <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#1C7D5A] outline-none appearance-none cursor-pointer group-hover:border-slate-300 transition-all shadow-sm">
                        <option>Institutional Assets</option>
                        <option>Stationery Supplies</option>
                        <option>Uniform Inventory</option>
                        <option>Textbook Repository</option>
                     </select>
-                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none group-focus-within:text-[#00bd7f]" />
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none group-focus-within:text-[#1C7D5A]" />
                  </div>
               </div>
               <div className="space-y-3">
                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Storage Vault</label>
                  <div className="relative group">
-                    <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#00bd7f] outline-none appearance-none cursor-pointer shadow-sm">
+                    <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-[#1C7D5A] outline-none appearance-none cursor-pointer shadow-sm">
                        <option>Central Warehouse</option>
                        <option>Sub-Station 01</option>
                     </select>
@@ -123,11 +123,11 @@ const InventoryReports = () => {
               </div>
               <div className="space-y-3 lg:col-span-2 flex items-end gap-4">
                  <div className="relative flex-1 group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-[#00bd7f]" />
-                    <input className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-6 py-3.5 text-sm font-bold focus:border-[#00bd7f] outline-none transition-all shadow-sm" placeholder="Search Assets by SKU or Name..." />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-[#1C7D5A]" />
+                    <input className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-6 py-3.5 text-sm font-bold focus:border-[#1C7D5A] outline-none transition-all shadow-sm" placeholder="Search Assets by SKU or Name..." />
                  </div>
                  <button className="px-10 py-3.5 bg-slate-900 text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 shrink-0 flex items-center gap-3">
-                    <Filter className="w-4 h-4 text-[#00bd7f]" />
+                    <Filter className="w-4 h-4 text-[#1C7D5A]" />
                     Run Audit
                  </button>
               </div>
@@ -151,7 +151,7 @@ const InventoryReports = () => {
                           <td className="px-8 py-6">
                              <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center group-hover:bg-[#e6f4ef] group-hover:border-emerald-100 transition-all">
-                                   <Layers className="w-6 h-6 text-slate-300 group-hover:text-[#00bd7f]" />
+                                   <Layers className="w-6 h-6 text-slate-300 group-hover:text-[#1C7D5A]" />
                                 </div>
                                 <div>
                                    <p className="text-sm font-black text-slate-800 tracking-tight">Technical Asset {i + 124}</p>
@@ -172,7 +172,7 @@ const InventoryReports = () => {
                              <span className="text-sm font-black text-slate-800 font-mono tracking-tighter">{(i * 1250).toLocaleString()}.00</span>
                           </td>
                           <td className="px-8 py-6 text-right">
-                             <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#00bd7f] hover:border-[#00bd7f] shadow-sm transition-all">
+                             <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#1C7D5A] hover:border-[#1C7D5A] shadow-sm transition-all">
                                 <Printer className="w-4 h-4" />
                              </button>
                           </td>
@@ -195,7 +195,7 @@ const InventoryReports = () => {
                     <span className="text-2xl font-black text-slate-800 tracking-tighter">৳ 128K</span>
                  </div>
               </div>
-              <p className="text-[10px] font-black text-[#00bd7f] bg-[#e6f4ef] px-6 py-2 rounded-full tracking-widest">STOCK AUDIT: VERIFIED BY SYSTEM</p>
+              <p className="text-[10px] font-black text-[#1C7D5A] bg-[#e6f4ef] px-6 py-2 rounded-full tracking-widest">STOCK AUDIT: VERIFIED BY SYSTEM</p>
            </div>
         </div>
       </div>

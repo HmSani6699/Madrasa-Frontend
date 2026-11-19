@@ -48,7 +48,7 @@ const HomeworkManager = () => {
           <div className="flex gap-4 w-full lg:w-auto mt-4 lg:mt-0">
             <button 
                onClick={() => setShowModal(true)}
-               className="flex-1 lg:flex-none px-6 md:px-10 py-3.5 md:py-4 bg-[#00bd7f] text-white rounded-[8px] font-black shadow-xl shadow-blue-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[10px] md:text-[11px]"
+               className="flex-1 lg:flex-none px-6 md:px-10 py-3.5 md:py-4 bg-[#1C7D5A] text-white rounded-[8px] font-black shadow-xl shadow-blue-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[10px] md:text-[11px]"
             >
               <Plus className="w-4 h-4 md:w-5 md:h-5" />
               Add Home Work
@@ -64,7 +64,7 @@ const HomeworkManager = () => {
                  <InputField title={'Date'} type={'date'}/>
          
           <div className="lg:mt-[25px]">
-              <button className="w-full flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold bg-[#00bd7f] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all">
+              <button className="w-full flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all">
               <Plus className="w-4 h-4" />
               Filter
             </button>

@@ -240,7 +240,7 @@ const ClassAssign = () => {
       <div className="bg-white rounded-[20px] border-2 border-slate-200 p-6 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
-            <School className="w-8 h-8 text-[#00bd7f]" />
+            <School className="w-8 h-8 text-[#1C7D5A]" />
             Class Setup
           </h1>
           <p className="text-slate-500 font-bold mt-1">
@@ -251,7 +251,7 @@ const ClassAssign = () => {
         <div className="flex gap-3 w-full md:w-auto">
           <button
             onClick={() => { resetForm(); setIsModalOpen(true); }}
-            className="flex-1 md:flex-none px-6 py-3 bg-[#00bd7f] text-white rounded-2xl font-black shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+            className="flex-1 md:flex-none px-6 py-3 bg-[#1C7D5A] text-white rounded-2xl font-black shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
           >
             <Plus className="w-5 h-5" />
             New Assignment
@@ -302,10 +302,10 @@ const ClassAssign = () => {
             <div className="p-10 space-y-8">
               <div className="flex items-center gap-5">
                 <div className="w-16 h-16 bg-slate-50 rounded-[1.5rem] flex items-center justify-center border-2 border-slate-100 shadow-inner group-hover:border-indigo-100 transition-colors shrink-0">
-                  <Layers className="w-8 h-8 text-[#00bd7f]" />
+                  <Layers className="w-8 h-8 text-[#1C7D5A]" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-slate-800 group-hover:text-[#00bd7f] transition-colors uppercase tracking-tight">
+                  <h2 className="text-2xl font-black text-slate-800 group-hover:text-[#1C7D5A] transition-colors uppercase tracking-tight">
                     {mapping.class.name}
                   </h2>
                   <div className="flex items-center gap-2 mt-2">
@@ -516,7 +516,7 @@ const ClassAssign = () => {
                 <button
                   onClick={handleAction}
                   disabled={loading}
-                  className="flex-[2] py-5 bg-[#00bd7f] text-white rounded-2xl font-black shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-[2] py-5 bg-[#1C7D5A] text-white rounded-2xl font-black shadow-xl shadow-emerald-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Save className="w-5 h-5" />
                   {loading ? "Saving..." : "Save Assignment"}

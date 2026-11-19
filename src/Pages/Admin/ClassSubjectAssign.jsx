@@ -158,7 +158,7 @@ const ClassSubjectAssign = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <BookMarked className="w-8 h-8 text-[#00315e]" />
+            <BookMarked className="w-8 h-8 text-[#1C7D5A]" />
             Class & Subject Assign
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
@@ -179,7 +179,7 @@ const ClassSubjectAssign = () => {
           </div>
           <button
             onClick={() => openAssignModal()}
-            className="w-full md:w-auto px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
+            className="w-full md:w-auto px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             Assign Subjects
@@ -191,7 +191,7 @@ const ClassSubjectAssign = () => {
       <div className="bg-white rounded-[8px]  shadow-xl shadow-slate-100/50 overflow-hidden relative">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading Assignments...</p>
           </div>
         ) : filteredData.length === 0 ? (
@@ -204,7 +204,7 @@ const ClassSubjectAssign = () => {
         ) : (
           <div className="overflow-x-auto border border-gray-200 rounded-[8px]">
             <table className="w-full">
-              <thead className="bg-[#00315e24]">
+              <thead className="bg-[#1C7D5A18]">
                 <tr>
                   <th className="px-10 py-3.5 text-left text-[12px] font-black">Class</th>
                   <th className="px-10 py-3.5 text-center text-[12px] font-black">Section</th>
@@ -238,7 +238,7 @@ const ClassSubjectAssign = () => {
                     <td>
                       <div className="flex items-center gap-3 justify-center">
                         <button className="cursor-pointer" onClick={() => openAssignModal(group)}>
-                          <SquarePen className="w-4 h-4 text-[#00315e]" />
+                          <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                         </button>
                       </div>
                     </td>
@@ -294,10 +294,10 @@ const ClassSubjectAssign = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                     {subjectTypes.map(st => (
-                      <label key={st.code} className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedSubjects.includes(st.code) ? 'border-[#00315e] bg-[#00315e]/5' : 'border-slate-100 hover:border-slate-300'}`}>
+                      <label key={st.code} className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${selectedSubjects.includes(st.code) ? 'border-[#1C7D5A] bg-[#1C7D5A]/5' : 'border-slate-100 hover:border-slate-300'}`}>
                         <input
                           type="checkbox"
-                          className="w-4 h-4 text-[#00315e] rounded focus:ring-[#00315e]"
+                          className="w-4 h-4 text-[#1C7D5A] rounded focus:ring-[#1C7D5A]"
                           checked={selectedSubjects.includes(st.code)}
                           onChange={() => handleSubjectToggle(st.code)}
                         />
@@ -321,7 +321,7 @@ const ClassSubjectAssign = () => {
 
                 <button
                   onClick={handleAssign}
-                  className=" px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer"
+                  className=" px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer"
                 >
                   Save Assignments
                 </button>

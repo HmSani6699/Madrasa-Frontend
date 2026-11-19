@@ -124,7 +124,7 @@ const FeeType = () => {
       <div className="flex items-center justify-between mb-5 w-full">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Layers className="w-8 h-8 text-[#00315e]" />
+            <Layers className="w-8 h-8 text-[#1C7D5A]" />
             Fee Setup
           </h1>
           <p className=" text-[14px] text-slate-500 font-bold mt-1">
@@ -135,7 +135,7 @@ const FeeType = () => {
         <div className="flex gap-3 w-full md:w-auto">
           <button
             onClick={openAddModal}
-           className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2 transition-all hover:bg-[#002244] active:scale-95 shadow-sm"
+           className="w-full px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center gap-2 transition-all hover:bg-[#123628] active:scale-95 shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Add Fee Type
@@ -147,7 +147,7 @@ const FeeType = () => {
       <div className="bg-white rounded-[8px] border border-slate-200 shadow-xl shadow-slate-100/50 overflow-hidden relative">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">Loading fee types...</p>
           </div>
         ) : (
@@ -165,7 +165,7 @@ const FeeType = () => {
                 placeholder="Search by Fee Type Name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#00315e] transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#1C7D5A] transition-all"
               />
                     </div>
                      <button
@@ -178,7 +178,7 @@ const FeeType = () => {
                 </div>
               </div>
             <table className="w-full">
-              <thead className="bg-[#00315e24]">
+              <thead className="bg-[#1C7D5A18]">
                 <tr>
                   <th className="px-10 py-3.5 text-left text-[12px] font-black uppercase tracking-wider text-slate-700">
                     Name
@@ -199,18 +199,18 @@ const FeeType = () => {
                   filteredFeeTypes.map((ft) => (
                     <tr
                       key={ft._id}
-                      className="group hover:bg-[#00315e]/5 transition-all duration-300"
+                      className="group hover:bg-[#1C7D5A]/5 transition-all duration-300"
                     >
                       <td className="px-10 py-3.5">
                         <span 
                           onClick={() => openEditModal(ft)}
-                          className="text-base font-black text-slate-800 tracking-tight cursor-pointer hover:text-[#00315e] transition-colors"
+                          className="text-base font-black text-slate-800 tracking-tight cursor-pointer hover:text-[#1C7D5A] transition-colors"
                         >
                           {ft.name}
                         </span>
                       </td>
                       <td className="px-10 py-3.5 text-center">
-                        <span className="px-3 py-1 rounded-lg bg-blue-50 text-[#00315e] text-xs font-bold">
+                        <span className="px-3 py-1 rounded-lg bg-blue-50 text-[#1C7D5A] text-xs font-bold">
                           {ft.pay_type}
                         </span>
                       </td>
@@ -233,7 +233,7 @@ const FeeType = () => {
                       <td>
                         <div className="flex items-center gap-3 justify-center">
                           <button className="cursor-pointer p-1.5 hover:bg-blue-50 rounded-lg transition-colors" onClick={() => openEditModal(ft)}>
-                            <SquarePen className="w-4 h-4 text-[#00315e]" />
+                            <SquarePen className="w-4 h-4 text-[#1C7D5A]" />
                           </button>
                           <button className="cursor-pointer p-1.5 hover:bg-red-50 rounded-lg transition-colors" onClick={() => openDeleteModal(ft)}>
                             <Trash2 className="w-4 h-4 text-red-500" />
@@ -311,7 +311,7 @@ const FeeType = () => {
                 </button>
                 <button
                   onClick={handleAction}
-                  className="px-6 py-2.5 bg-[#00315e] text-white rounded-[8px] font-bold hover:bg-[#002244] shadow-lg shadow-slate-200 transition-all active:scale-95 cursor-pointer"
+                  className="px-6 py-2.5 bg-[#1C7D5A] text-white rounded-[8px] font-bold hover:bg-[#123628] shadow-lg shadow-slate-200 transition-all active:scale-95 cursor-pointer"
                 >
                   {modalType === "add" ? "Save Fee Type" : "Update changes"}
                 </button>

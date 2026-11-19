@@ -56,7 +56,7 @@ const LeaveApplication = () => {
       <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border-2 border-slate-50 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
         <div className="absolute -right-10 -top-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl opacity-50"></div>
         <div className="flex items-center gap-6 relative z-10">
-          <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 rounded-2xl md:rounded-3xl flex items-center justify-center border-2 border-emerald-100 shadow-inner text-[#00bd7f]">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-emerald-50 rounded-2xl md:rounded-3xl flex items-center justify-center border-2 border-emerald-100 shadow-inner text-[#1C7D5A]">
             <FileText className="w-8 h-8 md:w-10 md:h-10" />
           </div>
           <div>
@@ -71,7 +71,7 @@ const LeaveApplication = () => {
         <div className="lg:col-span-2">
           <div className="bg-white rounded-[2.5rem] p-8 md:p-10 border-2 border-slate-50 shadow-xl shadow-slate-200/50">
             <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight mb-8 flex items-center gap-3">
-              <Send className="w-5 h-5 text-[#00bd7f]" />
+              <Send className="w-5 h-5 text-[#1C7D5A]" />
               New Application
             </h3>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -85,7 +85,7 @@ const LeaveApplication = () => {
                       required
                       value={formData.fromDate}
                       onChange={(e) => setFormData({ ...formData, fromDate: e.target.value })}
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-[#00bd7f] transition-all"
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-[#1C7D5A] transition-all"
                     />
                   </div>
                 </div>
@@ -98,7 +98,7 @@ const LeaveApplication = () => {
                       required
                       value={formData.toDate}
                       onChange={(e) => setFormData({ ...formData, toDate: e.target.value })}
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-[#00bd7f] transition-all"
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-[#1C7D5A] transition-all"
                     />
                   </div>
                 </div>
@@ -110,13 +110,13 @@ const LeaveApplication = () => {
                     value={formData.reason}
                     onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                     rows="4"
-                    className="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-[#00bd7f] transition-all resize-none"
+                    className="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-[#1C7D5A] transition-all resize-none"
                   ></textarea>
                 </div>
               </div>
               <button
                 type="submit"
-                className="w-full py-5 bg-[#00bd7f] text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-[#00a570] transition-all shadow-xl shadow-emerald-200 active:scale-95 flex items-center justify-center gap-3"
+                className="w-full py-5 bg-[#1C7D5A] text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-[#00a570] transition-all shadow-xl shadow-emerald-200 active:scale-95 flex items-center justify-center gap-3"
               >
                 Submit Application
               </button>

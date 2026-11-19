@@ -263,7 +263,7 @@ const MonthlyPayroll = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-            <Banknote className="w-8 h-8 text-[#00315e]" />
+            <Banknote className="w-8 h-8 text-[#1C7D5A]" />
             Monthly Payroll (মাসিক পে-রোল)
           </h1>
           <p className="text-[14px] text-slate-500 font-bold mt-1">
@@ -274,7 +274,7 @@ const MonthlyPayroll = () => {
         {/* Month & Year Selectors and Generate Button */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 bg-white px-3 py-1.5 border border-slate-200 rounded-[8px] shadow-sm">
-            <Calendar className="w-4 h-4 text-[#00315e]" />
+            <Calendar className="w-4 h-4 text-[#1C7D5A]" />
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
@@ -298,7 +298,7 @@ const MonthlyPayroll = () => {
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="px-5 py-2.5 bg-[#00315e] hover:bg-[#002547] text-white rounded-[8px] font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+            className="px-5 py-2.5 bg-[#1C7D5A] hover:bg-[#123628] text-white rounded-[8px] font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer disabled:opacity-50"
           >
             {generating ? (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -322,7 +322,7 @@ const MonthlyPayroll = () => {
               মোট কর্মী: {stats?.total_staff || 0} জন
             </p>
           </div>
-          <div className="w-12 h-12 bg-blue-50 text-[#00315e] rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-blue-50 text-[#1C7D5A] rounded-xl flex items-center justify-center">
             <DollarSign className="w-6 h-6" />
           </div>
         </div>
@@ -382,7 +382,7 @@ const MonthlyPayroll = () => {
             placeholder="Search by Name, Staff ID, Designation..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-[8px] text-sm outline-none focus:ring-1 focus:ring-[#00315e] transition-all font-medium"
+            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-[8px] text-sm outline-none focus:ring-1 focus:ring-[#1C7D5A] transition-all font-medium"
           />
         </div>
 
@@ -399,7 +399,7 @@ const MonthlyPayroll = () => {
                 onClick={() => setStatusFilter(tab.id)}
                 className={`px-3 py-1.5 text-xs font-bold rounded-[6px] transition-all cursor-pointer ${
                   statusFilter === tab.id
-                    ? "bg-white text-[#00315e] shadow-sm"
+                    ? "bg-white text-[#1C7D5A] shadow-sm"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
@@ -422,7 +422,7 @@ const MonthlyPayroll = () => {
       <div className="bg-white rounded-[8px] shadow-xl border border-slate-200 overflow-hidden">
         {loading ? (
           <div className="py-20 flex flex-col items-center justify-center">
-            <div className="w-12 h-12 border-4 border-[#00315e] border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#1C7D5A] border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-slate-500 font-bold">পে-রোল তথ্য লোড হচ্ছে...</p>
           </div>
         ) : filteredRecords.length === 0 ? (
@@ -433,13 +433,13 @@ const MonthlyPayroll = () => {
                 {selectedMonth} / {selectedYear} এর জন্য কোনো পে-রোল তৈরি করা হয়নি।
               </p>
               <p className="text-sm font-bold text-slate-400 mt-1">
-                উপরের <span className="text-[#00315e] font-black">"Generate Payroll"</span> বাটনে ক্লিক করে পে-রোল প্রস্তুত করুন।
+                উপরের <span className="text-[#1C7D5A] font-black">"Generate Payroll"</span> বাটনে ক্লিক করে পে-রোল প্রস্তুত করুন।
               </p>
             </div>
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="px-6 py-2.5 bg-[#00315e] text-white font-bold rounded-[8px] text-xs hover:bg-[#002547] cursor-pointer"
+              className="px-6 py-2.5 bg-[#1C7D5A] text-white font-bold rounded-[8px] text-xs hover:bg-[#123628] cursor-pointer"
             >
               এখনই পে-রোল তৈরি করুন (Generate Now)
             </button>
@@ -447,7 +447,7 @@ const MonthlyPayroll = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-[#00315e24] text-slate-800 text-[11px] uppercase font-black tracking-wider whitespace-nowrap">
+              <thead className="bg-[#1C7D5A18] text-slate-800 text-[11px] uppercase font-black tracking-wider whitespace-nowrap">
                 <tr>
                   <th className="px-4 py-3.5">#</th>
                   <th className="px-4 py-3.5">কর্মীর তথ্য (Staff)</th>
@@ -471,7 +471,7 @@ const MonthlyPayroll = () => {
                       <td className="px-4 py-3.5 text-slate-400">{idx + 1}</td>
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-slate-100 overflow-hidden flex items-center justify-center font-black text-[#00315e] shrink-0 border border-slate-200">
+                          <div className="w-9 h-9 rounded-full bg-slate-100 overflow-hidden flex items-center justify-center font-black text-[#1C7D5A] shrink-0 border border-slate-200">
                             {staff.photo ? (
                               <img src={staff.photo} alt={staff.name} className="w-full h-full object-cover" />
                             ) : (
@@ -499,7 +499,7 @@ const MonthlyPayroll = () => {
                         {totalDeductions > 0 ? `-${formatCurrency(totalDeductions)}` : "-"}
                       </td>
 
-                      <td className="px-4 py-3.5 text-right font-black text-[#00315e] text-sm">
+                      <td className="px-4 py-3.5 text-right font-black text-[#1C7D5A] text-sm">
                         {formatCurrency(rec.net_payable)}
                       </td>
 
@@ -545,7 +545,7 @@ const MonthlyPayroll = () => {
 
                           <button
                             onClick={() => openPayslip(rec._id)}
-                            className="p-1.5 bg-[#00315e24] hover:bg-[#00315e33] text-[#00315e] rounded-[6px] cursor-pointer transition-colors"
+                            className="p-1.5 bg-[#1C7D5A18] hover:bg-[#1C7D5A33] text-[#1C7D5A] rounded-[6px] cursor-pointer transition-colors"
                             title="পে-স্লিপ দেখুন ও প্রিন্ট করুন"
                           >
                             <FileText className="w-3.5 h-3.5" />
@@ -641,7 +641,7 @@ const MonthlyPayroll = () => {
                 <select
                   value={payMethod}
                   onChange={(e) => setPayMethod(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-bold text-slate-800 outline-none focus:ring-1 focus:ring-[#00315e] bg-white"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-bold text-slate-800 outline-none focus:ring-1 focus:ring-[#1C7D5A] bg-white"
                 >
                   <option value="Cash">ক্যাশ (Cash)</option>
                   <option value="Bank">ব্যাংক ট্রান্সফার (Bank Transfer)</option>
@@ -658,7 +658,7 @@ const MonthlyPayroll = () => {
                   placeholder="যেমন: সেপ্টেম্বর মাসের বেতন বা কোনো রসিদ নম্বর"
                   value={payNote}
                   onChange={(e) => setPayNote(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-medium text-slate-700 outline-none focus:ring-1 focus:ring-[#00315e]"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-[8px] text-sm font-medium text-slate-700 outline-none focus:ring-1 focus:ring-[#1C7D5A]"
                 />
               </div>
 
@@ -699,7 +699,7 @@ const MonthlyPayroll = () => {
 
             <form onSubmit={handleAdjustSubmit} className="p-6 space-y-4">
               <div className="p-3 bg-blue-50/50 rounded-[8px] border border-blue-100 text-xs font-bold text-slate-700">
-                গ্রস বেতন: <span className="font-black text-[#00315e]">{formatCurrency(adjustRecord.gross_salary)}</span>
+                গ্রস বেতন: <span className="font-black text-[#1C7D5A]">{formatCurrency(adjustRecord.gross_salary)}</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -762,7 +762,7 @@ const MonthlyPayroll = () => {
               {/* Net Recalculation Preview */}
               <div className="p-3 bg-slate-50 rounded-[8px] flex justify-between items-center text-xs font-bold border border-slate-200">
                 <span>নতুন নিট প্রদেয় (New Net Payable):</span>
-                <span className="text-base font-black text-[#00315e]">
+                <span className="text-base font-black text-[#1C7D5A]">
                   {formatCurrency(
                     Math.max(
                       0,
@@ -786,7 +786,7 @@ const MonthlyPayroll = () => {
                 <button
                   type="submit"
                   disabled={adjusting}
-                  className="px-6 py-2 bg-[#00315e] text-white font-bold text-xs rounded-[8px] hover:bg-[#002547] cursor-pointer"
+                  className="px-6 py-2 bg-[#1C7D5A] text-white font-bold text-xs rounded-[8px] hover:bg-[#123628] cursor-pointer"
                 >
                   {adjusting ? "সংরক্ষণ হচ্ছে..." : "আপডেট করুন (Save Adjustments)"}
                 </button>

@@ -155,7 +155,7 @@ const AdmissionReports = () => {
       body: tableRows,
       startY: 35,
       styles: { fontSize: 9, cellPadding: 3 },
-      headStyles: { fillStyle: '#00315e', textColor: [255, 255, 255] },
+      headStyles: { fillStyle: '#1C7D5A', textColor: [255, 255, 255] },
       alternateRowStyles: { fillColor: [248, 250, 252] },
     });
 
@@ -199,7 +199,7 @@ const AdmissionReports = () => {
         <div className="flex items-center justify-between mb-5 w-full">
           <div>
             <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
-              <FileText className="w-8 h-8 text-[#00315e]" />
+              <FileText className="w-8 h-8 text-[#1C7D5A]" />
               Admission Report
             </h1>
 
@@ -212,7 +212,7 @@ const AdmissionReports = () => {
               <input
                 type="text"
                 placeholder="Search by name or ID..."
-                className="w-full pl-10 pr-4 py-2 bg-[#00315e]/5 border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#00315e] transition-all"
+                className="w-full pl-10 pr-4 py-2 bg-[#1C7D5A]/5 border border-slate-200 text-slate-900 rounded-[8px] outline-none focus:ring-0.5 focus:ring-[#1C7D5A] transition-all"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -272,7 +272,7 @@ const AdmissionReports = () => {
                             type="date"
                             value={filters.startDate}
                             onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                            className="w-full px-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all h-[42px]"
+                            className="w-full px-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all h-[42px]"
                           />
                         </div>
                         <div>
@@ -281,7 +281,7 @@ const AdmissionReports = () => {
                             type="date"
                             value={filters.endDate}
                             onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                            className="w-full px-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:outline-none focus:ring-0.5 focus:ring-[#00315e] focus:border-[#00315e] transition-all h-[42px]"
+                            className="w-full px-4 py-2 bg-[#fff] border border-slate-200 text-slate-900 rounded-[6px] outline-none focus:outline-none focus:ring-0.5 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all h-[42px]"
                           />
                         </div>
                       </div>
@@ -306,7 +306,7 @@ const AdmissionReports = () => {
                           setCurrentPage(1);
                           fetchAdmissions();
                         }}
-                        className="px-4 py-2 text-xs font-bold bg-[#00315e] text-white rounded-[8px] cursor-pointer hover:bg-[#002c55] transition-colors"
+                        className="px-4 py-2 text-xs font-bold bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer hover:bg-[#002c55] transition-colors"
                       >
                         Apply
                       </button>
@@ -319,7 +319,7 @@ const AdmissionReports = () => {
             <Link to="/admin/admission/create" className="w-full sm:w-auto">
               <button
 
-                className="w-full px-4 py-2 bg-[#00315e] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
+                className="w-full px-4 py-2 bg-[#1C7D5A] text-white rounded-[8px] cursor-pointer flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
                 Add Student
@@ -332,7 +332,7 @@ const AdmissionReports = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {stats.map((stat, idx) => (
             <div key={idx} className="bg-white rounded-[12px] shadow-sm  p-5 hover:shadow-md transition-all relative overflow-hidden group">
-              <div className="absolute -top-[10%] -left-[40%] h-[287px] w-[350px] bg-[#00315e24] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+              <div className="absolute -top-[10%] -left-[40%] h-[287px] w-[350px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
               <div className="flex items-center justify-between relative z-10">
                 <div>
 
@@ -344,7 +344,7 @@ const AdmissionReports = () => {
                   </p>
                 </div>
                 <div className={`w-12 h-12 bg-white border border-slate-100 rounded-xl flex items-center justify-center shadow-sm`}>
-                  <stat.icon className={`w-5 h-5 text-[#00315e]`} />
+                  <stat.icon className={`w-5 h-5 text-[#1C7D5A]`} />
                 </div>
               </div>
             </div>
@@ -358,7 +358,7 @@ const AdmissionReports = () => {
           <div>
             <div className="px-5 py-3 border-b-2 border-slate-100 flex justify-between items-center">
               <h2 className="text-[18px] font-black text-slate-800  tracking-tight flex items-center gap-3 whitespace-nowrap">
-                <Users className="w-6 h-6 text-[#00315e]" />
+                <Users className="w-6 h-6 text-[#1C7D5A]" />
                 Detailed Records
               </h2>
 
@@ -388,7 +388,7 @@ const AdmissionReports = () => {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
-              <thead className="bg-[#00315e]/5">
+              <thead className="bg-[#1C7D5A]/5">
                 <tr className="whitespace-nowrap">
                   <th className="px-10 py-3 text-[14px] text-left">Student ID</th>
                   <th className="px-10 py-3 text-[14px] text-left">Full Name</th>
@@ -411,7 +411,7 @@ const AdmissionReports = () => {
                       </td>
                       <td className="px-10 py-3">
                         <div className="flex items-center gap-4 justify-center md:justify-start">
-                          <div className="w-10 h-10 bg-[#00315e]/10 rounded-full flex items-center justify-center font-black text-[#00315e]">
+                          <div className="w-10 h-10 bg-[#1C7D5A]/10 rounded-full flex items-center justify-center font-black text-[#1C7D5A]">
                             <img
                               src={student.photo}
                               alt={student.firstName}
@@ -434,7 +434,7 @@ const AdmissionReports = () => {
                       <td className="px-10 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <Link to={`/admin/student/profile/${student._id}`}>
-                            <button className="text-[#00315e] mt-[10px] cursor-pointer" title="View Profile">
+                            <button className="text-[#1C7D5A] mt-[10px] cursor-pointer" title="View Profile">
                               <Eye className="w-5 h-5" />
                             </button>
                           </Link>
@@ -479,7 +479,7 @@ const AdmissionReports = () => {
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -489,8 +489,8 @@ const AdmissionReports = () => {
                     key={i + 1}
                     onClick={() => setCurrentPage(i + 1)}
                     className={`w-10 h-10 rounded-xl text-xs font-black transition-all border-2 ${currentPage === i + 1
-                      ? "bg-[#00315e] border-[#00315e] text-white shadow-lg "
-                      : "bg-white border-slate-200 text-slate-600 hover:border-[#00315e] hover:text-[#00315e]"
+                      ? "bg-[#1C7D5A] border-[#1C7D5A] text-white shadow-lg "
+                      : "bg-white border-slate-200 text-slate-600 hover:border-[#1C7D5A] hover:text-[#1C7D5A]"
                       }`}
                   >
                     {i + 1}
@@ -500,7 +500,7 @@ const AdmissionReports = () => {
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#00315e] hover:text-[#00315e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="p-2 border-2 border-slate-200 rounded-xl bg-white text-slate-600 hover:bg-slate-50 hover:border-[#1C7D5A] hover:text-[#1C7D5A] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>

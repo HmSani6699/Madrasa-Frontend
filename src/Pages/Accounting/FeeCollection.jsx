@@ -856,7 +856,7 @@ const FeeCollection = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-800 flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-[#00315e] text-white flex items-center justify-center shadow-md shadow-[#00315e]/20">
+            <div className="w-10 h-10 rounded-xl bg-[#1C7D5A] text-white flex items-center justify-center shadow-md shadow-[#1C7D5A]/20">
               <CreditCard className="w-5 h-5" />
             </div>
             {isBangla ? 'শিক্ষার্থী ফি কালেকশন ও রিসিট' : 'Student Fee Collection & Receipt'}
@@ -888,7 +888,7 @@ const FeeCollection = () => {
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
-              className="w-full pl-10 pr-10 py-3 bg-slate-50/70 border border-slate-200 text-slate-900 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-[#00315e]/20 focus:border-[#00315e] transition-all font-semibold text-sm placeholder:text-slate-400"
+              className="w-full pl-10 pr-10 py-3 bg-slate-50/70 border border-slate-200 text-slate-900 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-[#1C7D5A]/20 focus:border-[#1C7D5A] transition-all font-semibold text-sm placeholder:text-slate-400"
               placeholder={isBangla ? 'শিক্ষার্থী আইডি (যেমন TS2548), পুরো নাম অথবা রোল নম্বর দ্বারা খুঁজুন...' : 'Search by Student ID (e.g. TS2548), Name, or Roll number...'}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -900,7 +900,7 @@ const FeeCollection = () => {
               }}
             />
             {isSearching && (
-              <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#00315e] animate-spin" />
+              <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1C7D5A] animate-spin" />
             )}
 
             {/* Live Autocomplete Dropdown */}
@@ -914,10 +914,10 @@ const FeeCollection = () => {
                   <div
                     key={s._id || s.student_id}
                     onClick={() => selectStudent(s)}
-                    className="p-3 hover:bg-[#00315e]/5 transition-colors cursor-pointer border-b border-slate-50 flex items-center justify-between gap-3 group"
+                    className="p-3 hover:bg-[#1C7D5A]/5 transition-colors cursor-pointer border-b border-slate-50 flex items-center justify-between gap-3 group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[#00315e] font-black text-sm overflow-hidden flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[#1C7D5A] font-black text-sm overflow-hidden flex-shrink-0">
                         {s.photo ? (
                           <img src={s.photo} alt={s.firstName} className="w-full h-full object-cover" />
                         ) : (
@@ -925,7 +925,7 @@ const FeeCollection = () => {
                         )}
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-900 text-sm group-hover:text-[#00315e] transition-colors">
+                        <h4 className="font-bold text-slate-900 text-sm group-hover:text-[#1C7D5A] transition-colors">
                           {`${s.firstName || ''} ${s.lastName || ''}`.trim()}
                         </h4>
                         <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500 font-medium">
@@ -937,7 +937,7 @@ const FeeCollection = () => {
                         </div>
                       </div>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#00315e] group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-[#1C7D5A] group-hover:translate-x-1 transition-all" />
                   </div>
                 ))}
               </div>
@@ -947,7 +947,7 @@ const FeeCollection = () => {
           <button
             onClick={handleSearchSubmit}
             disabled={isSearching}
-            className="px-6 py-3 bg-[#00315e] text-white font-bold rounded-lg hover:bg-[#002140] transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer disabled:opacity-50 flex-shrink-0 w-full md:w-auto"
+            className="px-6 py-3 bg-[#1C7D5A] text-white font-bold rounded-lg hover:bg-[#002140] transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer disabled:opacity-50 flex-shrink-0 w-full md:w-auto"
           >
             {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
             {isBangla ? 'শিক্ষার্থী খুঁজুন' : 'Find Student'}
@@ -960,13 +960,13 @@ const FeeCollection = () => {
 
           {/* Student Profile Ribbon */}
           <div className="bg-white rounded-xl shadow-md border border-slate-200 p-5 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00315e]/5 rounded-bl-full pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#1C7D5A]/5 rounded-bl-full pointer-events-none"></div>
 
-            <div className="w-20 h-20 rounded-2xl border border-[#00315e]/20 overflow-hidden shadow-sm flex-shrink-0 bg-slate-50 flex items-center justify-center">
+            <div className="w-20 h-20 rounded-2xl border border-[#1C7D5A]/20 overflow-hidden shadow-sm flex-shrink-0 bg-slate-50 flex items-center justify-center">
               {selectedStudent.photo ? (
                 <img src={selectedStudent.photo} alt={selectedStudent.firstName} className="w-full h-full object-cover" />
               ) : (
-                <User className="w-10 h-10 text-[#00315e]/40" />
+                <User className="w-10 h-10 text-[#1C7D5A]/40" />
               )}
             </div>
 
@@ -976,7 +976,7 @@ const FeeCollection = () => {
                 <h3 className="text-lg font-black text-slate-900 leading-tight mt-0.5">
                   {`${selectedStudent.firstName || ''} ${selectedStudent.lastName || ''}`.trim()}
                 </h3>
-                <span className="inline-block mt-1 font-mono text-xs font-black text-[#00315e] bg-[#00315e]/10 px-2 py-0.5 rounded">
+                <span className="inline-block mt-1 font-mono text-xs font-black text-[#1C7D5A] bg-[#1C7D5A]/10 px-2 py-0.5 rounded">
                   {selectedStudent.student_id || selectedStudent.id || selectedStudent._id}
                 </span>
               </div>
@@ -1031,7 +1031,7 @@ const FeeCollection = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
                   <div>
                     <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-[#00315e]" />
+                      <Calendar className="w-4 h-4 text-[#1C7D5A]" />
                       {isBangla ? 'মাস ও অগ্রিম ফি নির্বাচন (Advance Collection)' : 'Billing Month & Advance Selection'}
                     </h3>
                     <p className="text-xs text-slate-500 mt-0.5">
@@ -1120,7 +1120,7 @@ const FeeCollection = () => {
                           <button
                             type="button"
                             onClick={() => handleBaseMonthChange(nextUnpaidMonth.name)}
-                            className="px-3 py-1.5 bg-[#00315e] text-white rounded-lg text-xs font-bold hover:bg-[#002140] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+                            className="px-3 py-1.5 bg-[#1C7D5A] text-white rounded-lg text-xs font-bold hover:bg-[#002140] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
                           >
                             {isBangla ? `পরবর্তী মাস (${nextUnpaidMonth.bn}) →` : `Next (${nextUnpaidMonth.short}) →`}
                           </button>
@@ -1168,11 +1168,11 @@ const FeeCollection = () => {
                 {selectedMonths.length > 1 && (
                   <div className="mt-4 p-3.5 bg-sky-50 border border-sky-200 rounded-xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-[#00315e] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-sm">
+                      <div className="w-8 h-8 rounded-lg bg-[#1C7D5A] text-white flex items-center justify-center font-black text-xs shrink-0 shadow-sm">
                         {selectedMonths.length}
                       </div>
                       <div>
-                        <h4 className="text-xs font-black text-[#00315e] flex items-center gap-1.5">
+                        <h4 className="text-xs font-black text-[#1C7D5A] flex items-center gap-1.5">
                           <span>{isBangla ? 'একাধিক মাস নির্বাচিত হয়েছে' : 'Multiple Months Selected'}</span>
                           <span className="text-[10px] bg-sky-200/80 text-sky-900 px-1.5 py-0.2 rounded font-bold">
                             {selectedMonths.length} {isBangla ? 'টি মাস' : 'Months'}
@@ -1212,7 +1212,7 @@ const FeeCollection = () => {
                       <button
                         type="button"
                         onClick={handleSelectAllUnpaidMonths}
-                        className="text-[10px] font-black text-[#00315e] bg-sky-50 hover:bg-sky-100 px-2.5 py-1 rounded-md border border-sky-200 transition-all cursor-pointer shadow-2xs"
+                        className="text-[10px] font-black text-[#1C7D5A] bg-sky-50 hover:bg-sky-100 px-2.5 py-1 rounded-md border border-sky-200 transition-all cursor-pointer shadow-2xs"
                         title={isBangla ? 'সকল বকেয়া মাস নির্বাচন করুন' : 'Select all unpaid months'}
                       >
                         {isBangla ? 'বকেয়া মাসসমূহ নির্বাচন' : 'Select All Unpaid'}
@@ -1258,7 +1258,7 @@ const FeeCollection = () => {
                           ? 'bg-emerald-600 text-white border-emerald-700 shadow-md ring-2 ring-emerald-400'
                           : isPartial
                             ? 'bg-amber-600 text-white border-amber-700 shadow-md ring-2 ring-amber-400'
-                            : 'bg-[#00315e] text-white border-[#00315e] shadow-md ring-2 ring-[#00315e]/30';
+                            : 'bg-[#1C7D5A] text-white border-[#1C7D5A] shadow-md ring-2 ring-[#1C7D5A]/30';
                       } else if (isPaid) {
                         chipClasses = 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100/80';
                       } else if (isPartial) {
@@ -1274,7 +1274,7 @@ const FeeCollection = () => {
                           title={`${m.name}: ${isPaid ? (isBangla ? 'সম্পূর্ণ পরিশোধিত' : 'Fully Paid') : isPartial ? (isBangla ? `আংশিক বকেয়া ৳${mStatus.remainingDue}` : `Partial Due ৳${mStatus.remainingDue}`) : (isBangla ? 'বকেয়া' : 'Unpaid')} - ${isSelected ? (isBangla ? 'ক্লিক করে বাতিল করুন' : 'Click to deselect') : (isBangla ? 'ক্লিক করে নির্বাচন করুন' : 'Click to select')}`}
                         >
                           {isSelected && (
-                            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-white text-[#00315e] font-black text-[9px] flex items-center justify-center shadow-md ring-1 ring-black/10">
+                            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-white text-[#1C7D5A] font-black text-[9px] flex items-center justify-center shadow-md ring-1 ring-black/10">
                               ✓
                             </span>
                           )}
@@ -1321,28 +1321,28 @@ const FeeCollection = () => {
                     <button
                       type="button"
                       onClick={() => handleQuickAdvancePreset(0)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${selectedMonths.length <= 1 ? 'bg-[#00315e] text-white border-[#00315e] shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'}`}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${selectedMonths.length <= 1 ? 'bg-[#1C7D5A] text-white border-[#1C7D5A] shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'}`}
                     >
                       {isBangla ? 'শুধু ১ মাস' : 'Only 1 Month'}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleQuickAdvancePreset(1)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-[#00315e]/10 hover:text-[#00315e] transition-all cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-[#1C7D5A]/10 hover:text-[#1C7D5A] transition-all cursor-pointer"
                     >
                       +১ মাস অগ্রিম (+1 Month)
                     </button>
                     <button
                       type="button"
                       onClick={() => handleQuickAdvancePreset(2)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-[#00315e]/10 hover:text-[#00315e] transition-all cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-[#1C7D5A]/10 hover:text-[#1C7D5A] transition-all cursor-pointer"
                     >
                       +২ মাস অগ্রিম (+2 Months)
                     </button>
                     <button
                       type="button"
                       onClick={() => handleQuickAdvancePreset(3)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-[#00315e]/10 hover:text-[#00315e] transition-all cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-[#1C7D5A]/10 hover:text-[#1C7D5A] transition-all cursor-pointer"
                     >
                       +৩ মাস অগ্রিম (+3 Months)
                     </button>
@@ -1355,7 +1355,7 @@ const FeeCollection = () => {
                 <div className="p-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <h3 className="font-black text-slate-900 text-sm flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-[#00315e]" />
+                      <Layers className="w-4 h-4 text-[#1C7D5A]" />
                       {isBangla ? 'নির্ধারিত ফি তালিকা (Fee Breakdown)' : 'Assigned Fee Breakdown'}
                     </h3>
                     <p className="text-xs text-slate-500 mt-0.5">
@@ -1366,7 +1366,7 @@ const FeeCollection = () => {
                   {/* Add Extra Fee Dropdown */}
                   <div className="flex items-center gap-2">
                     <select
-                      className="px-3 py-1.5 bg-white border border-slate-300 rounded-[4px] text-xs font-bold text-slate-700 outline-none focus:ring-0.1 focus:ring-[#00315e]/20 cursor-pointer"
+                      className="px-3 py-1.5 bg-white border border-slate-300 rounded-[4px] text-xs font-bold text-slate-700 outline-none focus:ring-0.1 focus:ring-[#1C7D5A]/20 cursor-pointer"
                       onChange={(e) => {
                         handleAddExtraFee(e.target.value);
                         e.target.value = '';
@@ -1382,12 +1382,12 @@ const FeeCollection = () => {
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#00315e]/5 text-slate-700 font-black border-b border-slate-200">
+                    <thead className="bg-[#1C7D5A]/5 text-slate-700 font-black border-b border-slate-200">
                       <tr className='whitespace-nowrap'>
                         <th className="py-3 px-4 w-12 text-center">
                           <input
                             type="checkbox"
-                            className="w-4 h-4 rounded text-[#00315e] focus:ring-[#00315e]"
+                            className="w-4 h-4 rounded text-[#1C7D5A] focus:ring-[#1C7D5A]"
                             checked={
                               (feeItems.length > 0 ? feeItems.every(f => f.isSelected) : true) &&
                               (previousDue > 0 ? includePreviousDue : true) &&
@@ -1493,7 +1493,7 @@ const FeeCollection = () => {
                           <td className="py-3 px-4 text-center">
                             <input
                               type="checkbox"
-                              className="w-4 h-4 rounded text-[#00315e] focus:ring-[#00315e] cursor-pointer"
+                              className="w-4 h-4 rounded text-[#1C7D5A] focus:ring-[#1C7D5A] cursor-pointer"
                               checked={fee.isSelected}
                               onChange={() => toggleItemSelection(fee.id)}
                             />
@@ -1546,7 +1546,7 @@ const FeeCollection = () => {
                               <input
                                 type="number"
                                 min="0"
-                                className={`w-24 text-right px-2 py-1 bg-white border rounded font-black focus:outline-none focus:ring-1 focus:ring-[#00315e] ${fee.isPaid ? 'border-emerald-200 text-emerald-900 bg-emerald-50/20' : 'border-slate-200 text-slate-800'
+                                className={`w-24 text-right px-2 py-1 bg-white border rounded font-black focus:outline-none focus:ring-1 focus:ring-[#1C7D5A] ${fee.isPaid ? 'border-emerald-200 text-emerald-900 bg-emerald-50/20' : 'border-slate-200 text-slate-800'
                                   }`}
                                 value={fee.amount}
                                 onChange={(e) => updateItemAmount(fee.id, e.target.value)}
@@ -1586,7 +1586,7 @@ const FeeCollection = () => {
               <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-5 sticky top-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
                   <h3 className="font-black text-slate-900 text-sm flex items-center gap-2">
-                    <Calculator className="w-4 h-4 text-[#00315e]" />
+                    <Calculator className="w-4 h-4 text-[#1C7D5A]" />
                     {isBangla ? 'পেমেন্ট ও হিসাব ডেস্ক' : 'Payment Calculation Desk'}
                   </h3>
                   <span className="text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
@@ -1647,7 +1647,7 @@ const FeeCollection = () => {
                       <input
                         type="number"
                         min="0"
-                        className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#00315e]/20"
+                        className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-[4px] font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1C7D5A]/20"
                         placeholder="0"
                         value={discount}
                         onChange={(e) => setDiscount(e.target.value)}
@@ -1656,18 +1656,18 @@ const FeeCollection = () => {
                   </div>
 
                   {/* Net Payable Highlight */}
-                  <div className="p-3.5  bg-[#00315e]/5 border border-[#00315e]/15">
+                  <div className="p-3.5  bg-[#1C7D5A]/5 border border-[#1C7D5A]/15">
                     <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
                       {isBangla ? 'সর্বমোট নিট প্রদেয় (Net Payable)' : 'Total Net Payable'}
                     </span>
                     <div className="flex items-baseline justify-between mt-1">
-                      <span className="text-2xl font-black text-[#00315e]">
+                      <span className="text-2xl font-black text-[#1C7D5A]">
                         ৳ {grandTotal.toLocaleString()}
                       </span>
                       <button
                         type="button"
                         onClick={handleFullPay}
-                        className="text-[11px] font-black text-[#00315e] hover:underline cursor-pointer"
+                        className="text-[11px] font-black text-[#1C7D5A] hover:underline cursor-pointer"
                       >
                         {isBangla ? 'পুরো পরিশোধ (Full Pay)' : 'Full Pay'}
                       </button>
@@ -1684,7 +1684,7 @@ const FeeCollection = () => {
                       <input
                         type="number"
                         min="0"
-                        className={`w-full pl-8 pr-3 py-2.5 bg-white border rounded-[4px] font-black text-base focus:outline-none transition-all ${paidVal < grandTotal && paidVal > 0 ? 'border-amber-300 text-amber-800 focus:border-amber-500' : 'border-slate-300 text-slate-900 focus:border-[#00315e]'}`}
+                        className={`w-full pl-8 pr-3 py-2.5 bg-white border rounded-[4px] font-black text-base focus:outline-none transition-all ${paidVal < grandTotal && paidVal > 0 ? 'border-amber-300 text-amber-800 focus:border-amber-500' : 'border-slate-300 text-slate-900 focus:border-[#1C7D5A]'}`}
                         value={paidAmount}
                         onChange={(e) => setPaidAmount(e.target.value)}
                       />
@@ -1705,7 +1705,7 @@ const FeeCollection = () => {
                       {isBangla ? 'পেমেন্ট পদ্ধতি' : 'Payment Method'}
                     </label>
                     <select
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#00315e]/20 cursor-pointer"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#1C7D5A]/20 cursor-pointer"
                       value={paymentMethod}
                       onChange={(e) => setPaymentMethod(e.target.value)}
                     >
@@ -1723,7 +1723,7 @@ const FeeCollection = () => {
                       {isBangla ? 'জমা একাউন্ট (Deposit Account)' : 'Deposit Financial Account'}
                     </label>
                     <select
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#00315e]/20 cursor-pointer"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#1C7D5A]/20 cursor-pointer"
                       value={selectedAccount}
                       onChange={(e) => setSelectedAccount(e.target.value)}
                     >
@@ -1794,7 +1794,7 @@ const FeeCollection = () => {
                     type="button"
                     onClick={handleCollectPayment}
                     disabled={isSubmitting || !selectedStudent || (selectedFees.length === 0 && effectivePreviousDue <= 0)}
-                    className="w-full mt-4 py-3.5 bg-[#00315e] text-white font-black rounded-xl shadow-lg shadow-[#00315e]/25 hover:bg-[#002140] hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none text-sm"
+                    className="w-full mt-4 py-3.5 bg-[#1C7D5A] text-white font-black rounded-xl shadow-lg shadow-[#1C7D5A]/25 hover:bg-[#002140] hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none text-sm"
                   >
                     {isSubmitting ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -1819,7 +1819,7 @@ const FeeCollection = () => {
             <div className="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
               <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                 <h3 className="font-black text-slate-800 text-xs sm:text-sm flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[#00315e]" />
+                  <FileText className="w-4 h-4 text-[#1C7D5A]" />
                   {isBangla ? 'এই শিক্ষার্থীর পূর্ববর্তী পেমেন্ট হিস্ট্রি' : 'Previous Payment History for this Student'}
                 </h3>
                 <span className="text-xs font-bold text-slate-500 bg-white border border-slate-200 px-2.5 py-0.5 rounded-full">
@@ -1851,7 +1851,7 @@ const FeeCollection = () => {
                             {new Date(tx.date || tx.created_at).toLocaleDateString()}
                           </td>
                           <td className="py-3 px-4 font-mono font-bold whitespace-nowrap">
-                            <span className={isTxVoided ? 'text-slate-500 line-through' : 'text-[#00315e]'}>
+                            <span className={isTxVoided ? 'text-slate-500 line-through' : 'text-[#1C7D5A]'}>
                               {tx.receipt_no || `#${(tx._id || '').slice(-6)}`}
                             </span>
                             {isTxVoided && (
@@ -1862,7 +1862,7 @@ const FeeCollection = () => {
                           </td>
                           <td className="py-3 px-4 text-slate-700">
                             {tx.months && tx.months.length > 0 ? (
-                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-xs font-bold ${isTxVoided ? 'bg-slate-200/60 text-slate-500 line-through' : 'bg-[#00315e]/10 text-[#00315e]'}`}>
+                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-xs font-bold ${isTxVoided ? 'bg-slate-200/60 text-slate-500 line-through' : 'bg-[#1C7D5A]/10 text-[#1C7D5A]'}`}>
                                 {tx.months.join(', ')}
                               </span>
                             ) : (
@@ -1939,7 +1939,7 @@ const FeeCollection = () => {
                                 className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center gap-1 ${
                                   isTxVoided
                                     ? 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                                    : 'bg-[#00315e]/10 hover:bg-[#00315e] hover:text-white text-[#00315e]'
+                                    : 'bg-[#1C7D5A]/10 hover:bg-[#1C7D5A] hover:text-white text-[#1C7D5A]'
                                 }`}
                               >
                                 <Receipt className="w-3.5 h-3.5" />
@@ -2004,7 +2004,7 @@ const FeeCollection = () => {
                   <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500 font-medium">{isBangla ? 'রশিদ নং:' : 'Receipt No:'}</span>
-                      <span className="font-mono font-black text-[#00315e]">{voidTargetTx.receipt_no || `#${(voidTargetTx._id || '').slice(-6)}`}</span>
+                      <span className="font-mono font-black text-[#1C7D5A]">{voidTargetTx.receipt_no || `#${(voidTargetTx._id || '').slice(-6)}`}</span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500 font-medium">{isBangla ? 'শিক্ষার্থী:' : 'Student:'}</span>

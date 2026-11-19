@@ -6,7 +6,7 @@ const ActiveButton = ({
  onclick,
 }) => {
   return (
-      <button className="w-full px-4 py-2 bg-[#00bd7f] text-white rounded-[8px]">{icon && icon} { title}</button>
+      <button onClick={onclick} className="w-full px-4 py-2 bg-[#1C7D5A] hover:bg-[#123628] text-white rounded-[8px] transition-colors cursor-pointer flex items-center justify-center gap-2 font-bold">{icon && icon} { title}</button>
   );
 };
 

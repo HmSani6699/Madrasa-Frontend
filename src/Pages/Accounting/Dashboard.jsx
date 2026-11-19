@@ -22,15 +22,15 @@ import {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <span className="px-3 py-1 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-full text-[10px] font-black uppercase tracking-widest">Finance Department</span>
-                <span className="px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest">FY 2025-26</span>
+                <span className="px-3 py-1 bg-[#1C7D5A]/10 text-[#1C7D5A] border border-[#1C7D5A]/20 rounded-full text-[10px] font-black uppercase tracking-widest">Finance Department (হিসাবরক্ষণ)</span>
+                <span className="px-3 py-1 bg-[#EAB33C]/15 text-[#123628] border border-[#EAB33C]/30 rounded-full text-[10px] font-black uppercase tracking-widest">FY 2025-26</span>
               </div>
               <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight uppercase">Financial Overview</h1>
               <p className="text-slate-500 font-bold mt-2">Monitor cash flow, fee collections, and operational expenses</p>
             </div>
   
             <div className="flex items-center gap-4">
-              <button className="px-6 py-3 bg-slate-900 text-white rounded-full font-black text-[10px] uppercase tracking-widest shadow-lg hover:bg-slate-800 transition-all flex items-center gap-2">
+              <button className="px-6 py-3 bg-[#1C7D5A] text-white rounded-full font-black text-[10px] uppercase tracking-widest shadow-lg hover:bg-[#123628] transition-all flex items-center gap-2 cursor-pointer">
                  <Receipt className="w-4 h-4" /> New Transaction
               </button>
             </div>
@@ -38,7 +38,7 @@ import {
   
           {/* Financial Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-slate-900 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl col-span-1 md:col-span-2">
+            <div className="bg-[#123628] rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl col-span-1 md:col-span-2">
                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                <div className="relative z-10 flex flex-col justify-between h-full">
                   <div className="flex justify-between items-start mb-8">
