@@ -146,6 +146,7 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
       },
       { name: "Madrasas", path: "/super-admin/madrasas", icon: Building2 },
       { name: "Subscription Plans", path: "/super-admin/plans", icon: Package },
+      { name: "Video Reviews", path: "/super-admin/reviews", icon: Video },
       { name: "Billing & Payments", path: "/super-admin/billing", icon: Wallet },
       { name: "SMS Settings", path: "/super-admin/sms", icon: MessageSquare },
     ]},

@@ -4,6 +4,8 @@ import Nabver from "./Nabver/Nabver";
 import TrustedByMadrasa from "./TrustedByMadrasa/TrustedByMadrasa";
 import OurServicesSection from "./OurServicesSection/OurServicesSection";
 import Package from "./Package/Package";
+import Reviews from "./Reviews/Reviews";
+import Footer from "../Footer/Footer";
 
 const Home = () => {
   return (
@@ -18,6 +20,10 @@ const Home = () => {
       <OurServicesSection />
       {/* ==== Package / Pricing Section ==== */}
       <Package />
+      {/* ==== Video Reviews / Testimonials Section ==== */}
+      <Reviews />
+      {/* ==== Footer ==== */}
+      <Footer />
     </div>
   );
 };

@@ -23,6 +23,7 @@ import {
   Zap,
 } from "lucide-react";
 import Nabver from "../Home/Nabver/Nabver";
+import Footer from "../Footer/Footer";
 import SubscriptionModal from "../../components/SubscriptionModal";
 
 // Official Support WhatsApp
@@ -352,7 +353,7 @@ const PackageDetails = () => {
     if (val === false) {
       return (
         <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-400">
-          <CrossIcon className="w-3.5 h-3.5 stroke-[2]" />
+          <CrossIcon className="w-3.5 h-3.5 stroke-2" />
         </span>
       );
     }
@@ -365,10 +366,10 @@ const PackageDetails = () => {
       <Nabver />
 
       {/* ====== HERO BANNER ====== */}
-      <section className="relative pt-16 pb-8  bg-gradient-to-b from-[#f0f7f3] via-[#fafcfb] to-white   overflow-hidden">
+      <section className="relative pt-16 pb-8  bg-linear-to-b from-[#f0f7f3] via-[#fafcfb] to-white   overflow-hidden">
         <div className="absolute inset-0 pointer-events-none select-none">
-          <div className="absolute top-0 right-1/4 w-[500px] h-[300px] bg-emerald-400/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-1/4 w-[400px] h-[250px] bg-amber-400/10 rounded-full blur-3xl" />
+          <div className="absolute top-0 right-1/4 w-125 h-75 bg-emerald-400/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-1/4 w-100 h-62.5 bg-amber-400/10 rounded-full blur-3xl" />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto  text-center">
@@ -381,7 +382,7 @@ const PackageDetails = () => {
           </div>
 
           {/* Main Title */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.25] mb-4 max-w-4xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4 max-w-4xl mx-auto">
             আপনার মাদ্রাসার জন্য   <span className="text-[#1C7D5A]">পূর্ণাঙ্গ প্যাকেজ</span>
           </h1>
 
@@ -470,7 +471,7 @@ const PackageDetails = () => {
                     {pkg.subtitle}
                   </p>
 
-                  <p className="text-slate-600 text-xs leading-relaxed mb-5 min-h-[36px]">
+                  <p className="text-slate-600 text-xs leading-relaxed mb-5 min-h-9">
                     {pkg.description}
                   </p>
 
@@ -663,7 +664,7 @@ const PackageDetails = () => {
 
       {/* ====== ENTERPRISE / CUSTOM PACKAGE CALLOUT ====== */}
       <section className="py-14 sm:py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-[#0e4e37] rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden shadow-2xl">
+        <div className="bg-linear-to-r from-slate-900 via-slate-800 to-[#0e4e37] rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden shadow-2xl">
           <div className="absolute right-0 top-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
@@ -791,6 +792,9 @@ const PackageDetails = () => {
           </div>
         </div>
       </section>
+
+      {/* ফুটার */}
+      <Footer />
 
       {/* সাবস্ক্রিপশন মডাল */}
       <SubscriptionModal

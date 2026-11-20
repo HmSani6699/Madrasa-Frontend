@@ -50,10 +50,10 @@ const SERVICES_DATA = [
 
 const OurServicesSection = () => {
   return (
-    <section className="relative py-16 sm:py-20 lg:py-24 bg-[#f8faf9] text-slate-800 font-bangla overflow-hidden">
+    <section id="features" className="relative py-16 sm:py-20 lg:py-24 bg-[#f8faf9] text-slate-800 font-bangla overflow-hidden">
       {/* ব্যাকগ্রাউন্ড সফট এম্বিয়েন্ট ব্লার */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-150 h-75 bg-emerald-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,7 +82,7 @@ const OurServicesSection = () => {
             return (
               <div
                 key={service.id}
-                className="group relative bg-white rounded-[8px] p-[20px]  border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_-5px_rgba(28,125,90,0.12)] hover:border-emerald-200/80 hover:-translate-y-1 transition-all duration-300 ease-out text-left"
+                className="group relative bg-white rounded-lg p-5  border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_-5px_rgba(28,125,90,0.12)] hover:border-emerald-200/80 hover:-translate-y-1 transition-all duration-300 ease-out text-left"
               >
                 {/* আইকন বক্স */}
                 <div className="w-12 h-12 rounded-xl bg-[#1C7D5A] flex items-center justify-center text-white mb-6 group-hover:scale-105 group-hover:bg-[#156346] transition-all duration-300 shadow-xs">

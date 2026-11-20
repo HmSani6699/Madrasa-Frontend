@@ -1,4 +1,7 @@
 const endpoints = {
+  reviews: {
+    publicList: '/reviews',
+  },
   demo: {
     submit: '/demo-request',
     video: '/demo-request/video',
@@ -19,6 +22,10 @@ const endpoints = {
     updateDemoRequestStatus: (id) => `/super-admin/v1/demo-requests/${id}/status`,
     deleteDemoRequest: (id) => `/super-admin/v1/demo-requests/${id}`,
     demoVideoSettings: '/super-admin/v1/demo-video',
+    reviews: '/super-admin/v1/reviews',
+    reviewById: (id) => `/super-admin/v1/reviews/${id}`,
+    updateReviewStatus: (id) => `/super-admin/v1/reviews/${id}/status`,
+    deleteReview: (id) => `/super-admin/v1/reviews/${id}`,
   },
   teacher: {
     students: '/v1/students',

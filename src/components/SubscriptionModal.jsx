@@ -135,7 +135,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
 
       <div className="relative bg-white rounded-[10px] shadow-2xl max-w-lg sm:max-w-2xl w-full overflow-hidden  z-10 transition-all">
         {/* Header Ribbon */}
-        <div className="bg-gradient-to-r from-[#1C7D5A] to-[#0e7c55] px-6 py-5 text-white relative">
+        <div className="bg-linear-to-r from-[#1C7D5A] to-[#0e7c55] px-6 py-5 text-white relative">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
@@ -198,7 +198,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
                     placeholder="উদাঃ মাওলানা আব্দুল্লাহ"
                     value={formData.applicantName}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white"
                   />
                 </div>
               </div>
@@ -216,7 +216,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
                     placeholder="০১৭XX-XXXXXX"
                     value={formData.whatsapp}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white"
                   />
                 </div>
               </div>
@@ -236,7 +236,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
                   placeholder="উদাঃ জামিয়া ইসলামিয়া দারুল উলুম"
                   value={formData.madrasaName}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white"
                 />
               </div>
             </div>
@@ -251,7 +251,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
                   name="madrasaType"
                   value={formData.madrasaType}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-[8px] border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white cursor-pointer"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white cursor-pointer"
                 >
                   {MADRASA_TYPES.map((type) => (
                     <option key={type} value={type}>
@@ -269,7 +269,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
                   name="studentCount"
                   value={formData.studentCount}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-[8px] border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white cursor-pointer"
+                  className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white cursor-pointer"
                 >
                   {STUDENT_RANGES.map((range) => (
                     <option key={range} value={range}>
@@ -292,7 +292,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
                     name="district"
                     value={formData.district}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-[8px] border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white cursor-pointer"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white cursor-pointer"
                   >
                     {BANGLADESH_DISTRICTS.map((dist) => (
                       <option key={dist} value={dist}>
@@ -313,7 +313,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
                   placeholder="উদাঃ চকবাজার, কোতোয়ালী"
                   value={formData.address}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white"
+                  className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white"
                 />
               </div>
             </div>
@@ -329,7 +329,7 @@ const SubscriptionModal = ({ isOpen, onClose, selectedPlan, billingCycle = "mont
                 placeholder="আপনার মাদ্রাসার কোনো নির্দিষ্ট চাহিদা বা প্রশ্ন থাকলে এখানে লিখতে পারেন..."
                 value={formData.notes}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-[8px] border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white resize-none"
+                className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none text-sm transition-all bg-slate-50/50 hover:bg-white resize-none"
               />
             </div>
 

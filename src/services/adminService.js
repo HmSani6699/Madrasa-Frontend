@@ -95,6 +95,37 @@ const adminService = {
   updateDemoVideoSettings: async (data) => {
     const response = await axiosInstance.put(endpoints.admin.demoVideoSettings, data);
     return response.data;
+  },
+
+  // Video Reviews Management
+  getAllReviews: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.admin.reviews, { params });
+    return response.data;
+  },
+
+  getReviewById: async (id) => {
+    const response = await axiosInstance.get(endpoints.admin.reviewById(id));
+    return response.data;
+  },
+
+  createReview: async (data) => {
+    const response = await axiosInstance.post(endpoints.admin.reviews, data);
+    return response.data;
+  },
+
+  updateReview: async (id, data) => {
+    const response = await axiosInstance.put(endpoints.admin.reviewById(id), data);
+    return response.data;
+  },
+
+  toggleReviewStatus: async (id, isActive) => {
+    const response = await axiosInstance.patch(endpoints.admin.updateReviewStatus(id), { isActive });
+    return response.data;
+  },
+
+  deleteReview: async (id) => {
+    const response = await axiosInstance.delete(endpoints.admin.deleteReview(id));
+    return response.data;
   }
 };
 

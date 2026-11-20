@@ -59,14 +59,14 @@ const Nabver = ({ onOpenDemoModal }) => {
                     }`}
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-[65px] gap-3">
+                    <div className="flex items-center justify-between h-16.25 gap-3">
                         {/* ====== LEFT: Logo ====== */}
                         <Link
                             to="/"
                             className="flex items-center h-full"
                         >
 
-                            <div className="w-[200px] h-[45px]">
+                            <div className="w-50 h-11.25">
                                 <img src={logo} alt="" className="w-full" />
                             </div>
 
@@ -117,7 +117,7 @@ const Nabver = ({ onOpenDemoModal }) => {
                             {/* Primary Register CTA Button */}
                             <Link
                                 to="/free-demo"
-                                className="bg-[#0e7c55] hover:bg-[#0a6646] active:scale-95 text-white font-semibold text-sm px-5 py-2.5 rounded-[8px] shadow-xs hover:shadow-md hover:shadow-emerald-700/20 transition-all duration-200 flex items-center gap-2 group"
+                                className="bg-[#0e7c55] hover:bg-[#0a6646] active:scale-95 text-white font-semibold text-sm px-5 py-2.5 rounded-lg shadow-xs hover:shadow-md hover:shadow-emerald-700/20 transition-all duration-200 flex items-center gap-2 group"
                             >
                                 <span>ফ্রি ডেমো দেখুন</span>
                                 <ArrowUpRight className="w-5 h-5 sm:w-3.5 sm:h-3.5 text-white group-hover:translate-x-0.5 transition-transform" />

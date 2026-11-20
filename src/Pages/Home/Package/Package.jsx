@@ -94,7 +94,7 @@ const Package = () => {
     <section id="pricing" className="relative py-16 sm:py-20 lg:py-24 bg-white text-slate-800 font-bangla overflow-hidden">
       {/* ব্যাকগ্রাউন্ড সফট আভা */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-emerald-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-175 h-87.5 bg-emerald-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -153,7 +153,7 @@ const Package = () => {
             return (
               <div
                 key={pkg.id}
-                className={`relative bg-white rounded-[16px] p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 ${pkg.isPopular
+                className={`relative bg-white rounded-2xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 ${pkg.isPopular
                   ? "border-2 border-[#1C7D5A] shadow-[0_12px_36px_-6px_rgba(28,125,90,0.12)] -translate-y-1 lg:-translate-y-2"
                   : "border border-slate-200/80 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)] hover:shadow-xl hover:border-slate-300"
                   }`}

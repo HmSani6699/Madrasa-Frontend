@@ -27,6 +27,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import Nabver from "../Home/Nabver/Nabver";
+import Footer from "../Footer/Footer";
 import demoService from "../../services/demoService";
 import { toast } from "react-hot-toast";
 
@@ -562,6 +563,8 @@ const FreeDemo = () => {
           )}
         </div>
       </div>
+      {/* ফুটার */}
+      <Footer />
     </div>
   );
 };

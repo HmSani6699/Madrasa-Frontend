@@ -11,6 +11,7 @@ import Settings from "../Pages/SuperAdmin/Settings";
 import PlanList from "../Pages/SuperAdmin/PlanList";
 import BillingList from "../Pages/SuperAdmin/BillingList";
 import SmsSettings from "../Pages/SuperAdmin/SmsSettings";
+import ReviewSettings from "../Pages/SuperAdmin/ReviewSettings";
 import AdminDashboard from "../Pages/Admin/Dashboard";
 import SmsPortal from "../Pages/Admin/SmsPortal";
 import Placeholder from "../Pages/Admin/Placeholder";
@@ -591,6 +592,7 @@ const router = createBrowserRouter([
               { path: "/super-admin", element: <SuperAdminDashboard /> },
               { path: "/super-admin/demo-requests", element: <DemoRequests /> },
               { path: "/super-admin/demo-video", element: <DemoVideoSettings /> },
+              { path: "/super-admin/reviews", element: <ReviewSettings /> },
               { path: "/super-admin/madrasas", element: <MadrasaList /> },
               { path: "/super-admin/settings", element: <Settings /> },
               { path: "/super-admin/plans", element: <PlanList /> },
