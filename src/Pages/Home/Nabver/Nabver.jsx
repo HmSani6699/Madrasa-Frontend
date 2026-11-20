@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
     Monitor,
     ExternalLink,
@@ -24,6 +24,9 @@ const Nabver = ({ onOpenDemoModal }) => {
     const [showPreviewBadge, setShowPreviewBadge] = useState(true);
     const [showRoleModal, setShowRoleModal] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+    const isHome = location.pathname === "/";
+    const isPackagesPage = location.pathname === "/packages" || location.pathname === "/pricing";
 
     useEffect(() => {
         const handleScroll = () => {
@@ -74,24 +77,26 @@ const Nabver = ({ onOpenDemoModal }) => {
                             <div className="bg-[#f0f6f3]/90 border border-emerald-950/5 p-1 rounded-full flex items-center space-x-1 shadow-2xs">
                                 <Link
                                     to="/"
-                                    className="bg-[#ebf7f2] text-[#1C7D5A] font-bold text-sm px-4 py-1.5 rounded-full shadow-xs transition-all hover:bg-emerald-100/70"
+                                    className={`${isHome ? "bg-[#ebf7f2] text-[#1C7D5A] font-bold" : "text-slate-600 hover:text-[#1C7D5A] hover:bg-white/80 font-medium"} text-sm px-4 py-1.5 rounded-full shadow-xs transition-all`}
                                 >
                                     হোম
                                 </Link>
                                 <a
-                                    href="#features"
+                                    href={isHome ? "#features" : "/#features"}
                                     className="text-slate-600 hover:text-[#1C7D5A] hover:bg-white/80 font-medium text-sm px-4 py-1.5 rounded-full transition-all"
                                 >
                                     ফিচার
                                 </a>
-                                <a
-                                    href="#pricing"
-                                    className="text-slate-600 hover:text-[#1C7D5A] hover:bg-white/80 font-medium text-sm px-4 py-1.5 rounded-full transition-all"
+
+                                <Link
+                                    to="/packages"
+                                    className={`${isPackagesPage ? "bg-[#ebf7f2] text-[#1C7D5A] font-bold" : "text-slate-600 hover:text-[#1C7D5A] hover:bg-white/80 font-medium"} text-sm px-4 py-1.5 rounded-full transition-all`}
                                 >
                                     প্যাকেজ
-                                </a>
+                                </Link>
+
                                 <a
-                                    href="#contact"
+                                    href={isHome ? "#contact" : "/#contact"}
                                     className="text-slate-600 hover:text-[#1C7D5A] hover:bg-white/80 font-medium text-sm px-4 py-1.5 rounded-full transition-all"
                                 >
                                     যোগাযোগ
@@ -128,26 +133,36 @@ const Nabver = ({ onOpenDemoModal }) => {
                             <Link
                                 to="/"
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="bg-emerald-50 text-emerald-800 font-semibold px-4 py-2.5 rounded-xl text-base"
+                                className={`${isHome ? "bg-emerald-50 text-emerald-800 font-semibold" : "text-slate-700 hover:bg-slate-50 font-medium"} px-4 py-2.5 rounded-xl text-base`}
                             >
                                 হোম
                             </Link>
                             <a
-                                href="#features"
+                                href={isHome ? "#features" : "/#features"}
                                 onClick={() => setMobileMenuOpen(false)}
                                 className="text-slate-700 hover:bg-slate-50 font-medium px-4 py-2.5 rounded-xl text-base"
                             >
                                 ফিচার
                             </a>
+                            {isHome ? (
+                                <a
+                                    href="#pricing"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="text-slate-700 hover:bg-slate-50 font-medium px-4 py-2.5 rounded-xl text-base"
+                                >
+                                    প্যাকেজ
+                                </a>
+                            ) : (
+                                <Link
+                                    to="/packages"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className={`${isPackagesPage ? "bg-emerald-50 text-emerald-800 font-semibold" : "text-slate-700 hover:bg-slate-50 font-medium"} px-4 py-2.5 rounded-xl text-base`}
+                                >
+                                    প্যাকেজ
+                                </Link>
+                            )}
                             <a
-                                href="#pricing"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="text-slate-700 hover:bg-slate-50 font-medium px-4 py-2.5 rounded-xl text-base"
-                            >
-                                প্যাকেজ
-                            </a>
-                            <a
-                                href="#contact"
+                                href={isHome ? "#contact" : "/#contact"}
                                 onClick={() => setMobileMenuOpen(false)}
                                 className="text-slate-700 hover:bg-slate-50 font-medium px-4 py-2.5 rounded-xl text-base"
                             >

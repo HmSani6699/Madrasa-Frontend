@@ -165,3 +165,43 @@
 .font-outfit {
   font-family: 'Outfit', sans-serif;
 }
+
+/* =======================================================
+   INFINITE MARQUEE ANIMATIONS (UI/UX 10+ YEARS EXPERIENCE)
+   ======================================================= */
+@keyframes marqueeScrollLeft {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marqueeScrollRight {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-marquee-scroll-left {
+  display: flex;
+  width: max-content;
+  animation: marqueeScrollLeft 38s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-scroll-right {
+  display: flex;
+  width: max-content;
+  animation: marqueeScrollRight 42s linear infinite;
+  will-change: transform;
+}
+
+.marquee-pause-group:hover .animate-marquee-scroll-left,
+.marquee-pause-group:hover .animate-marquee-scroll-right {
+  animation-play-state: paused;
+}

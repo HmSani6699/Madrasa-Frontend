@@ -158,6 +158,7 @@ import StudentProfilePage from "../Pages/Students/Profile";
 import FeeType from "../Pages/Accounting/FeeType";
 import Home from "../Pages/Home/Home";
 import FreeDemo from "../Pages/FreeDemo/FreeDemo";
+import PackageDetails from "../Pages/Packages/PackageDetails";
 import DemoRequests from "../Pages/SuperAdmin/DemoRequests";
 import DemoVideoSettings from "../Pages/SuperAdmin/DemoVideoSettings";
 
@@ -545,6 +546,14 @@ const router = createBrowserRouter([
   {
     path: "/free-demo",
     element: <FreeDemo />,
+  },
+  {
+    path: "/packages",
+    element: <PackageDetails />,
+  },
+  {
+    path: "/pricing",
+    element: <PackageDetails />,
   },
   {
     path: "/:slug",
