@@ -46,11 +46,11 @@ const Footer = () => {
             {/* ====== ব্যাকগ্রাউন্ড এম্বিয়েন্ট ইফেক্ট ও ডেকোরেশন ====== */}
             <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
                 {/* টপ ব্লার আভা */}
-                <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-emerald-500/10 rounded-full blur-[120px]" />
+                <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-175 h-87.5 bg-emerald-500/10 rounded-full blur-[120px]" />
                 {/* বটম রাইট ব্লার আভা */}
-                <div className="absolute -bottom-20 right-0 w-[450px] h-[450px] bg-teal-500/5 rounded-full blur-[100px]" />
+                <div className="absolute -bottom-20 right-0 w-112.5 h-112.5 bg-teal-500/5 rounded-full blur-[100px]" />
                 {/* বটম লেফট ব্লার আভা */}
-                <div className="absolute bottom-10 left-0 w-[400px] h-[400px] bg-emerald-600/5 rounded-full blur-[100px]" />
+                <div className="absolute bottom-10 left-0 w-100 h-100 bg-emerald-600/5 rounded-full blur-[100px]" />
 
                 {/* সূক্ষ্ম ইসলামিক জ্যামিতিক গ্রিড প্যাটার্ন ব্যাকগ্রাউন্ড */}
                 <div
