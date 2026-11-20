@@ -226,12 +226,12 @@ const TRUST_METRICS = [
 const MadrasaCard = ({ item }) => {
     return (
         <div
-            className="group relative flex items-center gap-3.5 bg-white/95 hover:bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 hover:border-emerald-500/50 shadow-2xs hover:shadow-xl hover:shadow-emerald-950/8 transition-all duration-300 hover:-translate-y-1 w-[290px] sm:w-[340px] flex-shrink-0 cursor-default select-none"
+            className="group relative flex items-center gap-3.5 bg-white/95 hover:bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 hover:border-emerald-500/50 shadow-2xs hover:shadow-xl hover:shadow-emerald-950/8 transition-all duration-300 hover:-translate-y-1 w-72.5 sm:w-85 shrink-0 cursor-default select-none"
         >
             {/* বামে মাদরাসা ক্রিস্ট / প্রিমিয়াম আইকন লোগো */}
-            <div className="relative flex-shrink-0">
+            <div className="relative shrink-0">
                 <div
-                    className={`w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-gradient-to-br ${item.theme} flex items-center justify-center text-white shadow-md shadow-emerald-900/15 group-hover:scale-105 group-hover:rotate-1 transition-all duration-300 ring-2 ring-white/60`}
+                    className={`w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-linear-to-br ${item.theme} flex items-center justify-center text-white shadow-md shadow-emerald-900/15 group-hover:scale-105 group-hover:rotate-1 transition-all duration-300 ring-2 ring-white/60`}
                 >
                     <Building2 className="w-6 h-6 stroke-[1.8] text-emerald-50" />
                 </div>
@@ -240,7 +240,7 @@ const MadrasaCard = ({ item }) => {
                     className="absolute -bottom-1 -right-1 w-4.5 h-4.5 rounded-full bg-emerald-500 text-white flex items-center justify-center border-2 border-white shadow-xs"
                     title="ভেরিফাইড মাদরাসা"
                 >
-                    <Check className="w-2.5 h-2.5 stroke-[3]" />
+                    <Check className="w-2.5 h-2.5 stroke-3" />
                 </span>
             </div>
 
@@ -266,7 +266,7 @@ const MadrasaCard = ({ item }) => {
 
                 {/* নিচের সারি: লোকেশন */}
                 <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-600 font-bangla">
-                    <MapPin className="w-3 h-3 text-emerald-600 flex-shrink-0" />
+                    <MapPin className="w-3 h-3 text-emerald-600 shrink-0" />
                     <span className="truncate">{item.location}</span>
                 </div>
             </div>
@@ -276,11 +276,11 @@ const MadrasaCard = ({ item }) => {
 
 const TrustedByMadrasa = () => {
     return (
-        <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 bg-gradient-to-b from-[#f8faf9] via-white to-[#f4f8f6] border-y border-emerald-950/5">
+        <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 bg-linear-to-b from-[#f8faf9] via-white to-[#f4f8f6] border-y border-emerald-950/5">
             {/* ====== 1. BACKGROUND DECORATIONS (ISLAMIC ARABESQUE & AMBIENCE) ====== */}
             <div className="absolute inset-0 pointer-events-none select-none z-0">
                 {/* সেন্টার সফট এম্বিয়েন্ট ব্লার */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-emerald-500/5 via-teal-400/5 to-amber-500/5 rounded-full blur-3xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-87.5 bg-linear-to-r from-emerald-500/5 via-teal-400/5 to-amber-500/5 rounded-full blur-3xl" />
 
                 {/* ইসলামিক জ্যামিতিক প্যাটার্ন ব্যাকগ্রাউন্ড */}
                 <svg
@@ -318,7 +318,7 @@ const TrustedByMadrasa = () => {
                     </div>
 
                     {/* প্রধান শিরোনাম */}
-                    <h2 className="text-2xl sm:text-4xl md:text-[2.6rem] font-black text-slate-900 tracking-tight font-bangla leading-[1.25]">
+                    <h2 className="text-2xl sm:text-4xl md:text-[2.6rem] font-black text-slate-900 tracking-tight font-bangla leading-tight">
                         সারাদেশের{" "}
                         <span className="relative inline-block text-emerald-700">
                             ১০০+ শীর্ষ মাদরাসায়
@@ -350,8 +350,8 @@ const TrustedByMadrasa = () => {
             {/* ====== 4. DUAL-ROW INFINITE SMOOTH MARQUEE (PAUSE ON HOVER) ====== */}
             <div className="relative w-full overflow-hidden marquee-pause-group mt-2">
                 {/* বাম ও ডানের গ্রেডিয়েন্ট মাস্ক ফেড (Seamless Infinite Fade Effect) */}
-                <div className="absolute top-0 left-0 bottom-0 w-16 sm:w-36 md:w-56 bg-gradient-to-r from-[#f8faf9] via-[#f8faf9]/90 to-transparent z-20 pointer-events-none" />
-                <div className="absolute top-0 right-0 bottom-0 w-16 sm:w-36 md:w-56 bg-gradient-to-l from-[#f4f8f6] via-[#f4f8f6]/90 to-transparent z-20 pointer-events-none" />
+                <div className="absolute top-0 left-0 bottom-0 w-16 sm:w-36 md:w-56 bg-linear-to-r from-[#f8faf9] via-[#f8faf9]/90 to-transparent z-20 pointer-events-none" />
+                <div className="absolute top-0 right-0 bottom-0 w-16 sm:w-36 md:w-56 bg-linear-to-l from-[#f4f8f6] via-[#f4f8f6]/90 to-transparent z-20 pointer-events-none" />
 
                 {/* প্রথম সারি: বামে স্ক্রল (Row 1 - Left) */}
                 <div className="flex gap-4 py-2 sm:py-3">

@@ -94,11 +94,11 @@ const Banner = () => {
 
   return (
     <>
-      <section className="relative overflow-hidden pt-8 pb-16 sm:pt-14 sm:pb-24 bg-gradient-to-b from-[#f9fbfa] via-white to-[#f4f8f6]">
+      <section className="relative overflow-hidden pt-8 pb-16 sm:pt-14 sm:pb-24 bg-linear-to-b from-[#f9fbfa] via-white to-[#f4f8f6]">
         {/* ====== 1. ISLAMIC GEOMETRIC BACKGROUND PATTERN (SVG) ====== */}
         <div className="absolute inset-0 pointer-events-none select-none z-0">
           {/* Subtle Ambient Radial Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-gradient-to-b from-emerald-500/10 via-teal-400/5 to-transparent rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-112.5 bg-linear-to-b from-emerald-500/10 via-teal-400/5 to-transparent rounded-full blur-3xl" />
 
           {/* Islamic Arabesque Geometric Tessellation */}
           <svg
@@ -154,14 +154,14 @@ const Banner = () => {
           {/* ====== 3. BISMILLAH CALLIGRAPHY ====== */}
           <div className="my-2 select-none">
             <div className="flex items-center justify-center gap-3">
-              <span className="h-[1px] w-8 sm:w-16 bg-gradient-to-r from-transparent to-emerald-700/30" />
+              <span className="h-px w-8 sm:w-16 bg-linear-to-r from-transparent to-emerald-700/30" />
               <h2
                 className="font-arabic text-2xl sm:text-3xl md:text-4xl text-[#14532d] font-bold tracking-wider drop-shadow-2xs"
                 dir="rtl"
               >
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
               </h2>
-              <span className="h-[1px] w-8 sm:w-16 bg-gradient-to-l from-transparent to-emerald-700/30" />
+              <span className="h-px w-8 sm:w-16 bg-linear-to-l from-transparent to-emerald-700/30" />
             </div>
           </div>
 
@@ -210,21 +210,21 @@ const Banner = () => {
           <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-7 text-xs sm:text-sm font-semibold text-slate-600 font-bangla">
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-4 rounded-full border border-emerald-500/80 text-emerald-600 flex items-center justify-center bg-emerald-50">
-                <Check className="w-2.5 h-2.5 stroke-[3]" />
+                <Check className="w-2.5 h-2.5 stroke-3" />
               </div>
               <span>রেজিস্ট্রেশন ছাড়াই প্যানেল প্রবেশ</span>
             </div>
 
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-4 rounded-full border border-emerald-500/80 text-emerald-600 flex items-center justify-center bg-emerald-50">
-                <Check className="w-2.5 h-2.5 stroke-[3]" />
+                <Check className="w-2.5 h-2.5 stroke-3" />
               </div>
               <span>বাংলায় সাপোর্ট</span>
             </div>
 
             <div className="flex items-center gap-1.5">
               <div className="w-4 h-4 rounded-full border border-emerald-500/80 text-emerald-600 flex items-center justify-center bg-emerald-50">
-                <Check className="w-2.5 h-2.5 stroke-[3]" />
+                <Check className="w-2.5 h-2.5 stroke-3" />
               </div>
               <span>যেকোনো সময় বাতিল</span>
             </div>
@@ -233,11 +233,11 @@ const Banner = () => {
           {/* ====== 8. SHOWCASE CONTAINER (VIDEO DEMO & DASHBOARD PREVIEW) ====== */}
           <div className="mt-10 sm:mt-14 max-w-5xl mx-auto relative px-1 sm:px-4">
             {/* Ambient Background Aura */}
-            <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-tr from-emerald-500/15 via-teal-400/10 to-amber-500/10 rounded-[2.5rem] blur-2xl -z-10 pointer-events-none" />
+            <div className="absolute -inset-3 sm:-inset-6 bg-linear-to-tr from-emerald-500/15 via-teal-400/10 to-amber-500/10 rounded-[2.5rem] blur-2xl -z-10 pointer-events-none" />
 
             {/* Showcase Main Presentation Canvas */}
-            <div className="relative rounded-[12px]   from-[#f1f5f4] via-[#f9fbfa] to-[#eaf2ef]  shadow-2xl   overflow-hidden backdrop-blur-xs">
-              <div className="relative w-full aspect-video rounded-[12px]  overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
+            <div className="relative rounded-xl   from-[#f1f5f4] via-[#f9fbfa] to-[#eaf2ef]  shadow-2xl   overflow-hidden backdrop-blur-xs">
+              <div className="relative w-full aspect-video rounded-xl  overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                 <iframe
                   className="w-full h-full object-cover"
                   src={
