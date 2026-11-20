@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -15,15 +15,82 @@ import {
   Layers,
   BarChart3,
   Monitor,
+  MessageCircle,
   X,
   UserCheck,
   GraduationCap,
+  Play,
+  Video,
 } from "lucide-react";
+import demoService from "../../../services/demoService";
+
+const OFFICIAL_WHATSAPP_NUMBER = "8801986544021";
+
+// ডিফল্ট ডেমো ভিডিও কনফিগারেশন (ডেমো পেজের মতো)
+const DEFAULT_DEMO_VIDEO = {
+  videoUrl: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+  embedUrl: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
+  title: "মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার পরিচিতি ও ডেমো ভিডিও",
+  description: "ভিডিওর মাধ্যমে সফটওয়্যারটির সকল আধুনিক ফিচার ও ব্যবহারবিধি বিস্তারিত দেখে নিন",
+  isActive: true,
+};
+
+// Embed URL Helper
+const getEmbedUrl = (url) => {
+  if (!url || typeof url !== "string") return "";
+  const trimmed = url.trim();
+  if (trimmed.includes("/embed/")) return trimmed;
+  const ytMatch = trimmed.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/
+  );
+  if (ytMatch && ytMatch[1]) {
+    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}`;
+  }
+  const vimeoMatch = trimmed.match(/vimeo\.com\/(?:video\/)?([0-9]+)/);
+  if (vimeoMatch && vimeoMatch[1]) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+  return trimmed;
+};
 
 const Banner = () => {
   const [showRoleModal, setShowRoleModal] = useState(false);
-  const [activeTab, setActiveTab] = useState("all");
+  const [showcaseTab, setShowcaseTab] = useState("video"); // "video" (default as requested) or "preview"
+  const [videoConfig, setVideoConfig] = useState(DEFAULT_DEMO_VIDEO);
   const navigate = useNavigate();
+
+  // Fetch dynamic demo video settings from backend
+  useEffect(() => {
+    let isMounted = true;
+    const fetchVideoSettings = async () => {
+      try {
+        const res = await demoService.getDemoVideo();
+        if (isMounted && res?.success && res?.data) {
+          const config = {
+            videoUrl: res.data.videoUrl || DEFAULT_DEMO_VIDEO.videoUrl,
+            embedUrl:
+              res.data.embedUrl ||
+              getEmbedUrl(res.data.videoUrl) ||
+              DEFAULT_DEMO_VIDEO.embedUrl,
+            title: res.data.title || DEFAULT_DEMO_VIDEO.title,
+            description: res.data.description || DEFAULT_DEMO_VIDEO.description,
+            isActive:
+              res.data.isActive !== undefined ? res.data.isActive : true,
+          };
+          setVideoConfig(config);
+          if (config.isActive === false) {
+            setShowcaseTab("preview");
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load demo video in Banner:", err);
+      }
+    };
+    fetchVideoSettings();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <>
@@ -76,7 +143,7 @@ const Banner = () => {
           <div className="inline-flex items-center justify-center mb-4 sm:mb-5">
             <button
               onClick={() => setShowRoleModal(true)}
-              className="group inline-flex items-center gap-2 bg-[#fef9ee] hover:bg-[#fef3d6] text-[#b45309] border border-[#fde68a] text-xs sm:text-sm font-semibold px-4 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-2xs transition-all duration-200 hover:scale-102 cursor-pointer font-bangla"
+              className="group inline-flex items-center gap-2 bg-[#fef9ee] hover:bg-[#fef3d6] text-[#b45309] border border-[#fde68a] text-xs sm:text-sm font-semibold px-4 sm:px-5 py-1 rounded-full shadow-2xs transition-all duration-200 hover:scale-102 cursor-pointer font-bangla"
             >
               <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 animate-pulse" />
               <span>এক ক্লিকে মাদ্রাসা প্যানেল • রেজিস্ট্রেশন ছাড়াই</span>
@@ -115,7 +182,7 @@ const Banner = () => {
           </p>
 
           {/* ====== 6. CALL TO ACTION BUTTONS ====== */}
-          <div className="mt-7 sm:mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 font-bangla max-w-xl mx-auto">
+          <div className="mt-7 sm:mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 font-bangla mx-auto">
             {/* Primary CTA */}
             <Link
               to="/free-demo"
@@ -125,23 +192,18 @@ const Banner = () => {
               <ArrowRight className="w-4 h-4 sm:w-4.5 sm:h-4.5 group-hover:translate-x-1 transition-transform" />
             </Link>
 
-            {/* Secondary CTA */}
-            <button
-              onClick={() => setShowRoleModal(true)}
+            {/* Secondary CTA - WhatsApp */}
+            <a
+              href={`https://wa.me/${OFFICIAL_WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                "আসসালামু আলাইকুম, মাদ্রাসা সেবা সফটওয়্যার সম্পর্কে বিস্তারিত জানতে চাই।"
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full sm:w-auto bg-white hover:bg-slate-50 active:scale-95 text-slate-700 hover:text-slate-900 border border-slate-200/90 hover:border-slate-300 font-bold text-sm sm:text-base px-6 py-3 sm:py-3.5 rounded-xl shadow-2xs hover:shadow-xs transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Monitor className="w-4 h-4 text-emerald-700" />
-              <span>সরাসরি প্যানেল প্রিভিউ</span>
-            </button>
-
-            {/* Tertiary CTA - Jamia Portal */}
-            <Link
-              to="/demo-madrasa"
-              className="w-full sm:w-auto bg-[#edf9f3] hover:bg-[#e0f5eb] active:scale-95 text-[#1C7D5A] border border-[#a3e2c9] font-bold text-sm sm:text-base px-5 sm:px-6 py-3 sm:py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <Building2 className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#1C7D5A]" />
-              <span>জামিয়া পোর্টাল</span>
-            </Link>
+              <MessageCircle className="w-4.5 h-4.5 text-[#25D366] fill-[#25D366]" />
+              <span>হোয়াটসঅ্যাপে যোগাযোগ করুন</span>
+            </a>
           </div>
 
           {/* ====== 7. TRUST VALUE PROPOSITIONS (CHECKMARKS) ====== */}
@@ -168,75 +230,154 @@ const Banner = () => {
             </div>
           </div>
 
-          {/* ====== 8. 3D ISOMETRIC SHOWCASE CONTAINER ====== */}
+          {/* ====== 8. SHOWCASE CONTAINER (VIDEO DEMO & DASHBOARD PREVIEW) ====== */}
           <div className="mt-10 sm:mt-14 max-w-5xl mx-auto relative px-1 sm:px-4">
             {/* Ambient Background Aura */}
-            <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-tr from-emerald-500/15 via-teal-400/10 to-amber-500/10 rounded-[2.5rem] blur-2xl -z-10" />
+            <div className="absolute -inset-3 sm:-inset-6 bg-gradient-to-tr from-emerald-500/15 via-teal-400/10 to-amber-500/10 rounded-[2.5rem] blur-2xl -z-10 pointer-events-none" />
 
             {/* Showcase Main Presentation Canvas */}
-            <div className="relative rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#f1f5f4] via-[#f9fbfa] to-[#eaf2ef] border border-slate-200/90 shadow-2xl p-4 sm:p-7 md:p-10 overflow-hidden backdrop-blur-xs">
-              {/* Floating Stat Badge 1 (Left): আজকের কালেকশন */}
-              <div className="absolute left-3 sm:left-6 md:left-8 top-1/4 sm:top-1/3 -translate-y-1/2 z-30 animate-float-slow select-none">
-                <div className="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl p-2.5 sm:p-4 shadow-xl border border-slate-100/90 flex items-center gap-2.5 sm:gap-3.5 hover:scale-105 transition-transform">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center shadow-xs shrink-0">
-                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
+            <div className="relative rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#f1f5f4] via-[#f9fbfa] to-[#eaf2ef] border border-slate-200/90 shadow-2xl p-3 sm:p-6 md:p-8 overflow-hidden backdrop-blur-xs">
+              
+              {/* Canvas Header Bar with macOS Window Dots & Dual Mode Switcher */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-3.5 sm:mb-5 pb-3 border-b border-slate-200/70">
+                {/* Window Dots & Context Label */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
                   </div>
-                  <div className="text-left font-bangla">
-                    <div className="text-[10px] sm:text-xs text-slate-500 font-medium leading-none mb-1">
-                      আজকের কালেকশন
-                    </div>
-                    <div className="text-sm sm:text-lg md:text-xl font-black text-slate-900 leading-none">
-                      ৳ ৪২,৫০০
-                    </div>
-                  </div>
+                  <span className="text-xs font-semibold text-slate-600 ml-2 font-bangla hidden sm:inline">
+                    {showcaseTab === "video"
+                      ? (videoConfig.title || "মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার পরিচিতি ও ডেমো ভিডিও")
+                      : "মাদ্রাসা সেবা ক্লাউড ড্যাশবোর্ড প্রিভিউ"}
+                  </span>
+                </div>
+
+                {/* Segmented Dual Switcher: ভিডিও ডেমো | ড্যাশবোর্ড ভিউ */}
+                <div className="inline-flex p-1 bg-white/95 backdrop-blur-xs rounded-full border border-slate-200/90 shadow-xs">
+                  <button
+                    type="button"
+                    onClick={() => setShowcaseTab("video")}
+                    className={`inline-flex items-center gap-1.5 px-4 sm:px-5 py-1.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
+                      showcaseTab === "video"
+                        ? "bg-[#1C7D5A] text-white shadow-xs"
+                        : "text-slate-600 hover:text-emerald-700"
+                    }`}
+                  >
+                    <Video className="w-3.5 h-3.5" />
+                    <span>ভিডিও ডেমো</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowcaseTab("preview")}
+                    className={`inline-flex items-center gap-1.5 px-4 sm:px-5 py-1.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer ${
+                      showcaseTab === "preview"
+                        ? "bg-[#1C7D5A] text-white shadow-xs"
+                        : "text-slate-600 hover:text-emerald-700"
+                    }`}
+                  >
+                    <Monitor className="w-3.5 h-3.5" />
+                    <span>ড্যাশবোর্ড ভিউ</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Floating Stat Badge 2 (Right): মোট ছাত্র */}
-              <div className="absolute right-3 sm:right-6 md:right-8 bottom-1/4 sm:bottom-1/3 z-30 animate-float-reverse select-none">
-                <div className="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl p-2.5 sm:p-4 shadow-xl border border-slate-100/90 flex items-center gap-2.5 sm:gap-3.5 hover:scale-105 transition-transform">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center shadow-xs shrink-0">
-                    <Users className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </div>
-                  <div className="text-left font-bangla">
-                    <div className="text-[10px] sm:text-xs text-slate-500 font-medium leading-none mb-1">
-                      মোট ছাত্র
-                    </div>
-                    <div className="text-sm sm:text-lg md:text-xl font-black text-slate-900 leading-none">
-                      ৮৫৯
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* The 3D Mockup Graphic Canvas */}
-              <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-inner border border-slate-200/50">
-                {/* 3D Dashboard Image Display (Extracted from the design) */}
-                <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/11] overflow-hidden group">
-                  <img
-                    src="/hero-preview.jpg"
-                    alt="Madrasa Sheba Dashboard 3D Mockup"
-                    className="w-full h-full object-cover object-[center_68%] sm:object-[center_67%] select-none pointer-events-none transform scale-[1.04] group-hover:scale-[1.07] transition-transform duration-700 ease-out"
+              {/* Dynamic Showcase Media Canvas */}
+              {showcaseTab === "video" ? (
+                /* ====== 1. VIDEO PLAYER VIEW (Just like Demo Page) ====== */
+                <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
+                  <iframe
+                    className="w-full h-full object-cover"
+                    src={
+                      videoConfig.embedUrl ||
+                      getEmbedUrl(videoConfig.videoUrl) ||
+                      DEFAULT_DEMO_VIDEO.embedUrl
+                    }
+                    title={
+                      videoConfig.title ||
+                      "মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার পরিচিতি ও ডেমো ভিডিও"
+                    }
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
                   />
+                </div>
+              ) : (
+                /* ====== 2. DASHBOARD 3D MOCKUP GRAPHIC CANVAS ====== */
+                <div className="relative w-full">
+                  {/* Floating Stat Badge 1 (Left): আজকের কালেকশন */}
+                  <div className="absolute left-3 sm:left-6 md:left-8 top-1/4 sm:top-1/3 -translate-y-1/2 z-30 animate-float-slow select-none hidden sm:block">
+                    <div className="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl p-2.5 sm:p-4 shadow-xl border border-slate-100/90 flex items-center gap-2.5 sm:gap-3.5 hover:scale-105 transition-transform">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center shadow-xs shrink-0">
+                        <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
+                      </div>
+                      <div className="text-left font-bangla">
+                        <div className="text-[10px] sm:text-xs text-slate-500 font-medium leading-none mb-1">
+                          আজকের কালেকশন
+                        </div>
+                        <div className="text-sm sm:text-lg md:text-xl font-black text-slate-900 leading-none">
+                          ৳ ৪২,৫০০
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                  {/* Gentle gradient overlay for pristine aesthetic */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent pointer-events-none" />
+                  {/* Floating Stat Badge 2 (Right): মোট ছাত্র */}
+                  <div className="absolute right-3 sm:right-6 md:right-8 bottom-1/4 sm:bottom-1/3 z-30 animate-float-reverse select-none hidden sm:block">
+                    <div className="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl p-2.5 sm:p-4 shadow-xl border border-slate-100/90 flex items-center gap-2.5 sm:gap-3.5 hover:scale-105 transition-transform">
+                      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-amber-100/80 text-amber-700 flex items-center justify-center shadow-xs shrink-0">
+                        <Users className="w-5 h-5 sm:w-6 sm:h-6" />
+                      </div>
+                      <div className="text-left font-bangla">
+                        <div className="text-[10px] sm:text-xs text-slate-500 font-medium leading-none mb-1">
+                          মোট ছাত্র
+                        </div>
+                        <div className="text-sm sm:text-lg md:text-xl font-black text-slate-900 leading-none">
+                          ৮৫৯
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-                  {/* Interactive Quick Try Button Overlay on Hover */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-slate-950/20 backdrop-blur-2xs transition-all duration-300">
-                    <button
-                      onClick={() => setShowRoleModal(true)}
-                      className="bg-white hover:bg-emerald-50 text-emerald-800 font-bold px-6 py-3 rounded-xl shadow-xl flex items-center gap-2 font-bangla transform translate-y-2 group-hover:translate-y-0 transition-all cursor-pointer"
-                    >
-                      <Monitor className="w-5 h-5 text-emerald-700" />
-                      <span>লাইভ ড্যাশবোর্ড পরীক্ষা করুন</span>
-                    </button>
+                  {/* The 3D Mockup Graphic Canvas */}
+                  <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-inner border border-slate-200/50">
+                    <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/11] overflow-hidden group">
+                      <img
+                        src="/hero-preview.jpg"
+                        alt="Madrasa Sheba Dashboard 3D Mockup"
+                        className="w-full h-full object-cover object-[center_68%] sm:object-[center_67%] select-none pointer-events-none transform scale-[1.04] group-hover:scale-[1.07] transition-transform duration-700 ease-out"
+                      />
+
+                      {/* Gentle gradient overlay for pristine aesthetic */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent pointer-events-none" />
+
+                      {/* Interactive Quick Try Button Overlay on Hover */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-slate-950/20 backdrop-blur-2xs transition-all duration-300">
+                        <button
+                          onClick={() => setShowRoleModal(true)}
+                          className="bg-white hover:bg-emerald-50 text-emerald-800 font-bold px-6 py-3 rounded-xl shadow-xl flex items-center gap-2 font-bangla transform translate-y-2 group-hover:translate-y-0 transition-all cursor-pointer"
+                        >
+                          <Monitor className="w-5 h-5 text-emerald-700" />
+                          <span>লাইভ ড্যাশবোর্ড পরীক্ষা করুন</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {/* Description subtitle when in video mode */}
+              {showcaseTab === "video" && videoConfig?.description && (
+                <div className="mt-3 text-center">
+                  <p className="text-xs sm:text-sm text-slate-600 font-bangla">
+                    {videoConfig.description}
+                  </p>
+                </div>
+              )}
 
               {/* ====== FLOATING BOTTOM PREVIEW DOCK (As seen in the design) ====== */}
-              <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-200/70 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-600 font-bangla">
+              <div className="mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-slate-200/70 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-slate-600 font-bangla">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-lg bg-[#1C7D5A] flex items-center justify-center text-amber-400">
                     <ShieldCheck className="w-3.5 h-3.5" />
@@ -250,7 +391,7 @@ const Banner = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap justify-center">
                   <button
                     onClick={() => setShowRoleModal(true)}
                     className="hover:text-emerald-700 hover:underline inline-flex items-center gap-1 font-semibold cursor-pointer"
@@ -258,6 +399,13 @@ const Banner = () => {
                     <span>ডেমো প্যানেল সুইচ করুন</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
+                  <span className="text-slate-300">|</span>
+                  <Link
+                    to="/free-demo"
+                    className="text-emerald-700 font-bold hover:underline"
+                  >
+                    ফ্রি ডেমো আবেদন
+                  </Link>
                   <span className="text-slate-300">|</span>
                   <Link
                     to="/login"

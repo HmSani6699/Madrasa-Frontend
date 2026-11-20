@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Building2,
@@ -34,7 +34,14 @@ import { toast } from "react-hot-toast";
 const OFFICIAL_WHATSAPP_NUMBER = "8801986544021";
 
 // অফিসিয়াল ডেমো ভিডিও লিঙ্ক (প্রয়োজনে আপনার ইউটিউব এমবেড লিঙ্ক এখানে বসাতে পারেন)
-const DEFAULT_DEMO_VIDEO_URL = "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4";
+const DEFAULT_DEMO_VIDEO = {
+  videoUrl: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+  embedUrl: "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
+  title: "মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার পরিচিতি ও ডেমো ভিডিও",
+  description: "ভিডিওর মাধ্যমে সফটওয়্যারটির সকল আধুনিক ফিচার ও ব্যবহারবিধি বিস্তারিত দেখে নিন",
+  isActive: true
+};
+const DEFAULT_DEMO_VIDEO_URL = DEFAULT_DEMO_VIDEO.embedUrl;
 
 const BANGLADESH_DISTRICTS = [
   "ঢাকা", "চট্টগ্রাম", "সিলেট", "রাজশাহী", "খুলনা", "বরিশাল", "রংপুর", "ময়মনসিংহ",
@@ -81,6 +88,36 @@ const FreeDemo = () => {
 
   // Active Tab: "video" (ভিডিও দেখুন) first, then "apply" (আবেদন করুন)
   const [activeTab, setActiveTab] = useState("video");
+  const [videoConfig, setVideoConfig] = useState(DEFAULT_DEMO_VIDEO);
+
+  // Fetch dynamic demo video settings from backend
+  useEffect(() => {
+    let isMounted = true;
+    const fetchVideoSettings = async () => {
+      try {
+        const res = await demoService.getDemoVideo();
+        if (isMounted && res?.success && res?.data) {
+          const config = {
+            videoUrl: res.data.videoUrl || DEFAULT_DEMO_VIDEO.videoUrl,
+            embedUrl: res.data.embedUrl || DEFAULT_DEMO_VIDEO.embedUrl,
+            title: res.data.title || DEFAULT_DEMO_VIDEO.title,
+            description: res.data.description || DEFAULT_DEMO_VIDEO.description,
+            isActive: res.data.isActive !== undefined ? res.data.isActive : true
+          };
+          setVideoConfig(config);
+          if (!config.isActive) {
+            setActiveTab("apply");
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load demo video settings:", err);
+      }
+    };
+    fetchVideoSettings();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [formData, setFormData] = useState({
     madrasaName: "",
@@ -284,7 +321,7 @@ const FreeDemo = () => {
                   <p className="text-xs sm:text-sm md:text-base text-slate-600 mt-2 max-w-xl text-center leading-relaxed">
                     {activeTab === "apply"
                       ? "মাদ্রাসা ডেমো আবেদন ফর্ম — নিচের তথ্যগুলো পূরণ করে আবেদন জমা দিন"
-                      : "ভিডিওর মাধ্যমে সফটওয়্যারটির সকল আধুনিক ফিচার ও ব্যবহারবিধি বিস্তারিত দেখে নিন"}
+                      : (videoConfig.description || "ভিডিওর মাধ্যমে সফটওয়্যারটির সকল আধুনিক ফিচার ও ব্যবহারবিধি বিস্তারিত দেখে নিন")}
                   </p>
 
                   {/* Dual Segmented Toggle: ভিডিও দেখুন (First) / আবেদন করুন (Second) */}
@@ -510,8 +547,8 @@ const FreeDemo = () => {
                     <div className="relative w-full aspect-video rounded-[8px] overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                       <iframe
                         className="w-full h-full object-cover"
-                        src={DEFAULT_DEMO_VIDEO_URL}
-                        title="মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার ডেমো ভিডিও"
+                        src={videoConfig.embedUrl || videoConfig.videoUrl || DEFAULT_DEMO_VIDEO_URL}
+                        title={videoConfig.title || "মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার ডেমো ভিডিও"}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
                       />

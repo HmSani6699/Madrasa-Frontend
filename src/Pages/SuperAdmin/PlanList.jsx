@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Search, Plus, Edit, Trash2, Layers, Check, ShieldAlert, Loader2, DollarSign, Users, Award, AlignLeft } from "lucide-react";
 import adminService from "../../services/adminService";
 import toast from "react-hot-toast";
@@ -261,9 +262,10 @@ const PlanList = () => {
       )}
 
       {/* ================= ADD MODAL ================= */}
-      {isAddOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-lg w-full p-6 space-y-4 animate-scale-up">
+      {isAddOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/50 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-center">
+          <div className="fixed inset-0" onClick={() => setIsAddOpen(false)} />
+          <div className="relative my-auto bg-white rounded-2xl shadow-xl border border-gray-100 max-w-lg w-full p-6 space-y-4 z-10 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
               <Award className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-bold text-gray-900">Add Subscription Plan</h2>
@@ -370,13 +372,15 @@ const PlanList = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ================= EDIT MODAL ================= */}
-      {isEditOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-lg w-full p-6 space-y-4 animate-scale-up">
+      {isEditOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/50 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-center">
+          <div className="fixed inset-0" onClick={() => setIsEditOpen(false)} />
+          <div className="relative my-auto bg-white rounded-2xl shadow-xl border border-gray-100 max-w-lg w-full p-6 space-y-4 z-10 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
               <Award className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-bold text-gray-900">Edit Plan: {selectedPlan?.name}</h2>
@@ -483,13 +487,15 @@ const PlanList = () => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ================= DELETE CONFIRMATION ================= */}
-      {isDeleteOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 text-center animate-scale-up">
+      {isDeleteOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/50 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-center">
+          <div className="fixed inset-0" onClick={() => setIsDeleteOpen(false)} />
+          <div className="relative my-auto bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 text-center z-10">
             <div className="w-12 h-12 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto border border-red-100">
               <ShieldAlert className="w-6 h-6" />
             </div>
@@ -517,7 +523,8 @@ const PlanList = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
 import {
   Search,
   Filter,
+  ChevronDown,
   MessageCircle,
   Phone,
   Building2,
@@ -16,7 +19,8 @@ import {
   RefreshCw,
   Eye,
   X,
-  FileText
+  FileText,
+  Video
 } from "lucide-react";
 import adminService from "../../services/adminService";
 import { toast } from "react-hot-toast";
@@ -61,12 +65,12 @@ const DemoRequests = () => {
     fetchRequests();
   }, [statusFilter]);
 
-  const fetchRequests = async () => {
+  const fetchRequests = async (searchQuery = searchTerm) => {
     try {
       setLoading(true);
       const res = await adminService.getDemoRequests({
         status: statusFilter,
-        search: searchTerm
+        search: searchQuery
       });
       if (res.success) {
         setRequests(res.data || []);
@@ -81,7 +85,7 @@ const DemoRequests = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    fetchRequests();
+    fetchRequests(searchTerm);
   };
 
   const handleOpenDetail = (item) => {
@@ -164,80 +168,82 @@ const DemoRequests = () => {
             </span>
           </h1>
           <p className="text-gray-500 text-sm mt-0.5">
-            নতুন ইউজারদের সাথে হোয়াটসঅ্যাপে যোগাযোগ করুন এবং পোর্টাল অ্যাক্সেস প্রদান করুন।
+            নতুন ইউজারদের সাথে হোয়াটসঅ্যাপে যোগাযোগ করুন।
           </p>
         </div>
 
-        <button
-          onClick={fetchRequests}
-          className="inline-flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-xs cursor-pointer active:scale-95 self-start md:self-auto"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-emerald-600" : ""}`} />
-          <span>রিফ্রেশ</span>
-        </button>
-      </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        {/* Status Filter Buttons */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+
+        {/* Controls: Search, Status Filter & Refresh */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Search Form */}
+          <form onSubmit={handleSearchSubmit} className="relative min-w-[240px] sm:w-64 md:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="মাদ্রাসা, নাম বা ফোন..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-9 pr-9 py-2 rounded-[8px] border border-gray-200 bg-white text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20  hover:border-gray-300 transition-all"
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchTerm("");
+                  fetchRequests("");
+                }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+                title="সার্চ মুছুন"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </form>
+
+          {/* Status Filter */}
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full sm:w-auto appearance-none pl-9 pr-9 py-2 rounded-[8px] border border-gray-200 bg-white text-sm font-medium text-gray-700 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20  cursor-pointer hover:border-gray-300 transition-all"
+            >
+              <option value="all">সবগুলো স্ট্যাটাস</option>
+              <option value="pending">অপেক্ষমাণ</option>
+              <option value="contacted">যোগাযোগ সম্পন্ন</option>
+              <option value="portal_created">পোর্টাল প্রদান করা হয়েছে</option>
+              <option value="rejected">বাতিল</option>
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+
+          {/* Refresh Button */}
           <button
-            onClick={() => setStatusFilter("all")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-              statusFilter === "all"
-                ? "bg-[#1C7D5A] text-white shadow-xs"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
+            type="button"
+            onClick={() => fetchRequests()}
+            className="inline-flex items-center justify-center gap-2 bg-[#123628] border border-gray-200 hover:bg-emerald-600 hover:border-gray-300 text-gray-300 px-4 py-2 rounded-[8px] text-sm font-semibold transition-all shadow-xs cursor-pointer active:scale-95 shrink-0"
+            title="রিফ্রেশ করুন"
           >
-            সবগুলো ({requests.length})
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-emerald-600" : "text-gray-300"}`} />
+            <span>রিফ্রেশ</span>
           </button>
-          <button
-            onClick={() => setStatusFilter("pending")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-              statusFilter === "pending"
-                ? "bg-amber-600 text-white shadow-xs"
-                : "bg-amber-50 text-amber-700 hover:bg-amber-100"
-            }`}
+
+          {/* Video Settings Shortcut */}
+          <Link
+            to="/super-admin/demo-video"
+            className="inline-flex items-center justify-center gap-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-[#1C7D5A] px-3.5 py-2 rounded-[8px] text-sm font-semibold transition-all shadow-xs shrink-0 active:scale-95"
+            title="ডেমো ভিডিও সেটিংস পরিবর্তন করুন"
           >
-            অপেক্ষমাণ
-          </button>
-          <button
-            onClick={() => setStatusFilter("contacted")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-              statusFilter === "contacted"
-                ? "bg-blue-600 text-white shadow-xs"
-                : "bg-blue-50 text-blue-700 hover:bg-blue-100"
-            }`}
-          >
-            যোগাযোগ সম্পন্ন
-          </button>
-          <button
-            onClick={() => setStatusFilter("portal_created")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-              statusFilter === "portal_created"
-                ? "bg-emerald-700 text-white shadow-xs"
-                : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
-            }`}
-          >
-            পোর্টাল প্রদান করা হয়েছে
-          </button>
+            <Video className="w-4 h-4 text-[#1C7D5A]" />
+            <span>ভিডিও সেটিংস</span>
+          </Link>
         </div>
-
-        {/* Search Input */}
-        <form onSubmit={handleSearchSubmit} className="relative min-w-[260px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="মাদ্রাসা, নাম বা ফোন দিয়ে খুঁজুন..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 bg-gray-50/50 hover:bg-white"
-          />
-        </form>
       </div>
+
 
       {/* Requests Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
+      <div className="bg-white rounded-[8px]  border-gray-200 shadow-xs overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-gray-400">
             <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-emerald-600" />
@@ -254,15 +260,15 @@ const DemoRequests = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-gray-600">
-              <thead className="bg-gray-50/80 border-b border-gray-200 text-gray-700 font-bold text-xs uppercase tracking-wider">
-                <tr>
-                  <th className="py-3.5 px-4">মাদ্রাসার তথ্য</th>
-                  <th className="py-3.5 px-4">আবেদনকারী</th>
-                  <th className="py-3.5 px-4">হোয়াটসঅ্যাপ যোগাযোগ</th>
-                  <th className="py-3.5 px-4">অবস্থান ও সাইজ</th>
-                  <th className="py-3.5 px-4">স্ট্যাটাস</th>
-                  <th className="py-3.5 px-4">আবেদনের তারিখ</th>
-                  <th className="py-3.5 px-4 text-right">অ্যাকশন</th>
+              <thead className="bg-[#123628] border-b border-gray-200 text-gray-300 font-bold text-xs uppercase tracking-wider">
+                <tr className="whitespace-nowrap">
+                  <th className=" whitespace-nowrap py-3.5 px-4">মাদ্রাসার তথ্য</th>
+                  <th className=" whitespace-nowrap py-3.5 px-4">আবেদনকারী</th>
+                  <th className=" whitespace-nowrap py-3.5 px-4">হোয়াটসঅ্যাপ যোগাযোগ</th>
+                  <th className=" whitespace-nowrap py-3.5 px-4">অবস্থান ও সাইজ</th>
+                  <th className=" whitespace-nowrap py-3.5 px-4">স্ট্যাটাস</th>
+                  <th className=" whitespace-nowrap py-3.5 px-4">আবেদনের তারিখ</th>
+                  <th className=" whitespace-nowrap py-3.5 px-4 text-right">অ্যাকশন</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -331,10 +337,10 @@ const DemoRequests = () => {
                       <td className="py-3.5 px-4 text-xs text-gray-500 whitespace-nowrap">
                         {item.createdAt
                           ? new Date(item.createdAt).toLocaleDateString("bn-BD", {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric"
-                            })
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric"
+                          })
                           : "-"}
                       </td>
 
@@ -367,157 +373,172 @@ const DemoRequests = () => {
       </div>
 
       {/* Detail & Action Modal */}
-      {isDetailOpen && selectedRequest && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
-            {/* Close Button */}
-            <button
-              onClick={() => setIsDetailOpen(false)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+      {isDetailOpen && selectedRequest && createPortal(
+        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-slate-900/60 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-center">
+          {/* Backdrop click to close */}
+          <div
+            className="fixed inset-0"
+            onClick={() => setIsDetailOpen(false)}
+          />
 
-            {/* Modal Title */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-[#1C7D5A] flex items-center justify-center shrink-0">
-                <Building2 className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">{selectedRequest.madrasaName}</h3>
-                <p className="text-xs text-gray-500">
-                  আবেদনের আইডি: <span className="font-mono">{selectedRequest._id}</span>
-                </p>
-              </div>
-            </div>
-
-            {/* Direct WhatsApp Callout */}
-            <div className="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-between gap-3">
-              <div>
-                <div className="text-xs font-semibold text-emerald-800">হোয়াটসঅ্যাপ যোগাযোগ:</div>
-                <div className="text-base font-bold text-emerald-950 font-mono mt-0.5">
-                  {selectedRequest.whatsapp}
+          <div className="relative my-auto bg-white rounded-2xl sm:rounded-3xl max-w-xl w-full shadow-2xl border border-slate-100 z-10 max-h-[90vh] flex flex-col overflow-hidden">
+            {/* Modal Header - Fixed at Top */}
+            <div className="p-5 sm:p-6 pb-4 border-b border-gray-100 flex items-center justify-between gap-3 shrink-0 bg-white">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-[#1C7D5A] flex items-center justify-center shrink-0">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-bold text-gray-900 truncate">{selectedRequest.madrasaName}</h3>
+                  <p className="text-xs text-gray-500">
+                    আবেদনের আইডি: <span className="font-mono">{selectedRequest._id}</span>
+                  </p>
                 </div>
               </div>
-              <a
-                href={generateWhatsAppLink(selectedRequest)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-xs transition-all active:scale-95 shrink-0"
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setIsDetailOpen(false)}
+                className="text-gray-400 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors shrink-0 cursor-pointer"
+                title="বন্ধ করুন"
               >
-                <MessageCircle className="w-4 h-4 fill-white" />
-                <span>হোয়াটসঅ্যাপে চ্যাট করুন</span>
-              </a>
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            {/* Details Grid */}
-            <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-2xl text-xs sm:text-sm mb-6 border border-gray-100">
-              <div>
-                <span className="text-gray-400 block text-xs">আবেদনকারী:</span>
-                <span className="font-semibold text-gray-800">
-                  {selectedRequest.applicantName} ({selectedRequest.designation})
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-400 block text-xs">মাদ্রাসার ধরন:</span>
-                <span className="font-semibold text-gray-800">{selectedRequest.madrasaType}</span>
-              </div>
-              <div>
-                <span className="text-gray-400 block text-xs">ছাত্র-ছাত্রী সংখ্যা:</span>
-                <span className="font-semibold text-gray-800">{selectedRequest.studentCount}</span>
-              </div>
-              <div>
-                <span className="text-gray-400 block text-xs">জেলা ও ঠিকানা:</span>
-                <span className="font-semibold text-gray-800">
-                  {selectedRequest.district} {selectedRequest.address ? `, ${selectedRequest.address}` : ""}
-                </span>
-              </div>
-              {selectedRequest.phone && (
+            {/* Modal Scrollable Body */}
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-5 flex-1">
+              {/* Direct WhatsApp Callout */}
+              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <span className="text-gray-400 block text-xs">বিকল্প ফোন:</span>
-                  <span className="font-mono font-medium text-gray-800">{selectedRequest.phone}</span>
+                  <div className="text-xs font-semibold text-emerald-800">হোয়াটসঅ্যাপ যোগাযোগ:</div>
+                  <div className="text-base font-bold text-emerald-950 font-mono mt-0.5">
+                    {selectedRequest.whatsapp}
+                  </div>
+                </div>
+                <a
+                  href={generateWhatsAppLink(selectedRequest)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-xs transition-all active:scale-95 shrink-0"
+                >
+                  <MessageCircle className="w-4 h-4 fill-white" />
+                  <span>হোয়াটসঅ্যাপে চ্যাট করুন</span>
+                </a>
+              </div>
+
+              {/* Details Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-2xl text-xs sm:text-sm border border-gray-100">
+                <div>
+                  <span className="text-gray-400 block text-xs">আবেদনকারী:</span>
+                  <span className="font-semibold text-gray-800">
+                    {selectedRequest.applicantName} ({selectedRequest.designation})
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-400 block text-xs">মাদ্রাসার ধরন:</span>
+                  <span className="font-semibold text-gray-800">{selectedRequest.madrasaType}</span>
+                </div>
+                <div>
+                  <span className="text-gray-400 block text-xs">ছাত্র-ছাত্রী সংখ্যা:</span>
+                  <span className="font-semibold text-gray-800">{selectedRequest.studentCount}</span>
+                </div>
+                <div>
+                  <span className="text-gray-400 block text-xs">জেলা ও ঠিকানা:</span>
+                  <span className="font-semibold text-gray-800">
+                    {selectedRequest.district} {selectedRequest.address ? `, ${selectedRequest.address}` : ""}
+                  </span>
+                </div>
+                {selectedRequest.phone && (
+                  <div>
+                    <span className="text-gray-400 block text-xs">বিকল্প ফোন:</span>
+                    <span className="font-mono font-medium text-gray-800">{selectedRequest.phone}</span>
+                  </div>
+                )}
+                <div>
+                  <span className="text-gray-400 block text-xs">আবেদনের সময়:</span>
+                  <span className="text-gray-700">
+                    {new Date(selectedRequest.createdAt).toLocaleString("bn-BD")}
+                  </span>
+                </div>
+              </div>
+
+              {/* User Note */}
+              {selectedRequest.notes && (
+                <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-900">
+                  <span className="font-bold block mb-1">গ্রাহকের বিশেষ বার্তা:</span>
+                  <p className="italic">{selectedRequest.notes}</p>
                 </div>
               )}
-              <div>
-                <span className="text-gray-400 block text-xs">আবেদনের সময়:</span>
-                <span className="text-gray-700">
-                  {new Date(selectedRequest.createdAt).toLocaleString("bn-BD")}
-                </span>
+
+              {/* Status Update Form */}
+              <div className="space-y-4 pt-3 border-t border-gray-100">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase">
+                    আবেদন স্ট্যাটাস পরিবর্তন করুন
+                  </label>
+                  <select
+                    value={editingStatus}
+                    onChange={(e) => setEditingStatus(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 bg-white"
+                  >
+                    <option value="pending">অপেক্ষমাণ (Pending)</option>
+                    <option value="contacted">যোগাযোগ সম্পন্ন (Contacted)</option>
+                    <option value="portal_created">পোর্টাল প্রদান করা হয়েছে (Portal Created)</option>
+                    <option value="rejected">বাতিল (Rejected)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase">
+                    অ্যাডমিন নোট / মন্তব্য (টিমের অভ্যন্তরীণ ব্যবহারের জন্য)
+                  </label>
+                  <textarea
+                    rows="3"
+                    placeholder="উদাঃ হোয়াটসঅ্যাপে কথা হয়েছে, পোর্টাল ইউজারনেম ও পাসওয়ার্ড দেওয়া হয়েছে..."
+                    value={editingNotes}
+                    onChange={(e) => setEditingNotes(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 bg-white resize-none"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* User Note */}
-            {selectedRequest.notes && (
-              <div className="mb-6 p-3 bg-amber-50/70 border border-amber-200 rounded-xl text-xs text-amber-900">
-                <span className="font-bold block mb-1">গ্রাহকের বিশেষ বার্তা:</span>
-                <p className="italic">{selectedRequest.notes}</p>
-              </div>
-            )}
+            {/* Modal Footer - Fixed at Bottom */}
+            <div className="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/80 flex items-center justify-between gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => handleDelete(selectedRequest._id)}
+                className="text-rose-600 hover:bg-rose-50 px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>আবেদন মুছুন</span>
+              </button>
 
-            {/* Status Update Form */}
-            <div className="space-y-4 pt-4 border-t border-gray-100">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase">
-                  আবেদন স্ট্যাটাস পরিবর্তন করুন
-                </label>
-                <select
-                  value={editingStatus}
-                  onChange={(e) => setEditingStatus(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 bg-white"
-                >
-                  <option value="pending">অপেক্ষমাণ (Pending)</option>
-                  <option value="contacted">যোগাযোগ সম্পন্ন (Contacted)</option>
-                  <option value="portal_created">পোর্টাল প্রদান করা হয়েছে (Portal Created)</option>
-                  <option value="rejected">বাতিল (Rejected)</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase">
-                  অ্যাডমিন নোট / মন্তব্য (টিমের অভ্যন্তরীণ ব্যবহারের জন্য)
-                </label>
-                <textarea
-                  rows="3"
-                  placeholder="উদাঃ হোয়াটসঅ্যাপে কথা হয়েছে, পোর্টাল ইউজারনেম ও পাসওয়ার্ড দেওয়া হয়েছে..."
-                  value={editingNotes}
-                  onChange={(e) => setEditingNotes(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 bg-white resize-none"
-                />
-              </div>
-
-              <div className="flex items-center justify-between gap-3 pt-2">
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => handleDelete(selectedRequest._id)}
-                  className="text-rose-600 hover:bg-rose-50 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
+                  onClick={() => setIsDetailOpen(false)}
+                  className="border border-gray-200 hover:bg-gray-100 bg-white text-gray-600 px-4 py-2 rounded-xl text-sm font-semibold transition-colors cursor-pointer"
                 >
-                  <Trash2 className="w-4 h-4" />
-                  <span>আবেদন মুছুন</span>
+                  বন্ধ করুন
                 </button>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsDetailOpen(false)}
-                    className="border border-gray-200 hover:bg-gray-50 text-gray-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer"
-                  >
-                    বন্ধ করুন
-                  </button>
-                  <button
-                    type="button"
-                    disabled={isUpdating}
-                    onClick={() =>
-                      handleStatusUpdate(selectedRequest._id, editingStatus, editingNotes)
-                    }
-                    className="bg-[#1C7D5A] hover:bg-[#0a6646] active:scale-95 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    {isUpdating ? "সংরক্ষণ হচ্ছে..." : "আপডেট সংরক্ষণ করুন"}
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  disabled={isUpdating}
+                  onClick={() =>
+                    handleStatusUpdate(selectedRequest._id, editingStatus, editingNotes)
+                  }
+                  className="bg-[#1C7D5A] hover:bg-[#0a6646] active:scale-95 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-sm transition-all cursor-pointer disabled:opacity-50"
+                >
+                  {isUpdating ? "সংরক্ষণ হচ্ছে..." : "আপডেট সংরক্ষণ করুন"}
+                </button>
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { 
@@ -13,7 +13,9 @@ import {
   ChevronRight,
   Circle,
   X,
-  Sparkles
+  Sparkles,
+  FileText,
+  Video
 } from "lucide-react";
 import { adminNavigation } from "../navigation/adminNavigation";
 import { teacherNavigation } from "../navigation/teacherNavigation";
@@ -49,11 +51,11 @@ const SidebarItem = ({ item, level = 0 }) => {
   
   const activeChild = isChildActive(item.children);
 
-  useState(() => {
+  useEffect(() => {
     if (hasChildren && activeChild) {
       setIsOpen(true);
     }
-  }, []);
+  }, [hasChildren, activeChild]);
 
   if (hasChildren) {
     return (
@@ -134,7 +136,14 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
   const superAdminLinks = [
     { title: "Main", links: [
       { name: "Dashboard", path: "/super-admin", icon: LayoutDashboard },
-      { name: "Demo Requests", path: "/super-admin/demo-requests", icon: Sparkles },
+      { 
+        name: "Demo Requests", 
+        icon: Sparkles,
+        children: [
+          { name: "Demo Requests List", path: "/super-admin/demo-requests", icon: FileText },
+          { name: "Demo Video Settings", path: "/super-admin/demo-video", icon: Video }
+        ]
+      },
       { name: "Madrasas", path: "/super-admin/madrasas", icon: Building2 },
       { name: "Subscription Plans", path: "/super-admin/plans", icon: Package },
       { name: "Billing & Payments", path: "/super-admin/billing", icon: Wallet },

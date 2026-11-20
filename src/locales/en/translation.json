@@ -15,6 +15,9 @@
   "sidebar": {
     "dashboard": "Dashboard",
     "madrasas": "Madrasas",
+    "demo_requests": "Demo Requests",
+    "demo_requests_list": "Demo Requests List",
+    "demo_video_settings": "Demo Video Settings",
     "settings": "Settings",
     "main": "Main",
     "academic": "Academic",

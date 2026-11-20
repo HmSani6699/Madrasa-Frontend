@@ -85,6 +85,16 @@ const adminService = {
   deleteDemoRequest: async (id) => {
     const response = await axiosInstance.delete(endpoints.admin.deleteDemoRequest(id));
     return response.data;
+  },
+
+  getDemoVideoSettings: async () => {
+    const response = await axiosInstance.get(endpoints.admin.demoVideoSettings);
+    return response.data;
+  },
+
+  updateDemoVideoSettings: async (data) => {
+    const response = await axiosInstance.put(endpoints.admin.demoVideoSettings, data);
+    return response.data;
   }
 };
 

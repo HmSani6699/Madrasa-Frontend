@@ -49,9 +49,9 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
     const updatedForm = { ...formData, [updatedField]: value };
     const pName = updatedForm.plan.toLowerCase();
     const cycle = updatedForm.billingCycle.toLowerCase();
-    
+
     const matchedPlan = plans.find(pl => pl.name.toLowerCase() === pName) || plans[0];
-    
+
     let basePrice = 999;
     let limit = 150;
     if (matchedPlan) {
@@ -73,7 +73,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       // Map frontend fields to backend expected names
       const payload = {
@@ -93,15 +93,15 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
       await adminService.createMadrasa(payload);
       setLoading(false);
       onClose();
-      
+
       // Reset form
-      setFormData({ 
-        name: "", 
-        address: "", 
-        adminName: "", 
-        email: "", 
+      setFormData({
+        name: "",
+        address: "",
+        adminName: "",
+        email: "",
         adminPassword: "",
-        phone: "", 
+        phone: "",
         plan: plans.length > 0 ? plans[0].name.toLowerCase() : "basic",
         billingCycle: "monthly",
         price: plans.length > 0 ? plans[0].priceMonthly : 999,
@@ -131,7 +131,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
               className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               placeholder="e.g. Jamia Islamia Madrasa"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
           </div>
 
@@ -143,7 +143,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
               className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               placeholder="e.g. 123 Madrasa Road, Dhaka"
               value={formData.address}
-              onChange={(e) => setFormData({...formData, address: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
             />
           </div>
         </div>
@@ -160,7 +160,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
                 className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 placeholder="Muhtamim/Principal"
                 value={formData.adminName}
-                onChange={(e) => setFormData({...formData, adminName: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, adminName: e.target.value })}
               />
             </div>
             <div>
@@ -171,7 +171,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
                 className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 placeholder="01712XXXXXX"
                 value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
             </div>
           </div>
@@ -185,7 +185,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
                 className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 placeholder="admin@madrasa.com"
                 value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
             <div>
@@ -196,7 +196,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
                 className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 placeholder="Set secure password"
                 value={formData.adminPassword}
-                onChange={(e) => setFormData({...formData, adminPassword: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, adminPassword: e.target.value })}
               />
             </div>
           </div>
@@ -205,13 +205,13 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
         {/* Subscription Plan System */}
         <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-100 space-y-4">
           <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SaaS Subscription Config</h3>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+              <label className=" text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
                 <Activity className="w-3.5 h-3.5 text-primary" /> Plan Tier
               </label>
-              <select 
+              <select
                 className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white cursor-pointer text-sm"
                 value={formData.plan}
                 onChange={(e) => handlePlanOrCycleChange('plan', e.target.value)}
@@ -226,10 +226,10 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
                 )}
               </select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Billing Cycle</label>
-              <select 
+              <select
                 className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white cursor-pointer text-sm"
                 value={formData.billingCycle}
                 onChange={(e) => handlePlanOrCycleChange('billingCycle', e.target.value)}
@@ -242,7 +242,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+              <label className=" text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
                 <Users className="w-3.5 h-3.5 text-primary" /> Limit
               </label>
               <input
@@ -254,7 +254,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+              <label className=" text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
                 <DollarSign className="w-3.5 h-3.5 text-primary" /> Price (BDT)
               </label>
               <input
@@ -262,12 +262,12 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
                 required
                 className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm"
                 value={formData.price}
-                onChange={(e) => setFormData({...formData, price: Number(e.target.value)})}
+                onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+              <label className=" text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5 text-primary" /> Due Date
               </label>
               <input
@@ -275,7 +275,7 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
                 required
                 className="w-full px-4 py-2 rounded-xl border border-gray-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm"
                 value={formData.nextBillingDate}
-                onChange={(e) => setFormData({...formData, nextBillingDate: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, nextBillingDate: e.target.value })}
               />
             </div>
           </div>
@@ -283,15 +283,15 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
 
         {/* Footer Actions */}
         <div className="pt-4 flex gap-3 border-t border-gray-100">
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={onClose}
             className="flex-1 px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-colors cursor-pointer"
           >
             Cancel
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="flex-1 bg-primary hover:bg-primary-dark text-white rounded-xl font-medium shadow-lg shadow-primary/25 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
           >

@@ -1,6 +1,7 @@
 const endpoints = {
   demo: {
     submit: '/demo-request',
+    video: '/demo-request/video',
   },
   auth: {
     login: '/auth/v1/login',
@@ -17,6 +18,7 @@ const endpoints = {
     demoRequests: '/super-admin/v1/demo-requests',
     updateDemoRequestStatus: (id) => `/super-admin/v1/demo-requests/${id}/status`,
     deleteDemoRequest: (id) => `/super-admin/v1/demo-requests/${id}`,
+    demoVideoSettings: '/super-admin/v1/demo-video',
   },
   teacher: {
     students: '/v1/students',

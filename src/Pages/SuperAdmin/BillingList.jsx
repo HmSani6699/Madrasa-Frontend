@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Search, Loader2, Wallet, DollarSign, Calendar, Clock, CheckCircle2, AlertTriangle, HelpCircle, ArrowRightLeft, ShieldAlert, Award, FileSpreadsheet, MoreHorizontal } from "lucide-react";
 import adminService from "../../services/adminService";
 import toast from "react-hot-toast";
@@ -381,9 +382,10 @@ const BillingList = () => {
       </div>
 
       {/* ================= RECORD PAYMENT MODAL ================= */}
-      {isRecordOpen && selectedMadrasa && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-md w-full p-6 space-y-4 animate-scale-up">
+      {isRecordOpen && selectedMadrasa && createPortal(
+        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/50 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-center">
+          <div className="fixed inset-0" onClick={() => setIsRecordOpen(false)} />
+          <div className="relative my-auto bg-white rounded-2xl shadow-xl border border-gray-100 max-w-md w-full p-6 space-y-4 z-10 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
               <DollarSign className="w-5 h-5 text-primary" />
               <h2 className="text-xl font-bold text-gray-900">Record Subscription Payment</h2>
@@ -427,13 +429,15 @@ const BillingList = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ================= GRACE PERIOD MODAL ================= */}
-      {isGraceOpen && selectedMadrasa && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 animate-scale-up">
+      {isGraceOpen && selectedMadrasa && createPortal(
+        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/50 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-center">
+          <div className="fixed inset-0" onClick={() => setIsGraceOpen(false)} />
+          <div className="relative my-auto bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 z-10 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
               <Clock className="w-5 h-5 text-indigo-500" />
               <h2 className="text-xl font-bold text-gray-900">Grant Grace Period</h2>
@@ -471,13 +475,15 @@ const BillingList = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ================= SUSPEND / ACTIVATE MODAL ================= */}
-      {isToggleOpen && selectedMadrasa && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 text-center animate-scale-up">
+      {isToggleOpen && selectedMadrasa && createPortal(
+        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/50 backdrop-blur-sm p-4 sm:p-6 flex justify-center items-center">
+          <div className="fixed inset-0" onClick={() => setIsToggleOpen(false)} />
+          <div className="relative my-auto bg-white rounded-2xl shadow-xl border border-gray-100 max-w-sm w-full p-6 space-y-4 text-center z-10 max-h-[90vh] overflow-y-auto">
             <div className="w-12 h-12 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto border border-red-100">
               <ShieldAlert className="w-6 h-6" />
             </div>
@@ -509,7 +515,8 @@ const BillingList = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
