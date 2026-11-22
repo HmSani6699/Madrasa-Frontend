@@ -141,14 +141,14 @@ const Banner = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* ====== 2. TOP PILL BADGE ====== */}
           <div className="inline-flex items-center justify-center mb-4 sm:mb-5">
-            <button
-              onClick={() => setShowRoleModal(true)}
+            <Link
+              to="/free-demo"
               className="group inline-flex items-center gap-2 bg-[#fef9ee] hover:bg-[#fef3d6] text-[#b45309] border border-[#fde68a] text-xs sm:text-sm font-semibold px-4 sm:px-5 py-1 rounded-full shadow-2xs transition-all duration-200 hover:scale-102 cursor-pointer font-bangla"
             >
               <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 animate-pulse" />
-              <span>এক ক্লিকে মাদ্রাসা প্যানেল • রেজিস্ট্রেশন ছাড়াই</span>
+              <span>এক ক্লিকে মাদ্রাসা প্যানেল • ফ্রি লাইভ ডেমো</span>
               <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-600 group-hover:translate-x-0.5 transition-transform" />
-            </button>
+            </Link>
           </div>
 
           {/* ====== 3. BISMILLAH CALLIGRAPHY ====== */}

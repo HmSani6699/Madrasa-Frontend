@@ -160,8 +160,10 @@ import FeeType from "../Pages/Accounting/FeeType";
 import Home from "../Pages/Home/Home";
 import FreeDemo from "../Pages/FreeDemo/FreeDemo";
 import PackageDetails from "../Pages/Packages/PackageDetails";
+import ContactUs from "../Pages/ContactUs/ContactUs";
 import DemoRequests from "../Pages/SuperAdmin/DemoRequests";
 import DemoVideoSettings from "../Pages/SuperAdmin/DemoVideoSettings";
+import ContactMessages from "../Pages/SuperAdmin/ContactMessages";
 
 // Helper to flatten routes
 const flattenRoutes = (navItems) => {
@@ -477,7 +479,7 @@ const flattenRoutes = (navItems) => {
       if (item.path?.startsWith("/teacher/message")) {
         element = <MessageCenter />;
       }
-      
+
       if (item.path === "/teacher/finance/salary") {
         element = <TeacherPayroll />;
       }
@@ -498,7 +500,7 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/guardian/notice") element = <GuardianNoticeBoard />;
       if (item.path === "/guardian/message") element = <GuardianCommunication />;
       if (item.path === "/guardian/profile") element = <GuardianProfile />;
-      
+
       // New Academic & Examination Routes
       if (item.path === "/guardian/academic/subjects") element = <GuardianSubjectList />;
       if (item.path === "/guardian/academic/routine") element = <GuardianClassRoutine />;
@@ -545,6 +547,14 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
+    path: "/contact",
+    element: <ContactUs />,
+  },
+  {
+    path: "/contact-us",
+    element: <ContactUs />,
+  },
+  {
     path: "/free-demo",
     element: <FreeDemo />,
   },
@@ -555,16 +565,6 @@ const router = createBrowserRouter([
   {
     path: "/pricing",
     element: <PackageDetails />,
-  },
-  {
-    path: "/:slug",
-    element: <PortalLayout />,
-    children: [
-      { index: true, element: <MadrasaPortal /> },
-      { path: "about", element: <AboutUs /> },
-      { path: "admission", element: <AdmissionGuidelines /> },
-      { path: "online-admission", element: <OnlineAdmissionForm /> },
-    ],
   },
   {
     element: <AuthLayout />,
@@ -580,6 +580,16 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: "/:slug",
+    element: <PortalLayout />,
+    children: [
+      { index: true, element: <MadrasaPortal /> },
+      { path: "about", element: <AboutUs /> },
+      { path: "admission", element: <AdmissionGuidelines /> },
+      { path: "online-admission", element: <OnlineAdmissionForm /> },
+    ],
+  },
+  {
     element: <ProtectedRoute />, // Wrap with Main Layout
     children: [
       {
@@ -590,6 +600,7 @@ const router = createBrowserRouter([
             element: <ProtectedRoute allowedRoles={["super_admin"]} />,
             children: [
               { path: "/super-admin", element: <SuperAdminDashboard /> },
+              { path: "/super-admin/contact-messages", element: <ContactMessages /> },
               { path: "/super-admin/demo-requests", element: <DemoRequests /> },
               { path: "/super-admin/demo-video", element: <DemoVideoSettings /> },
               { path: "/super-admin/reviews", element: <ReviewSettings /> },

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Baitush Sharaf 8-pointed Islamic Star (Rub el Hizb) Outer Crest -->
+  <circle cx="60" cy="60" r="56" fill="#0f766e" stroke="#14b8a6" stroke-width="2.5"/>
+  
+  <!-- 8-Pointed Star -->
+  <g transform="translate(60,60) scale(0.68) translate(-60,-60)">
+    <rect x="25" y="25" width="70" height="70" rx="4" fill="#ffffff" stroke="#f59e0b" stroke-width="2.5"/>
+    <rect x="25" y="25" width="70" height="70" rx="4" fill="#ffffff" stroke="#f59e0b" stroke-width="2.5" transform="rotate(45 60 60)"/>
+  </g>
+
+  <!-- Central Mosque Dome & Golden Crescent -->
+  <path d="M48 64 C48 50 60 44 60 44 C60 44 72 50 72 64 Z" fill="#0f766e"/>
+  <path d="M60 38 A 3.5 3.5 0 1 1 60 45 A 2.5 2.5 0 1 0 60 38 Z" fill="#f59e0b"/>
+
+  <!-- Open Book of Ilm / Kamil -->
+  <path d="M60 66 C54 62 46 62 40 65 L40 76 C46 73 54 73 60 77 C66 73 74 73 80 76 L80 65 C74 62 66 62 60 66 Z" fill="#042f2e"/>
+  <path d="M60 68 C54 64 47 64 42 67 L42 74 C47 71 54 71 60 75 C66 71 73 71 78 74 L78 67 C73 64 66 64 60 68 Z" fill="#ccfbf1"/>
+  
+  <text x="60" y="22" text-anchor="middle" fill="#ccfbf1" font-size="7" font-weight="bold" font-family="sans-serif">বায়তুশ শরফ</text>
+  <text x="60" y="106" text-anchor="middle" fill="#ccfbf1" font-size="7.5" font-weight="bold" font-family="sans-serif">১৯৮২ • কামিল মাদরাসা</text>
+</svg>

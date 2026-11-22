@@ -1,4 +1,7 @@
 const endpoints = {
+  contact: {
+    submit: '/contact',
+  },
   reviews: {
     publicList: '/reviews',
   },
@@ -26,6 +29,9 @@ const endpoints = {
     reviewById: (id) => `/super-admin/v1/reviews/${id}`,
     updateReviewStatus: (id) => `/super-admin/v1/reviews/${id}/status`,
     deleteReview: (id) => `/super-admin/v1/reviews/${id}`,
+    contactMessages: '/super-admin/v1/contact-messages',
+    updateContactMessageStatus: (id) => `/super-admin/v1/contact-messages/${id}/status`,
+    deleteContactMessage: (id) => `/super-admin/v1/contact-messages/${id}`,
   },
   teacher: {
     students: '/v1/students',

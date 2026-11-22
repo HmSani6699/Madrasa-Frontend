@@ -147,33 +147,33 @@ const Footer = () => {
                         <ul className="space-y-2.5 text-sm text-slate-400">
                             <li>
                                 <Link to="/" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-                                    <span className="text-emerald-500/60">›</span> হোম
+                                    হোম
                                 </Link>
                             </li>
                             <li>
                                 <a href="#features" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-                                    <span className="text-emerald-500/60">›</span> সকল ফিচারসমূহ
+                                    সকল ফিচারসমূহ
                                 </a>
                             </li>
                             <li>
                                 <Link to="/packages" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-                                    <span className="text-emerald-500/60">›</span> প্যাকেজ ও প্রাইসিং
+                                    প্যাকেজ ও প্রাইসিং
                                 </Link>
                             </li>
                             <li>
                                 <Link to="/free-demo" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-                                    <span className="text-emerald-500/60">›</span> ফ্রি লাইভ ডেমো
+                                    ফ্রি লাইভ ডেমো
                                 </Link>
                             </li>
                             <li>
                                 <Link to="/login" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-                                    <span className="text-emerald-500/60">›</span> সিস্টেম লগইন
+                                    সিস্টেম লগইন
                                 </Link>
                             </li>
                             <li>
-                                <a href="#contact" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
-                                    <span className="text-emerald-500/60">›</span> আমাদের সাথে যোগাযোগ
-                                </a>
+                                <Link to="/contact" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+                                    আমাদের সাথে যোগাযোগ
+                                </Link>
                             </li>
                         </ul>
                     </div>
@@ -186,27 +186,27 @@ const Footer = () => {
                         </h3>
                         <ul className="space-y-2.5 text-sm text-slate-400">
                             <li className="flex items-center gap-2 hover:text-slate-200 transition-colors">
-                                <GraduationCap className="w-4 h-4 text-emerald-400 shrink-0" />
+
                                 <span>ভর্তি ও শিক্ষার্থী ব্যবস্থাপনা</span>
                             </li>
                             <li className="flex items-center gap-2 hover:text-slate-200 transition-colors">
-                                <Wallet className="w-4 h-4 text-emerald-400 shrink-0" />
+
                                 <span>ফি কালেকশন ও ভাউচার রসিদ</span>
                             </li>
                             <li className="flex items-center gap-2 hover:text-slate-200 transition-colors">
-                                <Users className="w-4 h-4 text-emerald-400 shrink-0" />
+
                                 <span>শিক্ষক, স্টাফ ও হাজিরা ট্র্যাকিং</span>
                             </li>
                             <li className="flex items-center gap-2 hover:text-slate-200 transition-colors">
-                                <Bell className="w-4 h-4 text-emerald-400 shrink-0" />
+
                                 <span>স্বয়ংক্রিয় বাংলা এসএমএস নোটিফিকেশন</span>
                             </li>
                             <li className="flex items-center gap-2 hover:text-slate-200 transition-colors">
-                                <BookOpen className="w-4 h-4 text-emerald-400 shrink-0" />
+
                                 <span>পরীক্ষার ফলাফল ও অটোমেটিক মার্কশিট</span>
                             </li>
                             <li className="flex items-center gap-2 hover:text-slate-200 transition-colors">
-                                <Globe className="w-4 h-4 text-emerald-400 shrink-0" />
+
                                 <span>মাদ্রাসার জন্য পূর্ণাঙ্গ ওয়েবসাইট পোর্টাল</span>
                             </li>
                         </ul>

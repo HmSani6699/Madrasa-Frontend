@@ -126,6 +126,22 @@ const adminService = {
   deleteReview: async (id) => {
     const response = await axiosInstance.delete(endpoints.admin.deleteReview(id));
     return response.data;
+  },
+
+  // Contact Messages Management
+  getContactMessages: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.admin.contactMessages, { params });
+    return response.data;
+  },
+
+  updateContactMessageStatus: async (id, data) => {
+    const response = await axiosInstance.patch(endpoints.admin.updateContactMessageStatus(id), data);
+    return response.data;
+  },
+
+  deleteContactMessage: async (id) => {
+    const response = await axiosInstance.delete(endpoints.admin.deleteContactMessage(id));
+    return response.data;
   }
 };
 

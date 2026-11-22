@@ -11,6 +11,9 @@ import {
     ExternalLink
 } from "lucide-react";
 import reviewService from "../../../services/reviewService";
+import client1 from "../../../../public/sayed.jpg"
+import client2 from "../../../../public/suny.jpg"
+import client3 from "../../../../public/noman.jpg"
 
 // Helper: Extract YouTube ID
 const getYouTubeId = (url) => {
@@ -52,6 +55,7 @@ const DEFAULT_REVIEWS = [
     {
         _id: "seed-1",
         reviewerName: "মাওলানা আবদুর রহমান",
+        img: client1,
         designation: "প্রিন্সিপাল",
         madrasaName: "দারুল উলুম মাদ্রাসা",
         videoUrl: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
@@ -64,6 +68,7 @@ const DEFAULT_REVIEWS = [
     },
     {
         _id: "seed-2",
+        img: client2,
         reviewerName: "মুফতি সাইফুল ইসলাম",
         designation: "পরিচালক",
         madrasaName: "জামিয়া কাসিমিয়া",
@@ -77,6 +82,7 @@ const DEFAULT_REVIEWS = [
     },
     {
         _id: "seed-3",
+        img: client3,
         reviewerName: "হাফেজ আবু বকর",
         designation: "শিক্ষক",
         madrasaName: "আল-আমিন একাডেমি",
@@ -123,6 +129,10 @@ const Reviews = () => {
             embedUrl: embed
         });
     };
+
+
+
+
 
     return (
         <section className="relative py-16 sm:py-24 bg-white overflow-hidden font-bangla">
@@ -237,11 +247,12 @@ const Reviews = () => {
                                             </p>
                                         </div>
 
+
                                         {/* Bottom: Reviewer Identity matching Screenshot */}
                                         <div className="pt-4 border-t border-slate-100 flex items-center gap-3.5">
                                             {/* Green Circular Icon with Madrasa/Building motif */}
-                                            <div className="w-11 h-11 rounded-full bg-[#1C7D5A] text-white flex items-center justify-center shadow-xs shrink-0">
-                                                <Building2 className="w-5 h-5" />
+                                            <div className="w-11 h-11 rounded-full text-white flex items-center justify-center shadow-xs shrink-0">
+                                                <img src={review.img} alt="logo" className="rounded-full" />
                                             </div>
 
                                             <div className="min-w-0">

@@ -127,7 +127,25 @@ export const PortalSettingsProvider = ({ children }) => {
     const fetchSettings = async () => {
       try {
         const slug = window.location.pathname.split('/')[1];
-        if (!slug || slug === 'login' || slug === 'admin') {
+        const reservedPaths = [
+          "",
+          "login",
+          "admin",
+          "super-admin",
+          "teacher",
+          "student",
+          "guardian",
+          "talimat",
+          "accounting",
+          "staff",
+          "students",
+          "free-demo",
+          "packages",
+          "pricing",
+          "account-deactivated",
+          "unauthorized"
+        ];
+        if (!slug || reservedPaths.includes(slug)) {
           setLoading(false);
           return;
         }

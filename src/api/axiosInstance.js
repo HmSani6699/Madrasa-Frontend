@@ -19,6 +19,23 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Helper: Check if current path is a protected route that requires redirection on auth failure
+const isProtectedRoute = () => {
+  if (typeof window === 'undefined') return false;
+  const currentPath = window.location.pathname;
+  return (
+    currentPath.startsWith('/admin') ||
+    currentPath.startsWith('/super-admin') ||
+    currentPath.startsWith('/teacher') ||
+    currentPath.startsWith('/student') ||
+    currentPath.startsWith('/guardian') ||
+    currentPath.startsWith('/talimat') ||
+    currentPath.startsWith('/accounting') ||
+    currentPath.startsWith('/staff') ||
+    currentPath.startsWith('/students')
+  );
+};
+
 // Response Interceptor: Global Error Handling and Token Refresh
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -48,17 +65,23 @@ axiosInstance.interceptors.response.use(
           }
         } catch (refreshError) {
           console.error('Token refresh failed:', refreshError);
-          // If refresh fails, clear tokens and redirect to login
+          // If refresh fails, clear tokens
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('user');
-          window.location.href = '/login';
+          if (isProtectedRoute()) {
+            window.location.href = '/login';
+          }
         }
       } else {
-        // No refresh token available, redirect to login
+        // No refresh token available, clear any stale auth
         localStorage.removeItem('accessToken');
         localStorage.removeItem('user');
-        window.location.href = '/login';
+        // Only redirect to login if user is attempting to browse a protected route
+        // Public pages (Home, Packages, Free Demo, Madrasa Portal, etc.) must stay accessible!
+        if (isProtectedRoute()) {
+          window.location.href = '/login';
+        }
       }
     }
 

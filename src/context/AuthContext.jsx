@@ -21,7 +21,12 @@ export const AuthProvider = ({ children }) => {
       const storedUser = localStorage.getItem("user");
       
       if (accessToken && storedUser) {
-        setUser(JSON.parse(storedUser));
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch {
+          localStorage.removeItem("user");
+        }
+
         try {
           const profileRes = await authService.getCurrentUser();
           if (profileRes.success) {
@@ -29,7 +34,12 @@ export const AuthProvider = ({ children }) => {
             setCurrentMadrasa(profileRes.data.madrasa);
           }
         } catch (err) {
-          console.error("Failed to load active tenant context:", err);
+          console.warn("Session check or tenant context load failed:", err?.message || err);
+          // If token verification failed, clear user state quietly so public pages render cleanly
+          setUser(null);
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("user");
         }
       } else if (refreshToken) {
         // Optionally try to refresh if only refresh token exists
@@ -45,7 +55,10 @@ export const AuthProvider = ({ children }) => {
               }
            }
         } catch (err) {
-           logout();
+           setUser(null);
+           localStorage.removeItem("accessToken");
+           localStorage.removeItem("refreshToken");
+           localStorage.removeItem("user");
         }
       }
 
@@ -54,10 +67,18 @@ export const AuthProvider = ({ children }) => {
       const storedChildren = localStorage.getItem("guardianChildren");
       const storedActiveChild = localStorage.getItem("activeChild");
 
-      if (storedMadrasas) setMadrasas(JSON.parse(storedMadrasas));
-      if (storedCurrentMadrasa && !currentMadrasa) setCurrentMadrasa(JSON.parse(storedCurrentMadrasa));
-      if (storedChildren) setGuardianChildren(JSON.parse(storedChildren));
-      if (storedActiveChild) setActiveChild(JSON.parse(storedActiveChild));
+      if (storedMadrasas) {
+        try { setMadrasas(JSON.parse(storedMadrasas)); } catch { localStorage.removeItem("madrasas"); }
+      }
+      if (storedCurrentMadrasa && !currentMadrasa) {
+        try { setCurrentMadrasa(JSON.parse(storedCurrentMadrasa)); } catch { localStorage.removeItem("currentMadrasa"); }
+      }
+      if (storedChildren) {
+        try { setGuardianChildren(JSON.parse(storedChildren)); } catch { localStorage.removeItem("guardianChildren"); }
+      }
+      if (storedActiveChild) {
+        try { setActiveChild(JSON.parse(storedActiveChild)); } catch { localStorage.removeItem("activeChild"); }
+      }
 
       setLoading(false);
     };

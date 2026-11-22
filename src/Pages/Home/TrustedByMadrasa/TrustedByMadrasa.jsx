@@ -28,6 +28,7 @@ const MADRASAS_ROW_ONE = [
         theme: "from-emerald-600 to-teal-800",
         badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
         verified: true,
+        logo: "/logos/madrasas/lalbagh.svg",
     },
     {
         id: 2,
@@ -40,6 +41,7 @@ const MADRASAS_ROW_ONE = [
         theme: "from-teal-600 to-emerald-900",
         badgeColor: "bg-teal-50 text-teal-700 border-teal-200",
         verified: true,
+        logo: "/logos/madrasas/hathazari.svg",
     },
     {
         id: 3,
@@ -52,6 +54,7 @@ const MADRASAS_ROW_ONE = [
         theme: "from-amber-600 to-emerald-800",
         badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
         verified: true,
+        logo: "/logos/madrasas/jatrabari.svg",
     },
     {
         id: 4,
@@ -64,6 +67,7 @@ const MADRASAS_ROW_ONE = [
         theme: "from-emerald-700 to-slate-800",
         badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
         verified: true,
+        logo: "/logos/madrasas/tanzimul-ummah.svg",
     },
     {
         id: 5,
@@ -76,6 +80,7 @@ const MADRASAS_ROW_ONE = [
         theme: "from-emerald-600 to-teal-700",
         badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
         verified: true,
+        logo: "/logos/madrasas/rahmania.svg",
     },
     {
         id: 6,
@@ -88,6 +93,7 @@ const MADRASAS_ROW_ONE = [
         theme: "from-teal-700 to-emerald-800",
         badgeColor: "bg-teal-50 text-teal-700 border-teal-200",
         verified: true,
+        logo: "/logos/madrasas/baitush-sharaf.svg",
     },
     {
         id: 7,
@@ -100,6 +106,7 @@ const MADRASAS_ROW_ONE = [
         theme: "from-slate-700 to-emerald-900",
         badgeColor: "bg-slate-50 text-slate-700 border-slate-200",
         verified: true,
+        logo: "/logos/madrasas/markazud-dawah.svg",
     },
     {
         id: 8,
@@ -112,6 +119,7 @@ const MADRASAS_ROW_ONE = [
         theme: "from-emerald-700 to-cyan-900",
         badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
         verified: true,
+        logo: "/logos/madrasas/angura.svg",
     },
 ];
 
@@ -127,6 +135,7 @@ const MADRASAS_ROW_TWO = [
         theme: "from-emerald-600 to-teal-800",
         badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
         verified: true,
+        logo: "/logos/madrasas/deoband-model.svg",
     },
     {
         id: 10,
@@ -139,6 +148,7 @@ const MADRASAS_ROW_TWO = [
         theme: "from-teal-700 to-emerald-900",
         badgeColor: "bg-teal-50 text-teal-700 border-teal-200",
         verified: true,
+        logo: "/logos/madrasas/younusia.svg",
     },
     {
         id: 11,
@@ -151,6 +161,7 @@ const MADRASAS_ROW_TWO = [
         theme: "from-amber-600 to-teal-800",
         badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
         verified: true,
+        logo: "/logos/madrasas/al-hikmah.svg",
     },
     {
         id: 12,
@@ -163,6 +174,7 @@ const MADRASAS_ROW_TWO = [
         theme: "from-emerald-700 to-slate-900",
         badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
         verified: true,
+        logo: "/logos/madrasas/jamil-madrasa.svg",
     },
     {
         id: 13,
@@ -175,6 +187,7 @@ const MADRASAS_ROW_TWO = [
         theme: "from-rose-600 to-emerald-800",
         badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
         verified: true,
+        logo: "/logos/madrasas/rowzatul-quran.svg",
     },
     {
         id: 14,
@@ -187,6 +200,7 @@ const MADRASAS_ROW_TWO = [
         theme: "from-teal-600 to-cyan-900",
         badgeColor: "bg-teal-50 text-teal-700 border-teal-200",
         verified: true,
+        logo: "/logos/madrasas/darul-falah.svg",
     },
     {
         id: 15,
@@ -199,6 +213,7 @@ const MADRASAS_ROW_TWO = [
         theme: "from-emerald-700 to-teal-900",
         badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
         verified: true,
+        logo: "/logos/madrasas/nooria-islamia.svg",
     },
     {
         id: 16,
@@ -211,6 +226,7 @@ const MADRASAS_ROW_TWO = [
         theme: "from-amber-600 to-emerald-900",
         badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
         verified: true,
+        logo: "/logos/madrasas/al-manar.svg",
     },
 ];
 
@@ -224,6 +240,8 @@ const TRUST_METRICS = [
 
 // প্রতিটি মাদরাসা কার্ডের জন্য প্রিমিয়াম UI কম্পোনেন্ট
 const MadrasaCard = ({ item }) => {
+    const [imgError, setImgError] = useState(false);
+
     return (
         <div
             className="group relative flex items-center gap-3.5 bg-white/95 hover:bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 hover:border-emerald-500/50 shadow-2xs hover:shadow-xl hover:shadow-emerald-950/8 transition-all duration-300 hover:-translate-y-1 w-72.5 sm:w-85 shrink-0 cursor-default select-none"
@@ -231,9 +249,23 @@ const MadrasaCard = ({ item }) => {
             {/* বামে মাদরাসা ক্রিস্ট / প্রিমিয়াম আইকন লোগো */}
             <div className="relative shrink-0">
                 <div
-                    className={`w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-linear-to-br ${item.theme} flex items-center justify-center text-white shadow-md shadow-emerald-900/15 group-hover:scale-105 group-hover:rotate-1 transition-all duration-300 ring-2 ring-white/60`}
+                    className="w-12 h-12 sm:w-13 sm:h-13 rounded-xl bg-white border border-slate-100 flex items-center justify-center p-1 shadow-md shadow-emerald-950/10 group-hover:scale-105 group-hover:rotate-1 transition-all duration-300 ring-2 ring-emerald-500/10 overflow-hidden"
                 >
-                    <Building2 className="w-6 h-6 stroke-[1.8] text-emerald-50" />
+                    {item.logo && !imgError ? (
+                        <img
+                            src={item.logo}
+                            alt={item.name}
+                            onError={() => setImgError(true)}
+                            className="w-full h-full object-contain transform transition-transform duration-300 group-hover:scale-105"
+                            loading="lazy"
+                        />
+                    ) : (
+                        <div
+                            className={`w-full h-full rounded-lg bg-linear-to-br ${item.theme} flex items-center justify-center text-white`}
+                        >
+                            <Building2 className="w-6 h-6 stroke-[1.8] text-emerald-50" />
+                        </div>
+                    )}
                 </div>
                 {/* ভেরিফাইড ব্যাজ আইকন */}
                 <span

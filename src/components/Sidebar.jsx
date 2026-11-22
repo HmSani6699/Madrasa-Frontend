@@ -9,6 +9,7 @@ import {
   Package,
   Wallet,
   MessageSquare,
+  Mail,
   ChevronDown,
   ChevronRight,
   Circle,
@@ -144,6 +145,7 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
           { name: "Demo Video Settings", path: "/super-admin/demo-video", icon: Video }
         ]
       },
+      { name: "Contact Messages", path: "/super-admin/contact-messages", icon: Mail },
       { name: "Madrasas", path: "/super-admin/madrasas", icon: Building2 },
       { name: "Subscription Plans", path: "/super-admin/plans", icon: Package },
       { name: "Video Reviews", path: "/super-admin/reviews", icon: Video },

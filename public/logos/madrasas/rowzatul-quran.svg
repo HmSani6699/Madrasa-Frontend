@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Rowzatul Quran Model Female Madrasa Floral & Elegant Seal -->
+  <circle cx="60" cy="60" r="56" fill="#be123c" stroke="#f43f5e" stroke-width="2.5"/>
+  <circle cx="60" cy="60" r="49" fill="#fff1f2" stroke="#fda4af" stroke-width="1.5"/>
+  <circle cx="60" cy="60" r="46" fill="#ffffff"/>
+
+  <!-- Floral Rose / Lotus Petals Arch -->
+  <g fill="#f43f5e" opacity="0.18">
+    <circle cx="60" cy="40" r="8"/>
+    <circle cx="48" cy="46" r="7"/>
+    <circle cx="72" cy="46" r="7"/>
+    <circle cx="42" cy="56" r="6"/>
+    <circle cx="78" cy="56" r="6"/>
+  </g>
+
+  <!-- Golden Crescent & Delicate Star -->
+  <path d="M60 36 A 4.5 4.5 0 1 1 60 45 A 3.5 3.5 0 1 0 60 36 Z" fill="#e11d48"/>
+  <polygon points="61.5,40.5 63,38.5 61,39.5 61,41.5 62.5,40.5" fill="#f59e0b"/>
+
+  <!-- Open Quran for Female Tahfiz -->
+  <path d="M60 56 C53 52 44 52 36 55 L36 71 C44 68 53 68 60 72 C67 68 76 68 84 71 L84 55 C76 52 67 52 60 56 Z" fill="#9f1239"/>
+  <path d="M60 58 C54 54 45 54 38 57 L38 68 C45 65 54 65 60 69 C66 65 75 65 82 68 L82 57 C75 54 66 54 60 58 Z" fill="#ffe4e6"/>
+  <line x1="60" y1="58" x2="60" y2="69" stroke="#e11d48" stroke-width="1.5"/>
+
+  <!-- Ornate Stand -->
+  <path d="M48 72 L72 86 M72 72 L48 86" stroke="#9f1239" stroke-width="2.5" stroke-linecap="round"/>
+
+  <text x="60" y="24" text-anchor="middle" fill="#ffe4e6" font-size="7" font-weight="bold" font-family="sans-serif">روضة القرآن النموذجية</text>
+  <text x="60" y="105" text-anchor="middle" fill="#ffe4e6" font-size="7.5" font-weight="bold" font-family="sans-serif">২০১২ • মহিলা শাখা</text>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Jamil Madrasa Bogura Grand Northern Monument Emblem -->
+  <circle cx="60" cy="60" r="56" fill="#065f46" stroke="#10b981" stroke-width="3"/>
+  <circle cx="60" cy="60" r="48" fill="#ffffff" stroke="#34d399" stroke-width="1.5"/>
+
+  <!-- Monumental Dome -->
+  <path d="M44 64 C44 46 60 40 60 40 C60 40 76 46 76 64 Z" fill="#047857"/>
+  <!-- Minaret pinnacles -->
+  <path d="M36 64 L36 44 L40 44 L40 64 Z" fill="#065f46"/>
+  <path d="M35 44 L38 36 L41 44 Z" fill="#d97706"/>
+  <path d="M80 64 L80 44 L84 44 L84 64 Z" fill="#065f46"/>
+  <path d="M79 44 L82 36 L85 44 Z" fill="#d97706"/>
+
+  <!-- Golden Crescent on Dome -->
+  <path d="M60 32 A 4 4 0 1 1 60 40 A 3 3 0 1 0 60 32 Z" fill="#f59e0b"/>
+
+  <!-- Open Sacred Quran on Rehal -->
+  <path d="M60 67 C54 63 46 63 38 66 L38 78 C46 75 54 75 60 79 C66 75 74 75 82 78 L82 66 C74 63 66 63 60 67 Z" fill="#064e3b"/>
+  <path d="M60 69 C54 65 47 65 40 68 L40 76 C47 73 54 73 60 77 C66 73 73 73 80 76 L80 68 C73 65 66 65 60 69 Z" fill="#fef3c7"/>
+  <line x1="60" y1="69" x2="60" y2="77" stroke="#b45309" stroke-width="1.5"/>
+
+  <!-- Rehal Stand -->
+  <path d="M48 79 L72 91 M72 79 L48 91" stroke="#92400e" stroke-width="2.5" stroke-linecap="round"/>
+
+  <text x="60" y="24" text-anchor="middle" fill="#d1fae5" font-size="7" font-weight="bold" font-family="sans-serif">جامعة قاسم العلوم</text>
+  <text x="60" y="105" text-anchor="middle" fill="#d1fae5" font-size="7.5" font-weight="bold" font-family="sans-serif">১৯৬০ • জামিল মাদ্রাসা</text>
+</svg>

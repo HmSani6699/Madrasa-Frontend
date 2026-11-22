@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Outer Amber / Golden Glow Ring -->
+  <circle cx="60" cy="60" r="56" fill="#134e4a" stroke="#d97706" stroke-width="3"/>
+  <circle cx="60" cy="60" r="49" fill="#ffffff" stroke="#0d9488" stroke-width="1.5"/>
+
+  <!-- Islamic Geometric Rays -->
+  <g stroke="#fef3c7" stroke-width="1.5" opacity="0.6">
+    <line x1="60" y1="36" x2="60" y2="28"/>
+    <line x1="48" y1="39" x2="42" y2="33"/>
+    <line x1="72" y1="39" x2="78" y2="33"/>
+  </g>
+
+  <!-- Traditional Mihrab Arch -->
+  <path d="M42 66 C42 46 60 38 60 38 C60 38 78 46 78 66 Z" fill="#0f766e" opacity="0.15"/>
+  <path d="M46 66 C46 50 60 42 60 42 C60 42 74 50 74 66 Z" stroke="#0d9488" stroke-width="2" fill="none"/>
+
+  <!-- Quill / Kalam of Knowledge -->
+  <path d="M72 40 L65 58 L63 57 L68 39 C70 38 72 38 72 40 Z" fill="#b45309"/>
+  <polygon points="63,57 61,61 65,58" fill="#78350f"/>
+
+  <!-- Radiant Quran on Golden Rehal -->
+  <path d="M60 67 C54 63 45 63 36 66 L36 78 C45 75 54 75 60 79 C66 75 75 75 84 78 L84 66 C75 63 66 63 60 67 Z" fill="#042f2e"/>
+  <path d="M60 69 C54 65 46 65 38 68 L38 76 C46 73 54 73 60 77 C66 73 74 73 82 76 L82 68 C74 65 66 65 60 69 Z" fill="#fef08a"/>
+  <line x1="60" y1="69" x2="60" y2="77" stroke="#ca8a04" stroke-width="1.5"/>
+
+  <!-- Rehal Wooden Stand -->
+  <path d="M48 79 L72 91 M72 79 L48 91" stroke="#854d0e" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Text -->
+  <text x="60" y="24" text-anchor="middle" fill="#fde68a" font-size="7" font-weight="bold" font-family="sans-serif">دار العلوم مدنية</text>
+  <text x="60" y="105" text-anchor="middle" fill="#fde68a" font-size="7.5" font-weight="bold" font-family="sans-serif">১৯৮০ • যাত্রাবাড়ী</text>
+</svg>

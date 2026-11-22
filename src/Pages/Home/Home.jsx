@@ -5,6 +5,7 @@ import TrustedByMadrasa from "./TrustedByMadrasa/TrustedByMadrasa";
 import OurServicesSection from "./OurServicesSection/OurServicesSection";
 import Package from "./Package/Package";
 import Reviews from "./Reviews/Reviews";
+import FAQ from "./FAQ/FAQ";
 import Footer from "../Footer/Footer";
 
 const Home = () => {
@@ -22,6 +23,8 @@ const Home = () => {
       <Package />
       {/* ==== Video Reviews / Testimonials Section ==== */}
       <Reviews />
+      {/* ==== Frequently Asked Questions (FAQ) Section ==== */}
+      <FAQ />
       {/* ==== Footer ==== */}
       <Footer />
     </div>
@@ -29,3 +32,4 @@ const Home = () => {
 };
 
 export default Home;
+

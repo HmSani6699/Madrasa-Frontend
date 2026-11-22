@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { User, Lock, ArrowRight, Loader2 } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { User, Lock, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    identifier: "admin@gmail.com",
-    password: "123456",
+    identifier: "",
+    password: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -112,11 +112,20 @@ const Login = () => {
         </button>
       </form>
 
-      <div className="mt-6 text-center text-sm text-gray-500">
-        Don't have an account?{" "}
-        <a href="#" className="text-primary font-medium hover:underline">
-          Contact Administration
-        </a>
+      <div className="mt-6 flex flex-col items-center gap-2 text-center text-sm text-gray-500 font-bangla">
+        <div>
+          একাউন্ট নেই?{" "}
+          <Link to="/free-demo" className="text-primary font-semibold hover:underline">
+            ফ্রি ডেমোর আবেদন করুন
+          </Link>
+        </div>
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-[#1C7D5A] font-semibold mt-1 hover:underline"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>পাবলিক হোম পেজে ফিরে যান</span>
+        </Link>
       </div>
     </div>
   );

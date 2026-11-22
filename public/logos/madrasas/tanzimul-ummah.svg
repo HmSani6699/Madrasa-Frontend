@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Tanzimul Ummah Signature Shield / Dynamic Ring -->
+  <circle cx="60" cy="60" r="56" fill="#065f46" stroke="#10b981" stroke-width="2.5"/>
+  <circle cx="60" cy="60" r="49" fill="#ffffff"/>
+
+  <!-- Rising Golden Sun Behind Book -->
+  <circle cx="60" cy="50" r="16" fill="#fef08a" opacity="0.9"/>
+  <path d="M60 30 L60 34 M46 36 L49 39 M74 36 L71 39 M39 48 L43 49 M81 48 L77 49" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Dynamic Flying Feather / Leaf (Symbol of Growth & Hifz) -->
+  <path d="M60 36 C68 36 78 44 76 56 C74 52 70 48 64 48 C58 48 54 52 50 56 C52 46 56 36 60 36 Z" fill="#059669"/>
+
+  <!-- Modern Open Book of Quran -->
+  <path d="M60 58 C53 52 42 53 34 56 L34 74 C42 71 53 70 60 76 C67 70 78 71 86 74 L86 56 C78 53 67 52 60 58 Z" fill="#047857"/>
+  <path d="M60 61 C54 55 44 56 36 59 L36 71 C44 68 54 67 60 73 C66 67 76 68 84 71 L84 59 C76 56 66 55 60 61 Z" fill="#ecfdf5"/>
+  <line x1="60" y1="61" x2="60" y2="73" stroke="#059669" stroke-width="1.5"/>
+
+  <!-- Cadet Laurel / Stars of Excellence -->
+  <polygon points="40,84 41.5,80 43,84 39,81.5 44,81.5" fill="#f59e0b"/>
+  <polygon points="60,84 61.5,80 63,84 59,81.5 64,81.5" fill="#f59e0b"/>
+  <polygon points="80,84 81.5,80 83,84 79,81.5 84,81.5" fill="#f59e0b"/>
+
+  <text x="60" y="24" text-anchor="middle" fill="#ecfdf5" font-size="7" font-weight="bold" font-family="sans-serif">তানযীমুল উম্মাহ</text>
+  <text x="60" y="105" text-anchor="middle" fill="#ecfdf5" font-size="7.5" font-weight="bold" font-family="sans-serif">১৯৯৯ • হিফয ও ক্যাডেট</text>
+</svg>

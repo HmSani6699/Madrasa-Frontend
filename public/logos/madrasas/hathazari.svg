@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Outer Gold & Dark Green Circular Seal -->
+  <circle cx="60" cy="60" r="56" fill="#064e3b" stroke="#f59e0b" stroke-width="3"/>
+  <circle cx="60" cy="60" r="49" fill="#022c22" stroke="#fbbf24" stroke-width="1"/>
+  <circle cx="60" cy="60" r="46" fill="#ffffff"/>
+
+  <!-- Twin Decorative Minarets -->
+  <path d="M34 68 L34 40 L38 40 L38 68 Z" fill="#047857"/>
+  <path d="M33 40 L36 32 L39 40 Z" fill="#d97706"/>
+  <path d="M82 68 L82 40 L86 40 L86 68 Z" fill="#047857"/>
+  <path d="M81 40 L84 32 L87 40 Z" fill="#d97706"/>
+
+  <!-- Central Grand Islamic Dome -->
+  <path d="M46 68 C46 48 60 42 60 42 C60 42 74 48 74 68 Z" fill="#065f46"/>
+  <!-- Crescent & Star on Dome -->
+  <path d="M60 33 A 4 4 0 1 1 60 41 A 3 3 0 1 0 60 33 Z" fill="#f59e0b"/>
+  <polygon points="61,37 62.5,35 60.5,36 60.5,38 62,37" fill="#f59e0b"/>
+
+  <!-- Arch opening in dome -->
+  <path d="M54 68 C54 58 60 55 60 55 C60 55 66 58 66 68 Z" fill="#fef3c7"/>
+
+  <!-- Open Quran on Rehal -->
+  <path d="M60 70 C54 66 45 66 37 69 L37 81 C45 78 54 78 60 82 C66 78 75 78 83 81 L83 69 C75 66 66 66 60 70 Z" fill="#022c22"/>
+  <path d="M60 72 C54 68 46 68 39 71 L39 79 C46 76 54 76 60 80 C66 76 74 76 81 79 L81 71 C74 68 66 68 60 72 Z" fill="#fef3c7"/>
+  <line x1="60" y1="72" x2="60" y2="80" stroke="#b45309" stroke-width="1.5"/>
+
+  <!-- Rehal Stand -->
+  <path d="M49 82 L71 94 M71 82 L49 94" stroke="#92400e" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Text / Calligraphy Header -->
+  <text x="60" y="24" text-anchor="middle" fill="#fbbf24" font-size="7" font-weight="bold" font-family="sans-serif">دار العلوم معين الاسلام</text>
+  <text x="60" y="106" text-anchor="middle" fill="#fbbf24" font-size="7.5" font-weight="bold" font-family="sans-serif">১৯০১ • হাটহাজারী</text>
+</svg>
