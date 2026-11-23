@@ -23,6 +23,7 @@ import {
     Youtube,
     Facebook,
     Linkedin,
+    Video,
 } from "lucide-react";
 
 import logo from "../../../public/whitelogo.png"
@@ -97,7 +98,7 @@ const Footer = () => {
                             <p className="text-xs text-slate-400 font-medium">আমাদের সোশ্যাল মিডিয়ায় যুক্ত থাকুন:</p>
                             <div className="flex items-center gap-2.5">
                                 <a
-                                    href="https://facebook.com"
+                                    href="https://www.facebook.com/madrasasheba"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="Facebook"
@@ -106,7 +107,7 @@ const Footer = () => {
                                     <Facebook className="w-4 h-4" />
                                 </a>
                                 <a
-                                    href="https://youtube.com"
+                                    href="https://www.youtube.com/@MadrasaSheba"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="YouTube"
@@ -163,6 +164,12 @@ const Footer = () => {
                             <li>
                                 <Link to="/free-demo" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
                                     ফ্রি লাইভ ডেমো
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/video-demo" className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors flex items-center gap-1.5">
+                                    <Video className="w-3.5 h-3.5" />
+                                    <span>ভিডিও ডেমো (টিউটোরিয়াল)</span>
                                 </Link>
                             </li>
                             <li>

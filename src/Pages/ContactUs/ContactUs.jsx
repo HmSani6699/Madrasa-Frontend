@@ -41,8 +41,8 @@ const ContactUs = () => {
             id: "email",
             icon: Mail,
             title: "ইমেইল",
-            value: "ouremailpoint@gmail.com",
-            action: "mailto:ouremailpoint@gmail.com",
+            value: "madrasasheba@gmail.com",
+            action: "mailto:madrasasheba@gmail.com",
         },
         {
             id: "address",

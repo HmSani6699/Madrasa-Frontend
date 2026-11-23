@@ -12,6 +12,7 @@ import PlanList from "../Pages/SuperAdmin/PlanList";
 import BillingList from "../Pages/SuperAdmin/BillingList";
 import SmsSettings from "../Pages/SuperAdmin/SmsSettings";
 import ReviewSettings from "../Pages/SuperAdmin/ReviewSettings";
+import AdditionalServicesSettings from "../Pages/SuperAdmin/AdditionalServicesSettings";
 import AdminDashboard from "../Pages/Admin/Dashboard";
 import SmsPortal from "../Pages/Admin/SmsPortal";
 import Placeholder from "../Pages/Admin/Placeholder";
@@ -159,6 +160,7 @@ import StudentProfilePage from "../Pages/Students/Profile";
 import FeeType from "../Pages/Accounting/FeeType";
 import Home from "../Pages/Home/Home";
 import FreeDemo from "../Pages/FreeDemo/FreeDemo";
+import VideoDemo from "../Pages/VideoDemo/VideoDemo";
 import PackageDetails from "../Pages/Packages/PackageDetails";
 import ContactUs from "../Pages/ContactUs/ContactUs";
 import DemoRequests from "../Pages/SuperAdmin/DemoRequests";
@@ -559,6 +561,10 @@ const router = createBrowserRouter([
     element: <FreeDemo />,
   },
   {
+    path: "/video-demo",
+    element: <VideoDemo />,
+  },
+  {
     path: "/packages",
     element: <PackageDetails />,
   },
@@ -604,6 +610,7 @@ const router = createBrowserRouter([
               { path: "/super-admin/demo-requests", element: <DemoRequests /> },
               { path: "/super-admin/demo-video", element: <DemoVideoSettings /> },
               { path: "/super-admin/reviews", element: <ReviewSettings /> },
+              { path: "/super-admin/additional-services", element: <AdditionalServicesSettings /> },
               { path: "/super-admin/madrasas", element: <MadrasaList /> },
               { path: "/super-admin/settings", element: <Settings /> },
               { path: "/super-admin/plans", element: <PlanList /> },

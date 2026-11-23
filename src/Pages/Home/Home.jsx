@@ -5,6 +5,7 @@ import TrustedByMadrasa from "./TrustedByMadrasa/TrustedByMadrasa";
 import OurServicesSection from "./OurServicesSection/OurServicesSection";
 import Package from "./Package/Package";
 import Reviews from "./Reviews/Reviews";
+import AdditionalServices from "./AdditionalServices/AdditionalServices";
 import FAQ from "./FAQ/FAQ";
 import Footer from "../Footer/Footer";
 
@@ -23,6 +24,8 @@ const Home = () => {
       <Package />
       {/* ==== Video Reviews / Testimonials Section ==== */}
       <Reviews />
+      {/* ==== Additional Services & Products (Admission Video, Student ID Card, Khata, POS, etc.) ==== */}
+      <AdditionalServices />
       {/* ==== Frequently Asked Questions (FAQ) Section ==== */}
       <FAQ />
       {/* ==== Footer ==== */}

@@ -5,6 +5,9 @@ const endpoints = {
   reviews: {
     publicList: '/reviews',
   },
+  additionalServices: {
+    publicList: '/additional-services',
+  },
   demo: {
     submit: '/demo-request',
     video: '/demo-request/video',
@@ -25,6 +28,11 @@ const endpoints = {
     updateDemoRequestStatus: (id) => `/super-admin/v1/demo-requests/${id}/status`,
     deleteDemoRequest: (id) => `/super-admin/v1/demo-requests/${id}`,
     demoVideoSettings: '/super-admin/v1/demo-video',
+    publicTutorialVideos: '/demo-request/v1/tutorial-videos',
+    tutorialVideos: '/super-admin/v1/tutorial-videos',
+    tutorialVideoById: (id) => `/super-admin/v1/tutorial-videos/${id}`,
+    updateTutorialVideoStatus: (id) => `/super-admin/v1/tutorial-videos/${id}/status`,
+    deleteTutorialVideo: (id) => `/super-admin/v1/tutorial-videos/${id}`,
     reviews: '/super-admin/v1/reviews',
     reviewById: (id) => `/super-admin/v1/reviews/${id}`,
     updateReviewStatus: (id) => `/super-admin/v1/reviews/${id}/status`,
@@ -32,6 +40,10 @@ const endpoints = {
     contactMessages: '/super-admin/v1/contact-messages',
     updateContactMessageStatus: (id) => `/super-admin/v1/contact-messages/${id}/status`,
     deleteContactMessage: (id) => `/super-admin/v1/contact-messages/${id}`,
+    additionalServices: '/super-admin/v1/additional-services',
+    additionalServiceById: (id) => `/super-admin/v1/additional-services/${id}`,
+    updateAdditionalServiceStatus: (id) => `/super-admin/v1/additional-services/${id}/status`,
+    deleteAdditionalService: (id) => `/super-admin/v1/additional-services/${id}`,
   },
   teacher: {
     students: '/v1/students',

@@ -97,6 +97,47 @@ const adminService = {
     return response.data;
   },
 
+  // Tutorial Videos Management (Per Menu / Submenu)
+  getPublicTutorialVideos: async (params = {}) => {
+    try {
+      const response = await axiosInstance.get(endpoints.admin.publicTutorialVideos, { params });
+      return response.data;
+    } catch (err) {
+      // Fallback endpoint if available
+      try {
+        const fallbackRes = await axiosInstance.get('/tutorial-videos/v1/public', { params });
+        return fallbackRes.data;
+      } catch (fallbackErr) {
+        throw err;
+      }
+    }
+  },
+
+  getAllTutorialVideos: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.admin.tutorialVideos, { params });
+    return response.data;
+  },
+
+  saveTutorialVideo: async (data) => {
+    const response = await axiosInstance.post(endpoints.admin.tutorialVideos, data);
+    return response.data;
+  },
+
+  updateTutorialVideo: async (id, data) => {
+    const response = await axiosInstance.put(endpoints.admin.tutorialVideoById(id), data);
+    return response.data;
+  },
+
+  toggleTutorialVideoPublish: async (id) => {
+    const response = await axiosInstance.patch(endpoints.admin.updateTutorialVideoStatus(id));
+    return response.data;
+  },
+
+  deleteTutorialVideo: async (id) => {
+    const response = await axiosInstance.delete(endpoints.admin.deleteTutorialVideo(id));
+    return response.data;
+  },
+
   // Video Reviews Management
   getAllReviews: async (params = {}) => {
     const response = await axiosInstance.get(endpoints.admin.reviews, { params });
@@ -141,6 +182,37 @@ const adminService = {
 
   deleteContactMessage: async (id) => {
     const response = await axiosInstance.delete(endpoints.admin.deleteContactMessage(id));
+    return response.data;
+  },
+
+  // Additional Services & Products Management
+  getAllAdditionalServices: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.admin.additionalServices, { params });
+    return response.data;
+  },
+
+  getAdditionalServiceById: async (id) => {
+    const response = await axiosInstance.get(endpoints.admin.additionalServiceById(id));
+    return response.data;
+  },
+
+  createAdditionalService: async (data) => {
+    const response = await axiosInstance.post(endpoints.admin.additionalServices, data);
+    return response.data;
+  },
+
+  updateAdditionalService: async (id, data) => {
+    const response = await axiosInstance.put(endpoints.admin.additionalServiceById(id), data);
+    return response.data;
+  },
+
+  toggleAdditionalServiceStatus: async (id, isActive) => {
+    const response = await axiosInstance.patch(endpoints.admin.updateAdditionalServiceStatus(id), { isActive });
+    return response.data;
+  },
+
+  deleteAdditionalService: async (id) => {
+    const response = await axiosInstance.delete(endpoints.admin.deleteAdditionalService(id));
     return response.data;
   }
 };
