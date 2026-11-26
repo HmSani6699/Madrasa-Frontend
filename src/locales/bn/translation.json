@@ -152,6 +152,12 @@
     "dry_inventory": "শুকনো বাজার স্টক",
     "boarding_billing": "মাসিক বিল ও আদায়",
     "kitchen_slip_reports": "কিচেন স্লিপ ও রিপোর্ট",
+    "transport_management": "ট্রান্সপোর্ট ম্যানেজমেন্ট",
+    "vehicles_routes": "গাড়ি ও রুট সেটআপ",
+    "transport_students": "ট্রান্সপোর্ট ছাত্র তালিকা",
+    "daily_trip_log": "দৈনিক ট্রিপ ও পিকআপ",
+    "fuel_expenses": "জ্বালানি ও মেরামত খরচ",
+    "transport_billing": "ট্রান্সপোর্ট বিল ও আদায়",
     "message": "বার্তা",
 
     "inventory": "ইনভেন্টরি",

@@ -92,9 +92,11 @@ import DailyRosterPage from "../Pages/Admin/Boarding/DailyRosterPage";
 import BoardingStudentsPage from "../Pages/Admin/Boarding/BoardingStudentsPage";
 import MealSchedulePage from "../Pages/Admin/Boarding/MealSchedulePage";
 import BazarExpensePage from "../Pages/Admin/Boarding/BazarExpensePage";
-import DryInventoryPage from "../Pages/Admin/Boarding/DryInventoryPage";
-import BoardingBillingPage from "../Pages/Admin/Boarding/BoardingBillingPage";
-import BoardingReportsPage from "../Pages/Admin/Boarding/BoardingReportsPage";
+import VehiclesRoutesPage from "../Pages/Admin/Transport/VehiclesRoutesPage";
+import TransportStudentsPage from "../Pages/Admin/Transport/TransportStudentsPage";
+import DailyTripLogPage from "../Pages/Admin/Transport/DailyTripLogPage";
+import TransportExpensesPage from "../Pages/Admin/Transport/TransportExpensesPage";
+import TransportBillingPage from "../Pages/Admin/Transport/TransportBillingPage";
 import MessageCenter from "../Pages/Admin/MessageCenter";
 import StudentReports from "../Pages/Admin/StudentReports";
 import FeesReports from "../Pages/Admin/FeesReports";
@@ -368,14 +370,20 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/boarding/bazar") {
         element = <BazarExpensePage />;
       }
-      if (item.path === "/admin/boarding/inventory") {
-        element = <DryInventoryPage />;
+      if (item.path === "/admin/transport/routes") {
+        element = <VehiclesRoutesPage />;
       }
-      if (item.path === "/admin/boarding/billing") {
-        element = <BoardingBillingPage />;
+      if (item.path === "/admin/transport/students") {
+        element = <TransportStudentsPage />;
       }
-      if (item.path === "/admin/boarding/reports") {
-        element = <BoardingReportsPage />;
+      if (item.path === "/admin/transport/trips") {
+        element = <DailyTripLogPage />;
+      }
+      if (item.path === "/admin/transport/expenses") {
+        element = <TransportExpensesPage />;
+      }
+      if (item.path === "/admin/transport/billing") {
+        element = <TransportBillingPage />;
       }
       if (item.path === "/admin/message") {
         element = <MessageCenter />;
@@ -658,6 +666,10 @@ const router = createBrowserRouter([
               {
                 path: "/admin/boarding",
                 element: <Navigate to="/admin/boarding/roster" replace />,
+              },
+              {
+                path: "/admin/transport",
+                element: <Navigate to="/admin/transport/routes" replace />,
               },
               {
                 path: "/admin/student/profile/:id",

@@ -71,41 +71,37 @@ const DailyRosterPage = () => {
 
   const kpiCards = [
     {
-      title: "মোট মিল",
-      value: `${mealsToday.total || 0} বেলা`,
-      subtitle: `ছাত্র: ${studentTotal} | উপস্থিত: ${mealsToday.deliveredTotal || 0}${
-        guestTotal > 0 ? ` | অতিথি: ${guestTotal}` : ""
-      }`,
+
+      value: `${mealsToday.total || 0} মোট মিল`,
+      subtitle: `ছাত্র: ${studentTotal} | উপস্থিত: ${mealsToday.deliveredTotal || 0}${guestTotal > 0 ? ` | অতিথি: ${guestTotal}` : ""
+        }`,
       icon: UtensilsCrossed,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
     },
     {
-      title: "সকাল",
-      value: `${mealsToday.breakfast || 0} বেলা`,
-      subtitle: `ছাত্র: ${mealsToday.studentBreakfast ?? mealsToday.breakfast ?? 0} | উপস্থিত: ${
-        mealsToday.deliveredBreakfast || 0
-      }${mealsToday.guestBreakfast > 0 ? ` | অতিথি: ${mealsToday.guestBreakfast}` : ""}`,
+
+      value: `${mealsToday.breakfast || 0} সকাল`,
+      subtitle: `ছাত্র: ${mealsToday.studentBreakfast ?? mealsToday.breakfast ?? 0} | উপস্থিত: ${mealsToday.deliveredBreakfast || 0
+        }${mealsToday.guestBreakfast > 0 ? ` | অতিথি: ${mealsToday.guestBreakfast}` : ""}`,
       icon: Sunrise,
       color: "text-amber-600",
       bg: "bg-amber-50",
     },
     {
-      title: "দুপুর",
-      value: `${mealsToday.lunch || 0} বেলা`,
-      subtitle: `ছাত্র: ${mealsToday.studentLunch ?? mealsToday.lunch ?? 0} | উপস্থিত: ${
-        mealsToday.deliveredLunch || 0
-      }${mealsToday.guestLunch > 0 ? ` | অতিথি: ${mealsToday.guestLunch}` : ""}`,
+
+      value: `${mealsToday.lunch || 0} দুপুর`,
+      subtitle: `ছাত্র: ${mealsToday.studentLunch ?? mealsToday.lunch ?? 0} | উপস্থিত: ${mealsToday.deliveredLunch || 0
+        }${mealsToday.guestLunch > 0 ? ` | অতিথি: ${mealsToday.guestLunch}` : ""}`,
       icon: Sun,
       color: "text-blue-600",
       bg: "bg-blue-50",
     },
     {
-      title: "রাত",
-      value: `${mealsToday.dinner || 0} বেলা`,
-      subtitle: `ছাত্র: ${mealsToday.studentDinner ?? mealsToday.dinner ?? 0} | উপস্থিত: ${
-        mealsToday.deliveredDinner || 0
-      }${mealsToday.guestDinner > 0 ? ` | অতিথি: ${mealsToday.guestDinner}` : ""}`,
+
+      value: `${mealsToday.dinner || 0} রাত`,
+      subtitle: `ছাত্র: ${mealsToday.studentDinner ?? mealsToday.dinner ?? 0} | উপস্থিত: ${mealsToday.deliveredDinner || 0
+        }${mealsToday.guestDinner > 0 ? ` | অতিথি: ${mealsToday.guestDinner}` : ""}`,
       icon: Moon,
       color: "text-indigo-600",
       bg: "bg-indigo-50",

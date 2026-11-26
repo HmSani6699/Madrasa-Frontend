@@ -14,6 +14,32 @@ export const AuthProvider = ({ children }) => {
   const [guardianChildren, setGuardianChildren] = useState([]);
   const [activeChild, setActiveChild] = useState(null);
 
+  const syncGuardianChildren = (children) => {
+    if (!Array.isArray(children)) return;
+    setGuardianChildren(children);
+    localStorage.setItem("guardianChildren", JSON.stringify(children));
+
+    let storedActiveId = null;
+    try {
+      const storedActive = JSON.parse(localStorage.getItem("activeChild") || "null");
+      storedActiveId = storedActive?.id || null;
+    } catch {
+      storedActiveId = null;
+    }
+
+    const nextActive =
+      (storedActiveId && children.find((c) => c.id === storedActiveId)) ||
+      children[0] ||
+      null;
+
+    setActiveChild(nextActive);
+    if (nextActive) {
+      localStorage.setItem("activeChild", JSON.stringify(nextActive));
+    } else {
+      localStorage.removeItem("activeChild");
+    }
+  };
+
   useEffect(() => {
     const initializeAuth = async () => {
       const accessToken = localStorage.getItem("accessToken");
@@ -32,6 +58,9 @@ export const AuthProvider = ({ children }) => {
           if (profileRes.success) {
             setUser(profileRes.data.user);
             setCurrentMadrasa(profileRes.data.madrasa);
+            if (Array.isArray(profileRes.data.guardianChildren)) {
+              syncGuardianChildren(profileRes.data.guardianChildren);
+            }
           }
         } catch (err) {
           console.warn("Session check or tenant context load failed:", err?.message || err);
@@ -52,6 +81,9 @@ export const AuthProvider = ({ children }) => {
               if (profileRes.success) {
                 setUser(profileRes.data.user);
                 setCurrentMadrasa(profileRes.data.madrasa);
+                if (Array.isArray(profileRes.data.guardianChildren)) {
+                  syncGuardianChildren(profileRes.data.guardianChildren);
+                }
               }
            }
         } catch (err) {
@@ -74,10 +106,20 @@ export const AuthProvider = ({ children }) => {
         try { setCurrentMadrasa(JSON.parse(storedCurrentMadrasa)); } catch { localStorage.removeItem("currentMadrasa"); }
       }
       if (storedChildren) {
-        try { setGuardianChildren(JSON.parse(storedChildren)); } catch { localStorage.removeItem("guardianChildren"); }
+        try {
+          const parsedChildren = JSON.parse(storedChildren);
+          setGuardianChildren((prev) => (prev.length > 0 ? prev : parsedChildren));
+        } catch {
+          localStorage.removeItem("guardianChildren");
+        }
       }
       if (storedActiveChild) {
-        try { setActiveChild(JSON.parse(storedActiveChild)); } catch { localStorage.removeItem("activeChild"); }
+        try {
+          const parsedActive = JSON.parse(storedActiveChild);
+          setActiveChild((prev) => prev || parsedActive);
+        } catch {
+          localStorage.removeItem("activeChild");
+        }
       }
 
       setLoading(false);
@@ -90,14 +132,20 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.login(identifier, password);
       if (response.success) {
-        const { user: userData } = response.data;
+        const { user: userData, guardianChildren: loginChildren } = response.data;
         setUser(userData);
+        if (Array.isArray(loginChildren)) {
+          syncGuardianChildren(loginChildren);
+        }
         
         try {
           const profileRes = await authService.getCurrentUser();
           if (profileRes.success) {
             setUser(profileRes.data.user);
             setCurrentMadrasa(profileRes.data.madrasa);
+            if (Array.isArray(profileRes.data.guardianChildren)) {
+              syncGuardianChildren(profileRes.data.guardianChildren);
+            }
           }
         } catch (profileErr) {
           console.error("Failed to load madrasa info after login:", profileErr);

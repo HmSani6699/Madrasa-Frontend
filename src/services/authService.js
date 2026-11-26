@@ -17,6 +17,9 @@ const authService = {
       localStorage.setItem("accessToken", response.data.data.accessToken);
       localStorage.setItem("refreshToken", response.data.data.refreshToken);
       localStorage.setItem("user", JSON.stringify(response.data.data.user));
+      if (Array.isArray(response.data.data.guardianChildren)) {
+        localStorage.setItem("guardianChildren", JSON.stringify(response.data.data.guardianChildren));
+      }
     }
     return response.data;
   },
@@ -42,10 +45,15 @@ const authService = {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
     localStorage.removeItem("currentMadrasa");
+    localStorage.removeItem("guardianChildren");
+    localStorage.removeItem("activeChild");
   },
 
   getCurrentUser: async () => {
     const response = await axiosInstance.get(endpoints.auth.me);
+    if (response.data.success && response.data.data.user) {
+      localStorage.setItem("user", JSON.stringify(response.data.data.user));
+    }
     if (response.data.success && response.data.data.madrasa) {
       localStorage.setItem("currentMadrasa", JSON.stringify(response.data.data.madrasa));
     }

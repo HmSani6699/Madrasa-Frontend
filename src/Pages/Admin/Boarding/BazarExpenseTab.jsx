@@ -106,7 +106,7 @@ const BazarExpenseTab = ({ onRefreshDashboard }) => {
       <div className="lg:col-span-4">
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-[8px] border border-slate-200 p-5 shadow-sm space-y-4 sticky top-24"
+          className="bg-white rounded-lg border border-slate-200 p-5 shadow-sm space-y-4 sticky top-24"
         >
           <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
             <div className="p-2 bg-emerald-50 text-[#1C7D5A] rounded-lg">
@@ -241,25 +241,27 @@ const BazarExpenseTab = ({ onRefreshDashboard }) => {
       {/* Right: Bazar Summary + History Table */}
       <div className="lg:col-span-8 space-y-4">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-white p-4 rounded-[8px] border border-slate-200 shadow-sm">
+          <div className="bg-white p-4 rounded-lg  border-slate-200 shadow-sm">
             <p className="text-xs text-slate-500">মোট বাজার</p>
             <p className="text-lg font-bold text-slate-800">{formatCurrency(summary.total)}</p>
           </div>
-          <div className="bg-white p-4 rounded-[8px] border border-slate-200 shadow-sm">
+          <div className="bg-white p-4 rounded-lg  border-slate-200 shadow-sm">
             <p className="text-xs text-slate-500">কাঁচাবাজার (Fresh)</p>
             <p className="text-lg font-bold text-emerald-700">{formatCurrency(summary.fresh)}</p>
           </div>
-          <div className="bg-white p-4 rounded-[8px] border border-slate-200 shadow-sm">
+          <div className="bg-white p-4 rounded-lg  border-slate-200 shadow-sm">
             <p className="text-xs text-slate-500">শুকনো বাজার (Dry)</p>
             <p className="text-lg font-bold text-amber-700">{formatCurrency(summary.dry)}</p>
           </div>
-          <div className="bg-white p-4 rounded-[8px] border border-slate-200 shadow-sm">
+          <div className="bg-white p-4 rounded-lg  border-slate-200 shadow-sm">
             <p className="text-xs text-slate-500">জ্বালানি (Fuel)</p>
             <p className="text-lg font-bold text-rose-700">{formatCurrency(summary.fuel)}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-[8px] border border-slate-200 p-4 shadow-sm space-y-4">
+        <div className="Assign Homework
+
+space-y-4">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -322,13 +324,12 @@ const BazarExpenseTab = ({ onRefreshDashboard }) => {
                       <td className="py-3 px-3">
                         <div className="font-semibold text-slate-800">{item.item_name}</div>
                         <span
-                          className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            item.category === "Fresh"
-                              ? "bg-emerald-50 text-emerald-700"
-                              : item.category === "Dry"
+                          className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${item.category === "Fresh"
+                            ? "bg-emerald-50 text-emerald-700"
+                            : item.category === "Dry"
                               ? "bg-amber-50 text-amber-700"
                               : "bg-rose-50 text-rose-700"
-                          }`}
+                            }`}
                         >
                           {item.category}
                         </span>

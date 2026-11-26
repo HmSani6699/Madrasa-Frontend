@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   UserPlus,
   Search,
@@ -11,20 +11,31 @@ import {
   UtensilsCrossed,
   ShoppingBag,
   Wallet,
+  Download,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import axiosInstance from "../../../api/axiosInstance";
+import endpoints from "../../../api/endpoints";
 import boardingService from "../../../services/boardingService";
 import { MEAL_PLANS, RESIDENTIAL_BADGE, formatCurrency, getTodayDateStr } from "./boardingConstants";
 import BoardingPageHeader from "./BoardingPageHeader";
 import BoardingKpiCards from "./BoardingKpiCards";
+
+const csvEscape = (value) => {
+  const str = String(value ?? "");
+  return /[",\n\r]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+};
 
 const BoardingStudentsPage = () => {
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState([]);
   const [dashboard, setDashboard] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [classFilter, setClassFilter] = useState("all");
   const [residentialFilter, setResidentialFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [apiClasses, setApiClasses] = useState([]);
+  const [seenClasses, setSeenClasses] = useState([]);
 
   // Add Student Modal
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -47,21 +58,126 @@ const BoardingStudentsPage = () => {
   const [editForm, setEditForm] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
 
+  useEffect(() => {
+    let active = true;
+    axiosInstance
+      .get(endpoints.common.classes)
+      .then((res) => {
+        if (active && res.data?.success && Array.isArray(res.data.data)) {
+          setApiClasses(res.data.data.map((c) => c.name).filter(Boolean));
+        }
+      })
+      .catch(() => {
+        // Fallback to classes present in boarding student rows
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const fetchBoardingStudents = useCallback(async () => {
     try {
       setLoading(true);
       const res = await boardingService.getBoardingStudents({
         residential_type: residentialFilter,
         status: statusFilter,
+        class_name: classFilter,
         search: searchTerm,
       });
-      if (res.success) setStudents(res.data || []);
+      if (res.success) {
+        const list = res.data || [];
+        setStudents(list);
+        const fetchedClasses = list.map((s) => s.class_name).filter(Boolean);
+        if (fetchedClasses.length > 0) {
+          setSeenClasses((prev) => Array.from(new Set([...prev, ...fetchedClasses])));
+        }
+      }
     } catch {
       toast.error("বোর্ডিং ছাত্র তালিকা লোড ব্যর্থ হয়েছে");
     } finally {
       setLoading(false);
     }
-  }, [residentialFilter, statusFilter, searchTerm]);
+  }, [residentialFilter, statusFilter, classFilter, searchTerm]);
+
+  const classOptions = useMemo(() => {
+    const names = new Set([...apiClasses, ...seenClasses]);
+    return Array.from(names).sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true })
+    );
+  }, [apiClasses, seenClasses]);
+
+  const handleExportCSV = () => {
+    if (students.length === 0) {
+      toast.error("ডাউনলোড করার মতো কোনো রেকর্ড পাওয়া যায়নি");
+      return;
+    }
+
+    const headers = [
+      "ক্রম",
+      "আইডি",
+      "ছাত্রের নাম",
+      "শ্রেণি",
+      "শাখা",
+      "রোল",
+      "অভিভাবকের মোবাইল",
+      "আবাসিক ধরন",
+      "মিল প্যাকেজ",
+      "বরাদ্দকৃত বেলা",
+      "বিলিং মোড",
+      "মাসিক ফি",
+      "ছাড় (%)",
+      "নিট প্রদেয়",
+      "স্ট্যাটাস",
+    ];
+
+    const rows = students.map((st, idx) => {
+      const badgeLabel = RESIDENTIAL_BADGE[st.residential_type]?.label || st.residential_type || "";
+      const mealsLabel = [
+        st.allowed_meals?.breakfast ? "সকাল" : null,
+        st.allowed_meals?.lunch ? "দুপুর" : null,
+        st.allowed_meals?.dinner ? "রাত" : null,
+      ]
+        .filter(Boolean)
+        .join(" • ");
+      const billingLabel = st.billing_mode === "MealRate" ? "মিল-রেট" : "ফিক্সড";
+      const statusLabel = st.status === "Active" ? "সক্রিয়" : "নিষ্ক্রিয়";
+
+      return [
+        idx + 1,
+        st.student_code || "",
+        st.student_name || "",
+        st.class_name || "N/A",
+        st.section_name || "",
+        st.roll_number || "",
+        st.guardian_contact || "",
+        badgeLabel,
+        st.meal_plan_name || "",
+        mealsLabel,
+        billingLabel,
+        st.monthly_fee ?? 0,
+        st.waiver_percent ?? 0,
+        st.net_monthly_fee ?? 0,
+        statusLabel,
+      ];
+    });
+
+    const csvContent =
+      "\uFEFF" +
+      [headers, ...rows].map((row) => row.map(csvEscape).join(",")).join("\r\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const safeClass =
+      classFilter === "all" ? "" : `-${classFilter.replace(/[^\w\u0980-\u09FF-]+/g, "_")}`;
+    link.href = url;
+    link.setAttribute("download", `boarding-students-${getTodayDateStr()}${safeClass}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("CSV রেকর্ড ডাউনলোড হয়েছে");
+  };
 
   const fetchAdmissionStudents = useCallback(async () => {
     if (!isAddModalOpen) return;
@@ -139,8 +255,8 @@ const BoardingStudentsPage = () => {
         ...(type === "Lillah"
           ? { meal_plan_id: "lillah_free", monthly_fee: 0, waiver_percent: 100 }
           : type === "Non-Residential"
-          ? { meal_plan_id: "daycare_lunch", monthly_fee: 1500, waiver_percent: 0 }
-          : { meal_plan_id: "full_3_meals", monthly_fee: 3500, waiver_percent: 0 }),
+            ? { meal_plan_id: "daycare_lunch", monthly_fee: 1500, waiver_percent: 0 }
+            : { meal_plan_id: "full_3_meals", monthly_fee: 3500, waiver_percent: 0 }),
       }));
     }
   };
@@ -223,12 +339,12 @@ const BoardingStudentsPage = () => {
     enrollForm.residential_type === "Lillah" || enrollForm.meal_plan_id === "lillah_free"
       ? 0
       : Math.max(
-          0,
-          Math.round(
-            (Number(enrollForm.monthly_fee) || 0) *
-              (1 - (Number(enrollForm.waiver_percent) || 0) / 100)
-          )
-        );
+        0,
+        Math.round(
+          (Number(enrollForm.monthly_fee) || 0) *
+          (1 - (Number(enrollForm.waiver_percent) || 0) / 100)
+        )
+      );
 
   const mealsToday = dashboard?.mealsToday || { breakfast: 0, lunch: 0, dinner: 0, total: 0 };
   const studentsSummary = dashboard?.studentsSummary || {
@@ -256,9 +372,8 @@ const BoardingStudentsPage = () => {
     {
       title: "মোট বোর্ডিং ছাত্র",
       value: `${studentsSummary.total} জন`,
-      subtitle: `আবাসিক: ${studentsSummary.residential} | অনাবাসিক: ${studentsSummary.nonResidential}${
-        studentsSummary.lillah > 0 ? ` | লিল্লাহ: ${studentsSummary.lillah}` : ""
-      }`,
+      subtitle: `আবাসিক: ${studentsSummary.residential} | অনাবাসিক: ${studentsSummary.nonResidential}${studentsSummary.lillah > 0 ? ` | লিল্লাহ: ${studentsSummary.lillah}` : ""
+        }`,
       icon: Users,
       color: "text-blue-600",
       bg: "bg-blue-50",
@@ -302,9 +417,9 @@ const BoardingStudentsPage = () => {
       {/* 4 Top KPI Summary Cards */}
       <BoardingKpiCards cards={kpiCards} />
 
-      <div className="bg-white rounded-[8px] border border-slate-200 p-4 shadow-sm space-y-4">
+      <div className=" space-y-4">
         {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-3">
+        <div className="flex flex-col lg:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -315,25 +430,49 @@ const BoardingStudentsPage = () => {
               className="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-[#1C7D5A]"
             />
           </div>
-          <select
-            value={residentialFilter}
-            onChange={(e) => setResidentialFilter(e.target.value)}
-            className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white font-medium"
-          >
-            <option value="all">সকল আবাসিক ধরন</option>
-            <option value="Residential">আবাসিক (Residential)</option>
-            <option value="Non-Residential">অনাবাসিক (Non-Residential)</option>
-            <option value="Lillah">লিল্লাহ / ফ্রি (Lillah)</option>
-          </select>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white font-medium"
-          >
-            <option value="all">সকল স্ট্যাটাস</option>
-            <option value="Active">সক্রিয় (Active)</option>
-            <option value="Inactive">নিষ্ক্রিয় (Inactive)</option>
-          </select>
+          <div className="flex flex-wrap items-center gap-3">
+            <select
+              value={classFilter}
+              onChange={(e) => setClassFilter(e.target.value)}
+              aria-label="শ্রেণি ফিল্টার"
+              className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white font-medium"
+            >
+              <option value="all">সকল শ্রেণি</option>
+              {classOptions.map((cls) => (
+                <option key={cls} value={cls}>
+                  {cls}
+                </option>
+              ))}
+            </select>
+            <select
+              value={residentialFilter}
+              onChange={(e) => setResidentialFilter(e.target.value)}
+              className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white font-medium"
+            >
+              <option value="all">সকল আবাসিক ধরন</option>
+              <option value="Residential">আবাসিক (Residential)</option>
+              <option value="Non-Residential">অনাবাসিক (Non-Residential)</option>
+              <option value="Lillah">লিল্লাহ / ফ্রি (Lillah)</option>
+            </select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white font-medium"
+            >
+              <option value="all">সকল স্ট্যাটাস</option>
+              <option value="Active">সক্রিয় (Active)</option>
+              <option value="Inactive">নিষ্ক্রিয় (Inactive)</option>
+            </select>
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              disabled={loading || students.length === 0}
+              className="px-3.5 py-2 text-sm font-semibold bg-[#1C7D5A] hover:bg-[#123628] text-white rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              <Download className="w-4 h-4" />
+              CSV ডাউনলোড
+            </button>
+          </div>
         </div>
 
         {/* Table */}
@@ -414,11 +553,10 @@ const BoardingStudentsPage = () => {
                       </td>
                       <td className="py-3 px-3 text-center">
                         <span
-                          className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                            st.status === "Active"
-                              ? "bg-emerald-50 text-emerald-700"
-                              : "bg-slate-100 text-slate-600"
-                          }`}
+                          className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${st.status === "Active"
+                            ? "bg-emerald-50 text-emerald-700"
+                            : "bg-slate-100 text-slate-600"
+                            }`}
                         >
                           {st.status === "Active" ? "সক্রিয়" : "নিষ্ক্রিয়"}
                         </span>
@@ -453,7 +591,7 @@ const BoardingStudentsPage = () => {
       {/* Add Student Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
             <div className="px-6 py-4 bg-[#123628] text-white flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-base">অ্যাডমিশন ডাটাবেস থেকে ছাত্র বোর্ডিংয়ে যুক্ত করুন</h3>
@@ -534,11 +672,10 @@ const BoardingStudentsPage = () => {
                       key={f.key}
                       type="button"
                       onClick={() => setAdmissionFilter(f.key)}
-                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-colors cursor-pointer ${
-                        admissionFilter === f.key
-                          ? "bg-[#1C7D5A] text-white border-[#1C7D5A]"
-                          : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
-                      }`}
+                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-colors cursor-pointer ${admissionFilter === f.key
+                        ? "bg-[#1C7D5A] text-white border-[#1C7D5A]"
+                        : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                        }`}
                     >
                       {f.label}
                     </button>
@@ -586,15 +723,14 @@ const BoardingStudentsPage = () => {
                           <tr
                             key={st._id}
                             onClick={() => toggleSelectStudent(st._id)}
-                            className={`cursor-pointer transition-colors ${
-                              checked ? "bg-emerald-50/70" : "hover:bg-slate-50"
-                            }`}
+                            className={`cursor-pointer transition-colors ${checked ? "bg-emerald-50/70" : "hover:bg-slate-50"
+                              }`}
                           >
                             <td className="py-2.5 px-3 text-center">
                               <input
                                 type="checkbox"
                                 checked={checked}
-                                onChange={() => {}}
+                                onChange={() => { }}
                                 className="accent-[#1C7D5A] w-4 h-4"
                               />
                             </td>
@@ -607,11 +743,10 @@ const BoardingStudentsPage = () => {
                             </td>
                             <td className="py-2.5 px-3">
                               <span
-                                className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
-                                  st.hostel_required
-                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                    : "bg-slate-100 text-slate-600 border-slate-200"
-                                }`}
+                                className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${st.hostel_required
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                  : "bg-slate-100 text-slate-600 border-slate-200"
+                                  }`}
                               >
                                 {st.hostel_required ? "আবাসিক" : "অনাবাসিক"}
                               </span>

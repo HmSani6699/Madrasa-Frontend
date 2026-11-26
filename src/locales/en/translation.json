@@ -150,6 +150,12 @@
     "dry_inventory": "Dry Inventory",
     "boarding_billing": "Boarding Billing",
     "kitchen_slip_reports": "Kitchen Slip & Reports",
+    "transport_management": "Transport",
+    "vehicles_routes": "Vehicles & Routes",
+    "transport_students": "Transport Students",
+    "daily_trip_log": "Daily Trip Log",
+    "fuel_expenses": "Fuel & Expenses",
+    "transport_billing": "Transport Billing",
     "message": "Message",
 
     "inventory": "Inventory",

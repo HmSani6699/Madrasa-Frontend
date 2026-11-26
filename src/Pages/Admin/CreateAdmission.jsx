@@ -38,6 +38,23 @@ import { toast } from "react-hot-toast";
 import VoucherModal from "../../components/VoucherModal/VoucherModal";
 import { MEAL_PLANS, formatCurrency } from "./Boarding/boardingConstants";
 
+const DEFAULT_TRANSPORT = {
+  required: false,
+  route_id: "",
+  route: "",
+  stoppage: "",
+  trip_type: "Both",
+  monthly_fee: 0,
+  waiver_percent: 0,
+};
+
+const computeTransportNetFee = (transport) => {
+  if (!transport?.required) return 0;
+  const fee = Math.max(0, Number(transport.monthly_fee) || 0);
+  const waiver = Math.min(100, Math.max(0, Number(transport.waiver_percent) || 0));
+  return Math.max(0, Math.round(fee * (1 - waiver / 100)));
+};
+
 const DEFAULT_BOARDING = {
   enrolled: false,
   residential_type: "Residential",
@@ -77,14 +94,16 @@ const CreateAdmission = () => {
   const [classes, setClasses] = useState([]);
   const [allSections, setAllSections] = useState([]);
   const [feeTypes, setFeeTypes] = useState([]);
+  const [transportRoutes, setTransportRoutes] = useState([]);
 
   const fetchData = useCallback(async () => {
     try {
-      const [parentsRes, classesRes, sectionsRes, feeTypesRes] = await Promise.all([
+      const [parentsRes, classesRes, sectionsRes, feeTypesRes, routesRes] = await Promise.all([
         axiosInstance.get("/v1/parents"),
         axiosInstance.get("/v1/classes"),
         axiosInstance.get("/v1/sections"),
-        axiosInstance.get("/fee-type/v1")
+        axiosInstance.get("/fee-type/v1"),
+        axiosInstance.get("/transport/v1/routes").catch(() => ({ data: { success: false } })),
       ]);
 
       if (parentsRes.data.success) {
@@ -94,6 +113,7 @@ const CreateAdmission = () => {
       if (classesRes.data.success) setClasses(classesRes.data.data);
       if (sectionsRes.data.success) setAllSections(sectionsRes.data.data);
       if (feeTypesRes.data.success) setFeeTypes(feeTypesRes.data.data);
+      if (routesRes.data?.success) setTransportRoutes(routesRes.data.data || []);
     } catch (err) {
       console.error("Error fetching admission data:", err);
     }
@@ -121,7 +141,9 @@ const CreateAdmission = () => {
             class_id: studentData.class_id,
             section_id: studentData.section_id,
             photo: studentData.photo,
-            transport: studentData.transport || { required: false, route: "" },
+            transport: studentData.transport
+              ? { ...DEFAULT_TRANSPORT, ...studentData.transport }
+              : { ...DEFAULT_TRANSPORT },
             hostel: studentData.hostel || { required: false, roomType: "" },
             boarding: studentData.boarding || {
               ...DEFAULT_BOARDING,
@@ -191,7 +213,7 @@ const CreateAdmission = () => {
           section_id: s.section || s.section_id || "",
           photo: s.photo || "",
           password: "password",
-          transport: { required: false, route: "" },
+          transport: { ...DEFAULT_TRANSPORT },
           hostel: { required: false, roomType: "" },
           boarding: { ...DEFAULT_BOARDING },
           fees: {},
@@ -213,10 +235,7 @@ const CreateAdmission = () => {
     section_id: "",
     photo: "",
     password: "password",
-    transport: {
-      required: false,
-      route: "",
-    },
+    transport: { ...DEFAULT_TRANSPORT },
     hostel: {
       required: false,
       roomType: "",
@@ -335,8 +354,8 @@ const CreateAdmission = () => {
       const nextResidential = isLillah
         ? "Lillah"
         : current.boarding?.residential_type === "Lillah"
-        ? "Residential"
-        : current.boarding?.residential_type || "Residential";
+          ? "Residential"
+          : current.boarding?.residential_type || "Residential";
 
       updatedStudents[index] = {
         ...current,
@@ -521,7 +540,7 @@ const CreateAdmission = () => {
       {/* ── Subscription Limit Exceeded Modal ── */}
       {subscriptionLimitError && (
         <div
-          className="fixed inset-0 z-[999] flex items-center justify-center p-4"
+          className="fixed inset-0 z-999 flex items-center justify-center p-4"
           style={{ backgroundColor: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
           onClick={() => setSubscriptionLimitError(null)}
         >
@@ -659,7 +678,7 @@ const CreateAdmission = () => {
           <Link to={"/admin/student/list"}>
             <button
               type="button"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-[8px] hover:bg-[#1C7D5A] transition-all shadow-sm cursor-pointer"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-lg hover:bg-[#1C7D5A] transition-all shadow-sm cursor-pointer"
             >
               <User2 className="w-4 h-4" />
               All Student
@@ -672,7 +691,7 @@ const CreateAdmission = () => {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Academic Year & Admission Date */}
-        <div className="bg-white dark:bg-white rounded-[8px]  p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-white rounded-lg  p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
             <div className="w-10 h-10 rounded-xl bg-[#1C7D5A18] flex items-center justify-center">
               <Calendar className="w-5 h-5 text-[#1C7D5A]" />
@@ -712,7 +731,7 @@ const CreateAdmission = () => {
         </div>
 
         {/* Guardian Information */}
-        <div className="bg-white dark:bg-white rounded-[8px]  p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-white rounded-lg  p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#1C7D5A18] flex items-center justify-center">
@@ -725,7 +744,7 @@ const CreateAdmission = () => {
             <button
               type="button"
               onClick={() => setUseExistingGuardian(!useExistingGuardian)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-[8px] ransition-all bg-[#1C7D5A] text-white shadow-lg  cursor-pointer`}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg ransition-all bg-[#1C7D5A] text-white shadow-lg  cursor-pointer`}
             >
               {useExistingGuardian ? (
                 <>
@@ -743,7 +762,7 @@ const CreateAdmission = () => {
               <button
                 type="button"
                 onClick={() => handleInputChange(null, "guardian_id", null)}
-                className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-[8px] transition-all bg-red-100 text-red-600 hover:bg-red-200 cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg transition-all bg-red-100 text-red-600 hover:bg-red-200 cursor-pointer"
               >
                 <X className="w-4 h-4" />
                 Clear Selected Guardian
@@ -763,7 +782,7 @@ const CreateAdmission = () => {
                   type="text"
                   value={guardianSearchTerm}
                   onChange={(e) => setGuardianSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-[#1C7D5A18] dark:bg-[#1C7D5A18]   dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[#1C7D5A18] dark:bg-[#1C7D5A18]   dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-lg outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
                   placeholder="Search by father's name, mother's name, or contact..."
                 />
               </div>
@@ -774,7 +793,7 @@ const CreateAdmission = () => {
                     <div
                       key={guardian._id}
                       onClick={() => selectGuardian(guardian)}
-                      className="p-4 bg-slate-50 dark:bg-slate-50 rounded-[8px] border-1 border-slate-200 dark:border-slate-200 hover:border-[#1C7D5A] hover:bg-[#1C7D5A18] cursor-pointer transition-all hover:shadow-md group relative overflow-hidden"
+                      className="p-4 bg-slate-50 dark:bg-slate-50 rounded-lg border border-slate-200 dark:border-slate-200 hover:border-[#1C7D5A] hover:bg-[#1C7D5A18] cursor-pointer transition-all hover:shadow-md group relative overflow-hidden"
                     >
                       <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <UserCheck className="w-5 h-5 text-[#1C7D5A]" />
@@ -822,7 +841,7 @@ const CreateAdmission = () => {
                               <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center">
                                 <MapPin className="w-3 h-3 text-orange-500" />
                               </div>
-                              <p className="text-xs font-bold text-slate-600 truncate max-w-[200px]">
+                              <p className="text-xs font-bold text-slate-600 truncate max-w-50">
                                 {guardian.address}
                               </p>
                             </div>
@@ -968,7 +987,7 @@ const CreateAdmission = () => {
               {/* Guardian Photos and NID */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6  ">
                 {/* Father's Photo */}
-                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-[6px] border-1 border-[#1C7D5A18] shadow-sm">
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-md border border-[#1C7D5A18] shadow-sm">
                   <div className="relative">
                     {formData.guardian.fatherPhoto ? (
                       <img
@@ -1003,7 +1022,7 @@ const CreateAdmission = () => {
                 </div>
 
                 {/* Mother's Photo */}
-                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-[6px] border-1 border-[#1C7D5A18] shadow-sm">
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-md border border-[#1C7D5A18] shadow-sm">
                   <div className="relative">
                     {formData.guardian.motherPhoto ? (
                       <img
@@ -1038,7 +1057,7 @@ const CreateAdmission = () => {
                 </div>
 
                 {/* Guardian NID */}
-                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-[6px] border-1 border-[#1C7D5A18] shadow-sm">
+                <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-md border border-[#1C7D5A18] shadow-sm">
                   <div className="relative">
                     {formData.guardian.guardianNID ? (
                       <img
@@ -1086,7 +1105,7 @@ const CreateAdmission = () => {
             <button
               type="button"
               onClick={addStudent}
-              className=" cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-[#1C7D5A] text-white font-black rounded-[8px] hover:bg-[#1C7D5A] transition-all shadow-lg "
+              className=" cursor-pointer flex items-center gap-2 px-6 py-2.5 bg-[#1C7D5A] text-white font-black rounded-lg hover:bg-[#1C7D5A] transition-all shadow-lg "
             >
               <Plus className="w-5 h-5" />
               Add Another Student
@@ -1219,7 +1238,7 @@ const CreateAdmission = () => {
                   >
                     <option value="">Select Section</option>
                     {allSections
-                      .filter(sec => 
+                      .filter(sec =>
                         (sec.class_id?._id === student.class_id || sec.class_id === student.class_id) ||
                         (sec.classId?._id === student.class_id || sec.classId === student.class_id)
                       )
@@ -1316,11 +1335,10 @@ const CreateAdmission = () => {
                       key={opt.key}
                       type="button"
                       onClick={() => handleBoardingPreset(index, opt.key)}
-                      className={`p-3 rounded-[6px] border text-left transition-all cursor-pointer ${
-                        opt.active
+                      className={`p-3 rounded-[6px] border text-left transition-all cursor-pointer ${opt.active
                           ? "bg-[#1C7D5A] text-white border-[#1C7D5A] shadow-sm"
                           : "bg-white text-slate-700 border-slate-200 hover:border-[#1C7D5A]/50"
-                      }`}
+                        }`}
                     >
                       <div className="text-xs font-black">{opt.label}</div>
                       <div className={`text-[11px] mt-0.5 ${opt.active ? "text-white/80" : "text-slate-500"}`}>
@@ -1408,6 +1426,180 @@ const CreateAdmission = () => {
                     <p className="text-[11px] font-medium text-emerald-800 bg-white/80 px-3 py-2 rounded-[6px] border border-emerald-200/60">
                       অ্যাডমিশন সেভ করার সাথে সাথেই ছাত্রটি বোর্ডিং প্যানেলে (ছাত্র তালিকা, ডেইলি মিল রোস্টার ও মাসিক বিলিং) অটোমেটিক যুক্ত হয়ে যাবে। মাসিক বোর্ডিং ফি বোর্ডিং বিলিং থেকেই আদায় করা যাবে (নিচের Fee Setup-এ ডুপ্লিকেট করার প্রয়োজন নেই)।
                     </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Transport Setup (ট্রান্সপোর্ট / গাড়ি সেটআপ) */}
+              <div className="mb-8 p-5 rounded-[8px] border border-sky-200/80 bg-sky-50/40">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                  <div className="flex items-center gap-2 text-[#1C7D5A]">
+                    <Bus className="w-5 h-5" />
+                    <h4 className="font-black">ট্রান্সপোর্ট / গাড়ি সেটআপ (Transport)</h4>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {student.transport?.required && (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#1C7D5A] text-white">
+                        অটো ট্রান্সপোর্ট যুক্ত হবে • নিট: {formatCurrency(computeTransportNetFee(student.transport))}/মাস
+                      </span>
+                    )}
+                    <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(student.transport?.required)}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          const firstRoute = transportRoutes.find((r) => r.status === "Active") || transportRoutes[0];
+                          const firstStop = firstRoute?.stops?.[0];
+                          const updatedStudents = [...formData.students];
+                          updatedStudents[index].transport = checked
+                            ? {
+                              ...DEFAULT_TRANSPORT,
+                              required: true,
+                              route_id: student.transport?.route_id || firstRoute?._id || "",
+                              route: student.transport?.route || firstRoute?.route_name || "",
+                              stoppage: student.transport?.stoppage || firstStop?.stop_name || "",
+                              monthly_fee:
+                                student.transport?.monthly_fee ||
+                                firstStop?.monthly_fee ||
+                                firstRoute?.default_fee ||
+                                0,
+                            }
+                            : { ...DEFAULT_TRANSPORT, required: false };
+                          setFormData((prev) => ({ ...prev, students: updatedStudents }));
+                        }}
+                        className="w-4 h-4 accent-[#1C7D5A]"
+                      />
+                      পরিবহন সুবিধা প্রয়োজন
+                    </label>
+                  </div>
+                </div>
+
+                {student.transport?.required && (
+                  <div className="space-y-3 pt-3 border-t border-sky-200/70">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">রুট নির্বাচন</label>
+                        {transportRoutes.length > 0 ? (
+                          <select
+                            value={student.transport?.route_id || ""}
+                            onChange={(e) => {
+                              const r = transportRoutes.find((rt) => rt._id === e.target.value);
+                              const firstStop = r?.stops?.[0];
+                              const updatedStudents = [...formData.students];
+                              updatedStudents[index].transport = {
+                                ...updatedStudents[index].transport,
+                                route_id: e.target.value,
+                                route: r?.route_name || "",
+                                stoppage: firstStop?.stop_name || "",
+                                monthly_fee: firstStop?.monthly_fee ?? r?.default_fee ?? 0,
+                              };
+                              setFormData((prev) => ({ ...prev, students: updatedStudents }));
+                            }}
+                            className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                          >
+                            <option value="">রুট বেছে নিন</option>
+                            {transportRoutes.map((r) => (
+                              <option key={r._id} value={r._id}>
+                                {r.route_name}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            value={student.transport?.route || ""}
+                            onChange={(e) => handleStudentChange(index, "route", e.target.value, "transport")}
+                            placeholder="রুটের নাম লিখুন"
+                            className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm outline-none focus:border-[#1C7D5A]"
+                          />
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">স্টপেজ</label>
+                        {(() => {
+                          const matchedRoute = transportRoutes.find((r) => r._id === student.transport?.route_id);
+                          if (matchedRoute?.stops?.length > 0) {
+                            return (
+                              <select
+                                value={student.transport?.stoppage || ""}
+                                onChange={(e) => {
+                                  const st = matchedRoute.stops.find((s) => s.stop_name === e.target.value);
+                                  const updatedStudents = [...formData.students];
+                                  updatedStudents[index].transport = {
+                                    ...updatedStudents[index].transport,
+                                    stoppage: e.target.value,
+                                    monthly_fee: st?.monthly_fee ?? matchedRoute.default_fee ?? 0,
+                                  };
+                                  setFormData((prev) => ({ ...prev, students: updatedStudents }));
+                                }}
+                                className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                              >
+                                <option value="">স্টপেজ বেছে নিন</option>
+                                {matchedRoute.stops.map((s, sIdx) => (
+                                  <option key={sIdx} value={s.stop_name}>
+                                    {s.stop_name} ({formatCurrency(s.monthly_fee)})
+                                  </option>
+                                ))}
+                              </select>
+                            );
+                          }
+                          return (
+                            <input
+                              value={student.transport?.stoppage || ""}
+                              onChange={(e) => handleStudentChange(index, "stoppage", e.target.value, "transport")}
+                              placeholder="স্টপেজের নাম"
+                              className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm outline-none focus:border-[#1C7D5A]"
+                            />
+                          );
+                        })()}
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">ট্রিপ ধরন</label>
+                        <select
+                          value={student.transport?.trip_type || "Both"}
+                          onChange={(e) => handleStudentChange(index, "trip_type", e.target.value, "transport")}
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                        >
+                          <option value="Both">আসা + যাওয়া (Both)</option>
+                          <option value="Pickup">শুধু আসা (Pickup)</option>
+                          <option value="Drop">শুধু যাওয়া (Drop)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">মাসিক পরিবহন ফি (৳)</label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={student.transport?.monthly_fee ?? 0}
+                          onChange={(e) =>
+                            handleStudentChange(index, "monthly_fee", Number(e.target.value) || 0, "transport")
+                          }
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-bold outline-none focus:border-[#1C7D5A]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">ছাড় / Waiver (%)</label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          value={student.transport?.waiver_percent ?? 0}
+                          onChange={(e) =>
+                            handleStudentChange(
+                              index,
+                              "waiver_percent",
+                              Math.min(100, Math.max(0, Number(e.target.value) || 0)),
+                              "transport"
+                            )
+                          }
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-bold outline-none focus:border-[#1C7D5A]"
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

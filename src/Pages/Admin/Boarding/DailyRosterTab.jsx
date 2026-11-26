@@ -472,9 +472,9 @@ const DailyRosterTab = ({
         </div>
 
         {/* Daily Meal Attendance Table */}
-        <div className="overflow-x-auto border border-slate-200 rounded-lg bg-white">
+        <div className="overflow-x-auto border border-slate-200 rounded-[8px] bg-white">
           <table className="w-full text-sm text-left">
-            <thead className="bg-slate-50 text-slate-700 border-b border-slate-200">
+            <thead className="bg-emerald-50/70 text-slate-700 border-b border-slate-200">
               <tr>
                 <th className="py-3 px-4 font-bold">ছাত্রের তথ্য</th>
                 <th className="py-3 px-3 font-bold">ধরন / প্যাকেজ</th>
@@ -617,27 +617,6 @@ const DailyRosterTab = ({
           </table>
         </div>
 
-        {/* Class-wise Summary Preview */}
-        {!loading && metrics.byClass.length > 0 && (
-          <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-slate-700">ক্লাস অনুযায়ী সারাংশ:</span>
-              {metrics.byClass.map((cls) => (
-                <span
-                  key={cls.className}
-                  className="inline-flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 text-slate-700 px-2.5 py-1 rounded-md"
-                >
-                  <span className="font-bold text-slate-800">{cls.className}:</span>
-                  <span>{cls.students} জন</span>
-                  <span className="text-emerald-700 font-semibold">({cls.totalMeals} বেলা)</span>
-                </span>
-              ))}
-            </div>
-            <div className="text-xs font-bold text-[#123628]">
-              সর্বমোট: {metrics.totals.students} জন | {metrics.totals.totalMeals} বেলা
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Guest / Teacher Meal Table */}

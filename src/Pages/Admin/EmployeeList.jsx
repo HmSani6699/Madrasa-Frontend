@@ -80,6 +80,10 @@ const EmployeeList = () => {
 
   useEffect(() => {
     fetchEmployees();
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
   }, [deptFilter, searchTerm]);
 
 
@@ -108,10 +112,12 @@ const EmployeeList = () => {
   };
 
   const filteredEmployees = useMemo(() => {
+    const query = searchTerm.toLowerCase();
     return employees.filter((emp) => {
       const matchesSearch =
-        emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.id.toLowerCase().includes(searchTerm.toLowerCase());
+        (emp.name || "").toLowerCase().includes(query) ||
+        (emp.employeeID || "").toLowerCase().includes(query) ||
+        (emp.phone || "").toLowerCase().includes(query);
       const matchesDept = deptFilter === "all" || emp.department === deptFilter;
       return matchesSearch && matchesDept;
     });
@@ -152,14 +158,13 @@ const EmployeeList = () => {
       const response = await axiosInstance.delete(`/v1/staff/${deleteEmp._id}`);
       if (response.data.success) {
         setEmployees((prev) => prev.filter((p) => p._id !== deleteEmp._id));
-        setShowToast(`${deleteEmp.name} removed from system.`);
+        toast.success(`${deleteEmp.name} removed from system.`);
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to delete employee");
+      toast.error(err.response?.data?.message || "Failed to delete employee");
     }
     setDeleteEmp(null);
-    setTimeout(() => setShowToast(null), 3000);
   };
 
   const departments = [
@@ -216,14 +221,14 @@ const EmployeeList = () => {
           },
           {
             label: "Active",
-            value: employees.filter((e) => e.status === "active").length,
+            value: employees.filter((e) => (e.status || "").toLowerCase() === "active").length,
             icon: CheckCircle,
             color: "text-blue-600",
             bg: "bg-blue-100",
           },
           {
             label: "Inactive",
-            value: employees.filter((e) => e.status === "inactive").length,
+            value: employees.filter((e) => (e.status || "").toLowerCase() === "inactive").length,
             icon: XCircle,
             color: "text-rose-600",
             bg: "bg-rose-100",
@@ -298,17 +303,21 @@ const EmployeeList = () => {
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <span className="text-sm font-black ">
-                          {i + 1}
+                          {emp.employeeID || i + 1}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full overflow-hidden shadow-sm">
-                            <img
-                              src={emp.photo}
-                              alt={emp.name}
-                              className="w-full h-full object-cover"
-                            />
+                          <div className="w-10 h-10 rounded-full overflow-hidden shadow-sm bg-[#1C7D5A18] flex items-center justify-center">
+                            {emp.photo ? (
+                              <img
+                                src={emp.photo}
+                                alt={emp.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <User className="w-5 h-5 text-[#1C7D5A]" />
+                            )}
                           </div>
                           <div>
                             <p className="text-sm font-bold text-slate-800">
@@ -335,13 +344,13 @@ const EmployeeList = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest  ${emp.status === "active"
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest  ${(emp.status || "").toLowerCase() === "active"
                             ? "bg-blue-50 text-blue-700 border-blue-100"
                             : "bg-rose-50 text-rose-700 border-rose-100"
                             }`}
                         >
                           <div
-                            className={`w-1.5 h-1.5 rounded-full ${emp.status === "active"
+                            className={`w-1.5 h-1.5 rounded-full ${(emp.status || "").toLowerCase() === "active"
                               ? "bg-blue-500"
                               : "bg-rose-500"
                               }`}
@@ -1106,8 +1115,18 @@ const FormInput = ({
 };
 
 const EmployeeViewModal = ({ emp, onClose }) => {
+  const bankName = emp.bankName || emp.paymentDetails?.bankName;
+  const accountNo = emp.accountNo || emp.paymentDetails?.accountNo;
+  const paymentMethod = emp.paymentDetails?.method || emp.paymentDetails?.paymentMethod;
+  const mobileNumber = emp.paymentDetails?.mobileNumber;
+  const formatDate = (val) => {
+    if (!val) return null;
+    const d = new Date(val);
+    return Number.isNaN(d.getTime()) ? val : d.toISOString().split("T")[0];
+  };
+
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-start justify-center p-10 overflow-y-auto">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-start justify-center p-10 overflow-y-auto" onClick={onClose}>
       <div
         className="bg-white rounded-[3.5rem] w-full max-w-4xl shadow-2xl animate-in zoom-in duration-300 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
@@ -1122,12 +1141,16 @@ const EmployeeViewModal = ({ emp, onClose }) => {
             }}
           />
           <div className="absolute -bottom-20 left-12 p-2 bg-white rounded-[2.5rem] shadow-2xl relative z-10">
-            <div className="w-40 h-40 rounded-[2rem] overflow-hidden border-2 border-slate-50">
-              <img
-                src={emp.photo}
-                alt=""
-                className="w-full h-full object-cover"
-              />
+            <div className="w-40 h-40 rounded-[2rem] overflow-hidden border-2 border-slate-50 bg-[#1C7D5A18] flex items-center justify-center">
+              {emp.photo ? (
+                <img
+                  src={emp.photo}
+                  alt={emp.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-16 h-16 text-[#1C7D5A]" />
+              )}
             </div>
           </div>
           <button
@@ -1142,7 +1165,7 @@ const EmployeeViewModal = ({ emp, onClose }) => {
               Authenticated Entity
             </p>
             <h3 className="text-4xl font-black text-white tracking-widest">
-              {emp.id}
+              {emp.employeeID || emp.id}
             </h3>
           </div>
         </div>
@@ -1161,7 +1184,7 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                   {emp.department}
                 </span>
                 <span className="px-5 py-2 bg-slate-50 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest border-2 border-slate-100">
-                  {emp.branch}
+                  {emp.role || emp.branch}
                 </span>
               </div>
             </div>
@@ -1171,7 +1194,7 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                   Status
                 </p>
                 <p
-                  className={`text-sm font-black uppercase tracking-widest ${emp.status === "active"
+                  className={`text-sm font-black uppercase tracking-widest ${(emp.status || "").toLowerCase() === "active"
                     ? "text-emerald-600"
                     : "text-rose-500"
                     }`}
@@ -1191,7 +1214,6 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                 </h4>
                 <div className="space-y-5">
                   <InfoRow label="Gender" value={emp.gender} icon={Users} />
-                  <InfoRow label="Religion" value={emp.religion} icon={Heart} />
                   <InfoRow
                     label="Blood Group"
                     value={emp.bloodGroup}
@@ -1199,7 +1221,7 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                   />
                   <InfoRow
                     label="Date of Birth"
-                    value={emp.dob}
+                    value={formatDate(emp.dob)}
                     icon={Calendar}
                   />
                 </div>
@@ -1210,7 +1232,7 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                 </h4>
                 <div className="space-y-5">
                   <InfoRow label="Mobile" value={emp.phone} icon={Phone} />
-                  <InfoRow label="Email" value={emp.email} icon={Mail} />
+                  <InfoRow label="Email" value={emp.email || emp.userId?.email} icon={Mail} />
                 </div>
               </div>
             </div>
@@ -1224,7 +1246,7 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                 <div className="space-y-5">
                   <InfoRow
                     label="Joining Date"
-                    value={emp.joinDate}
+                    value={formatDate(emp.joinDate)}
                     icon={Calendar}
                     color="blue"
                   />
@@ -1236,14 +1258,8 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                   />
                   <InfoRow
                     label="Experience"
-                    value={emp.experience}
+                    value={emp.experience || emp.totalExperience}
                     icon={Briefcase}
-                    color="blue"
-                  />
-                  <InfoRow
-                    label="Username"
-                    value={emp.username}
-                    icon={Lock}
                     color="blue"
                   />
                 </div>
@@ -1254,10 +1270,10 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                 </h4>
                 <div className="p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100">
                   <p className="text-[9px] font-black text-slate-400 uppercase mb-2">
-                    Present Address
+                    Address
                   </p>
                   <p className="text-xs font-bold text-slate-700 leading-relaxed">
-                    {emp.presentAddress}
+                    {emp.presentAddress || emp.address || "Not Specified"}
                   </p>
                 </div>
               </div>
@@ -1269,7 +1285,7 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                 <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em] flex items-center gap-2">
                   <CreditCard className="w-3 h-3" /> Financial Data
                 </h4>
-                {emp.bankName ? (
+                {bankName ? (
                   <div className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-[2rem] border-2 border-amber-100/50 shadow-inner group">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
@@ -1280,7 +1296,7 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                           Primary Bank
                         </p>
                         <p className="text-sm font-black text-slate-800">
-                          {emp.bankName}
+                          {bankName}
                         </p>
                       </div>
                     </div>
@@ -1289,15 +1305,24 @@ const EmployeeViewModal = ({ emp, onClose }) => {
                         Account Number
                       </p>
                       <p className="text-lg font-black text-slate-800 tracking-widest">
-                        **** **** {emp.accountNo?.slice(-4)}
+                        **** **** {accountNo?.slice(-4)}
                       </p>
                     </div>
+                  </div>
+                ) : paymentMethod === "Mobile Banking" && mobileNumber ? (
+                  <div className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-[2rem] border-2 border-emerald-100/50 shadow-inner">
+                    <p className="text-[10px] font-black text-emerald-700 uppercase tracking-tighter mb-1">
+                      Mobile Banking ({(emp.paymentDetails?.mobileMethods || []).join(", ") || "Mobile"})
+                    </p>
+                    <p className="text-base font-black text-slate-800">
+                      {mobileNumber}
+                    </p>
                   </div>
                 ) : (
                   <div className="p-6 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-center">
                     <ShieldAlert className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Bank Details Skipped
+                      Payment Details Skipped
                     </p>
                   </div>
                 )}

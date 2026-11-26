@@ -15,14 +15,12 @@ import {
   Library,
   CalendarDays,
   MessageSquare,
-  Package,
   Settings,
   ShieldAlert,
   Contact,
   School,
   FileText,
   Wallet,
-  Receipt,
   Banknote,
   TrendingDown,
   TrendingUp,
@@ -47,6 +45,10 @@ import {
   BookMarked,
   UtensilsCrossed,
   ShoppingBag,
+  Bus,
+  MapPin,
+  Fuel,
+  Receipt,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -290,9 +292,17 @@ export const adminNavigation = [
       { name: "Boarding Students", path: "/admin/boarding/students", icon: Users },
       { name: "Meal Schedule & Menu", path: "/admin/boarding/schedule", icon: Clock },
       { name: "Bazar & Expenses", path: "/admin/boarding/bazar", icon: ShoppingBag },
-      { name: "Dry Inventory", path: "/admin/boarding/inventory", icon: Package },
-      { name: "Boarding Billing", path: "/admin/boarding/billing", icon: Receipt },
-      { name: "Kitchen Slip & Reports", path: "/admin/boarding/reports", icon: FileBarChart },
+    ],
+  },
+  {
+    name: "Transport Management",
+    icon: Bus,
+    children: [
+      { name: "Vehicles & Routes", path: "/admin/transport/routes", icon: MapPin },
+      { name: "Transport Students", path: "/admin/transport/students", icon: Users },
+      { name: "Daily Trip Log", path: "/admin/transport/trips", icon: ClipboardList },
+      { name: "Fuel & Expenses", path: "/admin/transport/expenses", icon: Fuel },
+      { name: "Transport Billing", path: "/admin/transport/billing", icon: Receipt },
     ],
   },
   {

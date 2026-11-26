@@ -484,8 +484,13 @@ const HomeworkList = () => {
                     title="Section"
                     options={sections
                       .filter(s => {
+                        if (!formData.class_id) return false;
                         const selectedClass = classes.find(c => c._id === formData.class_id);
-                        return selectedClass ? s._id === selectedClass.section_id : false;
+                        return (
+                          (s.class_id?._id || s.class_id) === formData.class_id ||
+                          (s.classId?._id || s.classId) === formData.class_id ||
+                          (selectedClass && selectedClass.section_id === s._id)
+                        );
                       })
                       .map(s => ({ value: s._id, label: s.name }))}
                     value={formData.section_id}

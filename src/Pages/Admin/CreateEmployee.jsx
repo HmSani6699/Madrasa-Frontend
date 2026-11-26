@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   User,
   Users,
@@ -138,8 +138,14 @@ const CreateEmployee = () => {
     }
   };
 
-  const [params, setParams] = useState(new URLSearchParams(window.location.search));
-  const editId = params.get("id");
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("id");
+
+  const formatDateInput = (value) => {
+    if (!value) return "";
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().split("T")[0];
+  };
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -149,41 +155,52 @@ const CreateEmployee = () => {
         const response = await axiosInstance.get(`/v1/staff/${editId}`);
         if (response.data.success) {
           const emp = response.data.data;
+          const resolvedRole =
+            emp.role ||
+            (emp.userId?.role
+              ? emp.userId.role.charAt(0).toUpperCase() + emp.userId.role.slice(1)
+              : "Staff");
+
           setFormData({
-            role: emp.userId?.role ? emp.userId.role.charAt(0).toUpperCase() + emp.userId.role.slice(1) : "Staff",
-            joinDate: emp.joinDate ? new Date(emp.joinDate).toISOString().split('T')[0] : "",
-            designation: emp.designation,
-            department: emp.department,
+            role: resolvedRole,
+            joinDate: formatDateInput(emp.joinDate),
+            designation: emp.designation || "",
+            department: emp.department || "",
             qualification: emp.qualification || "",
             totalExperience: emp.totalExperience || "",
             employeeID: emp.employeeID || "",
-            name: emp.name,
-            gender: emp.gender,
-            bloodGroup: emp.bloodGroup,
-            dob: emp.dob ? new Date(emp.dob).toISOString().split('T')[0] : "",
-            phone: emp.phone,
-            email: emp.userId?.email || "",
-            address: emp.address,
-            photo: emp.photo,
+            name: emp.name || "",
+            gender: emp.gender || "",
+            bloodGroup: emp.bloodGroup || "",
+            dob: formatDateInput(emp.dob),
+            phone: emp.phone || "",
+            email: emp.userId?.email || emp.email || "",
+            address: emp.address || "",
+            photo: emp.photo || null,
             password: "", // Don't pre-fill password
             confirmPassword: "",
             facebook: emp.socialLinks?.facebook || "",
             twitter: emp.socialLinks?.twitter || "",
             linkedin: emp.socialLinks?.linkedin || "",
-            paymentMethod: emp.paymentDetails?.paymentMethod || "None",
+            paymentMethod: emp.paymentDetails?.method || emp.paymentDetails?.paymentMethod || "None",
             bankName: emp.paymentDetails?.bankName || "",
             holderName: emp.paymentDetails?.holderName || "",
-            bankBranch: emp.paymentDetails?.bankBranch || "",
-            bankAddress: emp.paymentDetails?.bankAddress || "",
-            ifscCode: emp.paymentDetails?.ifscCode || "",
+            bankBranch: emp.paymentDetails?.branch || emp.paymentDetails?.bankBranch || "",
+            bankAddress: emp.paymentDetails?.address || emp.paymentDetails?.bankAddress || "",
+            ifscCode: emp.paymentDetails?.ifsc || emp.paymentDetails?.ifscCode || "",
             accountNo: emp.paymentDetails?.accountNo || "",
             mobileMethods: emp.paymentDetails?.mobileMethods || [],
-            mobileNumber: emp.paymentDetails?.mobileNumber || ""
+            mobileNumber: emp.paymentDetails?.mobileNumber || "",
+            basic_salary: emp.salarySetup?.basic_salary ?? "",
+            house_rent: emp.salarySetup?.house_rent ?? "",
+            medical_allowance: emp.salarySetup?.medical_allowance ?? "",
+            transport_allowance: emp.salarySetup?.transport_allowance ?? "",
+            other_allowance: emp.salarySetup?.other_allowance ?? ""
           });
         }
       } catch (err) {
         console.error(err);
-        toast.error("Failed to fetch employee details");
+        toast.error(err.response?.data?.message || "Failed to fetch employee details");
       } finally {
         setLoading(false);
       }
@@ -193,8 +210,14 @@ const CreateEmployee = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!editId && formData.password !== formData.confirmPassword) {
+    if (!editId && (!formData.password || formData.password.length < 6)) {
+      return toast.error("Password must be at least 6 characters");
+    }
+    if (formData.password && formData.password !== formData.confirmPassword) {
       return toast.error("Passwords do not match");
+    }
+    if (formData.password && formData.password.length < 6) {
+      return toast.error("Password must be at least 6 characters");
     }
     setLoading(true);
 
@@ -211,6 +234,11 @@ const CreateEmployee = () => {
           accountNo: formData.accountNo
         }
       };
+
+      if (editId && !payload.password) {
+        delete payload.password;
+        delete payload.confirmPassword;
+      }
 
       let response;
       if (editId) {
@@ -231,11 +259,6 @@ const CreateEmployee = () => {
     }
   };
 
-
-
-  console.log(designations);
-
-
   return (
     <div className="min-h-screen  p-4 animate-in fade-in duration-700">
       {/* Page Header */}
@@ -243,7 +266,7 @@ const CreateEmployee = () => {
         <div>
           <h1 className="text-[20px] font-black text-slate-800 flex items-center gap-3">
             <Users className="w-8 h-8 text-[#1C7D5A]" />
-            New Staff
+            {editId ? "Edit Staff" : "New Staff"}
           </h1>
         </div>
 
@@ -353,9 +376,10 @@ const CreateEmployee = () => {
             <FormSelect
               label="Gender"
               field="gender"
-              options={["Select", "Male", "Female"]}
+              options={["Select", "Male", "Female", "Other"]}
               data={formData}
               setter={handleInputChange}
+              required
               icon={Users}
             />
             <FormSelect
@@ -393,15 +417,15 @@ const CreateEmployee = () => {
               icon={Phone}
               placeholder={"019XXXXXXXX"}
             />
-            {/* <FormInput
+            <FormInput
               label="Email"
               field="email"
               type="email"
               data={formData}
               setter={handleInputChange}
-              required
               icon={Mail}
-            /> */}
+              placeholder={"Enter Email (Optional)"}
+            />
             <FormInput
               label="Address"
               field="address"
@@ -440,6 +464,7 @@ const CreateEmployee = () => {
                       Image Captured Successfully
                     </p>
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleInputChange("photo", null);
@@ -478,22 +503,22 @@ const CreateEmployee = () => {
         <SectionContainer id="login" title="Login Details" icon={Lock}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
             <FormInput
-              label="Password"
+              label={editId ? "New Password (Optional)" : "Password"}
               field="password"
               type="password"
               data={formData}
               setter={handleInputChange}
-              required
+              required={!editId}
               icon={Lock}
               placeholder={"......"}
             />
             <FormInput
-              label="Retype Password"
+              label={editId ? "Retype New Password" : "Retype Password"}
               field="confirmPassword"
               type="password"
               data={formData}
               setter={handleInputChange}
-              required
+              required={!editId || Boolean(formData.password)}
               icon={Lock}
               placeholder={"......"}
             />
@@ -730,9 +755,10 @@ const CreateEmployee = () => {
           </button>
           <button
             type="submit"
-            className="flex-1 md:flex-none px-8 py-3 bg-[#1C7D5A] text-white font-bold rounded-[8px] shadow-sm hover:scale-[1.02] transition-all text-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+            disabled={loading}
+            className="flex-1 md:flex-none px-8 py-3 bg-[#1C7D5A] text-white font-bold rounded-[8px] shadow-sm hover:scale-[1.02] transition-all text-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <Save className="w-4 h-4" /> Save
+            <Save className="w-4 h-4" /> {loading ? "Saving..." : editId ? "Update" : "Save"}
           </button>
         </div>
       </form>
@@ -777,7 +803,7 @@ const FormInput = ({
     <div className="relative">
       <input
         type={type}
-        value={data[field]}
+        value={data[field] ?? ""}
         onChange={(e) => setter(field, e.target.value)}
         placeholder={placeholder}
         required={required}
@@ -802,13 +828,13 @@ const FormSelect = ({
     </label>
     <div className="relative">
       <select
-        value={data[field]}
+        value={data[field] ?? ""}
         onChange={(e) => setter(field, e.target.value)}
         required={required}
         className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all appearance-none cursor-pointer"
       >
         {options.map((opt) => (
-          <option key={opt} value={opt}>
+          <option key={opt} value={opt === "Select" ? "" : opt}>
             {opt}
           </option>
         ))}
