@@ -88,6 +88,13 @@ import SalesList from "../Pages/Admin/SalesList";
 import IssueList from "../Pages/Admin/IssueList";
 import LibraryManager from "../Pages/Admin/LibraryManager";
 import EventsManager from "../Pages/Admin/EventsManager";
+import DailyRosterPage from "../Pages/Admin/Boarding/DailyRosterPage";
+import BoardingStudentsPage from "../Pages/Admin/Boarding/BoardingStudentsPage";
+import MealSchedulePage from "../Pages/Admin/Boarding/MealSchedulePage";
+import BazarExpensePage from "../Pages/Admin/Boarding/BazarExpensePage";
+import DryInventoryPage from "../Pages/Admin/Boarding/DryInventoryPage";
+import BoardingBillingPage from "../Pages/Admin/Boarding/BoardingBillingPage";
+import BoardingReportsPage from "../Pages/Admin/Boarding/BoardingReportsPage";
 import MessageCenter from "../Pages/Admin/MessageCenter";
 import StudentReports from "../Pages/Admin/StudentReports";
 import FeesReports from "../Pages/Admin/FeesReports";
@@ -348,6 +355,27 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/events") {
         element = <EventsManager />;
+      }
+      if (item.path === "/admin/boarding/roster") {
+        element = <DailyRosterPage />;
+      }
+      if (item.path === "/admin/boarding/students") {
+        element = <BoardingStudentsPage />;
+      }
+      if (item.path === "/admin/boarding/schedule") {
+        element = <MealSchedulePage />;
+      }
+      if (item.path === "/admin/boarding/bazar") {
+        element = <BazarExpensePage />;
+      }
+      if (item.path === "/admin/boarding/inventory") {
+        element = <DryInventoryPage />;
+      }
+      if (item.path === "/admin/boarding/billing") {
+        element = <BoardingBillingPage />;
+      }
+      if (item.path === "/admin/boarding/reports") {
+        element = <BoardingReportsPage />;
       }
       if (item.path === "/admin/message") {
         element = <MessageCenter />;
@@ -627,6 +655,10 @@ const router = createBrowserRouter([
             ),
             children: [
               { path: "/admin", element: <AdminDashboard /> },
+              {
+                path: "/admin/boarding",
+                element: <Navigate to="/admin/boarding/roster" replace />,
+              },
               {
                 path: "/admin/student/profile/:id",
                 element: <StudentProfile />,

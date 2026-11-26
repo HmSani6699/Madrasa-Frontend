@@ -45,6 +45,8 @@ import {
   List,
   Shapes,
   BookMarked,
+  UtensilsCrossed,
+  ShoppingBag,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -279,6 +281,19 @@ export const adminNavigation = [
     name: "Events",
     icon: CalendarDays,
     path: "/admin/events",
+  },
+  {
+    name: "Boarding Management",
+    icon: UtensilsCrossed,
+    children: [
+      { name: "Daily Meal Roster", path: "/admin/boarding/roster", icon: ClipboardList },
+      { name: "Boarding Students", path: "/admin/boarding/students", icon: Users },
+      { name: "Meal Schedule & Menu", path: "/admin/boarding/schedule", icon: Clock },
+      { name: "Bazar & Expenses", path: "/admin/boarding/bazar", icon: ShoppingBag },
+      { name: "Dry Inventory", path: "/admin/boarding/inventory", icon: Package },
+      { name: "Boarding Billing", path: "/admin/boarding/billing", icon: Receipt },
+      { name: "Kitchen Slip & Reports", path: "/admin/boarding/reports", icon: FileBarChart },
+    ],
   },
   {
     name: "Message",

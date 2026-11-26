@@ -703,15 +703,21 @@ const VideoDemo = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const { t, i18n } = useTranslation();
+  const activeItemRef = useRef(null);
 
-  // Selected item state (defaulted to 'admission-create' as shown in the screenshot!)
+  // Selected item state: defaults to Dashboard (first item in serial order)
   const [selectedItem, setSelectedItem] = useState(() => {
-    const admissionCreate = ALL_PLAYABLE_ITEMS.find((it) => it.id === "admission-create");
-    return admissionCreate || ALL_PLAYABLE_ITEMS[0];
+    return ALL_PLAYABLE_ITEMS[0] || null;
   });
 
-  // Open accordion main menus (default open 'admission')
-  const [openMenus, setOpenMenus] = useState({ admission: true });
+  // Open accordion main menus (initially empty or matching the first item)
+  const [openMenus, setOpenMenus] = useState(() => {
+    const first = ALL_PLAYABLE_ITEMS[0];
+    if (first?.mainMenuId && first.mainMenuId !== first.id) {
+      return { [first.mainMenuId]: true };
+    }
+    return {};
+  });
 
   // Mobile sidebar drawer state
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -725,6 +731,16 @@ const VideoDemo = () => {
   // Server uploaded tutorial videos map { pathOrMenuKey: videoDoc }
   const [serverVideosMap, setServerVideosMap] = useState({});
   const [loadingVideos, setLoadingVideos] = useState(false);
+
+  // Smoothly scroll sidebar to keep the active menu item in view
+  useEffect(() => {
+    if (activeItemRef.current) {
+      activeItemRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    }
+  }, [selectedItem?.id]);
 
   // Fetch tutorial videos from backend
   useEffect(() => {
@@ -762,6 +778,12 @@ const VideoDemo = () => {
   // Select a feature to play
   const handleSelectItem = (item) => {
     setSelectedItem(item);
+    if (item.mainMenuId && item.mainMenuId !== item.id) {
+      setOpenMenus((prev) => ({
+        ...prev,
+        [item.mainMenuId]: true
+      }));
+    }
     if (window.innerWidth < 1024) {
       setIsMobileSidebarOpen(false);
     }
@@ -807,19 +829,12 @@ const VideoDemo = () => {
   const handleNext = () => {
     if (nextItem) {
       handleSelectItem(nextItem);
-      // Ensure its parent menu is open
-      if (nextItem.mainMenuId) {
-        setOpenMenus((prev) => ({ ...prev, [nextItem.mainMenuId]: true }));
-      }
     }
   };
 
   const handlePrev = () => {
     if (prevItem) {
       handleSelectItem(prevItem);
-      if (prevItem.mainMenuId) {
-        setOpenMenus((prev) => ({ ...prev, [prevItem.mainMenuId]: true }));
-      }
     }
   };
 
@@ -1001,7 +1016,7 @@ const VideoDemo = () => {
                 <span className="text-[11px] font-bold text-[#EAB33C] uppercase tracking-wider">
                   {section.title}
                 </span>
-                <div className="h-[1px] flex-1 bg-white/15" />
+                <div className="h-px flex-1 bg-white/15" />
               </div>
 
               {/* Main Links */}
@@ -1021,7 +1036,7 @@ const VideoDemo = () => {
                         <button
                           type="button"
                           onClick={() => handleToggleMenu(link.id)}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-[8px] transition-all duration-200 group text-[14px] cursor-pointer ${isAnyChildSelected
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 group text-[14px] cursor-pointer ${isAnyChildSelected
                             ? "bg-[#1C7D5A] font-semibold text-white shadow-sm border-l-[3px] border-[#EAB33C]"
                             : "text-white/85 hover:bg-white/10 hover:text-white"
                             }`}
@@ -1034,7 +1049,7 @@ const VideoDemo = () => {
                                   : "text-white/85 group-hover:bg-white/10 group-hover:text-white"
                                   }`}
                               >
-                                <link.icon className="w-[18px] h-[18px]" />
+                                <link.icon className="w-4.5 h-4.5" />
                               </div>
                             ) : (
                               <div className="w-8 shrink-0" />
@@ -1057,6 +1072,7 @@ const VideoDemo = () => {
                                 <button
                                   type="button"
                                   key={child.id}
+                                  ref={isChildActive ? activeItemRef : null}
                                   onClick={() =>
                                     handleSelectItem({
                                       ...child,
@@ -1066,7 +1082,7 @@ const VideoDemo = () => {
                                       mainMenuIcon: link.icon
                                     })
                                   }
-                                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] transition-all duration-200 group text-[13.5px] cursor-pointer ${isChildActive
+                                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group text-[13.5px] cursor-pointer ${isChildActive
                                     ? "bg-[#1C7D5A] text-white font-semibold shadow-sm border-l-[3px] border-[#EAB33C]"
                                     : "text-white/80 hover:bg-white/10 hover:text-white"
                                     }`}
@@ -1083,7 +1099,7 @@ const VideoDemo = () => {
                                   ) : (
                                     <div className="w-7 flex items-center justify-center shrink-0">
                                       <div
-                                        className={`w-[6px] h-[6px] rounded-full transition-all duration-300 ${isChildActive
+                                        className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${isChildActive
                                           ? "bg-[#EAB33C] scale-125 ring-4 ring-[#EAB33C]/20"
                                           : "bg-white/40 group-hover:bg-[#EAB33C]"
                                           }`}
@@ -1105,6 +1121,7 @@ const VideoDemo = () => {
                     <button
                       type="button"
                       key={link.id}
+                      ref={isSelfSelected ? activeItemRef : null}
                       onClick={() =>
                         handleSelectItem({
                           ...link,
@@ -1114,7 +1131,7 @@ const VideoDemo = () => {
                           mainMenuIcon: link.icon
                         })
                       }
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] transition-all duration-200 group text-[14px] cursor-pointer ${isSelfSelected
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group text-[14px] cursor-pointer ${isSelfSelected
                         ? "bg-[#1C7D5A] text-white font-semibold shadow-sm border-l-[3px] border-[#EAB33C]"
                         : "text-white/85 hover:bg-white/10 hover:text-white"
                         }`}
@@ -1126,7 +1143,7 @@ const VideoDemo = () => {
                             : "text-white/85 group-hover:bg-white/10 group-hover:text-white"
                             }`}
                         >
-                          <link.icon className="w-[18px] h-[18px]" />
+                          <link.icon className="w-4.5 h-4.5" />
                         </div>
                       ) : (
                         <div className="w-8 shrink-0" />
@@ -1180,6 +1197,10 @@ const VideoDemo = () => {
                 <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                   {selectedItem?.mainMenuName || selectedItem?.sectionTitle || "ভিডিও টিউটোরিয়াল"}
+                </span>
+
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-100/70 border border-emerald-200/60 px-2 py-0.5 rounded-md">
+                  <span>সিরিয়াল: {currentIndex + 1} / {ALL_PLAYABLE_ITEMS.length}</span>
                 </span>
 
                 {currentVideoData?.duration && (
@@ -1240,8 +1261,15 @@ const VideoDemo = () => {
           </div>
         </div>
 
-        {/* Pagination */}
-        <div className="flex items-end justify-end mt-6">
+        {/* Pagination & Serial Progress */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6 pt-4 border-t border-slate-200/70">
+          <div className="text-xs font-semibold text-slate-600 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#1C7D5A]"></span>
+            <span>ভিডিও নং {currentIndex + 1} / {ALL_PLAYABLE_ITEMS.length}</span>
+            <span className="text-slate-400">|</span>
+            <span className="text-slate-500 truncate max-w-50 sm:max-w-xs">{selectedItem?.name}</span>
+          </div>
+
           {/* Course Navigation Controls (Prev / Next) */}
           <div className="flex items-center gap-2">
             <button

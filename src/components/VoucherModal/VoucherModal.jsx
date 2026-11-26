@@ -293,8 +293,13 @@ const VoucherModal = ({ formData, onClose }) => {
                                                         {s.firstName}
                                                     </p>
                                                     <p className="text-[10px] font-bold text-slate-400 text-center mt-1">
-                                                        ID: {Date.now().toString().slice(-4)}
+                                                        ID: {s.student_id || Date.now().toString().slice(-4)}
                                                     </p>
+                                                    {s.boarding?.enrolled && (
+                                                        <p className="text-[10px] font-bold text-emerald-700 text-center mt-1">
+                                                            বোর্ডিং: {s.boarding.residential_type === "Lillah" ? "লিল্লাহ (ফ্রি)" : s.boarding.residential_type === "Non-Residential" ? "অনাবাসিক মিল" : "আবাসিক"}
+                                                        </p>
+                                                    )}
                                                 </td>
                                                 <td className="p-4 border-r border-[#b8c7d4] font-bold text-slate-800 align-top text-center">
                                                     {s.class || "N/A"} ( {s.section || "N/A"} )

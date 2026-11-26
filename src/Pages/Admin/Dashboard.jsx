@@ -3,6 +3,8 @@ import {
   Users,
   GraduationCap,
   Wallet,
+  TrendingDown,
+  AlertCircle,
   CalendarCheck,
   MoreHorizontal,
   CalendarDays,
@@ -27,18 +29,18 @@ const AdminDashboard = () => {
   const sub = currentMadrasa?.subscription || {};
   const nextBillingDate = sub.nextBillingDate;
   const status = currentMadrasa?.status || "Active";
-  
+
   let daysLeft = null;
   let showBillingWarning = false;
-  
+
   if (nextBillingDate && status === "Active") {
     const dueDate = new Date(nextBillingDate);
     const today = new Date();
-    dueDate.setHours(0,0,0,0);
-    today.setHours(0,0,0,0);
+    dueDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
     const diffTime = dueDate - today;
     daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (daysLeft >= 0 && daysLeft <= 5) {
       showBillingWarning = true;
     }
@@ -51,13 +53,13 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [studentStats, financialOverview] = await Promise.all([
+      const [studentRes, financeRes] = await Promise.allSettled([
         portalService.getStudentStats(),
         portalService.getFinancialOverview(),
       ]);
       setDashboardData({
-        studentStats: studentStats.data,
-        financialOverview: financialOverview.data,
+        studentStats: studentRes.status === "fulfilled" ? studentRes.value?.data : null,
+        financialOverview: financeRes.status === "fulfilled" ? financeRes.value?.data : null,
       });
     } catch (err) {
       console.error("Failed to fetch dashboard data", err);
@@ -83,7 +85,36 @@ const AdminDashboard = () => {
 
   const chartColors = ["#1C7D5A", "#EAB33C", "#123628", "#3b82f6"];
 
+  const financial = dashboardData.financialOverview || {};
+  const totalAmount =
+    financial.totalAmount ?? financial.totalIncome ?? financial.totalRevenue ?? financial.balance ?? 0;
+  const totalExpense =
+    financial.totalExpense ?? financial.expense ?? financial.totalExpenses ?? 0;
+  const dueAmount =
+    financial.dueAmount ?? financial.totalDue ?? financial.pendingDues ?? financial.pendingDue ?? 0;
+
   const stats = [
+    {
+      title: t("dashboard.total_amount"),
+      value: `৳ ${Number(totalAmount).toLocaleString()}`,
+      icon: Wallet,
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+    },
+    {
+      title: t("dashboard.expense"),
+      value: `৳ ${Number(totalExpense).toLocaleString()}`,
+      icon: TrendingDown,
+      color: "text-rose-600",
+      bg: "bg-rose-50",
+    },
+    {
+      title: t("dashboard.due_amount"),
+      value: `৳ ${Number(dueAmount).toLocaleString()}`,
+      icon: AlertCircle,
+      color: "text-orange-600",
+      bg: "bg-orange-50",
+    },
     {
       title: t("dashboard.total_students"),
       value: dashboardData.studentStats?.totalStudents || "0",
@@ -126,7 +157,7 @@ const AdminDashboard = () => {
   return (
     <div className=" space-y-4 animate-in fade-in duration-500">
       {showBillingWarning && (
-        <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white p-5 rounded-2xl shadow-lg shadow-orange-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-orange-400/20">
+        <div className="bg-linear-to-r from-amber-500 to-orange-600 text-white p-5 rounded-2xl shadow-lg shadow-orange-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-orange-400/20">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-white/10 rounded-xl shrink-0">
               <Bell className="w-6 h-6 text-white animate-bounce" />
@@ -143,17 +174,17 @@ const AdminDashboard = () => {
           </div>
         </div>
       )}
-  
+
 
       {/* 2. Key Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-white p-6 rounded-[8px] shadow-sm hover:shadow-md transition-shadow flex items-center justify-between relative overflow-hidden "
+            className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow flex items-center justify-between relative overflow-hidden "
           >
-             <div className="absolute -top-[5%] -left-[20%] h-[200px] w-[200px] bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
-            <div clsassName=" relative z-20 flex flex-col items-start">
+            <div className="absolute -top-[5%] -left-[20%] h-50 w-50 bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
+            <div className="relative z-20 flex flex-col items-start">
               <h3 className="text-3xl font-bold text-slate-800 tracking-tight mb-1  relative z-20">
                 {stat.value}
               </h3>
@@ -173,8 +204,8 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* Left Column (Main) */}
         <div className="xl:col-span-2 space-y-4">
-{/* Student Distribution Overview */}
-          <div className="bg-white rounded-[8px] border border-slate-200 shadow-sm p-6">
+          {/* Student Distribution Overview */}
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-bold text-slate-800">
@@ -194,7 +225,7 @@ const AdminDashboard = () => {
 
             <div className="grid gap-6 lg:grid-cols-[220px_1fr] items-center">
               <div className="flex justify-center">
-                <div className="relative w-44 h-44 rounded-full p-3 bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 shadow-inner">
+                <div className="relative w-44 h-44 rounded-full p-3 bg-linear-to-br from-slate-50 to-slate-100 border border-slate-200 shadow-inner">
                   <div
                     className="w-full h-full rounded-full"
                     style={{
@@ -258,7 +289,7 @@ const AdminDashboard = () => {
         {/* Right Column (Sidebar) */}
         <div className="space-y-4">
           {/* Notice Board */}
-          <div className="bg-white rounded-[8px] border border-slate-200 shadow-sm p-6">
+          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-slate-800">{t("dashboard.notice_board")}</h2>
               <button className="p-1 hover:bg-slate-100 rounded-lg transition-colors">
@@ -296,7 +327,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Upcoming Event / Calendar Mini */}
-          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[8px] p-6 text-white shadow-lg">
+          <div className="bg-linear-to-br from-slate-900 to-slate-800 rounded-lg p-6 text-white shadow-lg">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-white/10 rounded-lg">
                 <CalendarDays className="w-5 h-5 text-white" />

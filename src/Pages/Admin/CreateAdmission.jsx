@@ -26,6 +26,7 @@ import {
   Bus,
   QrCode,
   Globe,
+  Utensils,
 } from "lucide-react";
 import { Link, useSearchParams, useNavigate, useLocation } from "react-router";
 import InputField from "../../components/InputField";
@@ -35,6 +36,28 @@ import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-hot-toast";
 
 import VoucherModal from "../../components/VoucherModal/VoucherModal";
+import { MEAL_PLANS, formatCurrency } from "./Boarding/boardingConstants";
+
+const DEFAULT_BOARDING = {
+  enrolled: false,
+  residential_type: "Residential",
+  meal_plan_id: "full_3_meals",
+  monthly_fee: 3500,
+  waiver_percent: 0,
+  billing_mode: "Fixed",
+};
+
+const isBoardingFeeName = (name) =>
+  /boarding|hostel|বোর্ডিং|খোরাকি|হোস্টেল|আবাসিক/i.test(name || "");
+
+const computeBoardingNetFee = (boarding) => {
+  if (!boarding?.enrolled || boarding.residential_type === "Lillah" || boarding.meal_plan_id === "lillah_free") {
+    return 0;
+  }
+  const fee = Math.max(0, Number(boarding.monthly_fee) || 0);
+  const waiver = Math.min(100, Math.max(0, Number(boarding.waiver_percent) || 0));
+  return Math.max(0, Math.round(fee * (1 - waiver / 100)));
+};
 
 const CreateAdmission = () => {
   const [searchParams] = useSearchParams();
@@ -100,6 +123,10 @@ const CreateAdmission = () => {
             photo: studentData.photo,
             transport: studentData.transport || { required: false, route: "" },
             hostel: studentData.hostel || { required: false, roomType: "" },
+            boarding: studentData.boarding || {
+              ...DEFAULT_BOARDING,
+              enrolled: Boolean(studentData.hostel?.required),
+            },
             fees: studentData.fees || {},
             note: studentData.note || "",
             student_id: studentData.student_id
@@ -166,6 +193,7 @@ const CreateAdmission = () => {
           password: "password",
           transport: { required: false, route: "" },
           hostel: { required: false, roomType: "" },
+          boarding: { ...DEFAULT_BOARDING },
           fees: {},
           note: s.note || "",
           student_id: `TS${Math.random().toString(10).slice(2, 6)}`,
@@ -193,6 +221,7 @@ const CreateAdmission = () => {
       required: false,
       roomType: "",
     },
+    boarding: { ...DEFAULT_BOARDING },
     fees: {}, // To store { "Fee Name": "Amount" }
     note: "",
     student_id: `TS${Math.random().toString(10).slice(2, 6)}`
@@ -246,6 +275,86 @@ const CreateAdmission = () => {
       updatedStudents[index][field] = value;
     }
     setFormData((prev) => ({ ...prev, students: updatedStudents }));
+  };
+
+  const handleBoardingPreset = (index, presetKey) => {
+    setFormData((prev) => {
+      const updatedStudents = [...prev.students];
+      const current = updatedStudents[index];
+      let nextBoarding;
+      let hostelRequired = false;
+
+      if (presetKey === "none") {
+        nextBoarding = { ...DEFAULT_BOARDING, enrolled: false };
+      } else if (presetKey === "Lillah") {
+        nextBoarding = {
+          ...DEFAULT_BOARDING,
+          enrolled: true,
+          residential_type: "Lillah",
+          meal_plan_id: "lillah_free",
+          monthly_fee: 0,
+          waiver_percent: 100,
+        };
+        hostelRequired = true;
+      } else if (presetKey === "Non-Residential") {
+        nextBoarding = {
+          ...DEFAULT_BOARDING,
+          enrolled: true,
+          residential_type: "Non-Residential",
+          meal_plan_id: "daycare_lunch",
+          monthly_fee: 1500,
+          waiver_percent: 0,
+        };
+      } else {
+        nextBoarding = {
+          ...DEFAULT_BOARDING,
+          enrolled: true,
+          residential_type: "Residential",
+          meal_plan_id: "full_3_meals",
+          monthly_fee: 3500,
+          waiver_percent: 0,
+        };
+        hostelRequired = true;
+      }
+
+      updatedStudents[index] = {
+        ...current,
+        boarding: nextBoarding,
+        hostel: { ...(current.hostel || {}), required: hostelRequired },
+      };
+      return { ...prev, students: updatedStudents };
+    });
+  };
+
+  const handleBoardingPlanChange = (index, planId) => {
+    const plan = MEAL_PLANS.find((p) => p.id === planId) || MEAL_PLANS[0];
+    setFormData((prev) => {
+      const updatedStudents = [...prev.students];
+      const current = updatedStudents[index];
+      const isLillah = planId === "lillah_free";
+      const nextResidential = isLillah
+        ? "Lillah"
+        : current.boarding?.residential_type === "Lillah"
+        ? "Residential"
+        : current.boarding?.residential_type || "Residential";
+
+      updatedStudents[index] = {
+        ...current,
+        boarding: {
+          ...(current.boarding || DEFAULT_BOARDING),
+          enrolled: true,
+          residential_type: nextResidential,
+          meal_plan_id: planId,
+          monthly_fee: plan.default_fee,
+          waiver_percent: isLillah ? 100 : current.boarding?.waiver_percent || 0,
+        },
+        hostel: {
+          ...(current.hostel || {}),
+          required: nextResidential !== "Non-Residential",
+        },
+      };
+      return { ...prev, students: updatedStudents };
+    });
   };
 
   const addStudent = () => {
@@ -1162,6 +1271,147 @@ const CreateAdmission = () => {
                   </div>
                 </div>
               </div>
+              {/* Boarding & Residential Setup (আবাসিক ও বোর্ডিং সেটআপ) */}
+              <div className="mb-8 p-5 rounded-[8px] border border-emerald-200/80 bg-emerald-50/40">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                  <div className="flex items-center gap-2 text-[#1C7D5A]">
+                    <Utensils className="w-5 h-5" />
+                    <h4 className="font-black">আবাসিক ও বোর্ডিং সেটআপ (Boarding &amp; Meal)</h4>
+                  </div>
+                  {student.boarding?.enrolled && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#1C7D5A] text-white self-start sm:self-auto">
+                      অটো বোর্ডিং যুক্ত হবে • নিট: {formatCurrency(computeBoardingNetFee(student.boarding))}/মাস
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 mb-4">
+                  {[
+                    {
+                      key: "none",
+                      label: "বোর্ডিং নয়",
+                      sub: "শুধু একাডেমিক",
+                      active: !student.boarding?.enrolled,
+                    },
+                    {
+                      key: "Residential",
+                      label: "আবাসিক",
+                      sub: "পূর্ণ বোর্ডিং (৩ বেলা)",
+                      active: student.boarding?.enrolled && student.boarding?.residential_type === "Residential",
+                    },
+                    {
+                      key: "Lillah",
+                      label: "লিল্লাহ / ফ্রি",
+                      sub: "০৳ ফি (১০০% ছাড়)",
+                      active: student.boarding?.enrolled && student.boarding?.residential_type === "Lillah",
+                    },
+                    {
+                      key: "Non-Residential",
+                      label: "অনাবাসিক মিল",
+                      sub: "ডে-কেয়ার / শুধু দুপুর",
+                      active: student.boarding?.enrolled && student.boarding?.residential_type === "Non-Residential",
+                    },
+                  ].map((opt) => (
+                    <button
+                      key={opt.key}
+                      type="button"
+                      onClick={() => handleBoardingPreset(index, opt.key)}
+                      className={`p-3 rounded-[6px] border text-left transition-all cursor-pointer ${
+                        opt.active
+                          ? "bg-[#1C7D5A] text-white border-[#1C7D5A] shadow-sm"
+                          : "bg-white text-slate-700 border-slate-200 hover:border-[#1C7D5A]/50"
+                      }`}
+                    >
+                      <div className="text-xs font-black">{opt.label}</div>
+                      <div className={`text-[11px] mt-0.5 ${opt.active ? "text-white/80" : "text-slate-500"}`}>
+                        {opt.sub}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                {student.boarding?.enrolled && (
+                  <div className="space-y-3 pt-3 border-t border-emerald-200/70">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">
+                          মিল প্যাকেজ
+                        </label>
+                        <select
+                          value={student.boarding?.meal_plan_id || "full_3_meals"}
+                          onChange={(e) => handleBoardingPlanChange(index, e.target.value)}
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                        >
+                          {MEAL_PLANS.map((plan) => (
+                            <option key={plan.id} value={plan.id}>
+                              {plan.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">
+                          মাসিক বোর্ডিং ফি (৳)
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          disabled={student.boarding?.residential_type === "Lillah"}
+                          value={student.boarding?.monthly_fee ?? 0}
+                          onChange={(e) =>
+                            handleStudentChange(index, "monthly_fee", Number(e.target.value) || 0, "boarding")
+                          }
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-bold outline-none focus:border-[#1C7D5A] disabled:bg-slate-100"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">
+                          ছাড় / Waiver (%)
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          disabled={student.boarding?.residential_type === "Lillah"}
+                          value={student.boarding?.waiver_percent ?? 0}
+                          onChange={(e) =>
+                            handleStudentChange(
+                              index,
+                              "waiver_percent",
+                              Math.min(100, Math.max(0, Number(e.target.value) || 0)),
+                              "boarding"
+                            )
+                          }
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-bold outline-none focus:border-[#1C7D5A] disabled:bg-slate-100"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-slate-700 mb-1.5 block">
+                          বিলিং মোড
+                        </label>
+                        <select
+                          value={student.boarding?.billing_mode || "Fixed"}
+                          onChange={(e) =>
+                            handleStudentChange(index, "billing_mode", e.target.value, "boarding")
+                          }
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 text-slate-800 rounded-[6px] text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                        >
+                          <option value="Fixed">ফিক্সড মাসিক ফি (Fixed)</option>
+                          <option value="MealRate">মিল-রেট অনুযায়ী (MealRate)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] font-medium text-emerald-800 bg-white/80 px-3 py-2 rounded-[6px] border border-emerald-200/60">
+                      অ্যাডমিশন সেভ করার সাথে সাথেই ছাত্রটি বোর্ডিং প্যানেলে (ছাত্র তালিকা, ডেইলি মিল রোস্টার ও মাসিক বিলিং) অটোমেটিক যুক্ত হয়ে যাবে। মাসিক বোর্ডিং ফি বোর্ডিং বিলিং থেকেই আদায় করা যাবে (নিচের Fee Setup-এ ডুপ্লিকেট করার প্রয়োজন নেই)।
+                    </p>
+                  </div>
+                )}
+              </div>
+
               {/* Fee Setup (ফি সেটআপ) */}
 
               {feeTypes?.length > 0 && (<div><div className="flex items-center gap-2 mb-6 text-[#1C7D5A]">
@@ -1182,11 +1432,14 @@ const CreateAdmission = () => {
                           <input
                             type="checkbox"
                             className="sr-only peer"
-                            checked={!!student.fees?.[type.name]}
+                            checked={student.fees?.[type.name] !== undefined}
                             onChange={(e) => {
                               const currentFees = { ...(student.fees || {}) };
                               if (e.target.checked) {
                                 currentFees[type.name] = "0";
+                                if (isBoardingFeeName(type.name) && !student.boarding?.enrolled) {
+                                  handleBoardingPreset(index, "Residential");
+                                }
                               } else {
                                 delete currentFees[type.name];
                               }
@@ -1206,9 +1459,17 @@ const CreateAdmission = () => {
                               type="number"
                               value={student.fees[type.name]}
                               onChange={(e) => {
+                                const val = e.target.value;
                                 const currentFees = { ...(student.fees || {}) };
-                                currentFees[type.name] = e.target.value;
+                                currentFees[type.name] = val;
                                 handleStudentChange(index, "fees", currentFees);
+                                if (
+                                  isBoardingFeeName(type.name) &&
+                                  student.boarding?.enrolled &&
+                                  student.boarding?.residential_type !== "Lillah"
+                                ) {
+                                  handleStudentChange(index, "monthly_fee", Number(val) || 0, "boarding");
+                                }
                               }}
                               placeholder="Enter amount"
                               className="w-full pl-8 pr-4 py-2.5 bg-[#1C7D5A18] border-2 border-slate-100 rounded-[6px] outline-none focus:border-[#1C7D5A] focus:bg-white text-sm font-bold text-slate-700 transition-all placeholder:text-slate-300"
