@@ -273,7 +273,7 @@ const CreateEmployee = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate("/admin/employee/list")}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-[8px] hover:bg-[#1C7D5A] transition-all shadow-sm cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold bg-[#1C7D5A] text-white rounded-lg hover:bg-[#1C7D5A] transition-all shadow-sm cursor-pointer"
           >
             <User className="w-4 h-4" /> All Staff List
           </button>
@@ -442,7 +442,7 @@ const CreateEmployee = () => {
                 Profile Picture
               </label>
               <div
-                className="relative group border-2 border-dashed border-slate-200 rounded-[8px] bg-[#1C7D5A18] hover:bg-[#1C7D5A33] hover:border-[#1C7D5A] transition-all p-12 text-center cursor-pointer"
+                className="relative group border-2 border-dashed border-slate-200 rounded-lg bg-[#1C7D5A18] hover:bg-[#1C7D5A33] hover:border-[#1C7D5A] transition-all p-12 text-center cursor-pointer"
                 onClick={() => document.getElementById("photo-upload").click()}
               >
                 <input
@@ -645,7 +645,7 @@ const CreateEmployee = () => {
                           : [...currentMethods, method];
                         handleInputChange("mobileMethods", newMethods);
                       }}
-                      className={`px-6 py-3 rounded-[8px] font-bold text-sm transition-all flex items-center gap-2 border-2 ${formData.mobileMethods?.includes(method)
+                      className={`px-6 py-3 rounded-lg font-bold text-sm transition-all flex items-center gap-2 border-2 ${formData.mobileMethods?.includes(method)
                         ? "bg-[#1C7D5A] border-[#1C7D5A] text-white shadow-lg "
                         : "bg-[#1C7D5A18] border-transparent text-slate-600 hover:border-slate-300"
                         }`}
@@ -692,7 +692,7 @@ const CreateEmployee = () => {
 
         {/* Salary & Compensation Section (Optional) */}
         <SectionContainer id="salary" title="Salary & Compensation (ঐচ্ছিক বেতন কাঠামো)" icon={DollarSign}>
-          <p className="text-xs font-bold text-slate-500 mb-6 bg-[#1C7D5A18] p-3 rounded-[8px]">
+          <p className="text-xs font-bold text-slate-500 mb-6 bg-[#1C7D5A18] p-3 rounded-lg">
             💡 <span className="font-black text-[#1C7D5A]">নোট:</span> নিয়োগের সময়ই বেতন চূড়ান্ত হয়ে থাকলে নিচের ফিল্ডগুলো পূরণ করুন। অন্যথায় এটি খালি রাখতে পারেন এবং পরবর্তীতে <span className="font-black text-[#1C7D5A]">"Salary Setup"</span> মেনু থেকে নির্ধারণ করতে পারবেন।
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -749,14 +749,14 @@ const CreateEmployee = () => {
           <button
             type="button"
             onClick={() => navigate("/admin/employee/list")}
-            className="flex-1 md:flex-none px-8 py-3 text-slate-600 font-bold rounded-[8px] bg-red-500 text-white transition-all text-sm active:scale-95 cursor-pointer"
+            className="flex-1 md:flex-none px-8 py-3 text-slate-600 font-bold rounded-lg bg-red-500 transition-all text-sm active:scale-95 cursor-pointer"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 md:flex-none px-8 py-3 bg-[#1C7D5A] text-white font-bold rounded-[8px] shadow-sm hover:scale-[1.02] transition-all text-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex-1 md:flex-none px-8 py-3 bg-[#1C7D5A] text-white font-bold rounded-lg shadow-sm hover:scale-[1.02] transition-all text-sm flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <Save className="w-4 h-4" /> {loading ? "Saving..." : editId ? "Update" : "Save"}
           </button>
@@ -770,7 +770,7 @@ const CreateEmployee = () => {
  * Reusable Section Container
  */
 const SectionContainer = ({ title, icon: Icon, children }) => (
-  <div className="bg-white dark:bg-white rounded-[8px] p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow mb-6">
+  <div className="bg-white dark:bg-white rounded-lg p-4 sm:p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow mb-6">
     <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-slate-200 dark:border-slate-200">
       <div className="w-10 h-10 rounded-xl bg-[#1C7D5A18] flex items-center justify-center">
         <Icon className="w-5 h-5 text-[#1C7D5A]" />
@@ -807,7 +807,7 @@ const FormInput = ({
         onChange={(e) => setter(field, e.target.value)}
         placeholder={placeholder}
         required={required}
-        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
+        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-lg outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all"
       />
     </div>
   </div>
@@ -831,7 +831,7 @@ const FormSelect = ({
         value={data[field] ?? ""}
         onChange={(e) => setter(field, e.target.value)}
         required={required}
-        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all appearance-none cursor-pointer"
+        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-lg outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all appearance-none cursor-pointer"
       >
         {options.map((opt) => (
           <option key={opt} value={opt === "Select" ? "" : opt}>
@@ -866,7 +866,7 @@ const FormTextarea = ({
         placeholder={placeholder}
         required={required}
         rows={2}
-        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-[8px] outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all resize-none"
+        className="w-full px-4 py-2 bg-[#1C7D5A18] dark:bg-[#1C7D5A18] border border-slate-200 dark:border-slate-200 text-slate-900 dark:text-slate-900 rounded-lg outline-none focus:ring-1 focus:ring-[#1C7D5A] focus:border-[#1C7D5A] transition-all resize-none"
       />
     </div>
   </div>
