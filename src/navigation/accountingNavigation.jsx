@@ -52,15 +52,16 @@ import {
       ]
     },
     {
-      name: "Reports",
+      name: "Accounting Report",
       icon: FilePieChart,
       children: [
-        { name: "Fee Reports", path: "/admin/reports/fees", icon: FilePieChart },
-        { name: "Expense Report", path: "/admin/reports/finance", icon: FilePieChart },
-        { name: "Income Report", path: "/admin/reports/finance", icon: FilePieChart },
+        { name: "Fee Collection Report", path: "/admin/accounting/report/free-collection", icon: FileText },
+        { name: "Due Fees Report", path: "/admin/accounting/report/due-fees", icon: FileText },
         { name: "Salary Report", path: "/admin/accounting/report/salary", icon: FileText },
         { name: "Donation Report", path: "/admin/accounting/report/donation", icon: FileText },
         { name: "Income & Expense Report", path: "/admin/accounting/report/income-expense", icon: FileText },
+        { name: "Account Ledger Report", path: "/admin/accounting/report/accounts", icon: FileText },
+        { name: "Boarding & Transport Report", path: "/admin/accounting/report/boarding-transport", icon: FileText },
       ]
     },
     {

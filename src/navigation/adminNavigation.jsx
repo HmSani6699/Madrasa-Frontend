@@ -195,19 +195,8 @@ export const adminNavigation = [
       },
       {
         name: "Donation",
+        path: "/admin/accounting/donation/create",
         icon: HeartHandshake,
-        children: [
-          {
-            name: "Receive Donation",
-            path: "/admin/accounting/donation/create",
-            icon: HeartHandshake,
-          },
-          {
-            name: "Donation History",
-            path: "/admin/accounting/donation/list",
-            icon: ClipboardList,
-          },
-        ],
       },
       {
         name: "Expenses",
@@ -236,8 +225,13 @@ export const adminNavigation = [
         icon: FileBarChart,
         children: [
           {
-            name: "Free Collection Report",
+            name: "Fee Collection Report",
             path: "/admin/accounting/report/free-collection",
+            icon: FileText,
+          },
+          {
+            name: "Due Fees Report",
+            path: "/admin/accounting/report/due-fees",
             icon: FileText,
           },
           {
@@ -253,6 +247,16 @@ export const adminNavigation = [
           {
             name: "Income & Expense Report",
             path: "/admin/accounting/report/income-expense",
+            icon: FileText,
+          },
+          {
+            name: "Account Ledger Report",
+            path: "/admin/accounting/report/accounts",
+            icon: FileText,
+          },
+          {
+            name: "Boarding & Transport Report",
+            path: "/admin/accounting/report/boarding-transport",
             icon: FileText,
           },
         ],

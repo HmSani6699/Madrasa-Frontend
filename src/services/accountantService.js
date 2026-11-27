@@ -85,6 +85,56 @@ const accountantService = {
   getClasses: async () => {
     const response = await axiosInstance.get(endpoints.common.classes);
     return response.data;
+  },
+
+  // Ledger Entries (Other Income / Expense)
+  getLedgerEntries: async (mode) => {
+    const response = await axiosInstance.get(endpoints.accountant.ledgerEntries, {
+      params: mode ? { mode } : {},
+    });
+    return response.data;
+  },
+  createLedgerEntry: async (data) => {
+    const response = await axiosInstance.post(endpoints.accountant.ledgerEntries, data);
+    return response.data;
+  },
+  updateLedgerEntry: async (id, data) => {
+    const response = await axiosInstance.put(`${endpoints.accountant.ledgerEntries}/${id}`, data);
+    return response.data;
+  },
+  deleteLedgerEntry: async (id) => {
+    const response = await axiosInstance.delete(`${endpoints.accountant.ledgerEntries}/${id}`);
+    return response.data;
+  },
+
+  // Accounting Reports
+  getFeeCollectionReport: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.accountant.reports.feeCollections, { params });
+    return response.data;
+  },
+  getDueFeesReport: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.accountant.reports.dueFees, { params });
+    return response.data;
+  },
+  getSalaryReport: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.accountant.reports.salaries, { params });
+    return response.data;
+  },
+  getDonationReport: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.accountant.reports.donations, { params });
+    return response.data;
+  },
+  getIncomeExpenseReport: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.accountant.reports.incomeExpense, { params });
+    return response.data;
+  },
+  getAccountsLedgerReport: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.accountant.reports.accountsLedger, { params });
+    return response.data;
+  },
+  getBoardingTransportReport: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.accountant.reports.boardingTransport, { params });
+    return response.data;
   }
 };
 

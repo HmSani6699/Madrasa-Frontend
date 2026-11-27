@@ -120,7 +120,6 @@ import PayrollProcess from "../Pages/Accounting/PayrollProcess";
 import MonthlyPayroll from "../Pages/Accounting/MonthlyPayroll";
 import AdvanceLoans from "../Pages/Accounting/AdvanceLoans";
 import DuesPending from "../Pages/Admin/DuesPending";
-import DonationHistory from "../Pages/Accounting/DonationHistory";
 import SalaryHistory from "../Pages/Accounting/SalaryHistory";
 import MadrasaPortal from "../Pages/Portal/MadrasaPortal";
 import AboutUs from "../Pages/Portal/AboutUs";
@@ -132,9 +131,12 @@ import AccountDeactivated from "../Pages/Auth/AccountDeactivated";
 // import DepartmentSectionList from "../Pages/Admin/DepartmentSectionList";
 import PaySalary from "../Pages/Accounting/PaySalary";
 import FreeCollectionReport from "../Pages/Accounting/FreeCollectionReport";
+import DueFeesReport from "../Pages/Accounting/DueFeesReport";
 import SalaryReport from "../Pages/Accounting/SalaryReport";
 import DonationReport from "../Pages/Accounting/DonationReport";
 import IncomeExpenseReport from "../Pages/Accounting/IncomeExpenseReport";
+import AccountLedgerReport from "../Pages/Accounting/AccountLedgerReport";
+import BoardingTransportReport from "../Pages/Accounting/BoardingTransportReport";
 import IncomeEntry from "../Pages/Accounting/IncomeEntry";
 import ExpenseEntry from "../Pages/Accounting/ExpenseEntry";
 import PortalLayout from "../layouts/PortalLayout";
@@ -393,9 +395,6 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/accounting/donation/create") {
         element = <DonationEntry />;
       }
-      if (item.path === "/admin/accounting/donation/list") {
-        element = <DonationHistory />;
-      }
       if (item.path === "/admin/accounting/fees/collect") {
         element = <FeeCollection />;
       }
@@ -464,6 +463,9 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/admin/accounting/report/free-collection") {
         element = <FreeCollectionReport />;
       }
+      if (item.path === "/admin/accounting/report/due-fees") {
+        element = <DueFeesReport />;
+      }
       if (item.path === "/admin/accounting/report/salary") {
         element = <SalaryReport />;
       }
@@ -472,6 +474,12 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/accounting/report/income-expense") {
         element = <IncomeExpenseReport />;
+      }
+      if (item.path === "/admin/accounting/report/accounts") {
+        element = <AccountLedgerReport />;
+      }
+      if (item.path === "/admin/accounting/report/boarding-transport") {
+        element = <BoardingTransportReport />;
       }
 
       // Settings

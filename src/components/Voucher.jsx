@@ -116,7 +116,7 @@ const Voucher = ({
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-slate-800">
-                {isBangla ? 'অফিসিয়াল ফি ভাউচার ও মানি রিসিট' : 'Official Fee Voucher & Receipt'}
+                {data?.modalTitle || (isBangla ? 'অফিসিয়াল ফি ভাউচার ও মানি রিসিট' : 'Official Fee Voucher & Receipt')}
               </h2>
               <p className="text-xs text-slate-500 font-medium">
                 #{data?.receiptNo || 'REC'} • {data?.date || new Date().toISOString().split('T')[0]}
@@ -235,21 +235,23 @@ const Voucher = ({
 
             {/* Guardian Info & Academic Summary Bar with Vertical Divider */}
             <div className="flex items-stretch justify-between mb-6 px-4 relative z-10">
-              {/* Guardian Info */}
+              {/* Guardian / Party Info */}
               <div className="w-5/12 text-center">
                 <h3 className="text-base sm:text-lg font-bold text-slate-700 mb-1">
-                  {data?.donorName ? 'Donor Details' : 'Guardian Details'}
+                  {data?.partyTitle || (data?.donorName ? 'Donor Details' : 'Guardian Details')}
                 </h3>
                 <div>
                   <p className="text-xl sm:text-2xl font-black text-slate-800">
-                    {data?.guardianName && data.guardianName !== 'N/A' && data.guardianName.trim() !== ''
+                    {data?.partyName || (data?.guardianName && data.guardianName !== 'N/A' && data.guardianName.trim() !== ''
                       ? data.guardianName
-                      : (data?.donorName ? data.donorName : 'Father & Lead Guardian')}
+                      : (data?.donorName ? data.donorName : 'Father & Lead Guardian'))}
                   </p>
                   <p className="text-xs sm:text-sm font-bold text-slate-600 mt-0.5">
-                    {data?.donorName
-                      ? 'Donor Contributor'
-                      : (data?.guardianName && data.guardianName !== 'N/A' && data.guardianName.trim() !== '' ? 'Father & Lead Guardian' : '')}
+                    {data?.partySubtitle !== undefined
+                      ? data.partySubtitle
+                      : (data?.donorName
+                        ? 'Donor Contributor'
+                        : (data?.guardianName && data.guardianName !== 'N/A' && data.guardianName.trim() !== '' ? 'Father & Lead Guardian' : ''))}
                   </p>
                 </div>
               </div>
@@ -262,24 +264,26 @@ const Voucher = ({
                 </div>
               </div>
 
-              {/* Academic Summary */}
+              {/* Academic / Payment Summary */}
               <div className="w-5/12 text-center">
                 <h3 className="text-base sm:text-lg font-bold text-slate-700 mb-1">
-                  {data?.donorName ? 'Payment Summary' : 'Academic Summary'}
+                  {data?.summaryTitle || (data?.donorName ? 'Payment Summary' : 'Academic Summary')}
                 </h3>
                 <div className="flex justify-center gap-8">
                   <div>
                     <p className="text-lg sm:text-xl font-black text-slate-800">
                       {data?.year || new Date().getFullYear().toString()}
                     </p>
-                    <p className="text-xs font-bold text-slate-600 mt-0.5">Academic Year</p>
+                    <p className="text-xs font-bold text-slate-600 mt-0.5">
+                      {data?.summaryYearLabel || 'Academic Year'}
+                    </p>
                   </div>
                   <div>
                     <p className="text-lg sm:text-xl font-black text-slate-800">
-                      {data?.rollNumber ? String(data.rollNumber).padStart(2, '0') : '01'}
+                      {data?.summaryRightValue || (data?.rollNumber ? String(data.rollNumber).padStart(2, '0') : '01')}
                     </p>
                     <p className="text-xs font-bold text-slate-600 mt-0.5">
-                      {data?.rollNumber ? 'Student Roll' : 'Student'}
+                      {data?.summaryRightLabel || (data?.rollNumber ? 'Student Roll' : 'Student')}
                     </p>
                   </div>
                 </div>
@@ -289,7 +293,7 @@ const Voucher = ({
             {/* Enrolled Students / Fee Details Table */}
             <div className="mb-5 relative z-10">
               <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-2.5">
-                {data?.donorName ? 'Donation Details' : 'Enrolled Students'}
+                {data?.tableTitle || (data?.donorName ? 'Donation Details' : 'Enrolled Students')}
               </h3>
 
               <div className="border border-[#b8c7d4] bg-transparent">
@@ -297,13 +301,13 @@ const Voucher = ({
                   <thead>
                     <tr className="border-b border-[#b8c7d4]">
                       <th className="p-3 text-xs sm:text-sm font-bold text-slate-800 border-r border-[#b8c7d4]">
-                        {data?.donorName ? 'Donor Name' : 'Student Name'}
+                        {data?.partyColLabel || (data?.donorName ? 'Donor Name' : 'Student Name')}
                       </th>
                       <th className="p-3 text-xs sm:text-sm font-bold text-slate-800 border-r border-[#b8c7d4] text-center">
-                        {data?.donorName ? 'Fund Category' : 'Class'}
+                        {data?.categoryColLabel || (data?.donorName ? 'Fund Category' : 'Class')}
                       </th>
                       <th className="p-3 text-xs sm:text-sm font-bold text-slate-800 border-r border-[#b8c7d4]">
-                        Fee Details
+                        {data?.detailsColLabel || 'Fee Details'}
                       </th>
                       <th className="p-3 text-xs sm:text-sm font-bold text-slate-800 text-center">
                         Subtotal
@@ -314,14 +318,14 @@ const Voucher = ({
                     <tr className="bg-transparent">
                       <td className="p-3.5 border-r border-[#b8c7d4] align-top">
                         <p className="font-black text-slate-800 text-center text-base sm:text-lg">
-                          {data?.studentName || data?.donorName || 'N/A'}
+                          {data?.studentName || data?.donorName || data?.partyName || 'N/A'}
                         </p>
                         <p className="text-[10px] font-bold text-slate-400 text-center mt-1">
-                          ID: {data?.studentId || 'N/A'}
+                          {data?.partyIdText || `ID: ${data?.studentId || 'N/A'}`}
                         </p>
                       </td>
                       <td className="p-3.5 border-r border-[#b8c7d4] font-bold text-slate-800 align-top text-center text-xs sm:text-sm">
-                        {data?.className || data?.purpose || 'N/A'}
+                        {data?.className || data?.categoryLabel || data?.purpose || 'N/A'}
                       </td>
                       <td className="p-0 border-r border-[#b8c7d4] align-top">
                         <div className="flex flex-col divide-y divide-[#b8c7d4]">
