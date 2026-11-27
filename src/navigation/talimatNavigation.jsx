@@ -52,6 +52,16 @@ import {
       ]
     },
     {
+      name: "Hifz Tothyo Khata",
+      icon: BookOpen,
+      children: [
+        { name: "Hifz Dashboard", path: "/admin/hifz/dashboard", icon: LayoutDashboard },
+        { name: "Daily Entry", path: "/admin/hifz/daily-entry", icon: PenTool },
+        { name: "Weekly Khata", path: "/admin/hifz/weekly-khata", icon: Calendar },
+        { name: "Monthly Report & Print", path: "/admin/hifz/monthly-report", icon: FileText },
+      ]
+    },
+    {
       name: "Reports",
       icon: FileText,
       children: [

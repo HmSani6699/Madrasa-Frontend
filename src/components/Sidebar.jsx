@@ -160,14 +160,14 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
 
   const adminLinks = [
     { title: "Main", links: adminNavigation.slice(0, 1) },
-    { title: "Academic", links: adminNavigation.slice(1, 9) },
-    { title: "Management", links: adminNavigation.slice(9) }
+    { title: "Academic", links: adminNavigation.slice(1, 10) },
+    { title: "Management", links: adminNavigation.slice(10) }
   ];
 
   const teacherLinks = [
     { title: "Main", links: teacherNavigation.slice(0, 1) },
-    { title: "Academic", links: teacherNavigation.slice(1, 5) },
-    { title: "Others", links: teacherNavigation.slice(5) }
+    { title: "Academic", links: teacherNavigation.slice(1, 6) },
+    { title: "Others", links: teacherNavigation.slice(6) }
   ];
 
   const getLinks = () => {

@@ -154,6 +154,16 @@ export const adminNavigation = [
     ],
   },
   {
+    name: "Hifz Tothyo Khata",
+    icon: BookMarked,
+    children: [
+      { name: "Hifz Dashboard", path: "/admin/hifz/dashboard", icon: LayoutDashboard },
+      { name: "Daily Entry", path: "/admin/hifz/daily-entry", icon: Edit },
+      { name: "Weekly Khata", path: "/admin/hifz/weekly-khata", icon: CalendarDays },
+      { name: "Monthly Report & Print", path: "/admin/hifz/monthly-report", icon: Printer },
+    ],
+  },
+  {
     name: "Office Accounting",
     icon: Calculator,
     children: [

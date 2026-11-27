@@ -53,6 +53,16 @@ export const teacherNavigation = [
     ],
   },
   {
+    name: "Hifz Tothyo Khata",
+    icon: FileSpreadsheet,
+    children: [
+      { name: "Hifz Dashboard", path: "/teacher/hifz/dashboard" },
+      { name: "Daily Entry", path: "/teacher/hifz/daily-entry" },
+      { name: "Weekly Khata", path: "/teacher/hifz/weekly-khata" },
+      { name: "Monthly Report & Print", path: "/teacher/hifz/monthly-report" },
+    ],
+  },
+  {
     name: "Students",
     icon: Users,
     children: [

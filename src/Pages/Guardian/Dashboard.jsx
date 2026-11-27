@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
   Users,
@@ -172,13 +173,22 @@ const GuardianDashboard = () => {
                             <p className={`text-[10px] font-black uppercase tracking-widest ${activeChild.id === child.id ? 'text-emerald-400' : 'text-[#1C7D5A]'}`}>
                                Class {child.class || "Top"} • Roll {child.roll || "01"}
                             </p>
-                            <div className="flex items-center gap-2 mt-3">
-                               <button className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-tight transition-all ${
-                                  activeChild.id === child.id ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-white text-slate-500 border border-slate-100'
-                               }`}>
-                                  View Details
+                            <div className="flex flex-wrap items-center gap-2 mt-3">
+                               <Link
+                                  to="/guardian/hifz"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    selectChild(child);
+                                  }}
+                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all ${
+                                     activeChild.id === child.id
+                                     ? 'bg-[#EAB33C] text-[#123628] hover:bg-amber-300'
+                                     : 'bg-[#e8f5f0] text-[#123628] border border-[#1C7D5A]/20 hover:bg-[#1C7D5A] hover:text-white'
+                                  }`}
+                               >
+                                  হিফজ খাতা
                                   <ChevronRight className="w-3 h-3" />
-                               </button>
+                               </Link>
                             </div>
                          </div>
                       </div>

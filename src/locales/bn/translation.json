@@ -245,7 +245,12 @@
     "fee_setup": "ফি সেটআপ",
     "pay_salary": "বেতন প্রদান",
     "process_salary": "বেতন প্রসেস",
-    "salary_history": "বেতন ইতিহাস"
+    "salary_history": "বেতন ইতিহাস",
+    "hifz_tothyo_khata": "হিফজ তথ্য খাতা",
+    "hifz_dashboard": "ড্যাশবোর্ড",
+    "daily_entry": "দৈনিক এন্ট্রি",
+    "weekly_khata": "সাপ্তাহিক খাতা",
+    "monthly_report_print": "মাসিক রিপোর্ট ও প্রিন্ট"
   },
   "dashboard": {
     "welcome": "স্বাগতম",

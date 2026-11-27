@@ -40,6 +40,11 @@ export const studentNavigation = [
       { name: "Progress Report", path: "/student/exam/results" },
     ],
   },
+  {
+    name: "Hifz Tothyo Khata",
+    icon: BookOpen,
+    path: "/student/hifz",
+  },
 
   {
     name: "Communication",

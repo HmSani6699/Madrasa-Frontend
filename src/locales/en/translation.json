@@ -243,7 +243,12 @@
     "fee_setup": "Fee Setup",
     "pay_salary": "Pay Salary",
     "process_salary": "Process Salary",
-    "salary_history": "Salary History"
+    "salary_history": "Salary History",
+    "hifz_tothyo_khata": "Hifz Tothyo Khata",
+    "hifz_dashboard": "Dashboard",
+    "daily_entry": "Daily Entry",
+    "weekly_khata": "Weekly Khata",
+    "monthly_report_print": "Monthly Report & Print"
   },
   "dashboard": {
     "welcome": "Welcome Back",

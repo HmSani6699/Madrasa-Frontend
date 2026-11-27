@@ -97,6 +97,11 @@ import TransportStudentsPage from "../Pages/Admin/Transport/TransportStudentsPag
 import DailyTripLogPage from "../Pages/Admin/Transport/DailyTripLogPage";
 import TransportExpensesPage from "../Pages/Admin/Transport/TransportExpensesPage";
 import TransportBillingPage from "../Pages/Admin/Transport/TransportBillingPage";
+import HifzDashboardPage from "../Pages/Admin/Hifz/HifzDashboardPage";
+import HifzDailyEntryPage from "../Pages/Admin/Hifz/HifzDailyEntryPage";
+import HifzWeeklyKhataPage from "../Pages/Admin/Hifz/HifzWeeklyKhataPage";
+import HifzMonthlyReportPage from "../Pages/Admin/Hifz/HifzMonthlyReportPage";
+import GuardianHifzKhata from "../Pages/Guardian/GuardianHifzKhata";
 import MessageCenter from "../Pages/Admin/MessageCenter";
 import StudentReports from "../Pages/Admin/StudentReports";
 import FeesReports from "../Pages/Admin/FeesReports";
@@ -308,6 +313,18 @@ const flattenRoutes = (navItems) => {
       }
       if (item.path === "/admin/exam/tabulation") {
         element = <TabulationSheet />;
+      }
+      if (item.path === "/admin/hifz/dashboard") {
+        element = <HifzDashboardPage basePath="/admin/hifz" />;
+      }
+      if (item.path === "/admin/hifz/daily-entry") {
+        element = <HifzDailyEntryPage basePath="/admin/hifz" />;
+      }
+      if (item.path === "/admin/hifz/weekly-khata") {
+        element = <HifzWeeklyKhataPage basePath="/admin/hifz" />;
+      }
+      if (item.path === "/admin/hifz/monthly-report") {
+        element = <HifzMonthlyReportPage basePath="/admin/hifz" />;
       }
       if (item.path === "/admin/card/template") {
         element = <IdCardTemplate />;
@@ -529,6 +546,18 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/teacher/exam/schedule") {
         element = <TeacherExamSchedule />;
       }
+      if (item.path === "/teacher/hifz/dashboard") {
+        element = <HifzDashboardPage basePath="/teacher/hifz" />;
+      }
+      if (item.path === "/teacher/hifz/daily-entry") {
+        element = <HifzDailyEntryPage basePath="/teacher/hifz" />;
+      }
+      if (item.path === "/teacher/hifz/weekly-khata") {
+        element = <HifzWeeklyKhataPage basePath="/teacher/hifz" />;
+      }
+      if (item.path === "/teacher/hifz/monthly-report") {
+        element = <HifzMonthlyReportPage basePath="/teacher/hifz" />;
+      }
       if (item.path === "/teacher/attendance/report") {
         element = <TeacherAttendanceReport />;
       }
@@ -564,6 +593,7 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/guardian/academic/routine") element = <GuardianClassRoutine />;
       if (item.path === "/guardian/examination/schedule") element = <GuardianExamSchedule />;
       if (item.path === "/guardian/examination/results") element = <GuardianExamResults />;
+      if (item.path === "/guardian/hifz") element = <GuardianHifzKhata mode="guardian" />;
 
       // Student Routes Mapping
       if (item.path === "/student/dashboard") element = <StudentsDashboard />;
@@ -577,6 +607,7 @@ const flattenRoutes = (navItems) => {
       if (item.path === "/student/exam/schedule")
         element = <StudentExamSchedule />;
       if (item.path === "/student/exam/results") element = <StudentResults />;
+      if (item.path === "/student/hifz") element = <GuardianHifzKhata mode="student" />;
       if (item.path === "/student/library") element = <StudentLibrary />;
       if (item.path === "/student/library/ebooks") element = <EBooks />;
       if (item.path === "/student/notice") element = <NoticeBoard />;
@@ -691,6 +722,10 @@ const router = createBrowserRouter([
               {
                 path: "/admin/transport",
                 element: <Navigate to="/admin/transport/routes" replace />,
+              },
+              {
+                path: "/admin/hifz",
+                element: <Navigate to="/admin/hifz/dashboard" replace />,
               },
               {
                 path: "/admin/settings",

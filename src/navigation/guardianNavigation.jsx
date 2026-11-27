@@ -9,7 +9,8 @@ import {
   MessageSquare,
   FileText,
   GraduationCap,
-  ClipboardList
+  ClipboardList,
+  BookOpen
 } from "lucide-react";
 
 export const guardianNavigation = [
@@ -33,6 +34,11 @@ export const guardianNavigation = [
       { name: "Exam Schedule", path: "/guardian/examination/schedule" },
       { name: "Exam Result", path: "/guardian/examination/results" },
     ],
+  },
+  {
+    name: "Hifz Tothyo Khata",
+    icon: BookOpen,
+    path: "/guardian/hifz",
   },
   {
     name: "Finance",
