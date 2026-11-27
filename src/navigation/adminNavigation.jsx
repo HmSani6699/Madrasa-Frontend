@@ -49,6 +49,7 @@ import {
   MapPin,
   Fuel,
   Receipt,
+  ShieldCheck,
 } from "lucide-react";
 
 export const adminNavigation = [
@@ -327,6 +328,10 @@ export const adminNavigation = [
   {
     name: "Settings",
     icon: Settings,
-    path: "/admin/settings",
+    children: [
+      { name: "SMS Setup", path: "/admin/settings/sms", icon: MessageSquare },
+      { name: "Institution Profile", path: "/admin/settings/profile", icon: Building2 },
+      { name: "SaaS Subscription", path: "/admin/settings/subscription", icon: ShieldCheck },
+    ],
   },
 ];

@@ -113,7 +113,9 @@ import OverallHomeworkReport from "../Pages/Admin/AcademicReports/OverallHomewor
 import StudentAttendanceReport from "../Pages/Admin/StudentAttendanceReport";
 import StaffAttendanceReport from "../Pages/Admin/StaffAttendanceReport";
 import ExamAttendanceReport from "../Pages/Admin/ExamAttendanceReport";
-import SettingsPage from "../Pages/Admin/SettingsPage";
+import SmsSettingsPage from "../Pages/Admin/Settings/SmsSettingsPage";
+import InstitutionProfilePage from "../Pages/Admin/Settings/InstitutionProfilePage";
+import SubscriptionPage from "../Pages/Admin/Settings/SubscriptionPage";
 import DonationEntry from "../Pages/Accounting/DonationEntry";
 import FeeCollection from "../Pages/Accounting/FeeCollection";
 import PayrollProcess from "../Pages/Accounting/PayrollProcess";
@@ -484,7 +486,16 @@ const flattenRoutes = (navItems) => {
 
       // Settings
       if (item.path === "/admin/settings") {
-        element = <SettingsPage />;
+        element = <Navigate to="/admin/settings/sms" replace />;
+      }
+      if (item.path === "/admin/settings/sms") {
+        element = <SmsSettingsPage />;
+      }
+      if (item.path === "/admin/settings/profile") {
+        element = <InstitutionProfilePage />;
+      }
+      if (item.path === "/admin/settings/subscription") {
+        element = <SubscriptionPage />;
       }
       if (item.path === "/admin/sms-portal") {
         element = <SmsPortal />;
@@ -678,6 +689,10 @@ const router = createBrowserRouter([
               {
                 path: "/admin/transport",
                 element: <Navigate to="/admin/transport/routes" replace />,
+              },
+              {
+                path: "/admin/settings",
+                element: <Navigate to="/admin/settings/sms" replace />,
               },
               {
                 path: "/admin/student/profile/:id",

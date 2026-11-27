@@ -201,7 +201,7 @@ const StudentAttendance = () => {
   return (
     <div className=" animate-in fade-in duration-500 ">
       {/* Header Section */}
-      <div className=" rounded-[8px]  mb-4 flex flex-col md:flex-row justify-between items-center gap-6 ">
+      <div className=" rounded-lg  mb-4 flex flex-col md:flex-row justify-between items-center gap-6 ">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-800 flex items-center gap-3">
             <Calendar className="w-8 h-8 text-[#1C7D5A]" />
@@ -213,7 +213,7 @@ const StudentAttendance = () => {
         <div className="flex bg-slate-100 p-1.5 rounded-2xl w-full md:w-auto">
           <button
             onClick={() => setAttendanceMode("manual")}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-[8px] text-sm font-black transition-all flex items-center justify-center gap-2 ${attendanceMode === "manual"
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-black transition-all flex items-center justify-center gap-2 ${attendanceMode === "manual"
               ? "bg-white text-slate-800 shadow-md"
               : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
               }`}
@@ -223,7 +223,7 @@ const StudentAttendance = () => {
           </button>
           <button
             onClick={() => setAttendanceMode("biometric")}
-            className={`flex-1 md:flex-none px-6 py-2.5 rounded-[8px] text-sm font-black transition-all flex items-center justify-center gap-2 ${attendanceMode === "biometric"
+            className={`flex-1 md:flex-none px-6 py-2.5 rounded-lg text-sm font-black transition-all flex items-center justify-center gap-2 ${attendanceMode === "biometric"
               ? "bg-white text-slate-800 shadow-md"
               : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
               }`}
@@ -238,7 +238,7 @@ const StudentAttendance = () => {
       {/* Control & Stats Bar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Filters */}
-        <div className="lg:col-span-8 bg-white rounded-[8px]  p-6 shadow-sm">
+        <div className="lg:col-span-8 bg-white rounded-lg  p-6 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-xs font-black text-slate-500 uppercase flex items-center gap-2">
@@ -247,7 +247,7 @@ const StudentAttendance = () => {
               <select
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
-                className="w-full bg-[#1C7D5A18] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
+                className="w-full bg-[#1C7D5A18] border-none rounded-lg px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
               >
                 <option value="">Select class</option>
                 {classes.map(c => (
@@ -262,7 +262,7 @@ const StudentAttendance = () => {
               <select
                 value={selectedSectionId}
                 onChange={(e) => setSelectedSectionId(e.target.value)}
-                className="w-full bg-[#1C7D5A18] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
+                className="w-full bg-[#1C7D5A18] border-none rounded-lg px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
               >
                 <option value="">Select Section</option>
                 {sections.filter(s => {
@@ -281,14 +281,14 @@ const StudentAttendance = () => {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full bg-[#1C7D5A18] border-none rounded-[8px] px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
+                className="w-full bg-[#1C7D5A18] border-none rounded-lg px-4 py-2.5 text-sm font-bold focus:ring-1 focus:ring-[#1C7D5A] outline-none transition-all"
               />
             </div>
             <div className="space-y-2 sm:col-span-3 flex justify-end">
               <button
                 onClick={fetchData}
                 disabled={loading}
-                className="px-8 py-2.5 cursor-pointer bg-[#1C7D5A] text-white font-black rounded-[8px] shadow-lg shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+                className="px-8 py-2.5 cursor-pointer bg-[#1C7D5A] text-white font-black rounded-lg shadow-lg shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
               >
                 {loading ? "Loading..." : "Filter"}
               </button>
@@ -297,7 +297,7 @@ const StudentAttendance = () => {
         </div>
 
         {/* Quick Stats */}
-        <div className="lg:col-span-4 bg-white rounded-[8px]  p-6 shadow-sm flex items-center justify-around">
+        <div className="lg:col-span-4 bg-white rounded-lg  p-6 shadow-sm flex items-center justify-around">
           <div className="text-center">
             <p className="text-2xl font-black text-slate-800">{stats.present}</p>
             <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Present</p>
@@ -321,7 +321,7 @@ const StudentAttendance = () => {
       </div>
 
       {attendanceMode === "manual" ? (
-        <div className=" overflow-hidden relative lg:mt-[25px]">
+        <div className=" overflow-hidden relative lg:mt-6.25">
 
 
 
@@ -338,7 +338,7 @@ const StudentAttendance = () => {
                       placeholder="Search students..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-[#1C7D5A18] border-none rounded-[8px] text-sm font-bold outline-none focus:ring-1 focus:ring-[#1C7D5A] transition-all"
+                      className="w-full pl-10 pr-4 py-2 bg-[#1C7D5A18] border-none rounded-lg text-sm font-bold outline-none focus:ring-1 focus:ring-[#1C7D5A] transition-all"
                     />
                   </div>
 
@@ -373,7 +373,7 @@ const StudentAttendance = () => {
                     <button
                       onClick={handleSave}
                       disabled={loading}
-                      className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-[#1C7D5A] text-white rounded-[8px] shadow-lg shadow-slate-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                      className="flex-1 md:flex-none px-6 py-2 text-xs font-black bg-[#1C7D5A] text-white rounded-lg shadow-lg shadow-slate-200 flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       <Save className="w-3.5 h-3.5" />
                       {loading ? "Saving..." : "Save Attendance"}
@@ -382,7 +382,7 @@ const StudentAttendance = () => {
                 </div>
 
                 {/* Table */}
-                <div className="overflow-x-auto rounded-t-[8px] bg-white">
+                <div className="overflow-x-auto rounded-t-lg bg-white">
                   <table className="w-full">
                     <thead className="bg-[#1C7D5A18]">
                       <tr>
@@ -416,7 +416,7 @@ const StudentAttendance = () => {
                                 <button
                                   key={status.key}
                                   onClick={() => handleStatusChange(student._id, status.key)}
-                                  className={`px-3 py-1.5 rounded-[8px] text-xs font-black border-2 transition-all flex items-center justify-center ${attendanceData[student._id] === status.key
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-black border-2 transition-all flex items-center justify-center ${attendanceData[student._id] === status.key
                                     ? `${status.color} border-transparent text-white shadow-lg`
                                     : `border-slate-100 text-slate-400 ${status.bg} hover:border-slate-300`
                                     }`}
@@ -433,14 +433,14 @@ const StudentAttendance = () => {
                 </div>
 
               </div>
-            ) : <div className="h-[200px] w-full flex items-center justify-center"><p> Please charge student in class</p></div>
+            ) : <div className="h-50 w-full flex items-center justify-center"><p> Please charge student in class</p></div>
           }
           {/* Table */}
 
         </div>
       ) : (
         /* Biometric View */
-        <div className="bg-white rounded-3xl border-2 border-slate-200 shadow-sm p-8 text-center space-y-8 min-h-[400px] flex flex-col items-center justify-center">
+        <div className="bg-white rounded-3xl border-2 border-slate-200 shadow-sm p-8 text-center space-y-8 min-h-100 flex flex-col items-center justify-center">
           <div className="w-24 h-24 bg-[#1C7D5A18] rounded-full flex items-center justify-center animate-pulse">
             <Fingerprint className="w-12 h-12 text-[#1C7D5A]" />
           </div>
