@@ -1,197 +1,213 @@
-import { 
-  FileText, 
-  CheckCircle2, 
-  Calendar, 
-  Clock, 
-  HelpCircle, 
-  ArrowLeft,
-  Info,
-  BadgeAlert,
-  ClipboardCheck,
-  PhoneCall
-} from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+
+const FeeTable = ({ title, fees, borderClass = "" }) => (
+  <div className={`lg:w-1/2 w-full ${borderClass}`}>
+    <h2 className="font-bold text-[#464A53] text-[20px] text-center mb-[10px]">
+      {title}
+    </h2>
+    <div className="border border-gray-500 rounded-[12px] overflow-hidden">
+      <div className="flex items-center justify-between bg-[#043334] text-white px-[30px] py-[8px]">
+        <h2>মেনু</h2>
+        <h2>টাকা</h2>
+      </div>
+      {fees.items.map((row, idx) => (
+        <div
+          key={idx}
+          className="flex items-center justify-between border-b border-gray-400 px-[30px] py-[8px]"
+        >
+          <h2>{row.label}</h2>
+          <h2>{row.amount}</h2>
+        </div>
+      ))}
+      <div className="bg-[#043334] text-white px-[30px] py-[8px]">
+        <h2 className="text-end font-semibold">মোট {fees.total}</h2>
+      </div>
+    </div>
+  </div>
+);
 
 const AdmissionGuidelines = () => {
-  const steps = [
+  const { slug } = useParams();
+  const basePath = slug ? `/${slug}` : "";
+  const [selectedClass, setSelectedClass] = useState("1");
+
+  const classes = [
     {
-      title: "অনলাইন আবেদন",
-      desc: "প্রথমে আমাদের ওয়েবসাইট থেকে অনলাইন ভর্তি ফরমটি নির্ভুলভাবে পূরণ করুন।"
+      id: "1",
+      name: "Class One",
+      subjects: "4",
+      students: "30",
+      nonResidential: {
+        items: [
+          { label: "ভর্তি ফি", amount: "২০০০" },
+          { label: "বেতন", amount: "১০০০" },
+          { label: "প্রাইভেট", amount: "১০০০" },
+        ],
+        total: "৪০০০",
+      },
+      residential: {
+        items: [
+          { label: "ভর্তি ফি", amount: "২০০০" },
+          { label: "বেতন", amount: "১০০০" },
+          { label: "থাকা ও খাওয়া", amount: "২০০০" },
+        ],
+        total: "৫০০০",
+      },
     },
     {
-      title: "কাগজপত্র জমা",
-      desc: "আবেদন ফরমের প্রিন্ট কপির সাথে প্রয়োজনীয় সকল নথিপত্র মাদরাসা অফিসে জমা দিন।"
+      id: "2",
+      name: "Class Two",
+      subjects: "4",
+      students: "30",
+      nonResidential: {
+        items: [
+          { label: "ভর্তি ফি", amount: "২০০০" },
+          { label: "বেতন", amount: "১২০০" },
+          { label: "প্রাইভেট", amount: "১০০০" },
+        ],
+        total: "৪২০০",
+      },
+      residential: {
+        items: [
+          { label: "ভর্তি ফি", amount: "২০০০" },
+          { label: "বেতন", amount: "১২০০" },
+          { label: "থাকা ও খাওয়া", amount: "২০০০" },
+        ],
+        total: "৫২০০",
+      },
     },
     {
-      title: "মৌখিক ও লিখিত পরীক্ষা",
-      desc: "নির্ধারিত তারিখে শিক্ষার্থীকে মৌখিক ও লিখিত পরীক্ষায় অংশগ্রহণ করতে হবে।"
+      id: "3",
+      name: "Class Three",
+      subjects: "5",
+      students: "30",
+      nonResidential: {
+        items: [
+          { label: "ভর্তি ফি", amount: "২৫০০" },
+          { label: "বেতন", amount: "১২০০" },
+          { label: "প্রাইভেট", amount: "১০০০" },
+        ],
+        total: "৪৭০০",
+      },
+      residential: {
+        items: [
+          { label: "ভর্তি ফি", amount: "২৫০০" },
+          { label: "বেতন", amount: "১২০০" },
+          { label: "থাকা ও খাওয়া", amount: "২০০০" },
+        ],
+        total: "৫৭০০",
+      },
     },
-    {
-      title: "ভর্তি সম্পন্ন",
-      desc: "পরীক্ষায় উত্তীর্ণ হওয়ার পর ভর্তির ফি প্রদান করে ভর্তি নিশ্চিত করুন।"
-    }
   ];
 
-  const requirements = [
-    "শিক্ষার্থীর ৪ কপি পাসপোর্ট সাইজ রঙ্গিন ছবি।",
-    "অনলাইন জন্ম নিবন্ধন সনদের ফটোকপি।",
-    "পিতা ও মাতার এনআইডি কার্ডের ফটোকপি।",
-    "পূর্ববর্তী প্রতিষ্ঠানের ছাড়পত্র (প্রযোজ্য ক্ষেত্রে)।",
-    "পিতা/মাতা/অভিভাবকের ২ কপি পাসপোর্ট সাইজ ছবি।"
-  ];
+  const activeClass = classes.find((c) => c.id === selectedClass) || classes[0];
 
   return (
-    <div className="bg-white min-h-screen font-sans">
-      {/* 1. Hero Banner */}
-      <section className="relative h-[300px] md:h-[400px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1523050335123-5e9264a0f443?q=80&w=2070" 
-            className="w-full h-full object-cover" 
-            alt="Admission Guidelines Banner" 
-          />
-          <div className="absolute inset-0 bg-[#042f2c]/85 backdrop-blur-[2px]" />
-        </div>
-        
-        <div className="relative z-10 text-center px-6">
-          <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold mb-4 animate-in slide-in-from-top duration-700">
-             <Link to="/global-international" className="hover:text-white transition-colors flex items-center gap-1">
-                <ArrowLeft className="w-4 h-4" /> Home
-             </Link>
-             <span>/</span>
-             <span className="text-white opacity-60">ভর্তির নিয়মাবলী</span>
+    <div className="pb-16">
+      {/* Header */}
+      <div className="bg-[#F4FBFF]">
+        <div className="py-14 flex flex-col gap-3 text-center px-4">
+          <h1 className="text-[#2E3138] text-[24px] lg:text-[32px] font-[700]">
+            ভর্তি
+          </h1>
+          <p className="text-[#464A53] text-[16px] lg:text-[18px] font-[500] max-w-[883px] mx-auto leading-relaxed">
+            যে কোনো প্রয়োজনে যোগাযোগ করতে সরাসরি আমাদের অফিস ভিজিট করতে পারেন।
+            তাছাড়া হটলাইন নম্বরে কল করে জেনে নিতে পারেন ভর্তি সংক্রান্ত যেকোনো
+            তথ্য। নিচে শ্রেণি ভিত্তিক ফি কাঠামো দেখে অনলাইন আবেদন করুন।
+          </p>
+          <div className="mt-4">
+            <Link
+              to={`${basePath}/online-admission`}
+              className="inline-flex items-center gap-2 bg-[#07A698] hover:bg-[#043334] text-white font-semibold px-6 py-2.5 rounded-full shadow-md transition-colors"
+            >
+              অনলাইন ভর্তি ফরম পূরণ করুন
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white italic tracking-tight mb-4 lowercase">ভর্তি আবেদনের নিয়মাবলী</h1>
-          <p className="text-emerald-50/70 text-base md:text-lg max-w-[600px] mx-auto font-medium">সহজ ও সুশৃঙ্খল ভর্তি প্রক্রিয়ার মাধ্যমে আপনার সন্তানের দ্বীনি শিক্ষার যাত্রা শুরু করুন।</p>
         </div>
-      </section>
+      </div>
 
-      {/* 2. Main Content Section */}
-      <section className="py-16 md:py-24 px-6">
-        <div className="max-w-[1240px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            
-            {/* Left Column: Guidelines & Process */}
-            <div className="lg:col-span-2 space-y-16">
-              
-              {/* Introduction */}
-              <div>
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-emerald-50 text-[#059669] rounded-xl flex items-center justify-center shadow-sm">
-                    <Info className="w-6 h-6" />
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-black text-[#042f2c] italic">ভর্তি তথ্য ও যোগ্যতা</h2>
-                </div>
-                <p className="text-slate-600 leading-loose text-lg italic">
-                  সবাইকে আল-কুরআনুল কারীম একাডেমিতে স্বাগত জানাচ্ছি। আমরা প্রতিটি শিক্ষাবর্ষের শুরুতে নতুন শিক্ষার্থী ভর্তি করে থাকি। তবে আসন খালি থাকা সাপেক্ষে বছরের যে কোনো সময় ভর্তি হওয়া সম্ভব। আমাদের একাডেমিতে নার্সারি থেকে হিফজ ও কিতাব বিভাগ পর্যন্ত ভর্তির সুযোগ রয়েছে।
-                </p>
-              </div>
+      {/* Interactive Fee Structure Section */}
+      <div className="bg-[#07A698] mt-[40px] relative overflow-hidden">
+        <div className="absolute top-0 right-0 pointer-events-none">
+          <img className="w-[500px]" src="/portal/testi-shape-1.png" alt="" />
+        </div>
 
-              {/* Step by Step Process */}
-              <div>
-                <div className="flex items-center gap-3 mb-10">
-                  <div className="w-10 h-10 bg-emerald-50 text-[#059669] rounded-xl flex items-center justify-center shadow-sm">
-                    <ClipboardCheck className="w-6 h-6" />
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-black text-[#042f2c] italic">ভর্তি প্রক্রিয়া</h2>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {steps.map((step, i) => (
-                    <div key={i} className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 hover:shadow-lg transition-all group">
-                      <div className="w-12 h-12 bg-[#059669] text-white rounded-2xl flex items-center justify-center font-black text-xl mb-6 shadow-lg shadow-emerald-900/10">
-                        {i + 1}
+        <div className="lg:max-w-[1200px] mx-auto lg:py-[80px] py-[40px] px-[15px] relative z-10">
+          <div className="flex flex-col md:flex-row justify-between gap-10 md:gap-16">
+            {/* Left Class Selector */}
+            <div className="w-full md:w-5/12 flex flex-col gap-4">
+              {classes.map((cls) => {
+                const isSelected = selectedClass === cls.id;
+                return (
+                  <div key={cls.id} className="relative">
+                    <div
+                      onClick={() => setSelectedClass(cls.id)}
+                      className={`rounded-[8px] h-fit p-4 flex flex-col gap-2 cursor-pointer transition-colors ${
+                        isSelected
+                          ? "bg-[#D4E9E7] text-[#043334] shadow-md"
+                          : "bg-white/10 hover:bg-white/20 text-white"
+                      }`}
+                    >
+                      <div className="flex gap-3 items-center">
+                        <div className="w-[50px] h-[50px] overflow-hidden bg-white rounded-[6px] flex-shrink-0">
+                          <img
+                            className="w-full h-full object-cover rounded-[6px]"
+                            alt="Class"
+                            src="/portal/teacher1.png"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="text-lg leading-[22px] font-[600]">
+                            {cls.name}
+                          </h4>
+                          <div className="flex items-center gap-[12px] mt-[5px]">
+                            <p className="text-sm leading-[18px]">
+                              Subject: <span className="font-bold pl-[3px]">{cls.subjects}</span>
+                            </p>
+                            <p className="text-sm leading-[18px]">
+                              Student: <span className="font-bold pl-[3px]">{cls.students}</span>
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="text-xl font-black text-[#042f2c] mb-3 italic">{step.title}</h3>
-                      <p className="text-slate-500 font-medium italic leading-relaxed">{step.desc}</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Important Documents */}
-              <div className="bg-[#042f2c] rounded-[3rem] p-10 md:p-16 text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-10">
-                    <FileText className="w-8 h-8 text-emerald-400" />
-                    <h2 className="text-2xl md:text-3xl font-black italic">প্রয়োজনীয় কাগজপত্র</h2>
+                    {isSelected && (
+                      <>
+                        <img
+                          alt=""
+                          src="/portal/comment.svg"
+                          className="absolute bottom-4 -right-[30px] hidden md:block"
+                        />
+                        <img
+                          alt=""
+                          src="/portal/down_comment.svg"
+                          className="absolute -bottom-5 right-3 block md:hidden"
+                        />
+                      </>
+                    )}
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {requirements.map((req, i) => (
-                      <div key={i} className="flex items-start gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 italic">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-1 flex-shrink-0" />
-                        <span className="font-medium text-emerald-50">{req}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
+                );
+              })}
             </div>
 
-            {/* Right Column: Sidebar Info */}
-            <div className="space-y-8">
-              
-              {/* Timing Card */}
-              <div className="bg-emerald-50 rounded-[2.5rem] p-8 border border-emerald-100 shadow-sm">
-                <div className="flex items-center gap-3 mb-6">
-                  <Clock className="w-6 h-6 text-[#059669]" />
-                  <h3 className="text-xl font-black text-[#042f2c] italic">অফিস সময়সূচী</h3>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center text-sm italic font-bold text-slate-600">
-                    <span>শনিবার - বৃহস্পতিবার:</span>
-                    <span className="text-[#059669]">সকাল ৮ - বিকাল ৪টা</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm italic font-bold text-slate-400">
-                    <span>শুক্রবার:</span>
-                    <span>সাপ্তাহিক ছুটি</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Helpline Card */}
-              <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)]">
-                <div className="flex items-center gap-3 mb-6">
-                  <HelpCircle className="w-6 h-6 text-[#059669]" />
-                  <h3 className="text-xl font-black text-[#042f2c] italic">সহযোগিতার জন্য</h3>
-                </div>
-                <p className="text-slate-500 text-sm mb-8 italic">ভর্তি বিষয়ক যে কোনো তথ্যের জন্য আমাদের হেল্পলাইনে যোগাযোগ করুন।</p>
-                <a href="tel:+8801755111111" className="flex items-center gap-4 p-4 bg-[#059669] text-white rounded-2xl hover:scale-105 transition-all shadow-lg shadow-emerald-900/20">
-                  <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                    <PhoneCall className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest">কল করুন</p>
-                    <p className="text-lg font-black tracking-tight">+৮৮০১৭৫৫-১১১১১১</p>
-                  </div>
-                </a>
-              </div>
-
-              {/* Deadline Alert */}
-              <div className="bg-red-50 rounded-[2.5rem] p-8 border border-red-100 text-center">
-                <BadgeAlert className="w-10 h-10 text-red-500 mx-auto mb-4" />
-                <h4 className="text-lg font-black text-red-900 italic mb-2">ভর্তির সময়সীমা</h4>
-                <p className="text-red-700 text-xs font-bold leading-relaxed italic">২০২৫ শিক্ষাবর্ষের ভর্তি কার্যক্রম শুরু হয়েছে। দ্রুত আপনার সন্তানের আসন নিশ্চিত করুন।</p>
-              </div>
-
+            {/* Right Fee Structure Tables */}
+            <div className="bg-[#D4E9E7] rounded-[8px] w-full md:w-7/12 px-[20px] py-[30px] lg:flex items-start justify-between gap-6 h-fit shadow-lg">
+              <FeeTable
+                title="অনাবাসিক"
+                fees={activeClass.nonResidential}
+              />
+              <FeeTable
+                title="আবাসিক"
+                fees={activeClass.residential}
+                borderClass="lg:border-l-[3px] lg:border-[#07A698] lg:pl-6 mt-[25px] lg:mt-0"
+              />
             </div>
           </div>
         </div>
-      </section>
-
-      {/* 3. CTA Section */}
-      <section className="pb-24 px-6 text-center">
-        <div className="max-w-[800px] mx-auto bg-slate-50 rounded-[4rem] p-12 md:p-20 relative overflow-hidden group">
-           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 transition-transform duration-700"></div>
-           <h2 className="text-3xl md:text-4xl font-black text-[#042f2c] italic mb-8 relative z-10">আপনি কি ভর্তির জন্য প্রস্তুত?</h2>
-           <p className="text-slate-600 text-lg mb-10 font-medium italic relative z-10">অনলাইনে আবেদন করলে আমাদের প্রতিনিধিবৃন্দ আপনার সাথে যোগাযোগ করবে।</p>
-           <div className="flex justify-center gap-6 relative z-10">
-              <Link to="../online-admission" className="px-12 py-5 bg-[#059669] text-white font-black rounded-full shadow-2xl shadow-emerald-900/40 hover:scale-105 transition-all">অনলাইন ভর্তি ফরম</Link>
-           </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Hind+Siliguri:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Baloo+Da+2:wght@400;500;600;700;800&family=Hind+Siliguri:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -18,13 +18,14 @@
   --color-fg-muted: #334155;
   --color-brand-main: #1C7D5A;
   --color-brand-main-alpha: #1C7D5A24;
-  --font-sans: 'Hind Siliguri', 'Outfit', sans-serif;
+  --font-sans: 'Baloo Da 2', 'Hind Siliguri', 'Outfit', sans-serif;
+  --font-bangla: 'Baloo Da 2', 'Hind Siliguri', sans-serif;
   --font-arabic: 'Amiri', serif;
   --font-outfit: 'Outfit', sans-serif;
 }
 
 :root {
-  font-family: 'Hind Siliguri', 'Outfit', sans-serif;
+  font-family: 'Baloo Da 2', 'Hind Siliguri', 'Outfit', sans-serif;
   background-color: var(--color-background);
   color: var(--color-fg-main);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -159,7 +160,7 @@
 }
 
 .font-bangla {
-  font-family: 'Hind Siliguri', sans-serif;
+  font-family: 'Baloo Da 2', 'Hind Siliguri', sans-serif;
 }
 
 .font-outfit {

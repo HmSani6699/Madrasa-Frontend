@@ -1,7 +1,9 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import axiosInstance from "../api/axiosInstance";
 
 const PortalSettingsContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePortalSettings = () => {
   const context = useContext(PortalSettingsContext);
   if (!context) {
@@ -12,166 +14,293 @@ export const usePortalSettings = () => {
 
 const defaultSettings = {
   branding: {
-    name: "আল কুরআনুল কারীম একাডেমি",
-    tagline: "Madrasha, Education, Management",
+    name: "আল-কুরআনুল কারীম একাডেমি",
+    englishName: "Al-Quranul Kareem Academy",
+    englishLocation: "Pakunda, Sonargon, Narayongonj",
+    arabicName: "أكاديمية القرآن الكريم الإسلامية التعليمية",
+    arabicLocation: "بَكُونْدَا، سُونَارْغَاوْ، نَارَايَنْغَنْج",
+    tagline: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
     logoText: "AK",
+    logo: "/portal/school.png",
+    footerLogo: "/portal/logo2.png",
   },
   contact: {
-    phone: "+8801755-111111",
-    email: "info@mms-it.com",
-    address: "Dhaka, Bangladesh",
+    phone: "+8801830-630365",
+    email: "info.edusadiq@gmail.com",
+    address: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
+    officeHours: "শনিবার - শুক্রবার (সকাল ৯ টা থেকে রাত ৮ টা)",
+    phoneHours: "ফোনে সকাল ১০টা হতে রাত ১১টা",
     social: {
-      facebook: "#",
-      twitter: "#",
-      youtube: "#",
-      instagram: "#"
-    }
+      facebook: "https://www.facebook.com/official.edusadiq",
+      twitter: "https://www.facebook.com/official.edusadiq",
+      youtube: "https://www.youtube.com/@Edusadiq1",
+      linkedin: "https://www.facebook.com/official.edusadiq",
+      instagram: "https://www.facebook.com/official.edusadiq",
+    },
   },
   hero: {
+    leftImage: "/portal/im1.png",
+    rightImage: "/portal/im2.png",
+    badges: ["গ্রেট লাইফ", "গ্রেট সার্টিফিকেট"],
     slides: [
       {
-        image: "https://plus.unsplash.com/premium_photo-1661884485590-b186b518779d?q=80&w=2070",
+        image: "/portal/office.jpeg",
         title: "আল-কুরআনুল কারীম একাডেমি",
-        subtitle: "নাজরা বিভাগ, হিফজ বিভাগ, মাদ্দে একাডেমি",
-        accent: "সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান"
+        subtitle: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
+        accent: "সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান",
       },
-      {
-        image: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2070",
-        title: "আধুনিক দ্বীনি শিক্ষা প্রতিষ্ঠান",
-        subtitle: "উন্নত পরিবেশে সঠিক তিলাওয়াত ও হিফজ শিক্ষা",
-        accent: "অভিজ্ঞ হাফেজ ও কারীগণের তত্ত্বাবধানে পরিচালিত"
-      },
-      {
-        image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?q=80&w=1974",
-        title: "আপনার সন্তানের উজ্জ্বল ভবিষ্যৎ",
-        subtitle: "হৃদয়ে ঈমান ও আমলের চর্চা ই আমাদের লক্ষ্য",
-        accent: "সুন্দর ও সুশৃঙ্খল পরিবেশের নিশ্চয়তা"
-      }
-    ]
+    ],
   },
   stats: [
-    { val: "৫০০+", label: "শিক্ষার্থী" },
-    { val: "৩০+", label: "শিক্ষক" },
-    { val: "১৫+", label: "শ্রেণী" },
-    { val: "১০+", label: "পুরস্কার" }
+    { val: "150", suffix: " টি+", label: "প্রতিষ্ঠান", icon: "/portal/section.png" },
+    { val: "20000", suffix: "জন+", label: "শিক্ষার্থী", icon: "/portal/student.png" },
+    { val: "800", suffix: "জন+", label: "শিক্ষক", icon: "/portal/teacher.png" },
+    { val: "19000", suffix: "জন+", label: "অভিভাবক", icon: "/portal/staff.png" },
   ],
   about: {
-    badge: "আমাদের সম্পর্কে",
-    title: "আধুনিক সুশিক্ষিত ও আদর্শ জাতির অন্যতম প্রধান কারিগর গঠন",
-    description: "আল-কুরআনুল কারীম একাডেমি একটি উত্তর আধুনিক দ্বীনি প্রতিষ্ঠান। যেখানে সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান করা হয়। সঠিক দ্বীনি শিক্ষা ই পারে একটি সুন্দর ও শান্তিময় সমাজ উপহার দিতে।",
+    badge: "ক্লাস পাঠ্যক্রম",
+    title: "ফিচার ক্লাস কারিকুলাম",
+    description:
+      "আমাদের লক্ষ্য হলো উচ্চমানের, সহজলভ্য শিক্ষা প্রদান করা যা জ্ঞান এবং বাস্তব-জগতের প্রয়োগের মধ্যে ব্যবধান পূরণ করে।",
     highlights: [
-      "উন্নত আধুনিক পদ্ধতিতে পাঠদান",
-      "অভিজ্ঞ ও দক্ষ হাফেজ ও কারী",
-      "সুশৃঙ্খল পরিবেশ ও আধুনিক পাঠদান",
-      "মাসিক বিশেষ মূল্যায়নের ব্যবস্থা"
+      "মানসম্মত ক্লাস পাঠ্যক্রম এবং বিশেষজ্ঞ শিক্ষক",
+      "ছাত্রদের অংশগ্রহণ এবং ধরে রাখা",
     ],
-    mainImage: "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2070",
-    principalImage: "https://images.unsplash.com/photo-1540561214051-518451f2f87a?q=80&w=1974"
+    mainImage: "/portal/office.jpeg",
+    principalImage: "/portal/Teacher/teacher6-2.png",
   },
   curriculum: {
-    badge: "পাঠ্যক্রম",
-    title: "বিশেষ ক্লাস কারিকুলাম"
+    badge: "ক্লাস পাঠ্যক্রম",
+    title: "ফিচার ক্লাস কারিকুলাম",
+    items: [
+      { name: "One", subject: "5", color: "text-blue-500" },
+      { name: "Two", subject: "5", color: "text-green-500" },
+      { name: "Three", subject: "5", color: "text-yellow-500" },
+      { name: "Four", subject: "5", color: "text-purple-500" },
+      { name: "Five", subject: "5", color: "text-purple-500" },
+      { name: "Six", subject: "5", color: "text-purple-500" },
+    ],
   },
   students: {
     badge: "আমাদের শিক্ষার্থী",
-    title: "আমাদের কৃতি শিক্ষার্থী বৃন্দ",
+    title: "আমাদের শিক্ষার্থী বৃন্দ",
     items: [
-      { name: "হযরত আলী", dept: "হিফজ বিভাগ", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974" },
-      { name: "ওমর ফারুক", dept: "নাজরা বিভাগ", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974" },
-      { name: "উসমান গনী", dept: "হিফজ বিভাগ", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1974" },
-      { name: "আবু বকর", dept: "মাদ্দে একাডেমি", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1974" }
-    ]
+      { name: "Sadiq", image: "/portal/student/student1.jpeg", address: "Pakunda, Sonargon", className: "Five", roll: "2" },
+      { name: "Najmul", image: "/portal/student/student2.jpeg", address: "Rupgonj", className: "Five", roll: "3" },
+      { name: "Noman", image: "/portal/student/student3.jpeg", address: "Baliyapara", className: "Five", roll: "4" },
+      { name: "Thalha", image: "/portal/student/student4.jpeg", address: "Monohordi", className: "Five", roll: "5" },
+      { name: "Al-Amin", image: "/portal/student/student5.jpeg", address: "Gaptoli", className: "Five", roll: "6" },
+      { name: "Jakir", image: "/portal/student/student6.jpeg", address: "Araihajar", className: "Five", roll: "7" },
+      { name: "Roni", image: "/portal/student/student7.jpeg", address: "Taltola", className: "Five", roll: "8" },
+      { name: "Parbase", image: "/portal/student/student8.jpeg", address: "Sirabo", className: "Five", roll: "9" },
+    ],
   },
   teachers: {
     badge: "আমাদের শিক্ষক",
-    title: "আমাদের হিতাকাঙ্খী শিক্ষক বৃন্দ",
+    title: "আমাদের বিশেষজ্ঞ শিক্ষক বৃন্দ",
     items: [
-      { name: "মুফতি আব্দুর রহমান", role: "সিনিয়র শিক্ষক", image: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=1974" },
-      { name: "হাফেজ মাওলানা ওবায়দুল্লাহ", role: "হিফজ বিভাগীয় প্রধান", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974" },
-      { name: "মাওলানা মাহমুদ হাসান", role: "আরবি সাহিত্যিক", image: "https://images.unsplash.com/photo-1463453091185-61582044d556?q=80&w=1974" }
-    ]
+      { name: "Md Sadiqur Rahman", role: "Classs: Five", image: "/portal/Teacher/teacher5.png" },
+      { name: "Md Sadiqur Rahman", role: "Classs: Five", image: "/portal/Teacher/teacher6.png" },
+      { name: "Md Sadiqur Rahman", role: "Classs: Five", image: "/portal/Teacher/teacher5.png" },
+    ],
   },
   gallery: {
+    videoTitle: "Edusadiq ব্যবহার করার বিস্তারিত টিউটোরিয়াল",
     videos: [
-      { title: "বার্ষিক পুরষ্কার বিতরণী অনুষ্ঠান ২০২৪", thumb: "https://images.unsplash.com/photo-1523050353055-f112d624bf3b?q=80&w=2070" },
-      { title: "হিফজ প্রতিযোগিতার বিশেষ মুহূর্ত", thumb: "https://images.unsplash.com/photo-1540561214051-518451f2f87a?q=80&w=1974" }
+      { youtubeId: "Hv8yinlIWJ8", title: "প্রতিষ্ঠান পরিচালনা ও ড্যাশবোর্ড" },
+      { youtubeId: "YHMEcsyWo4s", title: "ভর্তি ও শিক্ষার্থী ব্যবস্থাপনা" },
+      { youtubeId: "RfViGSywCxA", title: "হিসাব ও ফলাফল ব্যবস্থাপনা" },
     ],
-    photos: [1, 2, 3, 4, 5, 6, 7, 8]
+    photos: [
+      "/portal/gallery/img8.jpg",
+      "/portal/gallery/img1.jpg",
+      "/portal/gallery/img2.jpeg",
+      "/portal/gallery/img7.jpeg",
+      "/portal/gallery/img3.jpeg",
+      "/portal/gallery/img4.jpeg",
+      "/portal/gallery/img5.jpeg",
+      "/portal/gallery/img6.jpeg",
+    ],
   },
   footer: {
-    aboutText: "আল-কুরআনুল কারীম একাডেমি একটি উত্তর আধুনিক দ্বীনি প্রতিষ্ঠান। যেখানে সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান করা হয়।",
-    copyright: `© ${new Date().getFullYear()} AL-QORANUL KAREEM ACADEMY. All rights reserved.`
+    aboutText:
+      "Edusadiq মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার। ছাত্র, শিক্ষক, হিসাব ও ফলাফল ব্যবস্থাপনা সবকিছু এখন এক প্ল্যাটফর্মে সহজ ও সাশ্রয়ীভাবে।",
+    copyright: "© Edusadiq. All Rights Reserved.",
   },
   sms: {
     admission: false,
     fees: false,
-    attendance: false
+    attendance: false,
   },
   profile: {
-    institutionName: "আল কুরআনুল কারীম একাডেমি",
-    slogan: "Madrasha, Education, Management",
-    address: "Dhaka, Bangladesh",
-    email: "info@mms-it.com",
-    phone: "+8801755-111111",
-    adminName: "Muhtamim",
-    designation: "Principal"
-  }
+    institutionName: "আল-কুরআনুল কারীম একাডেমি",
+    slogan: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
+    address: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
+    email: "info.edusadiq@gmail.com",
+    phone: "+8801830-630365",
+    adminName: "MD: Sadiqur Rahman",
+    designation: "Principal",
+  },
+};
+
+const RESERVED_PATHS = new Set([
+  "",
+  "login",
+  "admin",
+  "super-admin",
+  "teacher",
+  "student",
+  "guardian",
+  "talimat",
+  "accounting",
+  "staff",
+  "students",
+  "free-demo",
+  "video-demo",
+  "contact",
+  "contact-us",
+  "packages",
+  "pricing",
+  "account-deactivated",
+  "unauthorized",
+]);
+
+const mergePortalData = (remoteSettings = {}, madrasa = null) => {
+  const merged = {
+    ...defaultSettings,
+    branding: {
+      ...defaultSettings.branding,
+      ...(remoteSettings.branding || {}),
+      name: remoteSettings.branding?.name || madrasa?.name || defaultSettings.branding.name,
+      englishName:
+        remoteSettings.branding?.englishName ||
+        madrasa?.name ||
+        defaultSettings.branding.englishName,
+      englishLocation:
+        remoteSettings.branding?.englishLocation ||
+        madrasa?.address ||
+        defaultSettings.branding.englishLocation,
+      tagline:
+        remoteSettings.branding?.tagline ||
+        madrasa?.address ||
+        defaultSettings.branding.tagline,
+      logo: remoteSettings.branding?.logo || madrasa?.logo || defaultSettings.branding.logo,
+    },
+    contact: {
+      ...defaultSettings.contact,
+      ...(remoteSettings.contact || {}),
+      phone: remoteSettings.contact?.phone || madrasa?.phone || defaultSettings.contact.phone,
+      email: remoteSettings.contact?.email || madrasa?.email || defaultSettings.contact.email,
+      address:
+        remoteSettings.contact?.address || madrasa?.address || defaultSettings.contact.address,
+      social: {
+        ...defaultSettings.contact.social,
+        ...(remoteSettings.contact?.social || {}),
+      },
+    },
+    hero: {
+      ...defaultSettings.hero,
+      ...(remoteSettings.hero || {}),
+      slides:
+        remoteSettings.hero?.slides?.length > 0
+          ? remoteSettings.hero.slides
+          : defaultSettings.hero.slides,
+    },
+    stats:
+      remoteSettings.stats?.length > 0
+        ? remoteSettings.stats
+        : defaultSettings.stats,
+    about: {
+      ...defaultSettings.about,
+      ...(remoteSettings.about || {}),
+      title: remoteSettings.about?.title || defaultSettings.about.title,
+      description: remoteSettings.about?.description || defaultSettings.about.description,
+      highlights:
+        remoteSettings.about?.highlights?.length > 0
+          ? remoteSettings.about.highlights
+          : defaultSettings.about.highlights,
+    },
+    curriculum: {
+      ...defaultSettings.curriculum,
+      ...(remoteSettings.curriculum || {}),
+      title: remoteSettings.curriculum?.title || defaultSettings.curriculum.title,
+      items:
+        remoteSettings.curriculum?.items?.length > 0
+          ? remoteSettings.curriculum.items
+          : defaultSettings.curriculum.items,
+    },
+    students: {
+      ...defaultSettings.students,
+      ...(remoteSettings.students || {}),
+      items:
+        remoteSettings.students?.items?.length > 0
+          ? remoteSettings.students.items
+          : defaultSettings.students.items,
+    },
+    teachers: {
+      ...defaultSettings.teachers,
+      ...(remoteSettings.teachers || {}),
+      items:
+        remoteSettings.teachers?.items?.length > 0
+          ? remoteSettings.teachers.items
+          : defaultSettings.teachers.items,
+    },
+    gallery: {
+      ...defaultSettings.gallery,
+      ...(remoteSettings.gallery || {}),
+      videos:
+        remoteSettings.gallery?.videos?.length > 0
+          ? remoteSettings.gallery.videos
+          : defaultSettings.gallery.videos,
+      photos:
+        remoteSettings.gallery?.photos?.length > 0
+          ? remoteSettings.gallery.photos
+          : defaultSettings.gallery.photos,
+    },
+    footer: {
+      ...defaultSettings.footer,
+      ...(remoteSettings.footer || {}),
+    },
+    admission_form: remoteSettings.admission_form || null,
+    madrasa: madrasa || null,
+  };
+  return merged;
 };
 
 export const PortalSettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(defaultSettings);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const slug = window.location.pathname.split('/')[1];
-        const reservedPaths = [
-          "",
-          "login",
-          "admin",
-          "super-admin",
-          "teacher",
-          "student",
-          "guardian",
-          "talimat",
-          "accounting",
-          "staff",
-          "students",
-          "free-demo",
-          "packages",
-          "pricing",
-          "account-deactivated",
-          "unauthorized"
-        ];
-        if (!slug || reservedPaths.includes(slug)) {
-          setLoading(false);
-          return;
-        }
+  const loadPortalBySlug = useCallback(async (slug) => {
+    if (!slug || RESERVED_PATHS.has(slug)) {
+      setLoading(false);
+      return;
+    }
 
-        const response = await fetch(`/api/portal/v1/${slug}`);
-        const data = await response.json();
-        
-        if (data.success) {
-          setSettings(prev => ({
-            ...prev,
-            ...data.data.settings,
-            madrasa: data.data.madrasa
-          }));
-        } else {
-          setError(data.message || "Failed to load settings");
-        }
-      } catch (err) {
-        console.error("Portal Settings Fetch Error:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axiosInstance.get(`/portal/v1/${slug}`);
+      const payload = response.data;
+      if (payload?.success) {
+        setSettings(mergePortalData(payload.data?.settings, payload.data?.madrasa));
+      } else {
+        setError(payload?.message || "Failed to load settings");
       }
-    };
-
-    fetchSettings();
+    } catch (err) {
+      // Fallback gracefully to defaultSettings so demo/preview portals render cleanly
+      console.warn("Portal settings fallback used:", err?.message);
+      setError(err?.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    const slug = window.location.pathname.split("/")[1];
+    loadPortalBySlug(slug);
+  }, [loadPortalBySlug]);
 
   const updateSettings = (newSettings) => {
     setSettings(newSettings);
@@ -184,7 +313,16 @@ export const PortalSettingsProvider = ({ children }) => {
   };
 
   return (
-    <PortalSettingsContext.Provider value={{ settings, updateSettings, resetSettings, loading, error }}>
+    <PortalSettingsContext.Provider
+      value={{
+        settings,
+        updateSettings,
+        resetSettings,
+        loadPortalBySlug,
+        loading,
+        error,
+      }}
+    >
       {children}
     </PortalSettingsContext.Provider>
   );

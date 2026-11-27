@@ -1,425 +1,640 @@
-import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router";
-import { 
-  Users, 
-  GraduationCap, 
-  BookOpen, 
-  Award, 
-  PlayCircle,
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import {
+  BookOpen,
+  GraduationCap,
+  Star,
+  Presentation,
+  ArrowLeft,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight
+  CheckCircle2,
+  Play,
+  X,
 } from "lucide-react";
 import { usePortalSettings } from "../../context/PortalSettingsContext";
+import {
+  PortalReveal,
+  PortalOdometer,
+  ZapBadge,
+} from "./components/PortalPrimitives";
+
+const CurriculumIcon = ({ index }) => {
+  const idx = index % 4;
+  if (idx === 0) return <GraduationCap className="w-6 h-6 text-blue-500" />;
+  if (idx === 1) return <BookOpen className="w-6 h-6 text-green-500" />;
+  if (idx === 2) return <Star className="w-6 h-6 text-yellow-500" />;
+  return <Presentation className="w-6 h-6 text-purple-500" />;
+};
+
+const YouTubeLiteCard = ({ youtubeId, title }) => {
+  const [playing, setPlaying] = useState(false);
+
+  return (
+    <div className="rounded-[10px] overflow-hidden bg-black shadow-lg aspect-video relative group">
+      {playing ? (
+        <iframe
+          className="w-full h-full"
+          src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
+          title={title || "YouTube Video"}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={() => setPlaying(true)}
+          className="w-full h-full relative block cursor-pointer focus:outline-none"
+          aria-label={title || "Play video"}
+        >
+          <img
+            src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
+            alt={title || "Video thumbnail"}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-black/25 group-hover:bg-black/15 transition-colors flex items-center justify-center">
+            <div className="w-14 h-10 bg-black/80 group-hover:bg-[#ff0000] rounded-xl flex items-center justify-center text-white transition-colors shadow-xl">
+              <Play className="w-5 h-5 fill-current ml-0.5" />
+            </div>
+          </div>
+        </button>
+      )}
+    </div>
+  );
+};
 
 const MadrasaPortal = () => {
   const { settings } = usePortalSettings();
-  // --- Responsive Window Logic ---
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const { slug } = useParams();
+  const basePath = slug ? `/${slug}` : "";
 
-  // Responsive breakpoints logic
-  const getVisibleItems = (type) => {
-    if (windowWidth < 640) return 1; // mobile
-    if (windowWidth < 1024) return type === 'students' ? 2 : 2; // tablet
-    return type === 'students' ? 5 : 3; // desktop
+  const [openTab, setOpenTab] = useState(1);
+  const [videoStart, setVideoStart] = useState(0);
+  const [lightboxImage, setLightboxImage] = useState(null);
+
+  const stats = settings?.stats || [];
+  const curriculumItems = settings?.curriculum?.items || [];
+  const studentItems = settings?.students?.items || [];
+  const teacherItems = settings?.teachers?.items || [];
+  const videoItems = settings?.gallery?.videos || [];
+  const photoItems = settings?.gallery?.photos || [];
+
+  const logoSrc = settings?.branding?.logo || "/portal/school.png";
+  const heroTitle = settings?.branding?.name || "আল-কুরআনুল কারীম একাডেমি";
+  const heroSubtitle =
+    settings?.branding?.tagline ||
+    settings?.contact?.address ||
+    "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ";
+
+  const aboutTabs = [
+    { id: 1, title: "আমাদের লক্ষ্য" },
+    { id: 2, title: "আমাদের দৃষ্টিভঙ্গি" },
+    { id: 3, title: "আমাদের গোল" },
+  ];
+
+  const handlePrevVideo = () => {
+    if (videoItems.length <= 3) return;
+    setVideoStart((prev) => (prev === 0 ? videoItems.length - 3 : prev - 1));
   };
 
-  const visibleStudents = getVisibleItems('students');
-  const visibleTeachers = getVisibleItems('teachers');
-  const visibleVideos = getVisibleItems('videos');
-
-  // --- Hero Slider State & Logic ---
-  // --- Dynamic Slider Logic ---
-  const slides = settings.hero.slides;
-  const students = settings.students.items;
-  const teachers = settings.teachers.items;
-  const videos = settings.gallery.videos;
-  const stats = settings.stats;
-
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [studentIndex, setStudentIndex] = useState(0);
-  const [teacherIndex, setTeacherIndex] = useState(0);
-  const [videoIndex, setVideoIndex] = useState(0);
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  }, [slides.length]);
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  const handleNextVideo = () => {
+    if (videoItems.length <= 3) return;
+    setVideoStart((prev) => (prev >= videoItems.length - 3 ? 0 : prev + 1));
   };
 
-  useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
-    return () => clearInterval(timer);
-  }, [nextSlide]);
-
-  const maxStudentIndex = Math.max(0, students.length - visibleStudents);
-  const nextStudent = () => setStudentIndex((prev) => (prev >= maxStudentIndex ? 0 : prev + 1));
-  const prevStudent = () => setStudentIndex((prev) => (prev <= 0 ? maxStudentIndex : prev - 1));
-
-  const maxTeacherIndex = Math.max(0, teachers.length - visibleTeachers);
-  const nextTeacher = () => setTeacherIndex((prev) => (prev >= maxTeacherIndex ? 0 : prev + 1));
-  const prevTeacher = () => setTeacherIndex((prev) => (prev <= 0 ? maxTeacherIndex : prev - 1));
-
-  const maxVideoIndex = Math.max(0, videos.length - visibleVideos);
-  const nextVideo = () => setVideoIndex((prev) => (prev >= maxVideoIndex ? 0 : prev + 1));
-  const prevVideo = () => setVideoIndex((prev) => (prev <= 0 ? maxVideoIndex : prev - 1));
+  const visibleVideos =
+    videoItems.length > 3
+      ? videoItems.slice(videoStart, videoStart + 3)
+      : videoItems;
 
   return (
-    <div className="overflow-hidden font-sans bg-white pb-20">
-      {/* 1. Hero Section (Premium Slider) */}
-      <section id="hero" className="relative h-[600px] md:h-[700px] lg:h-[800px] w-full overflow-hidden">
-        {/* Slides */}
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
-            }`}
-          >
-            {/* Background Image with Overlay */}
-            <div className="absolute inset-0">
-               <img src={slide.image} className="w-full h-full object-cover scale-105" alt="Banner" />
-               <div className="absolute inset-0 bg-gradient-to-r from-[#042f2c]/90 via-[#042f2c]/60 to-transparent" />
-            </div>
+    <div className="lg:max-w-[1280px] mx-auto relative pb-10">
+      {/* ===== 1. Hero Banner + Overlapping Stat Cards ===== */}
+      <div className="lg:h-[560px]">
+        <div className="bg-[#043334] h-full lg:flex items-start justify-between px-4 lg:px-10 text-white portal-hero-section pt-[40px] lg:pt-[50px] pb-[150px] lg:pb-0">
+          {/* Left Student Image */}
+          <PortalReveal className="hidden lg:block mt-[50px] flex-shrink-0">
+            <img
+              src={settings?.hero?.leftImage || "/portal/im1.png"}
+              alt="Student"
+              className="max-h-[410px] w-auto object-contain relative z-10"
+            />
+          </PortalReveal>
 
-            {/* Content Container */}
-            <div className="max-w-[1400px] mx-auto px-6 md:px-10 h-full flex items-center justify-center md:justify-start relative z-20">
-               <div className={`max-w-[700px] text-center md:text-left transition-all duration-700 delay-300 ${
-                 index === currentSlide ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
-               }`}>
-                  <span className="inline-block px-3 py-1 md:px-4 md:py-1.5 bg-[#059669] text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest rounded-full mb-4 md:mb-6 shadow-xl">
-                    {slide.accent}
-                  </span>
-                  <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white mb-4 md:mb-6 italic leading-tight tracking-tight drop-shadow-2xl">
-                    {slide.title}
-                  </h1>
-                  <p className="text-emerald-50/80 text-base sm:text-lg md:text-2xl font-bold italic mb-8 md:mb-10 leading-relaxed max-w-[500px] mx-auto md:mx-0">
-                    {slide.subtitle}
-                  </p>
-                  
-                  <div className="flex flex-col sm:flex-row flex-wrap justify-center md:justify-start gap-4 md:gap-6">
-                     <Link to="admission" className="px-6 md:px-10 py-3 md:py-4 bg-[#059669] text-white font-black text-xs md:text-sm rounded-full shadow-2xl shadow-emerald-900/40 flex items-center justify-center gap-2 hover:scale-105 transition-all">
-                       ভর্তি আবেদনের নিয়মাবলী
-                       <ArrowRight className="w-4 h-4" />
-                     </Link>
-                     <button className="px-6 md:px-10 py-3 md:py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black text-xs md:text-sm rounded-full flex items-center justify-center gap-2 hover:bg-white/20 transition-all">
-                       আমাদের সম্পর্কে জানুন
-                     </button>
-                  </div>
-               </div>
+          {/* Center Madrasa Identity */}
+          <div className="text-center relative z-10 mx-auto pt-2">
+            <PortalReveal>
+              <div className="flex items-center justify-center">
+                <div className="w-[125px] lg:w-[135px] h-[125px] lg:h-[135px] bg-white rounded-full border-[#07A698] border-2 overflow-hidden flex items-center justify-center p-1 shadow-lg">
+                  <img
+                    src={logoSrc}
+                    alt={heroTitle}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.src = "/portal/school.png";
+                    }}
+                  />
+                </div>
+              </div>
+            </PortalReveal>
+
+            <PortalReveal>
+              <h2 className="lg:text-[35px] text-[24px] sm:text-[28px] font-bold text-white lg:mt-[14px] mt-[22px] leading-snug">
+                {heroTitle}
+              </h2>
+            </PortalReveal>
+
+            <PortalReveal>
+              <div className="text-center flex items-center justify-center">
+                <p className="font-semibold text-[#07A698] text-[18px] lg:mt-1 mt-[8px]">
+                  {heroSubtitle}
+                </p>
+              </div>
+            </PortalReveal>
+
+            <div className="flex items-center justify-center gap-[20px] mt-[20px] flex-wrap">
+              <PortalReveal>
+                <a href="#curriculum" className="flex items-center gap-[8px] hover:text-[#07A698] transition-colors">
+                  <CheckCircle2 className="w-5 h-5 text-[#07A698]" />
+                  <span>গ্রেট লাইফ</span>
+                </a>
+              </PortalReveal>
+              <PortalReveal>
+                <div className="flex items-center gap-[8px]">
+                  <CheckCircle2 className="w-5 h-5 text-[#07A698]" />
+                  <span>গ্রেট সার্টিফিকেট</span>
+                </div>
+              </PortalReveal>
             </div>
           </div>
-        ))}
 
-            {/* Navigation Arrows - Show on hover */}
-            <div className="absolute inset-0 flex items-center justify-between p-4 z-30 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-               <button 
-                  onClick={prevSlide}
-                  className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-[#059669] hover:border-[#059669] transition-all pointer-events-auto"
-               >
-                  <ChevronLeft className="w-6 h-6" />
-               </button>
-               <button 
-                  onClick={nextSlide}
-                  className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-[#059669] hover:border-[#059669] transition-all pointer-events-auto"
-               >
-                  <ChevronRight className="w-6 h-6" />
-               </button>
+          {/* Right Student Image */}
+          <PortalReveal className="hidden lg:block mt-[70px] flex-shrink-0">
+            <img
+              src={settings?.hero?.rightImage || "/portal/im2.png"}
+              alt="Student"
+              className="max-h-[390px] w-auto object-contain relative z-10"
+            />
+          </PortalReveal>
+        </div>
+
+        {/* Overlapping 4 Stat Cards */}
+        <div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 lg:gap-[20px] gap-[10px] relative z-30 lg:-mt-[135px] -mt-[120px] rounded-[10px] lg:p-[30px] p-[10px] lg:max-w-[790px] mx-auto">
+            {stats.map((stat, idx) => (
+              <PortalReveal key={idx}>
+                <div className="bg-white p-[20px] rounded-[15px] lg:w-[160px] py-[20px] shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-center">
+                    <img
+                      className="w-[50px] h-[50px] object-contain"
+                      src={
+                        stat.icon ||
+                        (idx === 0
+                          ? "/portal/section.png"
+                          : idx === 1
+                          ? "/portal/student.png"
+                          : idx === 2
+                          ? "/portal/teacher.png"
+                          : "/portal/staff.png")
+                      }
+                      alt={stat.label}
+                    />
+                  </div>
+                  <div className="text-center mt-[10px]">
+                    <h2 className="text-[#1d5276] text-[20px] lg:text-[22px] font-bold">
+                      <PortalOdometer value={stat.val} /> {stat.suffix || ""}
+                    </h2>
+                    <p className="text-[#1d5276] font-medium">{stat.label}</p>
+                  </div>
+                </div>
+              </PortalReveal>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ===== 2. About Section ===== */}
+      <section className="relative">
+        <div className="absolute top-0 left-0 mt-[40px] pointer-events-none opacity-80 hidden sm:block">
+          <img className="w-[400px]" src="/portal/about_shape.png" alt="" />
+        </div>
+
+        <div className="lg:mt-[150px] mt-[80px] relative p-[10px] lg:flex items-start gap-[85px] lg:max-w-[900px] lg:mx-auto">
+          {/* Campus + Overlapping Principal Portrait */}
+          <div className="relative lg:h-[350px] flex-shrink-0">
+            <div className="rounded-[15px] bg-white h-[260px] sm:h-[300px] w-full max-w-[400px] mx-auto lg:mx-0 overflow-hidden shadow-sm">
+              <img
+                className="w-full h-full object-cover rounded-[15px]"
+                src={settings?.about?.mainImage || "/portal/office.jpeg"}
+                alt="Madrasa Campus"
+                onError={(e) => {
+                  e.currentTarget.src = "/portal/office.jpeg";
+                }}
+              />
             </div>
 
-        {/* Slide Dots - Always visible */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex gap-3">
-           {slides.map((_, index) => (
-             <button
-               key={index}
-               onClick={() => setCurrentSlide(index)}
-               className={`h-2 rounded-full transition-all duration-500 ${
-                 index === currentSlide ? "w-12 bg-[#059669] shadow-[0_0_20px_rgba(5,150,105,0.5)]" : "w-3 bg-white/40 hover:bg-white/60"
-               }`}
-             />
-           ))}
+            {/* Desktop Overlapping Principal */}
+            <div className="absolute lg:-bottom-[20px] lg:-right-[50px] lg:block hidden w-[200px] h-[210px] rounded-t-full border-[3px] p-[3px] bg-white rounded-b-[6px] shadow-md overflow-hidden">
+              <img
+                className="w-full h-full object-cover rounded-t-full rounded-b-[6px]"
+                src={
+                  settings?.about?.principalImage ||
+                  "/portal/Teacher/teacher6-2.png"
+                }
+                alt="Principal"
+                onError={(e) => {
+                  e.currentTarget.src = "/portal/Teacher/teacher6-2.png";
+                }}
+              />
+            </div>
+
+            {/* Mobile Overlapping Principal */}
+            <div className="lg:hidden flex items-center justify-center relative -mt-20">
+              <div className="w-[180px] h-[195px] rounded-t-full border-[3px] p-[3px] bg-white rounded-b-[6px] shadow-md overflow-hidden">
+                <img
+                  className="w-full h-full object-cover rounded-t-full rounded-b-[6px]"
+                  src={
+                    settings?.about?.principalImage ||
+                    "/portal/Teacher/teacher6-2.png"
+                  }
+                  alt="Principal"
+                  onError={(e) => {
+                    e.currentTarget.src = "/portal/Teacher/teacher6-2.png";
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Tabs & Content */}
+          <div className="lg:mt-0 mt-[30px] flex-1">
+            <div>
+              <PortalReveal>
+                <ZapBadge
+                  text={settings?.about?.badge || "ক্লাস পাঠ্যক্রম"}
+                  className="mb-[15px]"
+                />
+              </PortalReveal>
+              <PortalReveal>
+                <h2 className="text-[30px] font-bold text-black leading-tight">
+                  {settings?.about?.title || "ফিচার ক্লাস কারিকুলাম"}
+                </h2>
+              </PortalReveal>
+            </div>
+
+            {/* Tab Buttons */}
+            <div className="flex items-center gap-[10px] mb-[15px] mt-[12px] flex-wrap">
+              {aboutTabs.map((item) => (
+                <PortalReveal key={item.id}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenTab(item.id)}
+                    className={`${
+                      openTab === item.id
+                        ? "bg-[#07A698] text-white border-[#07A698]"
+                        : "text-black bg-white border-slate-200"
+                    } hover:bg-[#07A698] hover:text-white border rounded-full py-[4px] px-[12px] text-[14px] font-medium transition-colors cursor-pointer`}
+                  >
+                    {item.title}
+                  </button>
+                </PortalReveal>
+              ))}
+            </div>
+
+            {/* Tab Content */}
+            <div className="mt-4">
+              {openTab === 1 && (
+                <PortalReveal>
+                  <p className="text-[14px] text-slate-700 mb-[20px] leading-relaxed">
+                    {settings?.about?.description ||
+                      "আমাদের লক্ষ্য হলো উচ্চমানের, সহজলভ্য শিক্ষা প্রদান করা যা জ্ঞান এবং বাস্তব-জগতের প্রয়োগের মধ্যে ব্যবধান পূরণ করে।"}
+                  </p>
+                  <div className="flex flex-col gap-[10px]">
+                    {(settings?.about?.highlights?.length
+                      ? settings.about.highlights
+                      : [
+                          "মানসম্মত ক্লাস পাঠ্যক্রম এবং বিশেষজ্ঞ শিক্ষক",
+                          "ছাত্রদের অংশগ্রহণ এবং ধরে রাখা",
+                        ]
+                    ).map((text, i) => (
+                      <div key={i} className="flex items-center gap-[10px]">
+                        <span className="text-[#07A698] bg-white shadow-md h-[30px] w-[30px] rounded-full text-[14px] font-bold flex items-center justify-center flex-shrink-0">
+                          0{i + 1}
+                        </span>
+                        <p className="text-[14px] text-slate-800">{text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </PortalReveal>
+              )}
+
+              {openTab === 2 && (
+                <PortalReveal>
+                  <p className="text-[14px] text-slate-700 mb-[20px] leading-relaxed">
+                    আমরা একটি অগ্রণী শিক্ষা প্রতিষ্ঠান হিসেবে নিজেদের গড়ে তুলতে
+                    চাই, যেখানে প্রযুক্তিনির্ভর, গবেষণাভিত্তিক এবং জীবনমুখী
+                    শিক্ষার সমন্বয়ে ছাত্রছাত্রীরা আগামী দিনের বিশ্বনাগরিক হিসেবে
+                    প্রস্তুত হবে।
+                  </p>
+                </PortalReveal>
+              )}
+
+              {openTab === 3 && (
+                <div className="flex flex-col gap-[10px]">
+                  {[
+                    "শিক্ষার্থীদের মধ্যে নেতৃত্ব, সৃজনশীলতা এবং সমস্যা সমাধানের দক্ষতা তৈরি করা।",
+                    "প্রযুক্তি ও আধুনিক শিক্ষাদান পদ্ধতির ব্যবহার নিশ্চিত করা।",
+                    "নৈতিকতা ও মূল্যবোধ ভিত্তিক শিক্ষা বিস্তারে কাজ করা।",
+                    "জাতীয় ও আন্তর্জাতিক পর্যায়ে শিক্ষার মান উন্নয়ন ও স্বীকৃতি অর্জন।",
+                  ].map((goal, idx) => (
+                    <div key={idx} className="flex items-center gap-[10px]">
+                      <span className="text-[#07A698] bg-white shadow-md h-[30px] w-[30px] rounded-full text-[14px] font-bold flex items-center justify-center flex-shrink-0">
+                        0{idx + 1}
+                      </span>
+                      <p className="text-[14px] text-slate-800">{goal}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <Link to={`${basePath}/about`}>
+                <button
+                  type="button"
+                  className="bg-[#07A698] hover:bg-[#058c80] text-white rounded-full py-[6px] px-[16px] text-[14px] font-semibold mt-[25px] transition-colors cursor-pointer"
+                >
+                  আরও দেখুন
+                </button>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 2. Overlapping Stats Cards */}
-      <div className="max-w-[1000px] mx-auto px-4 relative z-30 -mb-10 md:-mb-20 mt-12 md:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-         {stats.map((stat, i) => (
-           <div key={i} className="bg-white p-6 md:p-8 rounded-3xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-slate-50 text-center hover:translate-y-[-5px] transition-all">
-              <div className="w-12 h-12 bg-emerald-50 text-[#059669] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-100">
-                 {i === 0 ? <Users className="w-6 h-6" /> : i === 1 ? <GraduationCap className="w-6 h-6" /> : i === 2 ? <BookOpen className="w-6 h-6" /> : <Award className="w-6 h-6" />}
-              </div>
-              <h3 className="text-3xl font-black text-[#042f2c] mb-1 italic">{stat.val}</h3>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
-           </div>
-         ))}
-      </div>
+      {/* ===== 3. Class Curriculum Section ===== */}
+      <section
+        id="curriculum"
+        className="bg-[#07A698] lg:mt-[100px] mt-[50px] relative py-[60px] px-[10px] sm:px-[25px] overflow-hidden"
+      >
+        <div className="max-w-[1100px] mx-auto">
+          <div className="absolute top-0 right-0 pointer-events-none">
+            <img className="w-[500px]" src="/portal/testi-shape-1.png" alt="" />
+          </div>
 
-      {/* 3. About Section */}
-      <section id="about" className="pt-32 md:pt-40 pb-24 bg-white relative">
-         <div className="max-w-[1200px] mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-            <div className="flex-1 relative mb-12 lg:mb-0">
-                <div className="rounded-[3rem] overflow-hidden shadow-2xl bg-white p-3 border border-slate-100">
-                   <img src={settings.about.mainImage} className="w-full h-auto rounded-[2.5rem]" alt="Madrasa Campus" />
+          <div className="relative z-10">
+            <PortalReveal>
+              <ZapBadge
+                text={settings?.curriculum?.badge || "ক্লাস পাঠ্যক্রম"}
+                className="justify-center"
+              />
+            </PortalReveal>
+            <PortalReveal>
+              <h2 className="text-[30px] font-bold my-[20px] text-white text-center">
+                {settings?.curriculum?.title || "ফিচার ক্লাস কারিকুলাম"}
+              </h2>
+            </PortalReveal>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] mt-[10px] lg:mt-[40px] relative z-10">
+            {curriculumItems.map((item, idx) => (
+              <PortalReveal key={idx}>
+                <div className="border border-slate-200 bg-[#e2e6ef] flex items-center gap-[20px] p-[20px] rounded-[10px] hover:bg-white transition-colors">
+                  <div className="bg-white p-[15px] rounded-[10px] shadow-xs">
+                    <CurriculumIcon index={idx} />
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="font-semibold text-[20px] text-[#162726]">
+                      Class {item.name}
+                    </h3>
+                    <p className="text-slate-600 text-[15px]">
+                      Subject: {item.subject}
+                    </p>
+                  </div>
                 </div>
-               <div className="absolute bottom-[-30px] right-2 sm:right-[-20px] md:right-[-40px] w-32 h-32 md:w-48 md:h-48 rounded-full border-[6px] md:border-[10px] border-white shadow-2xl overflow-hidden z-20 transition-all duration-500">
-                  <img src={settings.about.principalImage} className="w-full h-full object-cover bg-emerald-50" alt="Principal" />
-               </div>
-            </div>
-            <div className="flex-1">
-               <span className="inline-block px-4 py-1.5 bg-emerald-50 border border-emerald-100 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-6">{settings.about.badge}</span>
-               <h2 className="text-2xl md:text-[30px] font-black text-[#042f2c] mb-6 md:mb-8 italic leading-[1.2]">{settings.about.title}</h2>
-               <p className="text-slate-600 font-medium mb-8 md:mb-10 leading-relaxed text-base md:text-lg italic">
-                 {settings.about.description}
-               </p>
-               
-               <div className="space-y-4 mb-10">
-                  {settings.about.highlights.map((text, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                       <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white"><ArrowRight className="w-3 h-3" /></div>
-                       <span className="text-slate-800 font-bold italic">{text}</span>
-                    </div>
-                  ))}
-               </div>
-
-               <Link to="about" className="inline-block px-10 py-4 bg-[#059669] text-white font-black text-sm rounded-full shadow-xl shadow-emerald-900/20 hover:scale-105 transition-all text-center">
-                  বিস্তারিত জানুন
-               </Link>
-            </div>
-         </div>
+              </PortalReveal>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* 4. Curriculum Section */}
-      <section id="academic" className="py-24 bg-[#059669] relative overflow-hidden">
-         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white opacity-5 rounded-full blur-[100px] -mr-32 -mt-32"></div>
-         <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-            <div className="text-center mb-16">
-               <span className="inline-block px-4 py-1.5 bg-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-full mb-4">{settings.curriculum.badge}</span>
-               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white italic">{settings.curriculum.title}</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-               {[1, 2, 3, 4, 5, 6].map((idx) => (
-                  <div key={idx} className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl flex items-center gap-6 hover:bg-white/20 transition-all cursor-pointer">
-                     <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-[#059669] shadow-lg">
-                        <BookOpen className="w-7 h-7" />
-                     </div>
-                     <div>
-                        <h4 className="text-white font-black text-xl italic uppercase tracking-tight">Class {idx === 1 ? 'One' : idx === 2 ? 'Two' : 'Three'}</h4>
-                        <p className="text-emerald-50/50 text-xs font-bold tracking-widest mt-1">Syllabus 2025</p>
-                     </div>
+      {/* ===== 4. All Students Showcase Marquee ===== */}
+      <section className="max-w-[1471px] mx-auto mt-[60px] lg:mt-[100px]">
+        <div>
+          <PortalReveal>
+            <ZapBadge
+              text={settings?.students?.badge || "আমাদের শিক্ষার্থী"}
+              className="justify-center"
+            />
+          </PortalReveal>
+          <PortalReveal>
+            <p className="text-[#1D5276] mt-[20px] text-[30px] text-center leading-[34px] font-[600]">
+              {settings?.students?.title || "আমাদের শিক্ষার্থী বৃন্দ"}
+            </p>
+          </PortalReveal>
+        </div>
+
+        <div className="portal-marquee-wrap flex items-center overflow-hidden mt-4 relative py-4">
+          <div className="portal-marquee-track gap-5 pt-14 pb-4">
+            {[...studentItems, ...studentItems].map((item, i) => (
+              <div
+                key={i}
+                className="w-[200px] h-[195px] portal-student-card flex flex-col items-center flex-shrink-0"
+              >
+                <div className="w-[102px] h-[102px] p-1 rounded-full portal-circle-shadow bg-white -mt-12 overflow-hidden flex-shrink-0">
+                  <img
+                    alt={item.name}
+                    className="w-full h-full object-cover rounded-full"
+                    src={item.image || "/portal/student/student1.jpeg"}
+                    onError={(e) => {
+                      e.currentTarget.src = "/portal/student/student1.jpeg";
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col items-center w-full px-4 pt-2">
+                  <h4 className="text-xl leading-[28px] font-[600] text-[#162726] text-center truncate w-full">
+                    {item.name}
+                  </h4>
+                  <h5 className="text-sm leading-[18px] font-[500] text-[#5D636F] truncate max-w-full">
+                    {item.address || "Pakunda, Sonargon"}
+                  </h5>
+                  <div className="flex items-center gap-2 mt-2">
+                    <p className="text-xs leading-[18px] font-[500] text-[#5D636F]">
+                      Class:{" "}
+                      <span className="text-[#07A698]">
+                        {item.className || item.dept || "Five"}
+                      </span>
+                    </p>
+                    <p className="text-xs leading-[18px] font-[500] text-[#5D636F]">
+                      Roll:{" "}
+                      <span className="text-[#07A698]">{item.roll || "2"}</span>
+                    </p>
                   </div>
-               ))}
-            </div>
-         </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="hidden sm:block absolute top-0 bottom-0 left-0 w-32 lg:w-52 bg-gradient-to-r from-[#f2f4f7] to-transparent pointer-events-none z-10" />
+          <div className="hidden sm:block absolute top-0 bottom-0 right-0 w-32 lg:w-52 bg-gradient-to-l from-[#f2f4f7] to-transparent pointer-events-none z-10" />
+        </div>
       </section>
 
-      {/* 5. Student Showcase Slider */}
-      <section id="students" className="py-24 bg-white">
-         <div className="max-w-[1400px] mx-auto px-6">
-            <div className="text-center mb-16 px-4">
-               <span className="inline-block px-4 py-1.5 bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-full mb-4">{settings.students.badge}</span>
-               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic">{settings.students.title}</h2>
-            </div>
-            
-            <div className="relative group/nav px-12 md:px-16">
-               <div className="relative overflow-hidden px-4">
-                  <div 
-                    className="transition-transform duration-700 ease-in-out"
-                    style={{ transform: `translateX(calc(-${studentIndex} * (100% + 2rem) / ${visibleStudents}))` }}
-                  >
-                     <div className="flex gap-8">
-                        {students.map((student, idx) => (
-                           <div 
-                             key={idx} 
-                             className="text-center group flex-shrink-0"
-                             style={{ width: `calc((100% - ${(visibleStudents - 1) * 2}rem) / ${visibleStudents})` }}
-                           >
-                           <div className="relative mb-6 mx-auto">
-                              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-emerald-50 p-1.5 group-hover:border-[#059669] group-hover:scale-105 transition-all mx-auto bg-white shadow-lg overflow-hidden">
-                                 <img src={student.image} className="w-full h-full rounded-full object-cover bg-slate-50 shadow-inner" alt="Student" />
-                              </div>
-                              <div className="absolute bottom-2 right-4 md:right-8 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center border border-slate-100">
-                                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                              </div>
-                           </div>
-                           <h4 className="font-black text-xl text-slate-800 italic">{student.name}</h4>
-                           <p className="text-[10px] font-black text-[#059669] uppercase tracking-[0.2em] mt-1">{student.dept}</p>
-                        </div>
-                     ))}
-                     </div>
-                  </div>
-               </div>
+      {/* ===== 5. All Teachers Section ===== */}
+      <section className="max-w-[900px] mx-auto lg:mt-[50px] mt-[30px] p-[10px]">
+        <div>
+          <PortalReveal>
+            <ZapBadge
+              text={settings?.teachers?.badge || "আমাদের শিক্ষক"}
+              className="justify-center"
+            />
+          </PortalReveal>
+          <PortalReveal>
+            <p className="text-[#1D5276] mt-[20px] text-[30px] text-center leading-[34px] font-[600]">
+              {settings?.teachers?.title || "আমাদের বিশেষজ্ঞ শিক্ষক বৃন্দ"}
+            </p>
+          </PortalReveal>
+        </div>
 
-               <button 
-                  onClick={prevStudent} 
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-[#059669] hover:text-white transition-all shadow-xl z-20 group/btn opacity-0 group-hover/nav:opacity-100 -translate-x-4 group-hover/nav:translate-x-0"
-               >
-                  <ChevronLeft className="w-6 h-6" />
-               </button>
-               <button 
-                  onClick={nextStudent} 
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-[#059669] hover:text-white transition-all shadow-xl z-20 group/btn opacity-0 group-hover/nav:opacity-100 translate-x-4 group-hover/nav:translate-x-0"
-               >
-                  <ChevronRight className="w-6 h-6" />
-               </button>
-
-               {/* Student Pagination Dots - Always visible */}
-               <div className="flex justify-center gap-2 mt-12">
-                  {Array.from({ length: maxStudentIndex + 1 }).map((_, i) => (
-                    <button key={i} onClick={() => setStudentIndex(i)} className={`h-1.5 rounded-full transition-all duration-300 ${i === studentIndex ? "w-8 bg-[#059669]" : "w-2 bg-slate-200 hover:bg-slate-300"}`} />
-                  ))}
-               </div>
-            </div>
-         </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px] mt-[45px]">
+          {teacherItems.map((teacher, idx) => (
+            <PortalReveal key={idx}>
+              <div className="border border-slate-200 bg-white rounded-[10px] shadow-md overflow-hidden">
+                <div className="portal-teacher-bg lg:h-[300px] h-[360px] overflow-hidden">
+                  <img
+                    className="h-full w-full object-cover object-top"
+                    src={teacher.image || "/portal/Teacher/teacher5.png"}
+                    alt={teacher.name}
+                    onError={(e) => {
+                      e.currentTarget.src = "/portal/Teacher/teacher5.png";
+                    }}
+                  />
+                </div>
+                <div className="p-[20px] bg-white">
+                  <h2 className="text-[#1D5276] text-center text-[20px] font-semibold">
+                    {teacher.name}
+                  </h2>
+                  <p className="text-white text-center text-[14px] font-semibold bg-[#07A698] py-[5px] rounded-full mt-[10px]">
+                    {teacher.role || "Classs: Five"}
+                  </p>
+                </div>
+              </div>
+            </PortalReveal>
+          ))}
+        </div>
       </section>
 
-      {/* 6. Teachers Section Slider */}
-      <section id="teachers" className="py-24 bg-[#f8fafc]">
-         <div className="max-w-[1400px] mx-auto px-6">
-            <div className="text-center mb-16 px-4">
-               <span className="inline-block px-4 py-1.5 bg-emerald-50 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-4">{settings.teachers.badge}</span>
-               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic">{settings.teachers.title}</h2>
-            </div>
-            
-            <div className="relative group/nav px-6 md:px-12">
-               <div className="relative overflow-hidden">
-                  <div 
-                    className="transition-transform duration-700 ease-in-out"
-                    style={{ transform: `translateX(calc(-${teacherIndex} * (100% + 2rem) / ${visibleTeachers}))` }}
-                  >
-                     <div className="flex gap-8">
-                        {teachers.map((teacher, idx) => (
-                           <div 
-                             key={idx} 
-                             className="group transition-all duration-500 text-center flex-shrink-0"
-                             style={{ width: `calc((100% - ${(visibleTeachers - 1) * 2}rem) / ${visibleTeachers})` }}
-                           >
-                           <div className="relative mb-8 rounded-[3rem] overflow-hidden aspect-[4/5] shadow-2xl">
-                              <img src={teacher.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" alt="Teacher" />
-                              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#042f2c] to-transparent" />
-                              <div className="absolute bottom-6 left-6 right-6 flex justify-center opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
-                                 <button className="px-8 py-3 bg-[#059669] text-white font-black text-xs rounded-full shadow-2xl hover:bg-emerald-500 transition-colors">প্রোফাইল দেখুন</button>
-                              </div>
-                           </div>
-                           <div className="pb-6">
-                              <h3 className="text-2xl font-black text-[#042f2c] italic mb-1">{teacher.name}</h3>
-                              <p className="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em]">{teacher.role}</p>
-                           </div>
-                        </div>
-                     ))}
-                     </div>
-                  </div>
-               </div>
+      {/* ===== 6. Video Gallery Section ===== */}
+      <PortalReveal>
+        <section className="bg-[#07A698] lg:mt-[100px] mt-[50px] relative py-[60px] px-[10px] sm:px-[25px] overflow-hidden">
+          <div className="absolute top-0 right-0 pointer-events-none">
+            <img className="w-[500px]" src="/portal/testi-shape-1.png" alt="" />
+          </div>
 
-               <button 
-                  onClick={prevTeacher} 
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-[#059669] hover:text-white transition-all shadow-xl z-20 group/btn opacity-0 group-hover/nav:opacity-100 -translate-x-4 group-hover/nav:translate-x-0"
-               >
-                  <ChevronLeft className="w-6 h-6" />
-               </button>
-               <button 
-                  onClick={nextTeacher} 
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-[#059669] hover:text-white transition-all shadow-xl z-20 group/btn opacity-0 group-hover/nav:opacity-100 translate-x-4 group-hover/nav:translate-x-0"
-               >
-                  <ChevronRight className="w-6 h-6" />
-               </button>
-
-               {/* Teacher Pagination Dots - Always visible */}
-               <div className="flex justify-center gap-2 mt-12">
-                  {Array.from({ length: maxTeacherIndex + 1 }).map((_, i) => (
-                    <button key={i} onClick={() => setTeacherIndex(i)} className={`h-1.5 rounded-full transition-all duration-300 ${i === teacherIndex ? "w-8 bg-[#059669]" : "w-2 bg-slate-200 hover:bg-slate-300"}`} />
-                  ))}
-               </div>
+          <div className="max-w-[1100px] mx-auto relative z-10">
+            <div className="lg:flex items-center justify-between mb-6">
+              <div>
+                <ZapBadge text="ভিডিও গ্যালারি" />
+                <h2 className="text-[28px] lg:text-[30px] font-bold my-[20px] text-white">
+                  {settings?.gallery?.videoTitle ||
+                    "Edusadiq ব্যবহার করার বিস্তারিত টিউটোরিয়াল"}
+                </h2>
+              </div>
+              <div className="lg:flex items-center gap-[16px] relative z-40 hidden">
+                <button
+                  type="button"
+                  onClick={handlePrevVideo}
+                  aria-label="Previous videos"
+                  className="cursor-pointer hover:bg-gray-200 bg-white p-[10px] rounded-full text-[#07A698] transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextVideo}
+                  aria-label="Next videos"
+                  className="cursor-pointer hover:bg-gray-200 bg-white p-[10px] rounded-full text-[#07A698] transition-colors"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-         </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px] relative z-40">
+              {visibleVideos.map((vid, idx) => (
+                <YouTubeLiteCard
+                  key={vid.youtubeId || idx}
+                  youtubeId={vid.youtubeId || "Hv8yinlIWJ8"}
+                  title={vid.title}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      </PortalReveal>
+
+      {/* ===== 7. Photo Gallery Section ===== */}
+      <section className="max-w-[1100px] mx-auto lg:mt-[50px] relative py-[60px] p-[10px]">
+        <div className="flex items-center justify-center">
+          <div>
+            <PortalReveal>
+              <ZapBadge text="ছবি গ্যালারি" className="justify-center" />
+            </PortalReveal>
+            <PortalReveal>
+              <h2 className="text-[26px] lg:text-[30px] font-bold my-[20px] text-[#162726] text-center">
+                আমাদের একাডেমির ছবি গ্যালারি ঘুরে দেখুন
+              </h2>
+            </PortalReveal>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] mt-[20px]">
+          {photoItems.map((imgSrc, idx) => {
+            const resolvedSrc =
+              typeof imgSrc === "string"
+                ? imgSrc
+                : `/portal/gallery/img${(idx % 8) + 1}.jpg`;
+            return (
+              <PortalReveal key={idx}>
+                <button
+                  type="button"
+                  onClick={() => setLightboxImage(resolvedSrc)}
+                  className="lg:h-[200px] h-[250px] w-full overflow-hidden border border-slate-200 rounded-[10px] bg-white shadow-xs group cursor-pointer block"
+                >
+                  <img
+                    className="h-full w-full object-cover rounded-[10px] group-hover:scale-105 transition-transform duration-500"
+                    src={resolvedSrc}
+                    alt={`Academy gallery ${idx + 1}`}
+                  />
+                </button>
+              </PortalReveal>
+            );
+          })}
+        </div>
       </section>
 
-      {/* 7. Gallery Slider Sections (Video & Photo) */}
-      <section id="gallery" className="py-24 bg-[#059669]">
-         <div className="max-w-[1400px] mx-auto px-6">
-            <div className="mb-16 px-4">
-               <span className="text-white font-black text-xs tracking-widest uppercase opacity-70 mb-2 block">ভিডিও গ্যালারি</span>
-               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white italic">আমাদের একাডেমির ভিডিও গ্যালারি ঘুরে দেখুন</h2>
-            </div>
-
-            <div className="relative group/nav">
-               <div className="relative overflow-hidden px-4">
-                  <div 
-                    className="transition-transform duration-700 ease-in-out"
-                    style={{ transform: `translateX(calc(-${videoIndex} * (100% + 2rem) / ${visibleVideos}))` }}
-                  >
-                     <div className="flex gap-8">
-                        {videos.map((vid, i) => (
-                           <div 
-                             key={i} 
-                             className="group cursor-pointer flex-shrink-0"
-                             style={{ width: `calc((100% - ${(visibleVideos - 1) * 2}rem) / ${visibleVideos})` }}
-                           >
-                           <div className="bg-white/10 p-3 rounded-[2.5rem] border border-white/20 relative mb-6 overflow-hidden">
-                              <div className="relative rounded-[2rem] overflow-hidden aspect-video">
-                                 <img src={vid.thumb} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Video Thumbnail" />
-                                 <div className="absolute inset-0 bg-[#042f2c]/40 flex items-center justify-center group-hover:bg-[#042f2c]/20 transition-all">
-                                    <div className="w-16 h-16 bg-[#059669] text-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-115 transition-all">
-                                       <PlayCircle className="w-8 h-8 fill-current" />
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <h4 className="text-white font-black text-xl italic px-4 group-hover:text-emerald-300 transition-colors">{vid.title}</h4>
-                        </div>
-                     ))}
-                     </div>
-                  </div>
-               </div>
-
-               {/* Floating Side Controls - Show on hover */}
-               <button 
-                  onClick={prevVideo} 
-                  className="absolute left-[-20px] top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-[#059669] hover:text-white transition-all shadow-xl z-20 group/btn opacity-0 group-hover/nav:opacity-100 -translate-x-4 group-hover/nav:translate-x-0"
-               >
-                  <ChevronLeft className="w-6 h-6" />
-               </button>
-               <button 
-                  onClick={nextVideo} 
-                  className="absolute right-[-20px] top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-[#059669] hover:text-white transition-all shadow-xl z-20 group/btn opacity-0 group-hover/nav:opacity-100 translate-x-4 group-hover/nav:translate-x-0"
-               >
-                  <ChevronRight className="w-6 h-6" />
-               </button>
-
-               {/* Video Pagination Dots - Always visible */}
-               <div className="flex justify-center gap-2 mt-12">
-                  {Array.from({ length: maxVideoIndex + 1 }).map((_, i) => (
-                    <button 
-                       key={i} 
-                       onClick={() => setVideoIndex(i)} 
-                       className={`h-1.5 rounded-full transition-all duration-300 ${i === videoIndex ? "w-8 bg-white" : "w-2 bg-white/30 hover:bg-white/50"}`} 
-                    />
-                  ))}
-               </div>
-            </div>
-         </div>
-      </section>
-
-      <section id="photos" className="py-24 bg-white">
-         <div className="max-w-[1200px] mx-auto px-6 text-center">
-            <span className="inline-block px-4 py-1.5 bg-emerald-50 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-4">ফটো গ্যালারি</span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#042f2c] italic mb-16">আমাদের একাডেমির ছবি গ্যালারি ঘুরে দেখুন</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-               {settings.gallery.photos.map((i) => (
-                  <div key={i} className="relative rounded-3xl overflow-hidden group aspect-square shadow-md">
-                     <img src={`https://picsum.photos/seed/${i + 22}/400`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Gallery" />
-                     <div className="absolute inset-0 bg-[#059669]/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-               ))}
-            </div>
-         </div>
-      </section>
+      {/* Lightbox Modal for Gallery */}
+      {lightboxImage && (
+        <div
+          className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setLightboxImage(null)}
+        >
+          <div
+            className="relative max-w-4xl w-full bg-white rounded-2xl p-2 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setLightboxImage(null)}
+              className="absolute -top-4 -right-4 w-9 h-9 bg-white text-slate-800 rounded-full shadow-lg flex items-center justify-center hover:bg-[#07A698] hover:text-white transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img
+              src={lightboxImage}
+              alt="Gallery Preview"
+              className="w-full max-h-[80vh] object-contain rounded-xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

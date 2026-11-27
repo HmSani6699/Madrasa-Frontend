@@ -127,6 +127,7 @@ import MadrasaPortal from "../Pages/Portal/MadrasaPortal";
 import AboutUs from "../Pages/Portal/AboutUs";
 import AdmissionGuidelines from "../Pages/Portal/AdmissionGuidelines";
 import OnlineAdmissionForm from "../Pages/Portal/OnlineAdmissionForm";
+import PortalContact from "../Pages/Portal/PortalContact";
 import Login from "../Pages/Auth/Login";
 import AccountDeactivated from "../Pages/Auth/AccountDeactivated";
 
@@ -648,6 +649,7 @@ const router = createBrowserRouter([
       { path: "about", element: <AboutUs /> },
       { path: "admission", element: <AdmissionGuidelines /> },
       { path: "online-admission", element: <OnlineAdmissionForm /> },
+      { path: "contact", element: <PortalContact /> },
     ],
   },
   {

@@ -50,7 +50,7 @@ const BoardingReportsPage = () => {
         <meta charset="UTF-8" />
         <title>Daily Kitchen Summary Slip - ${date}</title>
         <style>
-          body { font-family: 'Hind Siliguri', Arial, sans-serif; padding: 24px; color: #0f172a; }
+          body { font-family: 'Baloo Da 2', 'Hind Siliguri', Arial, sans-serif; padding: 24px; color: #0f172a; }
           .header { text-align: center; border-bottom: 2px solid #123628; padding-bottom: 12px; margin-bottom: 18px; }
           .header h1 { margin: 0; font-size: 22px; color: #123628; }
           .header p { margin: 4px 0 0; font-size: 13px; color: #475569; }

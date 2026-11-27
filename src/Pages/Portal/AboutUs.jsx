@@ -1,153 +1,157 @@
-import { 
-  History, 
-  Target, 
-  Eye, 
-  Heart, 
-  BookOpen, 
-  Award, 
-  CheckCircle2,
-  ArrowLeft
-} from "lucide-react";
-import { Link } from "react-router";
+import { useState } from "react";
+import { usePortalSettings } from "../../context/PortalSettingsContext";
+import { PortalReveal } from "./components/PortalPrimitives";
+import { X } from "lucide-react";
 
 const AboutUs = () => {
+  const { settings } = usePortalSettings();
+  const [showIntroVideo, setShowIntroVideo] = useState(false);
+
+  const allTeachers = [
+    { id: 5, name: "Noman Hossain", position: "English Teacher", img: "/portal/Teacher/teacher5.png" },
+    { id: 6, name: "Nasir Uddin", position: "Bangla Teacher", img: "/portal/Teacher/teacher6.png" },
+    { id: 1, name: "Sadiqur Rahman", position: "Founder & Principal", img: "/portal/Teacher/teacher1.png" },
+    { id: 2, name: "Mahfuj Alom", position: "Hadis Teacher", img: "/portal/Teacher/teacher2.png" },
+    { id: 3, name: "Jubayer Hossain", position: "Bangla Teacher", img: "/portal/Teacher/teacher3.png" },
+    { id: 4, name: "Mominul Islam", position: "Arabic Teacher", img: "/portal/Teacher/teacher4.png" },
+    { id: 7, name: "Noman Hossain", position: "English Teacher", img: "/portal/Teacher/teacher5.png" },
+    { id: 8, name: "Nasir Uddin", position: "Bangla Teacher", img: "/portal/Teacher/teacher6.png" },
+    { id: 9, name: "Mominul Islam", position: "Arabic Teacher", img: "/portal/Teacher/teacher4.png" },
+    { id: 10, name: "Mahfuj Alom", position: "Hadis Teacher", img: "/portal/Teacher/teacher2.png" },
+  ];
+
   return (
-    <div className="bg-white min-h-screen font-sans">
-      {/* 1. Hero Banner */}
-      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=2070" 
-            className="w-full h-full object-cover" 
-            alt="About Banner" 
-          />
-          <div className="absolute inset-0 bg-[#042f2c]/80 backdrop-blur-[2px]" />
-        </div>
-        
-        <div className="relative z-10 text-center px-6">
-          <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold mb-4 animate-in slide-in-from-top duration-700">
-             <Link to="/portal/global-international" className="hover:text-white transition-colors flex items-center gap-1">
-                <ArrowLeft className="w-4 h-4" /> Home
-             </Link>
-             <span>/</span>
-             <span className="text-white opacity-60">বিস্তারিত জানুন</span>
-          </div>
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white italic tracking-tight mb-4">আমাদের সম্পর্কে বিস্তারিত</h1>
-          <p className="text-emerald-50/70 text-base md:text-lg max-w-[600px] mx-auto font-medium">আধুনিক সুশিক্ষিত ও আদর্শ জাতির অন্যতম প্রধান কারিগর গঠন আমাদের লক্ষ্য।</p>
-        </div>
-      </section>
-
-      {/* 2. core mission & vision */}
-      <section className="py-24 px-6">
-        <div className="max-w-[1240px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-32">
-            <div className="relative order-2 lg:order-1">
-               <div className="rounded-[3rem] overflow-hidden shadow-2xl p-3 bg-white border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1533854775446-65c4a2f5d8ef?q=80&w=2070" className="w-full h-auto rounded-[2.5rem]" alt="Mission" />
-               </div>
-               <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#059669] rounded-full flex flex-col items-center justify-center text-white shadow-2xl border-4 border-white">
-                  <Target className="w-10 h-10 mb-1" />
-                  <span className="text-xs font-black uppercase tracking-widest">Our Mission</span>
-               </div>
+    <div className="pb-16">
+      {/* ======> About Banner <===== */}
+      <PortalReveal>
+        <div className="portal-about-banner w-full py-[60px]">
+          <div className="max-w-[1200px] mx-auto lg:flex items-center justify-center gap-[30px] px-[15px]">
+            <div className="lg:w-1/2 text-center lg:text-left">
+              <PortalReveal>
+                <img
+                  src="/portal/logo1.png"
+                  alt={settings?.branding?.name || "Logo"}
+                  className="mx-auto lg:mx-0 max-h-[70px] w-auto"
+                />
+                <p className="text-white mt-[15px] text-[18px] leading-relaxed">
+                  {settings?.branding?.name || "EduSadiq"} হলো একটি আধুনিক
+                  শিক্ষাপ্রতিষ্ঠান ব্যবস্থাপনা প্ল্যাটফর্ম, যেখানে প্রযুক্তির
+                  মাধ্যমে শিক্ষা পরিচালনা আরও সহজ, স্মার্ট ও কার্যকর করা হয়।
+                  ইতিমধ্যেই ১৫০+ প্রতিষ্ঠান, ২০,০০০+ শিক্ষার্থী, ৮০০+ শিক্ষক এবং
+                  ১৯,০০০+ অভিভাবক আমাদের সেবার সাথে যুক্ত হয়ে উপকৃত হচ্ছেন।
+                </p>
+              </PortalReveal>
             </div>
-            <div className="order-1 lg:order-2">
-               <span className="text-[#059669] font-black text-xs uppercase tracking-[0.3em] mb-4 block">Institutional Goal</span>
-               <h2 className="text-4xl font-black text-[#042f2c] italic mb-8 leading-tight">আমাদের লক্ষ্য ও উদ্দেশ্য <br /> (Our Mission)</h2>
-               <p className="text-slate-600 text-lg leading-loose italic mb-8">
-                 আল-কুরআনুল কারীম একাডেমি একটি উত্তর আধুনিক দ্বীনি প্রতিষ্ঠান। আমাদের মূল লক্ষ্য হলো সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান করে একটি আদর্শ ও নৈতিকবান প্রজন্ম গড়ে তোলা। আমরা বিশ্বাস করি সঠিক দ্বীনি শিক্ষা ই পারে একটি সুন্দর ও শান্তিময় সমাজ উপহার দিতে।
-               </p>
-               <div className="space-y-4">
-                  {[
-                    "সুন্নাহ ভিত্তিক জীবন গড়ার সঠিক দিকনির্দেশনা",
-                    "আধুনিক ও যুগোপযোগী শিক্ষা ব্যবস্থার সমন্বয়",
-                    "উন্নত চরিত্র ও নৈতিকতা গঠন",
-                    "সামাজিক ও ধর্মীয় দায়বদ্ধতা সচেতনতা"
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-4">
-                      <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center text-[#059669]"><CheckCircle2 className="w-4 h-4" /></div>
-                      <span className="text-slate-800 font-bold italic">{item}</span>
-                    </div>
-                  ))}
-               </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div>
-               <span className="text-[#059669] font-black text-xs uppercase tracking-[0.3em] mb-4 block">Forward Thinking</span>
-               <h2 className="text-4xl font-black text-[#042f2c] italic mb-8 leading-tight">আমাদের স্বপ্ন ও ভিশন <br /> (Our Vision)</h2>
-               <p className="text-slate-600 text-lg leading-loose italic mb-8">
-                 ভবিষ্যতে আমরা এমন একটি সমাজ কল্পনা করি যেখানে প্রতিটি শিশু হবে কোরআনের আলোয় আলোকিত। আমরা একটি আন্তর্জাতিক মান সম্পন্ন দ্বীনি শিক্ষা প্রতিষ্ঠান হিসেবে নিজেদের গড়ে তুলতে চাই, যেখানে ছাত্ররা কেবল ধর্মীয় জ্ঞানে নয় বরং আধুনিক সকল বিদ্যায় পারদর্শী হবে।
-               </p>
-               <div className="grid grid-cols-2 gap-6">
-                  <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 group hover:bg-[#059669] transition-all">
-                     <BookOpen className="w-10 h-10 text-[#059669] group-hover:text-white mb-4 transition-colors" />
-                     <h4 className="font-black text-slate-800 group-hover:text-white italic transition-colors">আন্তর্জাতিক সিলেবাস</h4>
-                  </div>
-                  <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100 group hover:bg-[#059669] transition-all">
-                     <Award className="w-10 h-10 text-[#059669] group-hover:text-white mb-4 transition-colors" />
-                     <h4 className="font-black text-slate-800 group-hover:text-white italic transition-colors">শ্রেষ্ঠত্বের সম্মান</h4>
-                  </div>
-               </div>
-            </div>
-            <div className="relative">
-               <div className="rounded-[3rem] overflow-hidden shadow-2xl p-3 bg-white border border-slate-100">
-                  <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2040" className="w-full h-auto rounded-[2.5rem]" alt="Vision" />
-               </div>
-               <div className="absolute -top-10 -left-10 w-40 h-40 bg-[#042f2c] rounded-full flex flex-col items-center justify-center text-white shadow-2xl border-4 border-white">
-                  <Eye className="w-10 h-10 mb-1" />
-                  <span className="text-xs font-black uppercase tracking-widest">Our Vision</span>
-               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Core Values Grid */}
-      <section className="py-24 bg-[#042f2c] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px] -mr-40 -mt-40"></div>
-        <div className="max-w-[1240px] mx-auto px-6 relative z-10">
-          <div className="text-center mb-20">
-             <span className="inline-block px-4 py-1.5 bg-white/10 text-[#059669] text-[10px] font-black uppercase tracking-widest rounded-full mb-4">Core Principles</span>
-             <h2 className="text-4xl font-black text-white italic">আমাদের মূল বৈশিষ্ট্যসমূহ</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { icon: Heart, title: "তাকওয়া ও খোদাভীতি", desc: "প্রতিটি কাজে আল্লাহর সন্তুষ্টি অর্জন ই আমাদের প্রধান লক্ষ্য।" },
-              { icon: History, title: "ঐতিহ্য ও সংস্কৃতি", desc: "সুদীর্ঘ দ্বীনি ঐতিহ্যকে ধারণ করে আধুনিকতার সমন্বয়।" },
-              { icon: BookOpen, title: "মানসম্মত পাঠদান", desc: "অভিজ্ঞ শিক্ষকমন্ডলী দ্বারা প্রতিটি ছাত্রকে ব্যক্তিগত যত্ন প্রদান।" },
-              { icon: Target, title: "সঠিক আকিদা", desc: "আহলে সুন্নাত ওয়াল জামাআতের সঠিক আকিদা অনুযায়ী জীবন পরিচালনা।" },
-              { icon: Eye, title: "সামাজিক নেতৃত্ব", desc: "ছাত্রদের এমনভাবে গড়ে তোলা যাতে তারা ভবিষ্যতে সমাজকে নেতৃত্ব দিতে পারে।" },
-              { icon: Award, title: "পূর্ণাঙ্গ শিক্ষা", desc: "কিতাব ও আমলের পাশাপাশি আধুনিক প্রযুক্তি ও ভাষায় পারদর্শিতা।" }
-            ].map((value, i) => (
-              <div key={i} className="p-10 bg-white/5 backdrop-blur-md border border-white/10 rounded-[3rem] hover:bg-white/10 transition-all group">
-                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-[#059669] mb-8 shadow-xl group-hover:scale-110 transition-transform">
-                  <value.icon className="w-8 h-8" />
+            <div className="lg:w-1/2 lg:mt-0 mt-[25px]">
+              <PortalReveal>
+                <div
+                  onClick={() => setShowIntroVideo(true)}
+                  className="h-full w-full border-[5px] border-white/80 rounded-[20px] relative cursor-pointer group overflow-hidden"
+                >
+                  <img
+                    className="h-full w-full rounded-[15px] object-cover group-hover:scale-105 transition-transform duration-500"
+                    src="/portal/about1.jpg"
+                    alt="About Banner"
+                  />
+                  <img
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 group-hover:scale-110 transition-transform"
+                    src="/portal/video_play_green.svg"
+                    alt="Play Video"
+                  />
                 </div>
-                <h3 className="text-2xl font-black text-white italic mb-4">{value.title}</h3>
-                <p className="text-emerald-50/60 font-medium leading-relaxed italic">{value.desc}</p>
-              </div>
-            ))}
+              </PortalReveal>
+            </div>
           </div>
         </div>
-      </section>
+      </PortalReveal>
 
-      {/* 4. Contact CTA */}
-      <section className="py-32 bg-white px-6">
-        <div className="max-w-[1000px] mx-auto bg-[#f0f9f6] rounded-[4rem] p-12 md:p-20 text-center relative overflow-hidden group">
-           <div className="absolute top-0 right-0 w-32 h-32 bg-[#059669]/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
-           <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#059669]/10 rounded-full -ml-16 -mb-16 group-hover:scale-150 transition-transform duration-700"></div>
-           
-           <h2 className="text-4xl md:text-5xl font-black text-[#042f2c] italic mb-8 relative z-10">আপনার সন্তানের দ্বীনি শিক্ষার জন্য <br /> আজই যোগাযোগ করুন</h2>
-           <p className="text-slate-600 text-lg mb-12 max-w-[600px] mx-auto font-medium relative z-10 italic">আমরা আপনাকে ও আপনার সন্তানকে আমাদের এই দ্বীনি পরিবারে স্বাগত জানাতে সদা প্রস্তুত।</p>
-           
-           <div className="flex flex-wrap justify-center gap-6 relative z-10">
-              <button className="px-12 py-5 bg-[#059669] text-white font-black rounded-full shadow-2xl shadow-emerald-900/40 hover:scale-105 transition-all">অনলাইন ভর্তি ফরম</button>
-              <button className="px-12 py-5 bg-white border-2 border-slate-200 text-[#042f2c] font-black rounded-full hover:border-[#059669] hover:text-[#059669] transition-all">সাক্ষাতের জন্য অ্যাপয়েন্টমেন্ট</button>
-           </div>
+      {/* ====> Founder Card <===== */}
+      <div className="w-full md:w-[754px] lg:w-[813px] mx-auto mt-[50px] px-[10px]">
+        <PortalReveal>
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-10 lg:border-2 border-[#53DFC3] bg-[#F5F5F5] rounded-[12px] overflow-hidden shadow-sm">
+            <div className="w-full md:w-[320px] flex-shrink-0">
+              <img
+                className="h-[340px] w-full object-cover lg:rounded-l-[10px]"
+                src="/portal/bgre.jpg"
+                alt="Founder"
+              />
+            </div>
+            <div className="flex flex-col gap-4 p-5 md:pr-8">
+              <h1 className="text-[#162726] text-[15px] font-[400] leading-[24px]">
+                অত্র প্রতিষ্ঠানের প্রতিষ্ঠাতা একজন মেধাবী, অভিজ্ঞ ও
+                শিক্ষানুরাগী ব্যক্তিত্ব, যিনি শিক্ষার্থীদের নৈতিকতা ও আধুনিক
+                শিক্ষার সমন্বয়ে গড়ে তুলতে দৃঢ় প্রতিশ্রুতিবদ্ধ। তাঁর দক্ষ
+                নেতৃত্বে প্রতিষ্ঠানটি শিক্ষাক্ষেত্রে একটি গ্রহণযোগ্য অবস্থান
+                তৈরি করেছে।
+              </h1>
+              <div>
+                <h2 className="text-[#2872A4] text-[20px] font-[600] leading-[28px]">
+                  হাফেজ সাদিকুর রহমান সানি
+                </h2>
+                <p className="text-slate-600 text-[14px] font-[500] leading-[18px]">
+                  অত্র প্রতিষ্ঠানের প্রতিষ্ঠাতা
+                </p>
+              </div>
+            </div>
+          </div>
+        </PortalReveal>
+      </div>
+
+      {/* =====> Instructors Grid <====== */}
+      <div className="w-full lg:max-w-[1096px] mx-auto py-12 bg-[#F5F5F5] rounded-[10px] px-5 relative lg:mt-[40px] mt-[30px] mb-[50px]">
+        <div className="mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {allTeachers.map((item, i) => (
+            <PortalReveal key={i}>
+              <div className="w-full max-w-[186px] mx-auto bg-white rounded-[8px] shadow-xs overflow-hidden">
+                <div className="h-16 overflow-hidden bg-[#F5F5F5]" />
+                <div className="mx-auto w-24 h-24 relative -mt-12 border-4 border-white rounded-full overflow-hidden shadow-sm">
+                  <img
+                    className="object-cover object-top w-full h-full"
+                    src={item.img}
+                    alt={item.name}
+                  />
+                </div>
+                <div className="p-3 text-center">
+                  <h3 className="text-black text-[18px] font-[600] leading-[24px]">
+                    {item.name}
+                  </h3>
+                  <p className="text-slate-500 text-[13px] font-[500] leading-[18px] mt-1">
+                    {item.position}
+                  </p>
+                </div>
+              </div>
+            </PortalReveal>
+          ))}
         </div>
-      </section>
+      </div>
+
+      {/* Video Modal */}
+      {showIntroVideo && (
+        <div
+          className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setShowIntroVideo(false)}
+        >
+          <div
+            className="relative max-w-3xl w-full bg-black rounded-2xl overflow-hidden aspect-video"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowIntroVideo(false)}
+              className="absolute top-3 right-3 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center text-slate-900 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/Hv8yinlIWJ8?autoplay=1"
+              title="Academy Introduction"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
