@@ -14,9 +14,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Save,
-  Info
+  Info,
+  MessageSquare
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
+import portalService from "../../services/portalService";
 import { toast } from "react-hot-toast";
 
 const StudentAttendance = () => {
@@ -31,17 +33,25 @@ const StudentAttendance = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [attendanceData, setAttendanceData] = useState({});
+  const [smsSettings, setSmsSettings] = useState(null);
+  const [smsBalance, setSmsBalance] = useState(0);
+  const [sendAutoSms, setSendAutoSms] = useState(true);
 
-  // Fetch Classes and Sections on mount
+  // Fetch Classes, Sections, and SMS settings on mount
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const [classesRes, sectionsRes] = await Promise.all([
+        const [classesRes, sectionsRes, smsRes] = await Promise.all([
           axiosInstance.get("/v1/classes"),
-          axiosInstance.get("/v1/sections")
+          axiosInstance.get("/v1/sections"),
+          portalService.getSmsSettings().catch(() => null),
         ]);
         if (classesRes.data.success) setClasses(classesRes.data.data);
         if (sectionsRes.data.success) setSections(sectionsRes.data.data);
+        if (smsRes?.success && smsRes?.data?.settings) {
+          setSmsSettings(smsRes.data.settings);
+          setSmsBalance(Number(smsRes.data.balance || 0));
+        }
       } catch (err) {
         console.error("Error fetching initial data:", err);
       }
@@ -150,10 +160,21 @@ const StudentAttendance = () => {
         class_id: selectedClassId,
         section_id: selectedSectionId,
         records: formattedData,
+        sendSms: smsSettings?.attendance ? sendAutoSms : false,
       });
 
       if (response.data.success) {
-        toast.success("Attendance saved successfully!");
+        const smsSummary = response.data.smsSummary;
+        if (smsSummary?.sentCount > 0) {
+          toast.success(`হাজিরা সেভ হয়েছে এবং ${smsSummary.sentCount} জন অভিভাবককে SMS পাঠানো হয়েছে!`);
+          if (typeof smsSummary.remainingBalance === "number") {
+            setSmsBalance(smsSummary.remainingBalance);
+          }
+        } else if (smsSummary?.skippedReason === "insufficient_balance") {
+          toast.success("হাজিরা সেভ হয়েছে! (অপর্যাপ্ত SMS ব্যালেন্সের কারণে SMS পাঠানো যায়নি)");
+        } else {
+          toast.success("Attendance saved successfully!");
+        }
         fetchData(); // Refetch to ensure sync
       }
     } catch (err) {
@@ -321,7 +342,28 @@ const StudentAttendance = () => {
                     />
                   </div>
 
-                  <div className="flex gap-2 w-full md:w-auto">
+                  <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                    {smsSettings && (
+                      smsSettings.attendance ? (
+                        <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] font-bold text-emerald-800 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={sendAutoSms}
+                            onChange={(e) => setSendAutoSms(e.target.checked)}
+                            className="accent-[#1C7D5A] w-3.5 h-3.5"
+                          />
+                          <MessageSquare className="w-3.5 h-3.5 text-[#1C7D5A]" />
+                          <span>
+                            Auto SMS ({smsSettings.attendanceTrigger === "all" ? "সব" : smsSettings.attendanceTrigger === "absent_late" ? "Absent+Late" : "শুধু Absent"}) • ৳{smsBalance.toFixed(0)}
+                          </span>
+                        </label>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 border border-slate-200 text-[11px] font-bold text-slate-500">
+                          <MessageSquare className="w-3.5 h-3.5" />
+                          Auto SMS: OFF
+                        </span>
+                      )
+                    )}
                     <button
                       onClick={() => markAllAs("present")}
                       className="flex-1 md:flex-none px-4 py-2 text-xs font-black bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors border border-emerald-200"

@@ -1,129 +1,155 @@
-import React, { useState, useEffect } from "react";
-import { 
-  MessageSquare, 
-  Send, 
-  CreditCard, 
-  History, 
-  DollarSign, 
-  AlertTriangle, 
-  Users, 
-  BookOpen, 
-  UserCheck, 
-  TrendingUp,
-  CheckCircle2,
-  Clock,
-  Smartphone,
-  Search,
-  Plus,
-  HelpCircle,
+import { useState, useEffect, useMemo, useCallback } from "react";
+import {
+  MessageSquare,
+  Send,
+  Wallet,
+  AlertTriangle,
+  Users,
+  BookOpen,
   Briefcase,
-  GraduationCap
+  GraduationCap,
+  Copy,
+  Check,
+  Loader2,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  History,
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import portalService from "../../services/portalService";
 import axiosInstance from "../../api/axiosInstance";
 
+const QUICK_TEMPLATES = [
+  {
+    label: "ছুটির নোটিশ",
+    text: "আসসালামু আলাইকুম। আগামীকাল অনিবার্য কারণবশত মাদ্রাসার সকল শ্রেণির পাঠদান বন্ধ থাকবে।",
+  },
+  {
+    label: "অভিভাবক সমাবেশ",
+    text: "আসসালামু আলাইকুম। আগামী শনিবার সকাল ১০:০০ টায় মাদ্রাসায় অভিভাবক সমাবেশ অনুষ্ঠিত হবে।",
+  },
+  {
+    label: "বকেয়া ফি",
+    text: "আসসালামু আলাইকুম। আপনার সন্তানের চলতি মাসের মাদ্রাসার ফি পরিশোধ করার জন্য অনুরোধ করা যাচ্ছে।",
+  },
+  {
+    label: "পরীক্ষার নোটিশ",
+    text: "আসসালামু আলাইকুম। আগামী সপ্তাহ থেকে সাময়িক পরীক্ষা শুরু হবে। যথাসময়ে উপস্থিত থাকার অনুরোধ রইল।",
+  },
+];
+
+const MERCHANT_NUMBER = "+880 1700 000000";
+
 const SmsPortal = () => {
-  // Tabs State: "send" or "recharge"
   const [activeTab, setActiveTab] = useState("send");
-  
+  const [copiedMerchant, setCopiedMerchant] = useState(false);
+
   // Wallet & Recharge States
-  const [wallet, setWallet] = useState({ balance: 0.00, rates: { single: 0.30, bulk: 0.25, masking: 0.40 } });
+  const [wallet, setWallet] = useState({
+    balance: 0.0,
+    rates: { single: 0.3, bulk: 0.25, masking: 0.4 },
+  });
   const [recharges, setRecharges] = useState([]);
+  const [smsLogs, setSmsLogs] = useState([]);
+  const [logCategoryFilter, setLogCategoryFilter] = useState("all");
   const [rechargeAmount, setRechargeAmount] = useState("");
   const [senderNumber, setSenderNumber] = useState("");
   const [transactionId, setTransactionId] = useState("");
-  
+
   // Broadcast Compose States
-  const [recipientType, setRecipientType] = useState("Student"); // Student, Parent, Teacher, Class
+  const [recipientType, setRecipientType] = useState("Student");
   const [recipientId, setRecipientId] = useState("");
   const [classId, setClassId] = useState("");
   const [message, setMessage] = useState("");
-  const [smsType, setSmsType] = useState("Single"); // Single, Bulk, Masking
-  
-  // Dynamic Option Lists
+  const [smsType, setSmsType] = useState("Bulk");
+
+  // Directory Lists
   const [students, setStudents] = useState([]);
   const [parents, setParents] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [classes, setClasses] = useState([]);
-  
-  // Status States
+
+  // Loading States
   const [loading, setLoading] = useState(false);
   const [submittingRecharge, setSubmittingRecharge] = useState(false);
   const [sendingBroadcast, setSendingBroadcast] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
 
-  const loadInitialData = async () => {
+  const loadInitialData = useCallback(async () => {
     try {
       setLoading(true);
-      setErrorMsg("");
-      
-      // Fetch active balance & past recharge history
-      const balRes = await portalService.getSmsBalance();
-      const recRes = await portalService.getSmsRecharges();
-      if (balRes.success) setWallet(balRes.data);
-      if (recRes.success) setRecharges(recRes.data);
-
-      // Fetch directory listings for selectors
-      const [classRes, studRes, parentRes, staffRes] = await Promise.all([
-        axiosInstance.get('/v1/classes').catch(() => ({ data: { data: [] } })),
-        axiosInstance.get('/v1/students?limit=200').catch(() => ({ data: { data: [] } })),
-        axiosInstance.get('/v1/parents').catch(() => ({ data: { data: [] } })),
-        axiosInstance.get('/v1/staffs').catch(() => ({ data: { data: [] } }))
+      const [balRes, recRes, logsRes, classRes, studRes, parentRes, staffRes] = await Promise.all([
+        portalService.getSmsBalance(),
+        portalService.getSmsRecharges(),
+        portalService.getSmsLogs({ limit: 100 }).catch(() => ({ data: [] })),
+        axiosInstance.get("/v1/classes").catch(() => ({ data: { data: [] } })),
+        axiosInstance.get("/v1/students?limit=200").catch(() => ({ data: { data: [] } })),
+        axiosInstance.get("/v1/parents").catch(() => ({ data: { data: [] } })),
+        axiosInstance.get("/v1/staffs").catch(() => ({ data: { data: [] } })),
       ]);
+
+      if (balRes?.success) setWallet(balRes.data);
+      if (recRes?.success) setRecharges(recRes.data || []);
+      if (logsRes?.success) setSmsLogs(logsRes.data || []);
 
       setClasses(classRes?.data?.data || []);
       setStudents(studRes?.data?.data || []);
       setParents(parentRes?.data?.data || []);
-      
-      const staffList = staffRes?.data?.data || [];
-      const teacherList = staffList.filter(s => s.role === 'teacher' || s.designation?.toLowerCase().includes('teacher'));
-      setTeachers(teacherList.length > 0 ? teacherList : staffList);
 
+      const staffList = staffRes?.data?.data || [];
+      const teacherList = staffList.filter(
+        (s) => s.role === "teacher" || s.designation?.toLowerCase().includes("teacher")
+      );
+      setTeachers(teacherList.length > 0 ? teacherList : staffList);
     } catch (err) {
       console.error("Failed to sync SMS configs", err);
-      setErrorMsg("Failed to load SMS system directories.");
+      toast.error("এসএমএস তথ্য লোড করা যায়নি");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadInitialData();
-  }, []);
+  }, [loadInitialData]);
+
+  const handleCopyMerchant = async () => {
+    try {
+      await navigator.clipboard.writeText(MERCHANT_NUMBER.replace(/\s+/g, ""));
+      setCopiedMerchant(true);
+      toast.success("নম্বর কপি হয়েছে");
+      setTimeout(() => setCopiedMerchant(false), 2000);
+    } catch {
+      toast.error("কপি করা যায়নি");
+    }
+  };
 
   const handleRechargeSubmit = async (e) => {
     e.preventDefault();
     if (Number(rechargeAmount) < 100) {
-      setErrorMsg("Minimum recharge request is BDT 100.");
+      toast.error("সর্বনিম্ন রিচার্জ ৳ ১০০");
       return;
     }
 
     try {
       setSubmittingRecharge(true);
-      setErrorMsg("");
-      setSuccessMsg("");
-      
       const res = await portalService.submitSmsRecharge({
         amount: Number(rechargeAmount),
-        senderNumber,
-        transactionId
+        senderNumber: senderNumber.trim(),
+        transactionId: transactionId.trim(),
       });
 
       if (res.success) {
-        setSuccessMsg("Recharge request logged! Pending approval from Super Admin.");
+        toast.success("রিচার্জ অনুরোধ জমা হয়েছে (অনুমোদনের অপেক্ষায়)");
         setRechargeAmount("");
         setSenderNumber("");
         setTransactionId("");
-        
-        // Reload recharge list
+
         const recRes = await portalService.getSmsRecharges();
-        if (recRes.success) setRecharges(recRes.data);
-        
-        setTimeout(() => setSuccessMsg(""), 4000);
+        if (recRes.success) setRecharges(recRes.data || []);
       }
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || "Failed to submit recharge request.");
+      toast.error(err.response?.data?.message || "রিচার্জ অনুরোধ ব্যর্থ হয়েছে");
     } finally {
       setSubmittingRecharge(false);
     }
@@ -132,460 +158,647 @@ const SmsPortal = () => {
   const handleSendBroadcast = async (e) => {
     e.preventDefault();
     if (!message.trim()) {
-      setErrorMsg("Please compose a message before broadcasting.");
+      toast.error("অনুগ্রহ করে বার্তা লিখুন");
       return;
     }
 
     try {
       setSendingBroadcast(true);
-      setErrorMsg("");
-      setSuccessMsg("");
-      
-      const payload = {
+      const res = await portalService.broadcastSms({
         recipientType,
         recipientId: recipientId || undefined,
         classId: classId || undefined,
-        message,
-        smsType
-      };
+        message: message.trim(),
+        smsType,
+      });
 
-      const res = await portalService.broadcastSms(payload);
       if (res.success) {
-        setSuccessMsg(`SMS dispatched successfully to ${res.data.totalSent} recipients!`);
+        toast.success(`${res.data.totalSent} জন প্রাপকের কাছে বার্তা পাঠানো হয়েছে`);
         setMessage("");
         setRecipientId("");
         setClassId("");
-        
-        // Reload balance
-        const balRes = await portalService.getSmsBalance();
+
+        const [balRes, logsRes] = await Promise.all([
+          portalService.getSmsBalance(),
+          portalService.getSmsLogs({ limit: 100 }).catch(() => null),
+        ]);
         if (balRes.success) setWallet(balRes.data);
-        
-        setTimeout(() => setSuccessMsg(""), 4000);
+        if (logsRes?.success) setSmsLogs(logsRes.data || []);
       }
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || "Failed to send SMS. Ensure balance is sufficient.");
+      toast.error(err.response?.data?.message || "বার্তা পাঠানো যায়নি");
     } finally {
       setSendingBroadcast(false);
     }
   };
 
-  // Pricing & Broadcast counts helper
   const getSelectedRate = () => {
-    if (smsType === 'Bulk') return wallet.rates.bulk;
-    if (smsType === 'Masking') return wallet.rates.masking;
-    return wallet.rates.single;
+    if (smsType === "Bulk") return Number(wallet.rates?.bulk ?? 0.25);
+    if (smsType === "Masking") return Number(wallet.rates?.masking ?? 0.4);
+    return Number(wallet.rates?.single ?? 0.3);
   };
 
+  const getStudentClassId = (s) => s?.class_id?._id || s?.class_id || s?.classId?._id || s?.classId;
+
   const countRecipients = () => {
-    if (recipientType === 'Student') {
-      if (recipientId) return 1;
-      return students.length;
-    }
-    if (recipientType === 'Class') {
+    if (recipientType === "Student") return recipientId ? 1 : students.length;
+    if (recipientType === "Class") {
       if (!classId) return 0;
-      return students.filter(s => s.class_id === classId).length;
+      return students.filter((s) => String(getStudentClassId(s)) === String(classId)).length;
     }
-    if (recipientType === 'Teacher') {
-      if (recipientId) return 1;
-      return teachers.length;
-    }
-    if (recipientType === 'Parent') {
-      if (recipientId) return 1;
-      return parents.length;
-    }
+    if (recipientType === "Teacher") return recipientId ? 1 : teachers.length;
+    if (recipientType === "Parent") return recipientId ? 1 : parents.length;
     return 0;
   };
 
+  const isUnicode = useMemo(
+    () => Array.from(message).some((ch) => ch.charCodeAt(0) > 127),
+    [message]
+  );
   const charCount = message.length;
-  const smsFactor = charCount === 0 ? 0 : Math.ceil(charCount / 160);
-  const estimatedCost = Number((countRecipients() * getSelectedRate() * smsFactor).toFixed(2));
+  const singleLimit = isUnicode ? 70 : 160;
+  const multiLimit = isUnicode ? 67 : 153;
+  const smsSegments =
+    charCount === 0 ? 0 : charCount <= singleLimit ? 1 : Math.ceil(charCount / multiLimit);
+
+  const totalRecipients = countRecipients();
+  const activeRate = getSelectedRate();
+  const estimatedCost = Number((totalRecipients * activeRate).toFixed(2));
+  const isInsufficientBalance = estimatedCost > Number(wallet.balance || 0);
+  const pendingCount = recharges.filter((r) => r.status === "Pending").length;
+
+  const categories = [
+    { id: "Student", label: "শিক্ষার্থী", icon: GraduationCap },
+    { id: "Parent", label: "অভিভাবক", icon: Users },
+    { id: "Teacher", label: "শিক্ষক", icon: Briefcase },
+    { id: "Class", label: "শ্রেণি", icon: BookOpen },
+  ];
+
+  const renderStatus = (status) => {
+    if (status === "Approved") {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <CheckCircle2 className="w-3 h-3" /> অনুমোদিত
+        </span>
+      );
+    }
+    if (status === "Rejected") {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
+          <XCircle className="w-3 h-3" /> বাতিল
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+        <Clock className="w-3 h-3" /> অপেক্ষমান
+      </span>
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 animate-in fade-in duration-500">
-      <div className="max-w-[1600px] mx-auto space-y-8">
-        
-        {/* Header Block */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[24px] border border-slate-200 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center border border-indigo-100 shadow-inner">
-              <Smartphone className="w-7 h-7 text-indigo-600" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-slate-800 tracking-tight uppercase">Message & Notification Center</h1>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Send custom announcements and manage prepaid balance</p>
-            </div>
+    <div className="space-y-5 animate-in fade-in duration-300">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-[#1C7D5A]/10 text-[#1C7D5A] flex items-center justify-center shrink-0">
+            <MessageSquare className="w-5 h-5" />
           </div>
-          <div className="flex gap-3">
-            <button 
-              onClick={() => setActiveTab("recharge")}
-              className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-black rounded-xl shadow-lg shadow-indigo-200 hover:scale-[1.02] active:scale-95 transition-all text-xs uppercase tracking-wider"
-            >
-              <Plus className="w-4 h-4" />
-              Recharge Balance
-            </button>
+          <div>
+            <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+              বার্তা ও এসএমএস
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              শিক্ষার্থী, অভিভাবক ও শিক্ষকদের কাছে বার্তা পাঠান এবং ব্যালেন্স পরিচালনা করুন
+            </p>
           </div>
         </div>
 
-        {/* Global Feedback alerts */}
-        {successMsg && (
-          <div className="bg-emerald-50 border border-emerald-100 text-emerald-600 px-6 py-4 rounded-2xl flex items-center gap-3 animate-bounce">
-            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-            <span className="text-xs font-black uppercase tracking-wider">{successMsg}</span>
-          </div>
-        )}
-        {errorMsg && (
-          <div className="bg-rose-50 border border-rose-100 text-rose-600 px-6 py-4 rounded-2xl flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-rose-500" />
-            <span className="text-xs font-black uppercase tracking-wider">{errorMsg}</span>
-          </div>
-        )}
+        {/* Clean Tab Switcher */}
+        <div className="inline-flex p-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setActiveTab("send")}
+            className={`px-4 py-2 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === "send"
+                ? "bg-white dark:bg-slate-900 text-[#1C7D5A] shadow-sm"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+            }`}
+          >
+            <Send className="w-3.5 h-3.5" />
+            বার্তা পাঠান
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("recharge")}
+            className={`px-4 py-2 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === "recharge"
+                ? "bg-white dark:bg-slate-900 text-[#1C7D5A] shadow-sm"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+            }`}
+          >
+            <Wallet className="w-3.5 h-3.5" />
+            ওয়ালেট ও রিচার্জ
+            {pendingCount > 0 && (
+              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-white">
+                {pendingCount}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("logs")}
+            className={`px-4 py-2 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              activeTab === "logs"
+                ? "bg-white dark:bg-slate-900 text-[#1C7D5A] shadow-sm"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+            }`}
+          >
+            <History className="w-3.5 h-3.5" />
+            এসএমএস লগ
+          </button>
+        </div>
+      </div>
 
-        {/* Quick Stats Banner */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-[22px] border border-slate-200 shadow-sm flex items-center gap-5 hover:border-indigo-200 transition-colors">
-            <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center">
-              <DollarSign className="w-7 h-7 text-emerald-600" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active BDT Wallet Balance</p>
-              <p className="text-2xl font-black text-slate-800">৳ {wallet.balance.toFixed(2)}</p>
-            </div>
+      {/* Minimal 3-Card Summary Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">বর্তমান ব্যালেন্স</p>
+            <p className="text-xl font-bold text-[#1C7D5A] mt-1">
+              ৳ {Number(wallet.balance || 0).toFixed(2)}
+            </p>
           </div>
-
-          <div className="bg-white p-6 rounded-[22px] border border-slate-200 shadow-sm flex items-center gap-5 hover:border-indigo-200 transition-colors">
-            <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center">
-              <MessageSquare className="w-7 h-7 text-indigo-600" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Broadcast SMS Rate</p>
-              <p className="text-2xl font-black text-slate-800">৳ {wallet.rates.bulk} <span className="text-xs text-slate-400 font-bold uppercase">/ SMS</span></p>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-[22px] border border-slate-200 shadow-sm flex items-center gap-5 hover:border-indigo-200 transition-colors">
-            <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center">
-              <Clock className="w-7 h-7 text-amber-600 animate-pulse" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pending Recharge requests</p>
-              <p className="text-2xl font-black text-slate-800">{recharges.filter(r => r.status === "Pending").length} Requests</p>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab("recharge")}
+            className="text-xs font-semibold text-[#1C7D5A] hover:underline cursor-pointer"
+          >
+            + রিচার্জ
+          </button>
         </div>
 
-        {/* Spacious Main Console card */}
-        <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-          
-          {/* Tab selectors at the top */}
-          <div className="flex border-b border-slate-200 bg-slate-50/50">
-            <button 
-              onClick={() => setActiveTab("send")}
-              className={`flex-1 py-6 font-black text-xs tracking-widest uppercase flex items-center justify-center gap-2 transition-all ${
-                activeTab === "send"
-                  ? "bg-white text-indigo-600 border-b-2 border-indigo-600"
-                  : "text-slate-400 hover:text-slate-600"
-              }`}
-            >
-              <Send className="w-4 h-4" />
-              Compose Custom Broadcast
-            </button>
-            
-            <button 
-              onClick={() => setActiveTab("recharge")}
-              className={`flex-1 py-6 font-black text-xs tracking-widest uppercase flex items-center justify-center gap-2 transition-all ${
-                activeTab === "recharge"
-                  ? "bg-white text-indigo-600 border-b-2 border-indigo-600"
-                  : "text-slate-400 hover:text-slate-600"
-              }`}
-            >
-              <CreditCard className="w-4 h-4" />
-              Wallet Balance & Recharges
-            </button>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              এসএমএস রেট ({smsType})
+            </p>
+            <p className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-1">
+              ৳ {activeRate.toFixed(2)}{" "}
+              <span className="text-xs font-normal text-slate-400">/ SMS</span>
+            </p>
           </div>
+          <MessageSquare className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+        </div>
 
-          {/* TAB 1: COMPOSE BROADCAST */}
-          {activeTab === "send" && (
-            <form onSubmit={handleSendBroadcast} className="p-8 space-y-8">
-              
-              {/* Recipient Category selector Cards (Gorgeous interactive layout from old design) */}
-              <div className="space-y-4">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                  Select Recipient Category
-                </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[
-                    { id: "Student", label: "Students", icon: GraduationCap },
-                    { id: "Parent", label: "Guardians / Parents", icon: Users },
-                    { id: "Teacher", label: "Teachers / Staff", icon: Briefcase },
-                    { id: "Class", label: "Class-Wise Broadcast", icon: BookOpen }
-                  ].map((cat) => (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => {
-                        setRecipientType(cat.id);
-                        setRecipientId("");
-                        setClassId("");
-                      }}
-                      className={`p-5 rounded-2xl border-2 flex flex-col items-center gap-3 transition-all group ${
-                        recipientType === cat.id
-                          ? "bg-indigo-50 border-indigo-500 text-indigo-600 shadow-md shadow-indigo-100/50 scale-[1.02]"
-                          : "bg-white border-slate-100 text-slate-400 hover:border-indigo-200 hover:text-indigo-600"
-                      }`}
-                    >
-                      <cat.icon 
-                        className={`w-7 h-7 ${recipientType === cat.id ? "text-indigo-600" : "text-slate-300 group-hover:text-indigo-500"}`}
-                      />
-                      <span className="text-xs font-black uppercase tracking-tight">
-                        {cat.label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              অপেক্ষমান রিচার্জ
+            </p>
+            <p className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-1">
+              {pendingCount} টি
+            </p>
+          </div>
+          <Clock className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+        </div>
+      </div>
 
-              {/* Conditional dropdown depending on Category */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                {recipientType === 'Class' ? (
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                      Choose Target Class
-                    </label>
-                    <select 
-                      required
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm shadow-inner"
-                      value={classId}
-                      onChange={(e) => setClassId(e.target.value)}
-                    >
-                      <option value="">-- Click to select class --</option>
-                      {classes.map(c => (
-                        <option key={c._id} value={c._id}>{c.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                      Selective Broadcast (Send to single or broadcast to all)
-                    </label>
-                    <select 
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm shadow-inner"
-                      value={recipientId}
-                      onChange={(e) => setRecipientId(e.target.value)}
-                    >
-                      <option value="">Broadcast to All {recipientType}s</option>
-                      {recipientType === 'Student' && students.map(s => (
-                        <option key={s._id} value={s._id}>{s.firstName} {s.lastName || ''} (Roll: {s.roll_number || 'N/A'})</option>
-                      ))}
-                      {recipientType === 'Teacher' && teachers.map(t => (
-                        <option key={t._id} value={t._id}>{t.name} (Phone: {t.phone})</option>
-                      ))}
-                      {recipientType === 'Parent' && parents.map(p => (
-                        <option key={p._id} value={p._id}>{p.fatherName || p.motherName || 'Parent'} (Phone: {p.contact})</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {/* SMS Category Selector */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                    Choose SMS Cost Rate Type
-                  </label>
-                  <select 
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm shadow-inner"
-                    value={smsType}
-                    onChange={(e) => setSmsType(e.target.value)}
+      {/* TAB 1: COMPOSE */}
+      {activeTab === "send" && (
+        <form
+          onSubmit={handleSendBroadcast}
+          className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 md:p-6 space-y-5"
+        >
+          {/* Recipient Type Tabs */}
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 block">
+              প্রাপকের ধরন
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              {categories.map((cat) => {
+                const Icon = cat.icon;
+                const active = recipientType === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => {
+                      setRecipientType(cat.id);
+                      setRecipientId("");
+                      setClassId("");
+                    }}
+                    className={`py-2.5 px-3.5 rounded-lg border text-sm font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      active
+                        ? "border-[#1C7D5A] bg-[#1C7D5A]/8 text-[#1C7D5A] dark:text-emerald-400"
+                        : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    }`}
                   >
-                    <option value="Single">Single SMS (৳ {wallet.rates.single} / message)</option>
-                    <option value="Bulk">Bulk SMS (৳ {wallet.rates.bulk} / message)</option>
-                    <option value="Masking">Masking / Sender ID Name (৳ {wallet.rates.masking} / message)</option>
-                  </select>
-                </div>
+                    <Icon className="w-4 h-4" />
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
-              </div>
-
-              {/* Message Composer Area */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
-                    Announcements Message Body
-                  </label>
-                  <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">
-                    {charCount} Characters / {smsFactor} SMS (160 Chars/SMS)
-                  </span>
-                </div>
-                <textarea 
+          {/* Target & SMS Rate Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 block">
+                {recipientType === "Class" ? "শ্রেণি নির্বাচন করুন" : "প্রাপক নির্বাচন করুন"}
+              </label>
+              {recipientType === "Class" ? (
+                <select
                   required
-                  placeholder="Type your message announcement here..."
-                  className="w-full bg-slate-50 border border-slate-100 rounded-[2rem] px-8 py-6 text-sm font-bold focus:border-indigo-500 focus:bg-white outline-none transition-all shadow-inner min-h-[160px] resize-none leading-relaxed"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  value={classId}
+                  onChange={(e) => setClassId(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 outline-none focus:border-[#1C7D5A]"
+                >
+                  <option value="">-- শ্রেণি বাছাই করুন --</option>
+                  {classes.map((c) => (
+                    <option key={c._id} value={c._id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <select
+                  value={recipientId}
+                  onChange={(e) => setRecipientId(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 outline-none focus:border-[#1C7D5A]"
+                >
+                  <option value="">
+                    সকল{" "}
+                    {recipientType === "Student"
+                      ? `শিক্ষার্থী (${students.length})`
+                      : recipientType === "Parent"
+                      ? `অভিভাবক (${parents.length})`
+                      : `শিক্ষক (${teachers.length})`}
+                  </option>
+                  {recipientType === "Student" &&
+                    students.map((s) => (
+                      <option key={s._id} value={s._id}>
+                        {s.firstName} {s.lastName || ""} (রোল: {s.roll_number || "N/A"})
+                      </option>
+                    ))}
+                  {recipientType === "Teacher" &&
+                    teachers.map((t) => (
+                      <option key={t._id} value={t._id}>
+                        {t.name} ({t.phone || "নম্বর নেই"})
+                      </option>
+                    ))}
+                  {recipientType === "Parent" &&
+                    parents.map((p) => (
+                      <option key={p._id} value={p._id}>
+                        {p.fatherName || p.motherName || "অভিভাবক"} ({p.contact || "নম্বর নেই"})
+                      </option>
+                    ))}
+                </select>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 block">
+                এসএমএস ধরন
+              </label>
+              <select
+                value={smsType}
+                onChange={(e) => setSmsType(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 outline-none focus:border-[#1C7D5A]"
+              >
+                <option value="Bulk">
+                  Bulk SMS (৳ {Number(wallet.rates?.bulk ?? 0.25).toFixed(2)} / SMS)
+                </option>
+                <option value="Single">
+                  Single SMS (৳ {Number(wallet.rates?.single ?? 0.3).toFixed(2)} / SMS)
+                </option>
+                <option value="Masking">
+                  Masking SMS (৳ {Number(wallet.rates?.masking ?? 0.4).toFixed(2)} / SMS)
+                </option>
+              </select>
+            </div>
+          </div>
+
+          {/* Message Body */}
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                বার্তা লিখুন
+              </label>
+              <span className="text-xs text-slate-400">
+                {charCount} অক্ষর • {smsSegments} অংশ ({isUnicode ? "৭০ অক্ষর/অংশ" : "160 chars/part"})
+              </span>
+            </div>
+
+            <textarea
+              required
+              rows={5}
+              placeholder="এখানে আপনার বার্তা লিখুন..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-[#1C7D5A] leading-relaxed resize-y"
+            />
+
+            {/* Subtle Template Chips */}
+            <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+              <span className="text-xs text-slate-400 mr-1">টেমপ্লেট:</span>
+              {QUICK_TEMPLATES.map((tpl) => (
+                <button
+                  key={tpl.label}
+                  type="button"
+                  onClick={() => setMessage(tpl.text)}
+                  className="px-2.5 py-1 rounded-md text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 hover:bg-[#1C7D5A]/10 hover:text-[#1C7D5A] border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+                >
+                  {tpl.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Clean Footer Action Bar */}
+          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="text-sm text-slate-600 dark:text-slate-300 flex flex-wrap items-center gap-x-4 gap-y-1">
+              <span>
+                প্রাপক: <strong className="text-slate-800 dark:text-slate-100">{totalRecipients} জন</strong>
+              </span>
+              <span>
+                সম্ভাব্য খরচ:{" "}
+                <strong className="text-[#1C7D5A]">৳ {estimatedCost.toFixed(2)}</strong>
+              </span>
+              {isInsufficientBalance && totalRecipients > 0 && (
+                <span className="text-xs font-semibold text-rose-600 flex items-center gap-1">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  পর্যাপ্ত ব্যালেন্স নেই
+                </span>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={
+                loading ||
+                sendingBroadcast ||
+                isInsufficientBalance ||
+                totalRecipients === 0 ||
+                !message.trim()
+              }
+              className="px-6 py-2.5 bg-[#1C7D5A] hover:bg-[#156347] text-white text-sm font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-45 disabled:pointer-events-none cursor-pointer"
+            >
+              {sendingBroadcast ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  পাঠানো হচ্ছে...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  বার্তা পাঠান
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* TAB 2: WALLET & RECHARGE */}
+      {activeTab === "recharge" && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          {/* Recharge Form */}
+          <div className="lg:col-span-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+            <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+              রিচার্জ অনুরোধ
+            </h2>
+
+            <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3.5 space-y-1.5">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span>bKash / Nagad Merchant</span>
+                <span>সর্বনিম্ন ৳ ১০০</span>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-sm font-bold text-slate-800 dark:text-slate-100">
+                  {MERCHANT_NUMBER}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopyMerchant}
+                  className="text-xs font-semibold text-[#1C7D5A] flex items-center gap-1 hover:underline cursor-pointer"
+                >
+                  {copiedMerchant ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copiedMerchant ? "কপি হয়েছে" : "কপি"}
+                </button>
+              </div>
+            </div>
+
+            <form onSubmit={handleRechargeSubmit} className="space-y-3.5">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 block">
+                  পরিমাণ (৳)
+                </label>
+                <input
+                  type="number"
+                  min={100}
+                  required
+                  placeholder="যেমন: ৫০০"
+                  value={rechargeAmount}
+                  onChange={(e) => setRechargeAmount(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-800 dark:text-slate-100 outline-none focus:border-[#1C7D5A]"
                 />
               </div>
 
-              {/* Broadcast Calculation details & trigger */}
-              <div className="bg-slate-50 border border-slate-200/80 rounded-[20px] p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Estimated cost breakdown</p>
-                  <h3 className="text-xl font-extrabold text-slate-800 mt-1">
-                    ৳ {estimatedCost.toFixed(2)}{" "}
-                    <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
-                      (Total {countRecipients()} recipients * ৳ {getSelectedRate()} * {smsFactor} SMS)
-                    </span>
-                  </h3>
-                </div>
-                <button 
-                  type="submit"
-                  disabled={sendingBroadcast || estimatedCost > wallet.balance || countRecipients() === 0}
-                  className="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl shadow-xl shadow-indigo-100 hover:scale-[1.02] active:scale-95 transition-all text-xs uppercase tracking-widest flex items-center gap-2 disabled:opacity-40 disabled:pointer-events-none"
-                >
-                  <Send className="w-4 h-4" />
-                  {sendingBroadcast ? "Sending Broadcast..." : "Send Custom Message"}
-                </button>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 block">
+                  প্রেরকের নম্বর
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="017XXXXXXXX"
+                  value={senderNumber}
+                  onChange={(e) => setSenderNumber(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-mono text-slate-800 dark:text-slate-100 outline-none focus:border-[#1C7D5A]"
+                />
               </div>
 
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-300 block">
+                  ট্রানজেকশন আইডি (TrxID)
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="TR_BKA897A"
+                  value={transactionId}
+                  onChange={(e) => setTransactionId(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-mono uppercase text-slate-800 dark:text-slate-100 outline-none focus:border-[#1C7D5A]"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submittingRecharge || Number(rechargeAmount) < 100}
+                className="w-full py-2.5 bg-[#1C7D5A] hover:bg-[#156347] text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-45 disabled:pointer-events-none cursor-pointer"
+              >
+                {submittingRecharge ? "জমা হচ্ছে..." : "অনুরোধ জমা দিন"}
+              </button>
             </form>
-          )}
+          </div>
 
-          {/* TAB 2: RECHARGE & WALLET */}
-          {activeTab === "recharge" && (
-            <div className="p-8 space-y-10 animate-in slide-in-from-right-10 duration-300">
-              
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                
-                {/* Bkash payment manual recharge form */}
-                <div className="xl:col-span-1 bg-slate-50 border border-slate-150 rounded-[22px] p-6 space-y-6">
-                  <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
-                    <CreditCard className="w-5 h-5 text-indigo-600" />
-                    <h4 className="text-xs font-black text-slate-700 uppercase tracking-wider">Balance Recharge Ticket</h4>
-                  </div>
-
-                  {/* Operator Merchant Details */}
-                  <div className="bg-indigo-50 border border-indigo-100 text-indigo-700 p-4 rounded-xl space-y-1 text-xs">
-                    <p className="font-extrabold">Bkash / Nagad Merchant</p>
-                    <p className="font-bold font-mono">Number: +880 1700 000000</p>
-                    <p className="text-[10px] text-indigo-600">Minimum payment amount: BDT 100.</p>
-                  </div>
-
-                  <form onSubmit={handleRechargeSubmit} className="space-y-4">
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Recharge Amount (৳)</label>
-                      <input 
-                        type="number"
-                        required
-                        placeholder="e.g. 150"
-                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 text-sm shadow-sm"
-                        value={rechargeAmount}
-                        onChange={(e) => setRechargeAmount(e.target.value)}
-                      />
-                      {rechargeAmount && Number(rechargeAmount) < 100 && (
-                        <p className="text-[9px] text-rose-500 font-bold uppercase tracking-wider mt-1 flex items-center gap-1">
-                          <AlertTriangle className="w-3.5 h-3.5" /> Amount must be BDT 100 or more
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Sender Phone Number</label>
-                      <input 
-                        type="text"
-                        required
-                        placeholder="e.g. 01712XXXXXX"
-                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 text-sm shadow-sm font-mono"
-                        value={senderNumber}
-                        onChange={(e) => setSenderNumber(e.target.value)}
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Transaction ID (TrxID)</label>
-                      <input 
-                        type="text"
-                        required
-                        placeholder="e.g. TR_BKA897A"
-                        className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 text-sm shadow-sm font-mono uppercase"
-                        value={transactionId}
-                        onChange={(e) => setTransactionId(e.target.value)}
-                      />
-                    </div>
-
-                    <button 
-                      type="submit"
-                      disabled={submittingRecharge || Number(rechargeAmount) < 100}
-                      className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl shadow-lg shadow-indigo-100 hover:scale-[1.01] active:scale-95 transition-all text-xs uppercase tracking-widest disabled:opacity-40"
-                    >
-                      {submittingRecharge ? "Submitting Ticket..." : "Submit Recharge details"}
-                    </button>
-                  </form>
-                </div>
-
-                {/* History table */}
-                <div className="xl:col-span-2 space-y-4">
-                  <div className="flex items-center gap-2 px-2">
-                    <History className="w-5 h-5 text-slate-400" />
-                    <h4 className="text-xs font-black text-slate-700 uppercase tracking-wider">Recharge approvals history</h4>
-                  </div>
-
-                  <div className="bg-white border border-slate-200 rounded-[22px] overflow-hidden shadow-sm">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-slate-50 border-b border-slate-200">
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</th>
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount</th>
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sender Phone</th>
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Transaction ID</th>
-                          <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {recharges.length === 0 ? (
-                          <tr>
-                            <td colSpan="5" className="px-6 py-8 text-center font-bold text-slate-400 uppercase text-xs">No past recharge history found.</td>
-                          </tr>
-                        ) : (
-                          recharges.map((req) => (
-                            <tr key={req._id} className="hover:bg-slate-50/50 transition-colors">
-                              <td className="px-6 py-4 text-xs font-bold text-slate-500">
-                                {new Date(req.created_at).toLocaleDateString()}
-                              </td>
-                              <td className="px-6 py-4 font-black text-slate-800">
-                                ৳ {req.amount.toFixed(2)}
-                              </td>
-                              <td className="px-6 py-4 font-mono font-bold text-slate-600 text-xs">
-                                {req.senderNumber}
-                              </td>
-                              <td className="px-6 py-4">
-                                <span className="bg-slate-50 text-slate-600 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg border border-slate-200">
-                                  {req.transactionId}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 text-center">
-                                <span className={`text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border ${
-                                  req.status === 'Pending' ? 'bg-amber-50 text-amber-500 border-amber-200/50 animate-pulse' :
-                                  req.status === 'Approved' ? 'bg-emerald-50 text-emerald-500 border-emerald-200/50' :
-                                  'bg-rose-50 text-rose-500 border-rose-200/50'
-                                }`}>
-                                  {req.status}
-                                </span>
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-              </div>
-
+          {/* Recharge History Table */}
+          <div className="lg:col-span-8 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                রিচার্জ ইতিহাস
+              </h2>
+              <span className="text-xs text-slate-400">মোট {recharges.length} টি</span>
             </div>
-          )}
 
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    <th className="px-5 py-3">তারিখ</th>
+                    <th className="px-5 py-3">পরিমাণ</th>
+                    <th className="px-5 py-3">নম্বর</th>
+                    <th className="px-5 py-3">TrxID</th>
+                    <th className="px-5 py-3 text-center">অবস্থা</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                  {recharges.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-5 py-12 text-center text-xs text-slate-400">
+                        কোনো রিচার্জ ইতিহাস পাওয়া যায়নি
+                      </td>
+                    </tr>
+                  ) : (
+                    recharges.map((req) => (
+                      <tr
+                        key={req._id}
+                        className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                      >
+                        <td className="px-5 py-3.5 text-xs text-slate-500 whitespace-nowrap">
+                          {new Date(req.created_at).toLocaleDateString("bn-BD")}
+                        </td>
+                        <td className="px-5 py-3.5 font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap">
+                          ৳ {Number(req.amount || 0).toFixed(2)}
+                        </td>
+                        <td className="px-5 py-3.5 font-mono text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                          {req.senderNumber}
+                        </td>
+                        <td className="px-5 py-3.5 font-mono text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                          {req.transactionId}
+                        </td>
+                        <td className="px-5 py-3.5 text-center whitespace-nowrap">
+                          {renderStatus(req.status)}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+      )}
 
-      </div>
+      {/* TAB 3: SMS LOGS */}
+      {activeTab === "logs" && (
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                প্রেরিত এসএমএস লগ
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                হাজিরা অটো-এসএমএস ও ব্রডকাস্ট বার্তার ডেলিভারি রেকর্ড
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {[
+                { id: "all", label: "সব" },
+                { id: "attendance", label: "হাজিরা (Auto)" },
+                { id: "broadcast", label: "ব্রডকাস্ট" },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setLogCategoryFilter(item.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
+                    logCategoryFilter === item.id
+                      ? "bg-[#1C7D5A] text-white border-[#1C7D5A]"
+                      : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  <th className="px-5 py-3">সময়</th>
+                  <th className="px-5 py-3">ধরন</th>
+                  <th className="px-5 py-3">প্রাপক ও নম্বর</th>
+                  <th className="px-5 py-3">বার্তা</th>
+                  <th className="px-5 py-3 text-right">খরচ</th>
+                  <th className="px-5 py-3 text-center">অবস্থা</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                {smsLogs.filter((l) => logCategoryFilter === "all" || (l.category || "broadcast") === logCategoryFilter).length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-5 py-12 text-center text-xs text-slate-400">
+                      কোনো এসএমএস লগ পাওয়া যায়নি
+                    </td>
+                  </tr>
+                ) : (
+                  smsLogs
+                    .filter((l) => logCategoryFilter === "all" || (l.category || "broadcast") === logCategoryFilter)
+                    .map((log) => (
+                      <tr key={log._id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+                        <td className="px-5 py-3.5 text-xs text-slate-500 whitespace-nowrap">
+                          {log.sentAt ? new Date(log.sentAt).toLocaleString("bn-BD") : "-"}
+                        </td>
+                        <td className="px-5 py-3.5 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+                            log.category === "attendance"
+                              ? "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                              : "bg-slate-100 text-slate-700 border border-slate-200"
+                          }`}>
+                            {log.category === "attendance" ? `হাজিরা (${log.attendanceStatus || ""})` : "ব্রডকাস্ট"}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5 whitespace-nowrap">
+                          <p className="text-xs font-bold text-slate-800 dark:text-slate-100">{log.recipientName}</p>
+                          <p className="text-[11px] font-mono text-slate-500">{log.to}</p>
+                        </td>
+                        <td className="px-5 py-3.5 text-xs text-slate-600 dark:text-slate-300 max-w-md">
+                          {log.message}
+                        </td>
+                        <td className="px-5 py-3.5 text-right text-xs font-bold text-slate-800 dark:text-slate-100 whitespace-nowrap">
+                          ৳ {Number(log.cost || 0).toFixed(2)}
+                        </td>
+                        <td className="px-5 py-3.5 text-center whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${
+                            log.status === "failed"
+                              ? "bg-rose-50 text-rose-700 border border-rose-200"
+                              : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          }`}>
+                            {log.status === "failed" ? "ব্যর্থ" : log.status === "simulated" ? "লগড (Sim)" : "প্রেরিত"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

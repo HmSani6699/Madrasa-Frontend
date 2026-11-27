@@ -23,12 +23,23 @@ import {
   Cpu,
   Activity,
   Sparkles,
-  TrendingUp
+  TrendingUp,
+  Wallet,
+  RotateCcw,
+  Loader2,
+  AlertTriangle
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { usePortalSettings } from "../../context/PortalSettingsContext";
 import InputField from "../../components/InputField";
 import { useAuth } from "../../context/AuthContext";
 import portalService from "../../services/portalService";
+
+const DEFAULT_TEMPLATES = {
+  Absent: "আসসালামু আলাইকুম। {student_name} আজ ({date}) {madrasa_name}-এ অনুপস্থিত রয়েছে।",
+  Late: "আসসালামু আলাইকুম। {student_name} আজ ({date}) {madrasa_name}-এ দেরিতে উপস্থিত হয়েছে।",
+  Present: "আসসালামু আলাইকুম। {student_name} আজ ({date}) {madrasa_name}-এ উপস্থিত হয়েছে।",
+};
 
 const SettingsPage = () => {
   const { settings, updateSettings } = usePortalSettings();
@@ -39,10 +50,44 @@ const SettingsPage = () => {
   const [studentStats, setStudentStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(false);
 
+  // Backend-persisted SMS settings state
+  const [smsLoading, setSmsLoading] = useState(true);
+  const [smsSaving, setSmsSaving] = useState(false);
+  const [smsBalance, setSmsBalance] = useState(0);
+  const [smsRates, setSmsRates] = useState({ single: 0.3, bulk: 0.25, masking: 0.4 });
+  const [defaultTemplates, setDefaultTemplates] = useState(DEFAULT_TEMPLATES);
+  const [smsConfig, setSmsConfig] = useState({
+    admission: false,
+    fees: false,
+    attendance: false,
+    attendanceTrigger: "absent_only",
+    attendanceTemplates: { ...DEFAULT_TEMPLATES },
+  });
+
   const sub = currentMadrasa?.subscription || {};
   const studentLimit = sub.studentLimit || 150;
   const currentStudents = studentStats?.totalStudents || 0;
   const utilizationPercentage = studentLimit ? Math.min(Math.round((currentStudents / studentLimit) * 100), 100) : 0;
+
+  useEffect(() => {
+    const loadSmsSettings = async () => {
+      try {
+        setSmsLoading(true);
+        const res = await portalService.getSmsSettings();
+        if (res?.success && res?.data?.settings) {
+          setSmsConfig(res.data.settings);
+          setSmsBalance(Number(res.data.balance || 0));
+          if (res.data.rates) setSmsRates(res.data.rates);
+          if (res.data.defaultTemplates) setDefaultTemplates(res.data.defaultTemplates);
+        }
+      } catch (err) {
+        console.error("Failed to load SMS settings from backend", err);
+      } finally {
+        setSmsLoading(false);
+      }
+    };
+    loadSmsSettings();
+  }, []);
 
   useEffect(() => {
     if (activeTab === "Subscription") {
@@ -67,14 +112,77 @@ const SettingsPage = () => {
     { id: "Subscription", label: "SaaS Subscription", icon: ShieldCheck },
   ];
 
-  const handleSmsToggle = (key) => {
-    updateSettings({
-      ...settings,
-      sms: {
-        ...settings.sms,
-        [key]: !settings.sms[key]
+  const persistSmsConfig = async (nextConfig, showToast = true) => {
+    try {
+      setSmsSaving(true);
+      const res = await portalService.updateSmsSettings({
+        admission: Boolean(nextConfig.admission),
+        fees: Boolean(nextConfig.fees),
+        attendance: Boolean(nextConfig.attendance),
+        attendanceTrigger: nextConfig.attendanceTrigger || "absent_only",
+        attendanceTemplates: nextConfig.attendanceTemplates,
+      });
+      if (res?.success) {
+        updateSettings({
+          ...settings,
+          sms: {
+            admission: nextConfig.admission,
+            fees: nextConfig.fees,
+            attendance: nextConfig.attendance,
+          },
+        });
+        if (showToast) toast.success("SMS সেটিংস সংরক্ষণ করা হয়েছে");
       }
-    });
+    } catch (err) {
+      toast.error(err.response?.data?.message || "SMS সেটিংস সেভ করা যায়নি");
+    } finally {
+      setSmsSaving(false);
+    }
+  };
+
+  const handleSmsToggle = (key) => {
+    const nextConfig = {
+      ...smsConfig,
+      [key]: !smsConfig[key],
+    };
+    setSmsConfig(nextConfig);
+    persistSmsConfig(nextConfig, true);
+  };
+
+  const handleTriggerChange = (trigger) => {
+    const nextConfig = {
+      ...smsConfig,
+      attendanceTrigger: trigger,
+    };
+    setSmsConfig(nextConfig);
+    persistSmsConfig(nextConfig, true);
+  };
+
+  const handleTemplateChange = (statusKey, value) => {
+    setSmsConfig((prev) => ({
+      ...prev,
+      attendanceTemplates: {
+        ...prev.attendanceTemplates,
+        [statusKey]: value,
+      },
+    }));
+  };
+
+  const handleResetTemplates = () => {
+    const nextConfig = {
+      ...smsConfig,
+      attendanceTemplates: { ...defaultTemplates },
+    };
+    setSmsConfig(nextConfig);
+    persistSmsConfig(nextConfig, true);
+  };
+
+  const handleSaveChanges = () => {
+    if (activeTab === "SMS") {
+      persistSmsConfig(smsConfig, true);
+    } else {
+      toast.success("পরিবর্তন সংরক্ষণ করা হয়েছে");
+    }
   };
 
   const handleProfileUpdate = (key, value) => {
@@ -89,13 +197,15 @@ const SettingsPage = () => {
 
   const Toggle = ({ enabled, onChange, label, description }) => (
     <div className="flex items-center justify-between p-6 bg-slate-50 border border-slate-100 rounded-3xl group hover:bg-white hover:border-[#1C7D5A15] hover:shadow-lg hover:shadow-[#1C7D5A08] transition-all cursor-pointer" onClick={onChange}>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 pr-4">
         <div>
           <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">{label}</h4>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{description}</p>
+          {description && (
+            <p className="text-[11px] font-bold text-slate-400 mt-1">{description}</p>
+          )}
         </div>
       </div>
-      <div className={`w-14 h-8 rounded-full relative transition-all duration-300 ${enabled ? 'bg-[#1C7D5A] shadow-inner' : 'bg-slate-200 shadow-inner'}`}>
+      <div className={`w-14 h-8 shrink-0 rounded-full relative transition-all duration-300 ${enabled ? 'bg-[#1C7D5A] shadow-inner' : 'bg-slate-200 shadow-inner'}`}>
         <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-all duration-300 ${enabled ? 'translate-x-6' : 'translate-x-0'}`} />
       </div>
     </div>
@@ -116,9 +226,14 @@ const SettingsPage = () => {
              
             </div>
           </div>
-          <button className="flex items-center gap-2 px-8 py-3 bg-[#1C7D5A] text-white font-black rounded-xl shadow-xl shadow-[#1C7D5A]/20 hover:bg-[#123628] hover:scale-[1.02] active:scale-95 transition-all">
-            <Save className="w-5 h-5" />
-            {t("common.save_changes")}
+          <button
+            type="button"
+            onClick={handleSaveChanges}
+            disabled={smsSaving}
+            className="flex items-center gap-2 px-8 py-3 bg-[#1C7D5A] text-white font-black rounded-xl shadow-xl shadow-[#1C7D5A]/20 hover:bg-[#123628] hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-60 cursor-pointer"
+          >
+            {smsSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+            {smsSaving ? "Saving..." : t("common.save_changes")}
           </button>
         </div>
 
@@ -153,38 +268,189 @@ const SettingsPage = () => {
                  
                   {activeTab === "SMS" && (
                    <div className="space-y-8 animate-in fade-in duration-300">
-                      <div className="flex items-center gap-4 mb-2 pb-6 border-b border-slate-50">
-                         <div className="w-12 h-12 bg-[#1C7D5A]/10 rounded-2xl flex items-center justify-center border border-[#1C7D5A]/20">
-                             <MessageSquare className="w-6 h-6 text-[#1C7D5A]" />
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2 pb-6 border-b border-slate-100">
+                         <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-[#1C7D5A]/10 rounded-2xl flex items-center justify-center border border-[#1C7D5A]/20">
+                                <MessageSquare className="w-6 h-6 text-[#1C7D5A]" />
+                            </div>
+                            <div>
+                               <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">{t("settings_page.sms_trigger_mgmt")}</h2>
+                               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t("settings_page.sms_trigger_desc")}</p>
+                            </div>
                          </div>
-                         <div>
-                            <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">{t("settings_page.sms_trigger_mgmt")}</h2>
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t("settings_page.sms_trigger_desc")}</p>
+
+                         <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-100">
+                            <Wallet className="w-4 h-4 text-[#1C7D5A]" />
+                            <div className="text-right">
+                               <p className="text-[10px] font-bold text-slate-500 uppercase">SMS Wallet</p>
+                               <p className="text-sm font-black text-[#1C7D5A]">৳ {smsBalance.toFixed(2)} <span className="text-[10px] font-semibold text-slate-400">(৳{smsRates.single}/SMS)</span></p>
+                            </div>
                          </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                         <Toggle 
-                           enabled={settings?.sms?.admission ?? false}
-                           onChange={() => handleSmsToggle('admission')}
-                           
-                           label={t("settings_page.admission_sms")}
-                         />
-                         <Toggle 
-                           enabled={settings?.sms?.fees ?? false}
-                           onChange={() => handleSmsToggle('fees')}
-                          
-                           label={t("settings_page.fees_sms")}
-                         />
-                         <Toggle 
-                           enabled={settings?.sms?.attendance ?? false}
-                           onChange={() => handleSmsToggle('attendance')}
-                          
-                           label={t("settings_page.attendance_sms")}
-                         />
-                      </div>
+                      {smsLoading ? (
+                        <div className="py-12 flex items-center justify-center gap-2 text-slate-400 font-bold text-sm">
+                          <Loader2 className="w-5 h-5 animate-spin text-[#1C7D5A]" />
+                          Loading SMS configuration...
+                        </div>
+                      ) : (
+                        <>
+                          {smsConfig.attendance && smsBalance < smsRates.single && (
+                            <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold">
+                              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+                              <span>
+                                আপনার SMS ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই (বর্তমান ব্যালেন্স ৳{smsBalance.toFixed(2)})। হাজিরা সেভ হবে, তবে রিচার্জ না করা পর্যন্ত অটো-এসএমএস পাঠানো স্থগিত থাকবে।
+                              </span>
+                            </div>
+                          )}
 
-                     
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                             <Toggle 
+                               enabled={smsConfig.attendance}
+                               onChange={() => handleSmsToggle('attendance')}
+                               label={t("settings_page.attendance_sms")}
+                               description={t("settings_page.attendance_sms_desc")}
+                             />
+                             <Toggle 
+                               enabled={smsConfig.admission}
+                               onChange={() => handleSmsToggle('admission')}
+                               label={t("settings_page.admission_sms")}
+                               description={t("settings_page.admission_sms_desc")}
+                             />
+                             <Toggle 
+                               enabled={smsConfig.fees}
+                               onChange={() => handleSmsToggle('fees')}
+                               label={t("settings_page.fees_sms")}
+                               description={t("settings_page.fees_sms_desc")}
+                             />
+                          </div>
+
+                          {/* Attendance SMS Rules & Templates */}
+                          <div className={`rounded-3xl border p-6 md:p-8 space-y-6 transition-all ${smsConfig.attendance ? 'bg-slate-50/70 border-emerald-200' : 'bg-slate-50/40 border-slate-100 opacity-65'}`}>
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                              <div>
+                                <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">
+                                  Attendance Auto-SMS Rule & Templates
+                                </h3>
+                                <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                                  কোন অবস্থায় অভিভাবকের কাছে মেসেজ যাবে এবং কী লেখা যাবে তা নির্ধারণ করুন (একই দিনে একই ছাত্রকে দুবার SMS যাবে না)।
+                                </p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={handleResetTemplates}
+                                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer self-start"
+                              >
+                                <RotateCcw className="w-3.5 h-3.5" />
+                                ডিফল্ট টেমপ্লেট
+                              </button>
+                            </div>
+
+                            {/* Trigger Mode Selector */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                              {[
+                                {
+                                  id: "absent_only",
+                                  title: "শুধু Absent (প্রস্তাবিত)",
+                                  desc: "শুধু অনুপস্থিত থাকলে SMS যাবে — খরচ সবচেয়ে কম",
+                                },
+                                {
+                                  id: "absent_late",
+                                  title: "Absent ও Late",
+                                  desc: "অনুপস্থিত বা দেরিতে এলে অভিভাবক জানবে",
+                                },
+                                {
+                                  id: "all",
+                                  title: "সব স্ট্যাটাস (Present + Absent + Late)",
+                                  desc: "উপস্থিত, অনুপস্থিত ও দেরি — সব ক্ষেত্রেই SMS যাবে",
+                                },
+                              ].map((opt) => {
+                                const selected = smsConfig.attendanceTrigger === opt.id;
+                                return (
+                                  <button
+                                    key={opt.id}
+                                    type="button"
+                                    onClick={() => handleTriggerChange(opt.id)}
+                                    className={`text-left p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                                      selected
+                                        ? "border-[#1C7D5A] bg-white shadow-sm"
+                                        : "border-slate-200 bg-white/60 hover:border-slate-300"
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between gap-2">
+                                      <span className={`text-xs font-black ${selected ? "text-[#1C7D5A]" : "text-slate-700"}`}>
+                                        {opt.title}
+                                      </span>
+                                      {selected && <CheckCircle2 className="w-4 h-4 text-[#1C7D5A] shrink-0" />}
+                                    </div>
+                                    <p className="text-[11px] font-medium text-slate-500 mt-1">{opt.desc}</p>
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            {/* Editable Message Templates */}
+                            <div className="space-y-4 pt-2">
+                              <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
+                                <Info className="w-3.5 h-3.5 text-[#1C7D5A]" />
+                                <span>
+                                  ব্যবহারযোগ্য ভ্যারিয়েবল: <code className="px-1.5 py-0.5 bg-white rounded border border-slate-200">{"{student_name}"}</code>{" "}
+                                  <code className="px-1.5 py-0.5 bg-white rounded border border-slate-200">{"{date}"}</code>{" "}
+                                  <code className="px-1.5 py-0.5 bg-white rounded border border-slate-200">{"{madrasa_name}"}</code>
+                                </span>
+                              </div>
+
+                              <div className="grid grid-cols-1 gap-4">
+                                <div>
+                                  <label className="text-xs font-bold text-rose-600 block mb-1.5">Absent SMS টেমপ্লেট</label>
+                                  <textarea
+                                    rows={2}
+                                    value={smsConfig.attendanceTemplates?.Absent || ""}
+                                    onChange={(e) => handleTemplateChange("Absent", e.target.value)}
+                                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:border-[#1C7D5A]"
+                                  />
+                                </div>
+
+                                {(smsConfig.attendanceTrigger === "absent_late" || smsConfig.attendanceTrigger === "all") && (
+                                  <div>
+                                    <label className="text-xs font-bold text-amber-600 block mb-1.5">Late SMS টেমপ্লেট</label>
+                                    <textarea
+                                      rows={2}
+                                      value={smsConfig.attendanceTemplates?.Late || ""}
+                                      onChange={(e) => handleTemplateChange("Late", e.target.value)}
+                                      className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:border-[#1C7D5A]"
+                                    />
+                                  </div>
+                                )}
+
+                                {smsConfig.attendanceTrigger === "all" && (
+                                  <div>
+                                    <label className="text-xs font-bold text-emerald-600 block mb-1.5">Present SMS টেমপ্লেট</label>
+                                    <textarea
+                                      rows={2}
+                                      value={smsConfig.attendanceTemplates?.Present || ""}
+                                      onChange={(e) => handleTemplateChange("Present", e.target.value)}
+                                      className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 outline-none focus:border-[#1C7D5A]"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="flex justify-end pt-2">
+                                <button
+                                  type="button"
+                                  onClick={() => persistSmsConfig(smsConfig, true)}
+                                  disabled={smsSaving}
+                                  className="px-6 py-2.5 bg-[#1C7D5A] text-white text-xs font-black rounded-xl shadow-md hover:bg-[#156347] transition-all flex items-center gap-2 disabled:opacity-60 cursor-pointer"
+                                >
+                                  {smsSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                                  SMS সেটিংস সেভ করুন
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
                    </div>
                  )}
 

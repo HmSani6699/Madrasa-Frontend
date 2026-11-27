@@ -35,6 +35,21 @@ const portalService = {
   broadcastSms: async (broadcastData) => {
     const response = await axiosInstance.post(endpoints.portal.smsBroadcast, broadcastData);
     return response.data;
+  },
+
+  getSmsSettings: async () => {
+    const response = await axiosInstance.get(endpoints.portal.smsSettings);
+    return response.data;
+  },
+
+  updateSmsSettings: async (settingsData) => {
+    const response = await axiosInstance.put(endpoints.portal.smsSettings, settingsData);
+    return response.data;
+  },
+
+  getSmsLogs: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.portal.smsLogs, { params });
+    return response.data;
   }
 };
 

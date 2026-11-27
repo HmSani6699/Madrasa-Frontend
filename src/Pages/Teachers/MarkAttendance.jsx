@@ -15,9 +15,11 @@ import {
   FileCheck,
   MoreVertical,
   AlertCircle,
-  Loader2
+  Loader2,
+  MessageSquare
 } from "lucide-react";
 import teacherService from "../../services/teacherService";
+import portalService from "../../services/portalService";
 import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-hot-toast";
 
@@ -35,13 +37,16 @@ const MarkAttendance = () => {
   const [selectedClassId, setSelectedClassId] = useState("");
   const [selectedSectionId, setSelectedSectionId] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [smsSettings, setSmsSettings] = useState(null);
+  const [sendAutoSms, setSendAutoSms] = useState(true);
 
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const [classesRes, sectionsRes] = await Promise.all([
+        const [classesRes, sectionsRes, smsRes] = await Promise.all([
           axiosInstance.get("/v1/classes"),
-          axiosInstance.get("/v1/sections")
+          axiosInstance.get("/v1/sections"),
+          portalService.getSmsSettings().catch(() => null),
         ]);
         if (classesRes.data.success) {
             setClasses(classesRes.data.data);
@@ -50,6 +55,9 @@ const MarkAttendance = () => {
             }
         }
         if (sectionsRes.data.success) setSections(sectionsRes.data.data);
+        if (smsRes?.success && smsRes?.data?.settings) {
+          setSmsSettings(smsRes.data.settings);
+        }
       } catch (err) {
         console.error("Error fetching classes/sections:", err);
       }
@@ -142,15 +150,21 @@ const MarkAttendance = () => {
         status: status.charAt(0).toUpperCase() + status.slice(1)
       }));
 
-      await teacherService.markAttendance({
+      const res = await teacherService.markAttendance({
         class_id: selectedClassId,
         section_id: selectedSectionId,
         date: selectedDate,
-        records: formattedData 
+        records: formattedData,
+        sendSms: smsSettings?.attendance ? sendAutoSms : false,
       });
       
       setIsSubmitting(false);
       setIsSuccess(true);
+      if (res?.smsSummary?.sentCount > 0) {
+        toast.success(`${res.smsSummary.sentCount} জন অভিভাবককে Attendance SMS পাঠানো হয়েছে`);
+      } else if (res?.smsSummary?.skippedReason === "insufficient_balance") {
+        toast("হাজিরা সেভ হয়েছে (অপর্যাপ্ত SMS ব্যালেন্সের কারণে SMS যায়নি)", { icon: "⚠️" });
+      }
       setTimeout(() => setIsSuccess(false), 3000);
       fetchStudentsAndAttendance();
     } catch (err) {
@@ -384,11 +398,26 @@ const MarkAttendance = () => {
                      <FileCheck className="w-10 h-10 text-emerald-600" />
                   </div>
                   <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight mb-4 leading-none">Complete Roll Call?</h3>
-                  <p className="text-sm font-bold text-slate-500 leading-relaxed mb-10 px-4">
+                  <p className="text-sm font-bold text-slate-500 leading-relaxed mb-6 px-4">
                      Confirming will sync today's attendance for <span className="text-slate-800 font-black uppercase">
                         {classes.find(c => c._id === selectedClassId)?.name}
                      </span> with the institutional records.
                   </p>
+
+                  {smsSettings?.attendance && (
+                    <label className="mb-6 flex items-center justify-center gap-2.5 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-800 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={sendAutoSms}
+                        onChange={(e) => setSendAutoSms(e.target.checked)}
+                        className="accent-emerald-600 w-4 h-4"
+                      />
+                      <MessageSquare className="w-4 h-4 text-emerald-600" />
+                      <span>
+                        অভিভাবকদের অটো-SMS পাঠান ({smsSettings.attendanceTrigger === "all" ? "সব স্ট্যাটাস" : smsSettings.attendanceTrigger === "absent_late" ? "Absent ও Late" : "শুধু Absent"})
+                      </span>
+                    </label>
+                  )}
                   
                   <div className="flex flex-col gap-3">
                      <button 

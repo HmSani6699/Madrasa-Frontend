@@ -90,6 +90,8 @@ const endpoints = {
     smsRechargeRequest: '/sms/recharge-request',
     smsRecharges: '/sms/recharges',
     smsBroadcast: '/sms/broadcast',
+    smsSettings: '/sms/settings',
+    smsLogs: '/sms/logs',
   }
 };
 
