@@ -36,10 +36,10 @@ export const PortalReveal = ({ children, className = "" }) => {
 };
 
 export const PortalOdometer = ({ value }) => {
-  const target = Number(String(value).replace(/[^\d]/g, "")) || 0;
-  const [display, setDisplay] = useState(0);
+  const target = Number(String(value ?? 0).replace(/[^\d]/g, "")) || 0;
+  const [display, setDisplay] = useState(target);
+  const [inView, setInView] = useState(false);
   const ref = useRef(null);
-  const startedRef = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -47,21 +47,8 @@ export const PortalOdometer = ({ value }) => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !startedRef.current) {
-          startedRef.current = true;
-          const duration = 1200;
-          const startTime = performance.now();
-
-          const step = (now) => {
-            const progress = Math.min((now - startTime) / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            setDisplay(Math.round(target * eased));
-            if (progress < 1) {
-              requestAnimationFrame(step);
-            }
-          };
-
-          requestAnimationFrame(step);
+        if (entry.isIntersecting) {
+          setInView(true);
           observer.unobserve(el);
         }
       },
@@ -70,16 +57,35 @@ export const PortalOdometer = ({ value }) => {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [target]);
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+    let rafId;
+    const duration = 900;
+    const startTime = performance.now();
+
+    const step = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(target * eased));
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step);
+      }
+    };
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [inView, target]);
 
   return <span ref={ref}>{display.toLocaleString("en-US")}</span>;
 };
 
 export const ZapBadge = ({ text, className = "" }) => (
   <div className={`flex items-center ${className}`}>
-    <span className="bg-white inline-flex items-center p-[5px] rounded-full gap-[8px] pr-[12px] text-[14px] font-medium text-[#162726] shadow-xs">
-      <span className="bg-[#07a69826] p-[5px] rounded-full flex items-center justify-center">
-        <svg className="w-3.5 h-3.5 text-[#07A698]" viewBox="0 0 24 24" fill="currentColor">
+    <span className="bg-white inline-flex items-center p-[5px] rounded-full gap-[8px] pr-[14px] text-[14px] font-semibold text-[#123628] shadow-xs border border-[#1C7D5A]/15">
+      <span className="bg-[#1C7D5A]/15 p-[5px] rounded-full flex items-center justify-center">
+        <svg className="w-3.5 h-3.5 text-[#1C7D5A]" viewBox="0 0 24 24" fill="currentColor">
           <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
         </svg>
       </span>

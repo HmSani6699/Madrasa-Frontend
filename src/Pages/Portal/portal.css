@@ -1,44 +1,59 @@
-/* Scoped styles for Madrasa Public Portal (cloned from Edu-Main-Landing-Demo) */
+/* Scoped styles for Madrasa Public Portal (Madrasa Sheba Brand Theme) */
 
 .portal-root {
-  font-family: "Baloo Da 2", "Hind Siliguri", sans-serif;
-  background-color: #f2f4f7;
-  color: #162726;
+  --portal-primary: #1c7d5a;
+  --portal-primary-dark: #123628;
+  --portal-primary-light: #e8f5f0;
+  --portal-secondary: #eab33c;
+  --portal-secondary-dark: #c99327;
+  --portal-surface-tint: #f4f8f6;
+  --portal-footer-bg: #081812;
+  --portal-text-main: #0f172a;
+  --portal-text-muted: #475569;
+
+  font-family: "Baloo Da 2", "Hind Siliguri", "Outfit", sans-serif;
+  background-color: var(--portal-surface-tint);
+  color: var(--portal-text-main);
   min-height: 100vh;
 }
 
 .portal-hero-section {
   position: relative;
-  background-color: #043334;
+  background: linear-gradient(
+    135deg,
+    var(--portal-footer-bg) 0%,
+    var(--portal-primary-dark) 55%,
+    #174b37 100%
+  );
   text-align: center;
   color: white;
   clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);
 }
 
-/* Left person highlight */
+/* Left ambient brand highlight */
 .portal-hero-section::before {
   content: "";
   position: absolute;
   left: 10%;
   top: 10%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(54, 239, 122, 0.7), transparent);
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(28, 125, 90, 0.65), transparent);
   border-radius: 50%;
   filter: blur(100px);
   z-index: 0;
   pointer-events: none;
 }
 
-/* Right person highlight */
+/* Right ambient gold & green highlight */
 .portal-hero-section::after {
   content: "";
   position: absolute;
   right: 10%;
   top: 10%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.7), transparent);
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(234, 179, 60, 0.35), transparent);
   border-radius: 50%;
   filter: blur(100px);
   z-index: 0;
@@ -48,16 +63,22 @@
 .portal-teacher-bg {
   background: linear-gradient(
     to top,
-    #009f9542,
-    #009a9178,
-    #00968e5e,
-    #00928b2e,
-    #008e8800
+    rgba(28, 125, 90, 0.24),
+    rgba(28, 125, 90, 0.42),
+    rgba(28, 125, 90, 0.26),
+    rgba(28, 125, 90, 0.08),
+    rgba(28, 125, 90, 0)
   );
 }
 
 .portal-footer-container {
-  background-image: url("/portal/footer-bg.png");
+  background-color: var(--portal-footer-bg);
+  background-image: linear-gradient(
+      135deg,
+      rgba(8, 24, 18, 0.94) 0%,
+      rgba(18, 54, 40, 0.9) 100%
+    ),
+    url("/portal/footer-bg.png");
   background-size: cover;
   background-position: center;
 }
@@ -65,8 +86,8 @@
 .portal-about-banner {
   background: linear-gradient(
       90deg,
-      rgba(4, 51, 52, 1) 0%,
-      rgba(7, 166, 152, 0.5655054258031338) 90%
+      rgba(18, 54, 40, 0.96) 0%,
+      rgba(28, 125, 90, 0.72) 90%
     ),
     url("/portal/about1.jpg");
   background-size: cover;
@@ -99,12 +120,12 @@
 .portal-student-card {
   background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eef2f6;
+  box-shadow: 0 4px 20px rgba(18, 54, 40, 0.06);
+  border: 1px solid #e2ece7;
 }
 
 .portal-circle-shadow {
-  box-shadow: 0 4px 15px rgba(7, 166, 152, 0.18);
+  box-shadow: 0 4px 15px rgba(28, 125, 90, 0.2);
 }
 
 /* Reveal transition */

@@ -13,104 +13,92 @@ export const usePortalSettings = () => {
 };
 
 const defaultSettings = {
+  theme: {
+    primary: "#1C7D5A",
+    primaryDark: "#123628",
+    primaryLight: "#e8f5f0",
+    secondary: "#EAB33C",
+    secondaryDark: "#c99327",
+  },
   branding: {
-    name: "আল-কুরআনুল কারীম একাডেমি",
-    englishName: "Al-Quranul Kareem Academy",
-    englishLocation: "Pakunda, Sonargon, Narayongonj",
-    arabicName: "أكاديمية القرآن الكريم الإسلامية التعليمية",
-    arabicLocation: "بَكُونْدَا، سُونَارْغَاوْ، نَارَايَنْغَنْج",
-    tagline: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
-    logoText: "AK",
+    name: "",
+    englishName: "",
+    englishLocation: "",
+    arabicName: "",
+    arabicLocation: "",
+    tagline: "",
+    logoText: "MS",
     logo: "/portal/school.png",
-    footerLogo: "/portal/logo2.png",
+    footerLogo: "/whitelogo.png",
   },
   contact: {
-    phone: "+8801830-630365",
-    email: "info.edusadiq@gmail.com",
-    address: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
-    officeHours: "শনিবার - শুক্রবার (সকাল ৯ টা থেকে রাত ৮ টা)",
-    phoneHours: "ফোনে সকাল ১০টা হতে রাত ১১টা",
+    phone: "",
+    email: "",
+    address: "",
+    officeHours: "শনিবার - বৃহস্পতিবার (সকাল ৮ টা থেকে বিকাল ৫ টা)",
+    phoneHours: "ফোনে সকাল ৯টা হতে রাত ৯টা",
+    mapEmbedUrl: "",
     social: {
-      facebook: "https://www.facebook.com/official.edusadiq",
-      twitter: "https://www.facebook.com/official.edusadiq",
-      youtube: "https://www.youtube.com/@Edusadiq1",
-      linkedin: "https://www.facebook.com/official.edusadiq",
-      instagram: "https://www.facebook.com/official.edusadiq",
+      facebook: "",
+      twitter: "",
+      youtube: "",
+      linkedin: "",
+      instagram: "",
     },
   },
   hero: {
     leftImage: "/portal/im1.png",
     rightImage: "/portal/im2.png",
-    badges: ["গ্রেট লাইফ", "গ্রেট সার্টিফিকেট"],
-    slides: [
-      {
-        image: "/portal/office.jpeg",
-        title: "আল-কুরআনুল কারীম একাডেমি",
-        subtitle: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
-        accent: "সুন্নাহ ও কোরআন ভিত্তিক সঠিক পদ্ধতিতে পাঠদান",
-      },
-    ],
+    badges: ["কুরআন ও সুন্নাহ ভিত্তিক শিক্ষা", "আধুনিক ডিজিটাল ব্যবস্থাপনা"],
+    slides: [],
   },
   stats: [
-    { val: "150", suffix: " টি+", label: "প্রতিষ্ঠান", icon: "/portal/section.png" },
-    { val: "20000", suffix: "জন+", label: "শিক্ষার্থী", icon: "/portal/student.png" },
-    { val: "800", suffix: "জন+", label: "শিক্ষক", icon: "/portal/teacher.png" },
-    { val: "19000", suffix: "জন+", label: "অভিভাবক", icon: "/portal/staff.png" },
+    { key: "classes", val: "0", suffix: "টি", label: "শ্রেণি / বিভাগ", icon: "/portal/section.png" },
+    { key: "students", val: "0", suffix: "জন", label: "শিক্ষার্থী", icon: "/portal/student.png" },
+    { key: "teachers", val: "0", suffix: "জন", label: "শিক্ষক", icon: "/portal/teacher.png" },
+    { key: "guardians", val: "0", suffix: "জন", label: "অভিভাবক", icon: "/portal/staff.png" },
   ],
   about: {
-    badge: "ক্লাস পাঠ্যক্রম",
-    title: "ফিচার ক্লাস কারিকুলাম",
-    description:
-      "আমাদের লক্ষ্য হলো উচ্চমানের, সহজলভ্য শিক্ষা প্রদান করা যা জ্ঞান এবং বাস্তব-জগতের প্রয়োগের মধ্যে ব্যবধান পূরণ করে।",
-    highlights: [
-      "মানসম্মত ক্লাস পাঠ্যক্রম এবং বিশেষজ্ঞ শিক্ষক",
-      "ছাত্রদের অংশগ্রহণ এবং ধরে রাখা",
-    ],
+    badge: "আমাদের সম্পর্কে",
+    title: "",
+    description: "",
+    vision: "",
+    goals: [],
+    highlights: [],
     mainImage: "/portal/office.jpeg",
     principalImage: "/portal/Teacher/teacher6-2.png",
+    bannerText: "",
+    introVideoUrl: "",
+    founder: {
+      name: "",
+      designation: "প্রতিষ্ঠাতা ও মুহতামিম",
+      bio: "",
+      image: "/portal/bgre.jpg",
+    },
   },
   curriculum: {
     badge: "ক্লাস পাঠ্যক্রম",
-    title: "ফিচার ক্লাস কারিকুলাম",
-    items: [
-      { name: "One", subject: "5", color: "text-blue-500" },
-      { name: "Two", subject: "5", color: "text-green-500" },
-      { name: "Three", subject: "5", color: "text-yellow-500" },
-      { name: "Four", subject: "5", color: "text-purple-500" },
-      { name: "Five", subject: "5", color: "text-purple-500" },
-      { name: "Six", subject: "5", color: "text-purple-500" },
-    ],
+    title: "শ্রেণি ও পাঠ্যক্রম পরিচিতি",
+    items: [],
   },
   students: {
     badge: "আমাদের শিক্ষার্থী",
     title: "আমাদের শিক্ষার্থী বৃন্দ",
-    items: [
-      { name: "Sadiq", image: "/portal/student/student1.jpeg", address: "Pakunda, Sonargon", className: "Five", roll: "2" },
-      { name: "Najmul", image: "/portal/student/student2.jpeg", address: "Rupgonj", className: "Five", roll: "3" },
-      { name: "Noman", image: "/portal/student/student3.jpeg", address: "Baliyapara", className: "Five", roll: "4" },
-      { name: "Thalha", image: "/portal/student/student4.jpeg", address: "Monohordi", className: "Five", roll: "5" },
-      { name: "Al-Amin", image: "/portal/student/student5.jpeg", address: "Gaptoli", className: "Five", roll: "6" },
-      { name: "Jakir", image: "/portal/student/student6.jpeg", address: "Araihajar", className: "Five", roll: "7" },
-      { name: "Roni", image: "/portal/student/student7.jpeg", address: "Taltola", className: "Five", roll: "8" },
-      { name: "Parbase", image: "/portal/student/student8.jpeg", address: "Sirabo", className: "Five", roll: "9" },
-    ],
+    items: [],
   },
   teachers: {
     badge: "আমাদের শিক্ষক",
-    title: "আমাদের বিশেষজ্ঞ শিক্ষক বৃন্দ",
-    items: [
-      { name: "Md Sadiqur Rahman", role: "Classs: Five", image: "/portal/Teacher/teacher5.png" },
-      { name: "Md Sadiqur Rahman", role: "Classs: Five", image: "/portal/Teacher/teacher6.png" },
-      { name: "Md Sadiqur Rahman", role: "Classs: Five", image: "/portal/Teacher/teacher5.png" },
-    ],
+    title: "আমাদের সম্মানিত শিক্ষক বৃন্দ",
+    items: [],
+    all: [],
   },
+  admissionFees: [],
   gallery: {
-    videoTitle: "Edusadiq ব্যবহার করার বিস্তারিত টিউটোরিয়াল",
-    videos: [
-      { youtubeId: "Hv8yinlIWJ8", title: "প্রতিষ্ঠান পরিচালনা ও ড্যাশবোর্ড" },
-      { youtubeId: "YHMEcsyWo4s", title: "ভর্তি ও শিক্ষার্থী ব্যবস্থাপনা" },
-      { youtubeId: "RfViGSywCxA", title: "হিসাব ও ফলাফল ব্যবস্থাপনা" },
-    ],
+    videoBadge: "ভিডিও গ্যালারি",
+    videoTitle: "ভিডিও গ্যালারি",
+    videos: [],
+    photoBadge: "ছবি গ্যালারি",
+    photoTitle: "আমাদের প্রতিষ্ঠানের ছবি গ্যালারি",
     photos: [
       "/portal/gallery/img8.jpg",
       "/portal/gallery/img1.jpg",
@@ -123,9 +111,8 @@ const defaultSettings = {
     ],
   },
   footer: {
-    aboutText:
-      "Edusadiq মাদ্রাসা ম্যানেজমেন্ট সফটওয়্যার। ছাত্র, শিক্ষক, হিসাব ও ফলাফল ব্যবস্থাপনা সবকিছু এখন এক প্ল্যাটফর্মে সহজ ও সাশ্রয়ীভাবে।",
-    copyright: "© Edusadiq. All Rights Reserved.",
+    aboutText: "",
+    copyright: "",
   },
   sms: {
     admission: false,
@@ -133,13 +120,14 @@ const defaultSettings = {
     attendance: false,
   },
   profile: {
-    institutionName: "আল-কুরআনুল কারীম একাডেমি",
-    slogan: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
-    address: "পাকুন্ডা, সোনারগাঁ, নারায়ণগঞ্জ",
-    email: "info.edusadiq@gmail.com",
-    phone: "+8801830-630365",
-    adminName: "MD: Sadiqur Rahman",
-    designation: "Principal",
+    institutionName: "",
+    slogan: "",
+    address: "",
+    email: "",
+    phone: "",
+    adminName: "",
+    adminPhoto: "",
+    designation: "মুহতামিম / অধ্যক্ষ",
   },
 };
 
@@ -166,33 +154,44 @@ const RESERVED_PATHS = new Set([
 ]);
 
 const mergePortalData = (remoteSettings = {}, madrasa = null) => {
-  const merged = {
+  const instName =
+    remoteSettings.branding?.name ||
+    remoteSettings.profile?.institutionName ||
+    madrasa?.name ||
+    "";
+  const instAddress =
+    remoteSettings.contact?.address ||
+    remoteSettings.profile?.address ||
+    madrasa?.address ||
+    "";
+
+  return {
     ...defaultSettings,
+    ...remoteSettings,
+    theme: {
+      ...defaultSettings.theme,
+      ...(remoteSettings.theme || {}),
+    },
     branding: {
       ...defaultSettings.branding,
       ...(remoteSettings.branding || {}),
-      name: remoteSettings.branding?.name || madrasa?.name || defaultSettings.branding.name,
-      englishName:
-        remoteSettings.branding?.englishName ||
-        madrasa?.name ||
-        defaultSettings.branding.englishName,
-      englishLocation:
-        remoteSettings.branding?.englishLocation ||
-        madrasa?.address ||
-        defaultSettings.branding.englishLocation,
-      tagline:
-        remoteSettings.branding?.tagline ||
-        madrasa?.address ||
-        defaultSettings.branding.tagline,
+      name: instName,
+      englishName: remoteSettings.branding?.englishName || instName,
+      englishLocation: remoteSettings.branding?.englishLocation || instAddress,
+      tagline: remoteSettings.branding?.tagline || instAddress,
       logo: remoteSettings.branding?.logo || madrasa?.logo || defaultSettings.branding.logo,
+      footerLogo:
+        remoteSettings.branding?.footerLogo ||
+        remoteSettings.branding?.logo ||
+        madrasa?.logo ||
+        defaultSettings.branding.footerLogo,
     },
     contact: {
       ...defaultSettings.contact,
       ...(remoteSettings.contact || {}),
-      phone: remoteSettings.contact?.phone || madrasa?.phone || defaultSettings.contact.phone,
-      email: remoteSettings.contact?.email || madrasa?.email || defaultSettings.contact.email,
-      address:
-        remoteSettings.contact?.address || madrasa?.address || defaultSettings.contact.address,
+      phone: remoteSettings.contact?.phone ?? madrasa?.phone ?? "",
+      email: remoteSettings.contact?.email ?? madrasa?.email ?? "",
+      address: instAddress,
       social: {
         ...defaultSettings.contact.social,
         ...(remoteSettings.contact?.social || {}),
@@ -201,59 +200,68 @@ const mergePortalData = (remoteSettings = {}, madrasa = null) => {
     hero: {
       ...defaultSettings.hero,
       ...(remoteSettings.hero || {}),
-      slides:
-        remoteSettings.hero?.slides?.length > 0
-          ? remoteSettings.hero.slides
-          : defaultSettings.hero.slides,
+      badges: Array.isArray(remoteSettings.hero?.badges)
+        ? remoteSettings.hero.badges
+        : defaultSettings.hero.badges,
+      slides: Array.isArray(remoteSettings.hero?.slides)
+        ? remoteSettings.hero.slides
+        : defaultSettings.hero.slides,
     },
-    stats:
-      remoteSettings.stats?.length > 0
-        ? remoteSettings.stats
-        : defaultSettings.stats,
+    stats: Array.isArray(remoteSettings.stats)
+      ? remoteSettings.stats
+      : defaultSettings.stats,
     about: {
       ...defaultSettings.about,
       ...(remoteSettings.about || {}),
-      title: remoteSettings.about?.title || defaultSettings.about.title,
-      description: remoteSettings.about?.description || defaultSettings.about.description,
-      highlights:
-        remoteSettings.about?.highlights?.length > 0
-          ? remoteSettings.about.highlights
-          : defaultSettings.about.highlights,
+      goals: Array.isArray(remoteSettings.about?.goals)
+        ? remoteSettings.about.goals
+        : defaultSettings.about.goals,
+      highlights: Array.isArray(remoteSettings.about?.highlights)
+        ? remoteSettings.about.highlights
+        : defaultSettings.about.highlights,
+      founder: {
+        ...defaultSettings.about.founder,
+        ...(remoteSettings.about?.founder || {}),
+      },
     },
     curriculum: {
       ...defaultSettings.curriculum,
       ...(remoteSettings.curriculum || {}),
-      title: remoteSettings.curriculum?.title || defaultSettings.curriculum.title,
-      items:
-        remoteSettings.curriculum?.items?.length > 0
-          ? remoteSettings.curriculum.items
-          : defaultSettings.curriculum.items,
+      items: Array.isArray(remoteSettings.curriculum?.items)
+        ? remoteSettings.curriculum.items
+        : defaultSettings.curriculum.items,
     },
     students: {
       ...defaultSettings.students,
       ...(remoteSettings.students || {}),
-      items:
-        remoteSettings.students?.items?.length > 0
-          ? remoteSettings.students.items
-          : defaultSettings.students.items,
+      items: Array.isArray(remoteSettings.students?.items)
+        ? remoteSettings.students.items
+        : defaultSettings.students.items,
     },
     teachers: {
       ...defaultSettings.teachers,
       ...(remoteSettings.teachers || {}),
-      items:
-        remoteSettings.teachers?.items?.length > 0
-          ? remoteSettings.teachers.items
-          : defaultSettings.teachers.items,
+      items: Array.isArray(remoteSettings.teachers?.items)
+        ? remoteSettings.teachers.items
+        : defaultSettings.teachers.items,
+      all: Array.isArray(remoteSettings.teachers?.all)
+        ? remoteSettings.teachers.all
+        : Array.isArray(remoteSettings.teachers?.items)
+        ? remoteSettings.teachers.items
+        : defaultSettings.teachers.all,
     },
+    admissionFees: Array.isArray(remoteSettings.admissionFees)
+      ? remoteSettings.admissionFees
+      : defaultSettings.admissionFees,
     gallery: {
       ...defaultSettings.gallery,
       ...(remoteSettings.gallery || {}),
-      videos:
-        remoteSettings.gallery?.videos?.length > 0
-          ? remoteSettings.gallery.videos
-          : defaultSettings.gallery.videos,
+      videos: Array.isArray(remoteSettings.gallery?.videos)
+        ? remoteSettings.gallery.videos
+        : defaultSettings.gallery.videos,
       photos:
-        remoteSettings.gallery?.photos?.length > 0
+        Array.isArray(remoteSettings.gallery?.photos) &&
+        remoteSettings.gallery.photos.length > 0
           ? remoteSettings.gallery.photos
           : defaultSettings.gallery.photos,
     },
@@ -261,50 +269,117 @@ const mergePortalData = (remoteSettings = {}, madrasa = null) => {
       ...defaultSettings.footer,
       ...(remoteSettings.footer || {}),
     },
+    profile: {
+      ...defaultSettings.profile,
+      ...(remoteSettings.profile || {}),
+      institutionName: remoteSettings.profile?.institutionName || instName,
+      address: remoteSettings.profile?.address || instAddress,
+      phone: remoteSettings.profile?.phone ?? madrasa?.phone ?? "",
+      email: remoteSettings.profile?.email ?? madrasa?.email ?? "",
+    },
     admission_form: remoteSettings.admission_form || null,
     madrasa: madrasa || null,
   };
-  return merged;
 };
 
 export const PortalSettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(defaultSettings);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [notFound, setNotFound] = useState(false);
+  const [loadedSlug, setLoadedSlug] = useState(null);
 
-  const loadPortalBySlug = useCallback(async (slug) => {
-    if (!slug || RESERVED_PATHS.has(slug)) {
-      setLoading(false);
-      return;
-    }
+  const loadPortalBySlug = useCallback(
+    async (slug, force = false) => {
+      if (!slug || RESERVED_PATHS.has(slug)) {
+        setLoading(false);
+        return;
+      }
+      if (!force && loadedSlug === slug) {
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      setNotFound(false);
+      try {
+        const response = await axiosInstance.get(`/portal/v1/${slug}`);
+        const payload = response.data;
+        if (payload?.success) {
+          setSettings(mergePortalData(payload.data?.settings, payload.data?.madrasa));
+          setLoadedSlug(slug);
+        } else {
+          setError(payload?.message || "Failed to load settings");
+        }
+      } catch (err) {
+        if (err?.response?.status === 404) {
+          setNotFound(true);
+        }
+        setError(err?.response?.data?.message || err.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loadedSlug]
+  );
+
+  const loadManagedSettings = useCallback(async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
 
     setLoading(true);
-    setError(null);
     try {
-      const response = await axiosInstance.get(`/portal/v1/${slug}`);
+      const response = await axiosInstance.get("/portal/v1/manage/settings");
       const payload = response.data;
       if (payload?.success) {
         setSettings(mergePortalData(payload.data?.settings, payload.data?.madrasa));
-      } else {
-        setError(payload?.message || "Failed to load settings");
       }
     } catch (err) {
-      // Fallback gracefully to defaultSettings so demo/preview portals render cleanly
-      console.warn("Portal settings fallback used:", err?.message);
-      setError(err?.response?.data?.message || err.message);
+      console.warn("Failed to load managed portal settings:", err?.message);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    const slug = window.location.pathname.split("/")[1];
-    loadPortalBySlug(slug);
-  }, [loadPortalBySlug]);
+    const firstSegment = window.location.pathname.split("/")[1];
+    if (firstSegment && !RESERVED_PATHS.has(firstSegment)) {
+      loadPortalBySlug(firstSegment);
+    } else if (localStorage.getItem("accessToken")) {
+      loadManagedSettings();
+    }
+  }, [loadPortalBySlug, loadManagedSettings]);
 
-  const updateSettings = (newSettings) => {
+  const updateSettings = async (newSettings) => {
     setSettings(newSettings);
     localStorage.setItem("portal_settings", JSON.stringify(newSettings));
+
+    const token = localStorage.getItem("accessToken");
+    if (!token) return { success: true };
+
+    setSaving(true);
+    try {
+      const response = await axiosInstance.put("/portal/v1/manage/settings", newSettings);
+      if (response.data?.success && response.data?.data) {
+        const merged = mergePortalData(
+          response.data.data.settings,
+          response.data.data.madrasa
+        );
+        setSettings(merged);
+        localStorage.setItem("portal_settings", JSON.stringify(merged));
+        return { success: true, data: merged };
+      }
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to save portal settings:", err);
+      return {
+        success: false,
+        message: err?.response?.data?.message || "সেটিংস সংরক্ষণ করতে সমস্যা হয়েছে",
+      };
+    } finally {
+      setSaving(false);
+    }
   };
 
   const resetSettings = () => {
@@ -319,8 +394,11 @@ export const PortalSettingsProvider = ({ children }) => {
         updateSettings,
         resetSettings,
         loadPortalBySlug,
+        loadManagedSettings,
         loading,
+        saving,
         error,
+        notFound,
       }}
     >
       {children}

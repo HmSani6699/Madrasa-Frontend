@@ -159,9 +159,9 @@ const OnlineAdmissionForm = () => {
 
     if (settingsLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
+            <div className="min-h-screen flex items-center justify-center bg-[#f4f8f6]">
                 <div className="flex flex-col items-center gap-4">
-                    <Loader2 className="w-12 h-12 text-emerald-500 animate-spin" />
+                    <Loader2 className="w-12 h-12 text-[#1C7D5A] animate-spin" />
                     <p className="text-slate-500 font-bold">লোড হচ্ছে...</p>
                 </div>
             </div>
@@ -170,18 +170,18 @@ const OnlineAdmissionForm = () => {
 
     if (submitted) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-                <div className="max-w-md w-full bg-white rounded-[32px] p-10 shadow-2xl border border-emerald-100 text-center animate-in zoom-in duration-500">
-                    <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="min-h-screen flex items-center justify-center bg-[#f4f8f6] px-4">
+                <div className="max-w-md w-full bg-white rounded-[32px] p-10 shadow-2xl border border-[#1C7D5A]/15 text-center animate-in zoom-in duration-500">
+                    <div className="w-20 h-20 bg-[#e8f5f0] text-[#1C7D5A] rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle2 size={48} />
                     </div>
-                    <h2 className="text-3xl font-black text-slate-800 mb-4 italic">ধন্যবাদ!</h2>
+                    <h2 className="text-3xl font-black text-[#123628] mb-4 italic">ধন্যবাদ!</h2>
                     <p className="text-slate-600 font-bold mb-8 leading-relaxed">
                         আপনার অনলাইন ভর্তি আবেদন সফলভাবে গ্রহণ করা হয়েছে। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।
                     </p>
                     <button 
                         onClick={() => window.location.reload()}
-                        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl shadow-xl shadow-emerald-200 transition-all transition-transform hover:-translate-y-1 active:scale-95"
+                        className="w-full bg-[#1C7D5A] hover:bg-[#123628] text-white font-black py-4 rounded-2xl shadow-xl shadow-[#1C7D5A]/20 transition-all hover:-translate-y-1 active:scale-95 cursor-pointer"
                     >
                         হোম পেজে ফিরে যান
                     </button>
@@ -190,11 +190,13 @@ const OnlineAdmissionForm = () => {
         );
     }
 
-    const FileUploadBox = ({ label, id, value, onChange, icon: Icon = Upload, subLabel }) => (
+    const FileUploadBox = ({ label, id, value, onChange, icon = Upload, subLabel }) => {
+        const UploadIcon = icon;
+        return (
         <div className="relative">
             <label className="text-sm font-bold text-slate-700 mb-2 block">{label}</label>
             <div className={`relative border-2 border-dashed rounded-2xl p-6 transition-all flex flex-col items-center justify-center gap-2 group cursor-pointer overflow-hidden ${
-                value ? "border-emerald-500 bg-emerald-50/10" : "border-slate-200 hover:border-emerald-400 bg-slate-50/50"
+                value ? "border-[#1C7D5A] bg-[#e8f5f0]/30" : "border-slate-200 hover:border-[#1C7D5A] bg-slate-50/50"
             }`}>
                 <input
                     type="file"
@@ -212,15 +214,15 @@ const OnlineAdmissionForm = () => {
                             className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end justify-center pb-3">
-                            <p className="text-[10px] text-white font-black uppercase tracking-widest bg-emerald-600/80 px-3 py-1 rounded-full backdrop-blur-sm">
+                            <p className="text-[10px] text-white font-black uppercase tracking-widest bg-[#1C7D5A]/90 px-3 py-1 rounded-full backdrop-blur-sm">
                                 পরিবর্তন করতে ক্লিক করুন
                             </p>
                         </div>
                     </div>
                 ) : (
                     <>
-                        <div className="w-12 h-12 rounded-xl bg-white text-slate-400 flex items-center justify-center transition-all group-hover:text-emerald-500 shadow-sm border border-slate-100">
-                            <Icon size={24} />
+                        <div className="w-12 h-12 rounded-xl bg-white text-slate-400 flex items-center justify-center transition-all group-hover:text-[#1C7D5A] shadow-sm border border-slate-100">
+                            <UploadIcon size={24} />
                         </div>
                         <div className="text-center">
                             <p className="text-xs font-bold text-slate-600">
@@ -232,7 +234,7 @@ const OnlineAdmissionForm = () => {
                 )}
 
                 {value && (
-                    <div className="absolute top-2 right-2 bg-emerald-500 text-white p-1.5 rounded-full z-30 shadow-lg animate-in zoom-in">
+                    <div className="absolute top-2 right-2 bg-[#1C7D5A] text-white p-1.5 rounded-full z-30 shadow-lg animate-in zoom-in">
                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
                         </svg>
@@ -240,7 +242,8 @@ const OnlineAdmissionForm = () => {
                 )}
             </div>
         </div>
-    );
+        );
+    };
 
     // Use dynamic academic options
     const classOptions = academicOptions;
@@ -251,36 +254,36 @@ const OnlineAdmissionForm = () => {
     ];
 
     return (
-        <div className="bg-[#f8fafc] min-h-screen font-sans">
-            <section className="bg-gradient-to-r from-[#042f2c] to-[#064e4a] pt-24 pb-20 px-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl -ml-40 -mb-40"></div>
+        <div className="bg-[#f4f8f6] min-h-screen font-sans">
+            <section className="bg-gradient-to-r from-[#081812] via-[#123628] to-[#1C7D5A] pt-24 pb-20 px-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#EAB33C]/15 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#1C7D5A]/20 rounded-full blur-3xl -ml-40 -mb-40"></div>
                 
                 <div className="max-w-[1240px] mx-auto text-center relative z-10">
                     <h1 className="text-3xl md:text-6xl font-black text-white mb-6 tracking-tight">অনলাইন ভর্তি ফরম</h1>
-                    <p className="text-emerald-50/70 max-w-xl mx-auto text-lg italic font-medium leading-relaxed">
-                        আপনার সন্তানের উজ্জ্বল ভবিষ্যতের পথে এক ধাপ এগিয়ে থাকুন। নিচের ধাপগুলো অনুসরণ করে নির্ভুলভাবে তথ্য পূরণ করুন।
+                    <p className="text-[#e8f5f0]/85 max-w-xl mx-auto text-lg italic font-medium leading-relaxed">
+                        {settings?.branding?.name ? `${settings.branding.name}-এ ` : ""}আপনার সন্তানের উজ্জ্বল ভবিষ্যতের পথে এক ধাপ এগিয়ে থাকুন। নিচের ধাপগুলো অনুসরণ করে নির্ভুলভাবে তথ্য পূরণ করুন।
                     </p>
                 </div>
             </section>
 
             <div className="max-w-[900px] mx-auto px-6 -mt-10 relative z-20 pb-20">
                 {/* Stepper */}
-                <div className="bg-white p-2 rounded-3xl shadow-2xl border border-emerald-100 flex justify-between items-center mb-10 overflow-hidden">
+                <div className="bg-white p-2 rounded-3xl shadow-2xl border border-[#1C7D5A]/15 flex justify-between items-center mb-10 overflow-hidden">
                     {steps.map((s, i) => (
                         <div key={s.id} className="flex-1 flex items-center group">
                             <div className="flex items-center gap-4 px-6 py-3 w-full">
                                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black transition-all duration-500 ${
-                                    step >= s.id ? "bg-emerald-600 text-white shadow-lg shadow-emerald-200" : "bg-slate-100 text-slate-400"
+                                    step >= s.id ? "bg-[#1C7D5A] text-white shadow-lg shadow-[#1C7D5A]/25" : "bg-slate-100 text-slate-400"
                                 }`}>
                                     {s.id}
                                 </div>
                                 <div className="hidden sm:block">
                                     <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-0.5 ${
-                                        step >= s.id ? "text-emerald-600" : "text-slate-400"
+                                        step >= s.id ? "text-[#1C7D5A]" : "text-slate-400"
                                     }`}>Step {s.id}</p>
                                     <span className={`text-sm font-black whitespace-nowrap ${
-                                        step >= s.id ? "text-slate-900" : "text-slate-400"
+                                        step >= s.id ? "text-[#123628]" : "text-slate-400"
                                     }`}>
                                         {s.title}
                                     </span>
@@ -297,10 +300,10 @@ const OnlineAdmissionForm = () => {
                     {step === 1 && (
                         <div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 md:p-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
                             <div className="flex items-center gap-4 mb-10">
-                                <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                                <div className="w-12 h-12 bg-[#e8f5f0] rounded-2xl flex items-center justify-center text-[#1C7D5A]">
                                     <User size={24} />
                                 </div>
-                                <h2 className="text-2xl font-black text-slate-900">অভিভাবকের সাধারণ তথ্য</h2>
+                                <h2 className="text-2xl font-black text-[#123628]">অভিভাবকের সাধারণ তথ্য</h2>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -357,8 +360,8 @@ const OnlineAdmissionForm = () => {
                             </div>
 
                             <div className="mt-12 pt-10 border-t border-slate-50">
-                                <h3 className="text-lg font-black text-slate-800 mb-6 flex items-center gap-2">
-                                    <CreditCard size={18} className="text-emerald-500" /> প্রয়োজনীয় ডকুমেন্টস
+                                <h3 className="text-lg font-black text-[#123628] mb-6 flex items-center gap-2">
+                                    <CreditCard size={18} className="text-[#1C7D5A]" /> প্রয়োজনীয় ডকুমেন্টস
                                 </h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                     <FileUploadBox
@@ -389,7 +392,7 @@ const OnlineAdmissionForm = () => {
                             <div className="mt-12 flex justify-end">
                                 <button
                                     onClick={() => setStep(2)}
-                                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-10 py-4 rounded-2xl shadow-xl shadow-emerald-200 transition-all transform hover:-translate-y-1 active:scale-95"
+                                    className="bg-[#1C7D5A] hover:bg-[#123628] text-white font-black px-10 py-4 rounded-2xl shadow-xl shadow-[#1C7D5A]/20 transition-all transform hover:-translate-y-1 active:scale-95 cursor-pointer"
                                 >
                                     পরবর্তী ধাপে যান
                                 </button>
@@ -413,11 +416,11 @@ const OnlineAdmissionForm = () => {
                                     )}
 
                                     <div className="flex items-center gap-4 mb-10">
-                                        <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                                        <div className="w-12 h-12 bg-[#e8f5f0] rounded-2xl flex items-center justify-center text-[#1C7D5A]">
                                             <User size={24} />
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-black text-slate-900">শিক্ষার্থীর তথ্য #{index + 1}</h2>
+                                            <h2 className="text-2xl font-black text-[#123628]">শিক্ষার্থীর তথ্য #{index + 1}</h2>
                                             <p className="text-sm font-bold text-slate-400">ব্যক্তিগত ও শিক্ষা সংক্রান্ত তথ্য দিন</p>
                                         </div>
                                     </div>
@@ -485,9 +488,9 @@ const OnlineAdmissionForm = () => {
 
                             <button
                                 onClick={handleAddStudent}
-                                className="w-full py-6 border-2 border-dashed border-emerald-200 rounded-[2.5rem] bg-emerald-100 text-emerald-600 font-black flex items-center justify-center gap-3 hover:bg-emerald-50 hover:border-emerald-400 transition-all group"
+                                className="w-full py-6 border-2 border-dashed border-[#1C7D5A]/30 rounded-[2.5rem] bg-[#e8f5f0] text-[#1C7D5A] font-black flex items-center justify-center gap-3 hover:bg-[#e8f5f0]/60 hover:border-[#1C7D5A] transition-all group cursor-pointer"
                             >
-                                <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xs">
                                     <Plus size={20} />
                                 </div>
                                 আরো শিক্ষার্থী যোগ করুন
@@ -503,7 +506,7 @@ const OnlineAdmissionForm = () => {
                                 <button
                                     onClick={handleSubmit}
                                     disabled={submitting}
-                                    className="flex-[2] bg-emerald-600 hover:bg-emerald-700 disabled:opacity-70 text-white font-black px-10 py-4 rounded-2xl shadow-xl shadow-emerald-200 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
+                                    className="flex-[2] bg-[#1C7D5A] hover:bg-[#123628] disabled:opacity-70 text-white font-black px-10 py-4 rounded-2xl shadow-xl shadow-[#1C7D5A]/20 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                                 >
                                     {submitting ? (
                                         <>

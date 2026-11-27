@@ -48,19 +48,23 @@ const InstitutionProfilePage = () => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e?.preventDefault();
     if (!formData.institutionName.trim()) {
       toast.error("প্রতিষ্ঠানের নাম খালি রাখা যাবে না");
       return;
     }
-    updateSettings({
+    const res = await updateSettings({
       ...settings,
       profile: {
         ...settings?.profile,
         ...formData,
       },
     });
+    if (res?.success === false) {
+      toast.error(res.message || "প্রতিষ্ঠানের প্রোফাইল সংরক্ষণ করা যায়নি");
+      return;
+    }
     setSavedNotice(true);
     toast.success("প্রতিষ্ঠানের প্রোফাইল সংরক্ষণ করা হয়েছে");
   };
