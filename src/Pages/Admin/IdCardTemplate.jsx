@@ -1,520 +1,772 @@
-import { useState } from "react";
-import { 
-  Plus, 
-  Search, 
-  CreditCard, 
-  Settings2, 
-  Layout, 
-  Palette, 
-  Type, 
-  CheckCircle2, 
-  MoreVertical, 
-  Edit3, 
+import { useState, useEffect, useMemo } from "react";
+import {
+  Plus,
+  Search,
+  CreditCard,
+  Edit3,
   Trash2,
-  AlertCircle,
   X,
+  Check,
+  Sparkles,
+  Star,
+  Copy,
+  Eye,
+  FlipHorizontal2,
+  Loader2,
   ShieldCheck,
-  ChevronRight,
-  Filter,
-  Image as ImageIcon,
-  Smartphone,
-  Check
 } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
+import { usePortalSettings } from "../../context/PortalSettingsContext";
+import printStudioService from "../../services/printStudioService";
+import {
+  ID_CARD_PRESETS,
+  ID_CARD_AVAILABLE_FIELDS,
+  DEFAULT_ID_TEMPLATES,
+  getMadrasaBranding,
+} from "../../components/PrintStudio/printPresets";
+import { IdCardRenderer } from "../../components/PrintStudio/IdCardRenderer";
+
+const SAMPLE_STUDENT = {
+  name: "মুহাম্মদ আব্দুল্লাহ আল-মামুন",
+  student_id: "MS-2026-104",
+  roll_number: "01",
+  class: "হিফজ / পঞ্চম শ্রেণি",
+  section: "শাখা-ক",
+  fatherName: "মাওলানা আব্দুর রহমান",
+  bloodGroup: "O+",
+  phone: "01711-000000",
+  academicYear: "2026",
+  dob: "2013-05-14",
+  address: "মিরপুর-১০, ঢাকা",
+};
+
+const SAMPLE_EMPLOYEE = {
+  name: "মাওলানা আবু বকর সিদ্দিক",
+  employeeID: "EMP-2026-07",
+  designation: "সিনিয়র মুহাদ্দিস",
+  department: "কিতাব বিভাগ",
+  bloodGroup: "A+",
+  phone: "01811-000000",
+  joinDate: "2022-01-10",
+  address: "যাত্রাবাড়ী, ঢাকা",
+};
+
+const INITIAL_FORM = {
+  category: "id_card",
+  target_type: "student",
+  name: "",
+  title: "শিক্ষার্থী পরিচয়পত্র",
+  arabic_title: "بطاقة هوية الطالب",
+  preset_key: "emerald_mihrab",
+  layout: "vertical",
+  primary_color: "#123628",
+  secondary_color: "#1C7D5A",
+  accent_color: "#EAB33C",
+  text_color: "#ffffff",
+  fields: ["id_no", "class", "section", "roll", "fatherName", "bloodGroup", "phone"],
+  show_photo: true,
+  show_qr: true,
+  show_barcode: false,
+  show_back_side: true,
+  show_watermark: true,
+  show_arabic_header: true,
+  right_sign_label: "মুহতামিম / অধ্যক্ষ",
+  back_note: "কার্ডটি পাওয়া গেলে অনুগ্রহ করে মাদ্রাসা অফিসে জমা দিন।",
+  valid_thru: "ডিসেম্বর ২০২৬",
+  is_default: false,
+  status: "active",
+};
 
 const IdCardTemplate = () => {
+  const { currentMadrasa } = useAuth();
+  const { settings } = usePortalSettings();
+  const madrasa = useMemo(() => getMadrasaBranding(currentMadrasa, settings), [currentMadrasa, settings]);
+
+  const [savedTemplates, setSavedTemplates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // Modal States
+  const [filterTarget, setFilterTarget] = useState("all");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("add"); // "add" | "edit"
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState(INITIAL_FORM);
+  const [previewSide, setPreviewSide] = useState("both");
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
-  // Focus States
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const fetchTemplates = async () => {
+    setLoading(true);
+    try {
+      const res = await printStudioService.getTemplates({ category: "id_card" });
+      if (res?.success) {
+        setSavedTemplates(res.data || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch ID templates:", err);
+      toast.error("টেমপ্লেট লোড করা যায়নি");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Form States
-  const [formData, setFormData] = useState({
-    name: "Classic Student Card",
-    title: "Student ID Card",
-    headerColor: "#4f46e5",
-    footerColor: "#4f46e5",
-    textColor: "#ffffff",
-    layout: "vertical", // vertical | horizontal
-    fields: ["Student Name", "Admission No", "Class", "Section", "Roll No", "Blood Group"],
-    status: "active"
-  });
+  useEffect(() => {
+    fetchTemplates();
+  }, []);
 
-  // Sample Data
-  const [templates, setTemplates] = useState([
-    { 
-      id: 1, 
-      name: "Classic Student Card", 
-      title: "Student ID Card",
-      headerColor: "#4f46e5",
-      footerColor: "#4f46e5",
-      textColor: "#ffffff",
-      layout: "vertical",
-      fields: ["Student Name", "Admission No", "Class", "Section", "Roll No"],
-      status: "active" 
-    },
-    { 
-      id: 2, 
-      name: "Professional Employee Card", 
-      title: "Employee ID Card",
-      headerColor: "#0f172a",
-      footerColor: "#0f172a",
-      textColor: "#ffffff",
-      layout: "horizontal",
-      fields: ["Employee Name", "Employee ID", "Designation", "Department"],
-      status: "active" 
-    },
-  ]);
+  const allTemplates = useMemo(() => {
+    const merged = [...savedTemplates, ...DEFAULT_ID_TEMPLATES];
+    return merged.filter((t) => {
+      const matchesTarget = filterTarget === "all" || t.target_type === filterTarget || t.target_type === "all";
+      const matchesSearch =
+        !searchTerm.trim() ||
+        (t.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (t.title || "").toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesTarget && matchesSearch;
+    });
+  }, [savedTemplates, filterTarget, searchTerm]);
 
-  const availableFields = [
-    "Student Name", "Admission No", "Class", "Section", "Roll No", 
-    "Blood Group", "Date of Birth", "Father's Name", "Mother's Name",
-    "Emergency Contact", "Address", "Employee ID", "Designation", "Department"
-  ];
-
-  // Handlers
-  const toggleField = (field) => {
-    setFormData(prev => ({
+  const applyPreset = (preset) => {
+    setFormData((prev) => ({
       ...prev,
-      fields: prev.fields.includes(field)
-        ? prev.fields.filter(f => f !== field)
-        : [...prev.fields, field]
+      preset_key: preset.key,
+      layout: preset.layout,
+      primary_color: preset.primaryColor,
+      secondary_color: preset.secondaryColor,
+      accent_color: preset.accentColor,
+      text_color: preset.textColor,
     }));
   };
 
-  const handleAction = () => {
-    if (modalType === "add") {
-      const newTemplate = {
-        id: Date.now(),
-        ...formData
-      };
-      setTemplates([...templates, newTemplate]);
+  const openCreateModal = (baseTemplate = null) => {
+    if (baseTemplate) {
+      setEditingId(baseTemplate.isPreset ? null : baseTemplate._id);
+      setFormData({
+        ...INITIAL_FORM,
+        ...baseTemplate,
+        name: baseTemplate.isPreset ? `${baseTemplate.name} (কপি)` : baseTemplate.name,
+      });
     } else {
-      setTemplates(templates.map(t => t.id === selectedTemplate.id ? { ...t, ...formData } : t));
+      setEditingId(null);
+      setFormData(INITIAL_FORM);
     }
-    setIsModalOpen(false);
-    resetForm();
-  };
-
-  const handleDelete = () => {
-    setTemplates(templates.filter(t => t.id !== selectedTemplate.id));
-    setIsDeleteModalOpen(false);
-    setSelectedTemplate(null);
-  };
-
-  const openAddModal = () => {
-    resetForm();
-    setModalType("add");
+    setPreviewSide("both");
     setIsModalOpen(true);
   };
 
-  const openEditModal = (template) => {
-    setSelectedTemplate(template);
-    setFormData({
-      name: template.name,
-      title: template.title,
-      headerColor: template.headerColor,
-      footerColor: template.footerColor,
-      textColor: template.textColor,
-      layout: template.layout,
-      fields: template.fields,
-      status: template.status
-    });
-    setModalType("edit");
-    setIsModalOpen(true);
+  const handleTargetTypeChange = (targetType) => {
+    setFormData((prev) => ({
+      ...prev,
+      target_type: targetType,
+      title: targetType === "employee" ? "শিক্ষক ও কর্মকর্তা পরিচয়পত্র" : "শিক্ষার্থী পরিচয়পত্র",
+      arabic_title: targetType === "employee" ? "بطاقة الموظف والمعلم" : "بطاقة هوية الطالب",
+      fields:
+        targetType === "employee"
+          ? ["id_no", "designation", "department", "bloodGroup", "phone", "joinDate"]
+          : ["id_no", "class", "section", "roll", "fatherName", "bloodGroup", "phone"],
+    }));
   };
 
-  const openDeleteModal = (template) => {
-    setSelectedTemplate(template);
-    setIsDeleteModalOpen(true);
+  const toggleField = (fieldKey) => {
+    setFormData((prev) => ({
+      ...prev,
+      fields: prev.fields.includes(fieldKey)
+        ? prev.fields.filter((f) => f !== fieldKey)
+        : [...prev.fields, fieldKey],
+    }));
   };
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      title: "Student ID Card",
-      headerColor: "#4f46e5",
-      footerColor: "#4f46e5",
-      textColor: "#ffffff",
-      layout: "vertical",
-      fields: [],
-      status: "active"
-    });
-    setSelectedTemplate(null);
+  const handleSave = async (e) => {
+    e?.preventDefault();
+    if (!formData.name.trim()) {
+      toast.error("টেমপ্লেটের নাম লিখুন");
+      return;
+    }
+    setSaving(true);
+    try {
+      const payload = {
+        category: "id_card",
+        target_type: formData.target_type,
+        name: formData.name.trim(),
+        title: formData.title,
+        arabic_title: formData.arabic_title,
+        preset_key: formData.preset_key,
+        layout: formData.layout,
+        primary_color: formData.primary_color,
+        secondary_color: formData.secondary_color,
+        accent_color: formData.accent_color,
+        text_color: formData.text_color,
+        fields: formData.fields,
+        show_photo: formData.show_photo,
+        show_qr: formData.show_qr,
+        show_barcode: formData.show_barcode,
+        show_back_side: formData.show_back_side,
+        show_watermark: formData.show_watermark,
+        show_arabic_header: formData.show_arabic_header,
+        right_sign_label: formData.right_sign_label,
+        back_note: formData.back_note,
+        valid_thru: formData.valid_thru,
+        is_default: formData.is_default,
+        status: formData.status || "active",
+      };
+
+      if (editingId) {
+        await printStudioService.updateTemplate(editingId, payload);
+        toast.success("আইডি কার্ড টেমপ্লেট আপডেট হয়েছে");
+      } else {
+        await printStudioService.createTemplate(payload);
+        toast.success("নতুন আইডি কার্ড টেমপ্লেট সংরক্ষণ করা হয়েছে");
+      }
+      setIsModalOpen(false);
+      fetchTemplates();
+    } catch (err) {
+      console.error("Save template error:", err);
+      toast.error(err.response?.data?.message || "টেমপ্লেট সংরক্ষণ ব্যর্থ হয়েছে");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const filteredTemplates = templates.filter(t => 
-    t.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSetDefault = async (template) => {
+    if (template.isPreset) {
+      openCreateModal({ ...template, is_default: true });
+      return;
+    }
+    try {
+      await printStudioService.setDefaultTemplate(template._id);
+      toast.success("ডিফল্ট টেমপ্লেট নির্ধারিত হয়েছে");
+      fetchTemplates();
+    } catch {
+      toast.error("ডিফল্ট সেট করা যায়নি");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget || deleteTarget.isPreset) return;
+    try {
+      await printStudioService.deleteTemplate(deleteTarget._id);
+      toast.success("টেমপ্লেট মুছে ফেলা হয়েছে");
+      setDeleteTarget(null);
+      fetchTemplates();
+    } catch {
+      toast.error("টেমপ্লেট মুছতে সমস্যা হয়েছে");
+    }
+  };
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-500 p-6 md:p-10">
-      {/* Header */}
-      <div className="bg-white rounded-[3rem] border-2 border-slate-200 p-10 flex flex-col lg:flex-row justify-between items-center gap-8 shadow-sm relative overflow-hidden">
-        <div className="flex items-center gap-8 relative z-10">
-          <div className="w-20 h-20 bg-indigo-50 rounded-[2rem] flex items-center justify-center border-2 border-indigo-100/50 shadow-inner">
-            <CreditCard className="w-10 h-10 text-indigo-600" />
+    <div className="p-4 md:p-6 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
+      {/* Page Header */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 md:p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-[#123628] text-[#EAB33C] flex items-center justify-center shadow-md shrink-0">
+            <CreditCard className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight text-center lg:text-left">ID Card Templates</h1>
-            <p className="text-slate-500 font-bold mt-2 text-lg text-center lg:text-left">Design and manage identification card layouts</p>
+            <h1 className="text-xl md:text-2xl font-extrabold text-slate-800">
+              আইডি কার্ড ডিজাইন স্টুডিও (ID Card Templates)
+            </h1>
+            <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+              শিক্ষার্থী ও শিক্ষক-কর্মীদের জন্য CR80 প্রফেশনাল ফ্রন্ট ও ব্যাক আইডি কার্ড নকশা তৈরি ও সংরক্ষণ করুন
+            </p>
           </div>
         </div>
 
-        <button 
-          onClick={openAddModal}
-          className="w-full lg:w-auto px-10 py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group relative z-10"
+        <button
+          onClick={() => openCreateModal(null)}
+          className="px-5 py-2.5 bg-[#1C7D5A] hover:bg-[#123628] text-white text-sm font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
-          <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
-          Create Template
+          <Plus className="w-4 h-4" />
+          নতুন টেমপ্লেট ডিজাইন করুন
         </button>
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="flex-1 bg-white rounded-[2.5rem] border-2 border-slate-100 p-3 flex items-center shadow-sm">
-            <div className="px-5 text-slate-400">
-               <Search className="w-5 h-5" />
-            </div>
-            <input 
-              placeholder="Search templates by name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 bg-transparent border-none outline-none text-sm font-bold text-slate-800 placeholder:text-slate-300"
-            />
-            <div className="h-10 w-px bg-slate-100 mx-2 hidden lg:block" />
-            <button className="px-6 py-3 text-slate-400 hover:text-indigo-600 transition-colors hidden lg:flex items-center gap-2 font-black text-[10px] uppercase tracking-widest">
-                <Filter className="w-4 h-4" /> Filter By Type
+      {/* Filter Toolbar */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="টেমপ্লেটের নাম লিখে খুঁজুন..."
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:border-[#1C7D5A]"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          {[
+            { id: "all", label: "সবগুলো" },
+            { id: "student", label: "শিক্ষার্থী কার্ড" },
+            { id: "employee", label: "শিক্ষক ও স্টাফ কার্ড" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setFilterTarget(tab.id)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                filterTarget === tab.id
+                  ? "bg-[#123628] text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {tab.label}
             </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Built-in Quick Presets Strip */}
+      <div className="bg-gradient-to-r from-[#123628] to-[#1C7D5A] rounded-2xl p-5 text-white shadow-md">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-[#EAB33C]" />
+            <h2 className="text-base font-extrabold">৮টি রেডিমেড গ্রাফিক ডিজাইন প্রিসেট</h2>
+          </div>
+          <span className="text-xs text-white/80">যেকোনো নকশায় ক্লিক করে সরাসরি নিজের মাদ্রাসার জন্য কাস্টমাইজ করুন</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+          {ID_CARD_PRESETS.map((preset) => (
+            <button
+              key={preset.key}
+              onClick={() =>
+                openCreateModal({
+                  ...INITIAL_FORM,
+                  name: preset.name,
+                  preset_key: preset.key,
+                  layout: preset.layout,
+                  primary_color: preset.primaryColor,
+                  secondary_color: preset.secondaryColor,
+                  accent_color: preset.accentColor,
+                  text_color: preset.textColor,
+                  target_type: preset.layout === "horizontal" ? "employee" : "student",
+                  title: preset.layout === "horizontal" ? "শিক্ষক ও কর্মকর্তা পরিচয়পত্র" : "শিক্ষার্থী পরিচয়পত্র",
+                  isPreset: true,
+                })
+              }
+              className="bg-white/10 hover:bg-white/20 border border-white/15 rounded-xl p-2.5 text-left transition-all cursor-pointer group"
+            >
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <span className="w-3.5 h-3.5 rounded-full border border-white/50" style={{ backgroundColor: preset.primaryColor }} />
+                <span className="w-3.5 h-3.5 rounded-full border border-white/50" style={{ backgroundColor: preset.accentColor }} />
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-black/25 text-[#EAB33C] ml-auto">
+                  {preset.layout === "horizontal" ? "আড়াআড়ি" : "লম্বা"}
+                </span>
+              </div>
+              <p className="text-[11px] font-bold leading-snug line-clamp-2 group-hover:text-[#EAB33C] transition-colors">
+                {preset.name}
+              </p>
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Templates Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-        {filteredTemplates.map((template) => (
-          <div key={template.id} className="group bg-white rounded-[3rem] border-2 border-slate-100 shadow-xl shadow-slate-100/20 hover:border-indigo-500/20 transition-all duration-300 overflow-hidden flex flex-col relative">
-            {/* Action Bar */}
-            <div className="absolute top-6 right-6 flex gap-2 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all z-20">
-                <button 
-                    onClick={() => openEditModal(template)}
-                    className="p-3 bg-white border-2 border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 rounded-2xl transition-all shadow-lg"
-                >
-                    <Edit3 className="w-4 h-4" />
-                </button>
-                <button 
-                    onClick={() => openDeleteModal(template)}
-                    className="p-3 bg-white border-2 border-slate-100 text-slate-400 hover:text-rose-600 hover:border-rose-100 rounded-2xl transition-all shadow-lg"
-                >
-                    <Trash2 className="w-4 h-4" />
-                </button>
-            </div>
+      {loading ? (
+        <div className="bg-white rounded-2xl border border-slate-200 p-16 flex flex-col items-center justify-center gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-[#1C7D5A]" />
+          <p className="text-sm font-bold text-slate-500">টেমপ্লেট লোড হচ্ছে...</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {allTemplates.map((template) => {
+            const sample = template.target_type === "employee" ? SAMPLE_EMPLOYEE : SAMPLE_STUDENT;
+            const isHoriz = template.layout === "horizontal";
+            return (
+              <div
+                key={template._id}
+                className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col"
+              >
+                {/* Card Live Miniature Preview */}
+                <div className="bg-slate-100/80 p-5 flex items-center justify-center min-h-[290px] relative border-b border-slate-200/70 overflow-hidden">
+                  <div className={isHoriz ? "scale-[0.76] origin-center" : "scale-[0.68] origin-center"}>
+                    <IdCardRenderer
+                      template={template}
+                      person={sample}
+                      madrasa={madrasa}
+                      targetType={template.target_type === "employee" ? "employee" : "student"}
+                      side="front"
+                    />
+                  </div>
 
-            <div className="p-8 space-y-6">
-              {/* Preview Box */}
-              <div className="aspect-[3/4] bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 flex items-center justify-center relative overflow-hidden group-hover:border-indigo-200 transition-colors">
-                 {/* Mock ID Card */}
-                 <div className={`w-4/5 ${template.layout === 'vertical' ? 'h-4/5' : 'h-3/5'} bg-white rounded-xl shadow-inner border border-slate-100 flex flex-col overflow-hidden`}>
-                    <div style={{ backgroundColor: template.headerColor }} className="h-1/5 flex items-center justify-center p-2">
-                        <span style={{ color: template.textColor }} className="text-[8px] font-black uppercase tracking-widest text-center leading-none">{template.title}</span>
-                    </div>
-                    <div className="flex-1 p-4 flex flex-col items-center gap-2">
-                        <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200">
-                            <ImageIcon className="w-6 h-6 text-slate-300" />
-                        </div>
-                        <div className="w-full space-y-1">
-                            <div className="h-2 bg-slate-100 rounded-full w-3/4 mx-auto" />
-                            <div className="h-1.5 bg-slate-50 rounded-full w-1/2 mx-auto" />
-                        </div>
-                        <div className="w-full mt-2 grid grid-cols-2 gap-1 px-2">
-                            <div className="h-1 bg-slate-50 rounded-full" />
-                            <div className="h-1 bg-slate-50 rounded-full" />
-                            <div className="h-1 bg-slate-50 rounded-full" />
-                            <div className="h-1 bg-slate-50 rounded-full" />
-                        </div>
-                    </div>
-                    <div style={{ backgroundColor: template.footerColor }} className="h-[10%] flex items-center justify-center">
-                        <div className="w-1/2 h-1 bg-white/20 rounded-full" />
-                    </div>
-                 </div>
-              </div>
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                    {template.isPreset ? (
+                      <span className="px-2.5 py-1 rounded-full bg-slate-800/85 text-white text-[10px] font-bold">
+                        সিস্টেম প্রিসেট
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
+                        সংরক্ষিত
+                      </span>
+                    )}
+                    {template.is_default && (
+                      <span className="px-2.5 py-1 rounded-full bg-[#EAB33C] text-[#123628] text-[10px] font-extrabold flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-current" /> ডিফল্ট
+                      </span>
+                    )}
+                  </div>
 
-              <div className="space-y-2">
-                 <h2 className="text-xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{template.name}</h2>
-                 <div className="flex items-center gap-2">
-                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                         template.layout === 'vertical' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
-                     }`}>
-                         {template.layout} Layout
-                     </span>
-                     <span className="text-[10px] font-black text-slate-400 border-l-2 border-slate-100 pl-2 uppercase tracking-widest">
-                         {template.fields.length} Fields
-                     </span>
-                 </div>
-              </div>
-            </div>
-
-            <div className="mt-auto px-8 py-5 bg-slate-50/50 flex items-center justify-between border-t-2 border-slate-50">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    Status: <span className="text-emerald-500">{template.status}</span>
-                </p>
-                <div className="flex items-center gap-2 text-indigo-500 group-hover:translate-x-1 transition-transform">
-                    <span className="text-xs font-black uppercase tracking-tighter">Edit Design</span>
-                    <ChevronRight className="w-4 h-4" />
-                </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Add/Edit Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-6 lg:p-10">
-          <div className="bg-white rounded-[3rem] w-full max-w-5xl shadow-2xl animate-in scale-in duration-300 overflow-hidden flex flex-col max-h-[90vh]">
-             <div className="p-10 border-b-2 border-slate-50 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-5">
-                    <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center border-2 border-indigo-100/50 shadow-inner">
-                        <Settings2 className="w-8 h-8" />
-                    </div>
-                    <div>
-                        <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                            {modalType === 'add' ? 'Design ID Card Template' : 'Edit Template Design'}
-                        </h2>
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1">Template Configuration & Visuals</p>
-                    </div>
-                </div>
-                <button onClick={() => setIsModalOpen(false)} className="p-4 bg-slate-50 hover:bg-slate-100 text-slate-400 rounded-2xl transition-all">
-                    <X className="w-6 h-6" />
-                </button>
-             </div>
-             
-             <div className="p-10 space-y-10 overflow-y-auto custom-scrollbar">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    {/* Left Side: Configuration */}
-                    <div className="space-y-8">
-                        {/* Section 1: Basic Info */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-slate-900 text-white rounded-full flex items-center justify-center text-[10px] font-black">01</div>
-                                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Metadata</h3>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase">Template Name</label>
-                                    <input 
-                                        type="text"
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                        placeholder="e.g. Classic Student"
-                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-indigo-500 outline-none transition-all"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase">Card Title</label>
-                                    <input 
-                                        type="text"
-                                        value={formData.title}
-                                        onChange={(e) => setFormData({...formData, title: e.target.value})}
-                                        placeholder="e.g. Student ID Card"
-                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-bold focus:border-indigo-500 outline-none transition-all"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Section 2: Visuals */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-slate-900 text-white rounded-full flex items-center justify-center text-[10px] font-black">02</div>
-                                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Visual Style</h3>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase">Header Color</label>
-                                    <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border-2 border-slate-100">
-                                        <input 
-                                            type="color"
-                                            value={formData.headerColor}
-                                            onChange={(e) => setFormData({...formData, headerColor: e.target.value})}
-                                            className="w-10 h-10 rounded-lg cursor-pointer border-none"
-                                        />
-                                        <span className="text-xs font-bold font-mono text-slate-500 uppercase">{formData.headerColor}</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase">Footer Color</label>
-                                    <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border-2 border-slate-100">
-                                        <input 
-                                            type="color"
-                                            value={formData.footerColor}
-                                            onChange={(e) => setFormData({...formData, footerColor: e.target.value})}
-                                            className="w-10 h-10 rounded-lg cursor-pointer border-none"
-                                        />
-                                        <span className="text-xs font-bold font-mono text-slate-500 uppercase">{formData.footerColor}</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase">Text (Head/Foot)</label>
-                                    <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border-2 border-slate-100">
-                                        <input 
-                                            type="color"
-                                            value={formData.textColor}
-                                            onChange={(e) => setFormData({...formData, textColor: e.target.value})}
-                                            className="w-10 h-10 rounded-lg cursor-pointer border-none"
-                                        />
-                                        <span className="text-xs font-bold font-mono text-slate-500 uppercase">{formData.textColor}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-3">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select Layout Architecture</label>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <button 
-                                        onClick={() => setFormData({...formData, layout: 'vertical'})}
-                                        className={`p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 ${
-                                            formData.layout === 'vertical' ? 'bg-indigo-50 border-indigo-500 shadow-xl shadow-indigo-100/50' : 'bg-slate-50 border-slate-100 hover:border-slate-200'
-                                        }`}
-                                    >
-                                        <div className={`w-10 h-14 rounded-md border-2 ${formData.layout === 'vertical' ? 'border-indigo-500 bg-white' : 'border-slate-300'}`} />
-                                        <span className={`text-[10px] font-black uppercase tracking-widest ${formData.layout === 'vertical' ? 'text-indigo-600' : 'text-slate-400'}`}>Vertical Layout</span>
-                                    </button>
-                                    <button 
-                                        onClick={() => setFormData({...formData, layout: 'horizontal'})}
-                                        className={`p-6 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 ${
-                                            formData.layout === 'horizontal' ? 'bg-indigo-50 border-indigo-500 shadow-xl shadow-indigo-100/50' : 'bg-slate-50 border-slate-100 hover:border-slate-200'
-                                        }`}
-                                    >
-                                        <div className={`w-14 h-10 rounded-md border-2 ${formData.layout === 'horizontal' ? 'border-indigo-500 bg-white' : 'border-slate-300'}`} />
-                                        <span className={`text-[10px] font-black uppercase tracking-widest ${formData.layout === 'horizontal' ? 'text-indigo-600' : 'text-slate-400'}`}>Horizontal Layout</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Section 3: Dynamic Fields */}
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-slate-900 text-white rounded-full flex items-center justify-center text-[10px] font-black">03</div>
-                                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Data Fields</h3>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                {availableFields.map(field => (
-                                    <button
-                                        key={field}
-                                        onClick={() => toggleField(field)}
-                                        className={`py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-tight border-2 transition-all flex items-center justify-between text-left ${
-                                            formData.fields.includes(field)
-                                                ? 'bg-indigo-50 border-indigo-500 text-indigo-600'
-                                                : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
-                                        }`}
-                                    >
-                                        {field}
-                                        {formData.fields.includes(field) && <Check className="w-3 h-3" />}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Side: LIVE PREVIEW */}
-                    <div className="bg-slate-50/50 rounded-[3rem] border-2 border-slate-100 p-10 flex flex-col items-center justify-center gap-8 relative overflow-hidden">
-                        <div className="absolute top-8 left-8 flex items-center gap-2">
-                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Architectural Preview</span>
-                        </div>
-
-                        {/* Card Preview Container */}
-                        <div className={`bg-white shadow-2xl rounded-2xl overflow-hidden border border-slate-100 transition-all duration-500 ${
-                            formData.layout === 'vertical' ? 'w-[280px] h-[440px]' : 'w-[440px] h-[280px]'
-                        }`}>
-                            {/* Header */}
-                            <div style={{ backgroundColor: formData.headerColor }} className="h-[15%] flex items-center justify-center px-4">
-                                <h4 style={{ color: formData.textColor }} className="text-[10px] font-black uppercase tracking-[0.2em] text-center leading-tight">
-                                    {formData.title || 'Institutional ID Card'}
-                                </h4>
-                            </div>
-
-                            {/* Body */}
-                            <div className={`p-6 flex ${formData.layout === 'vertical' ? 'flex-col' : 'flex-row'} items-center gap-6 h-[75%]`}>
-                                <div className={`${formData.layout === 'vertical' ? 'w-24 h-24' : 'w-28 h-28'} bg-slate-100 border-2 border-slate-200 rounded-xl flex items-center justify-center shrink-0 shadow-inner`}>
-                                   <ImageIcon className="w-10 h-10 text-slate-300" />
-                                </div>
-                                <div className="flex-1 space-y-3 w-full">
-                                    <div className="space-y-1">
-                                        <div className="h-4 bg-slate-100 rounded-md w-3/4 mx-auto md:mx-0" />
-                                        <div className="h-3 bg-slate-50 rounded-md w-1/2 mx-auto md:mx-0" />
-                                    </div>
-                                    <div className="grid grid-cols-1 gap-2 border-t border-slate-50 pt-3">
-                                        {formData.fields.slice(0, 4).map((f, i) => (
-                                            <div key={i} className="flex justify-between items-center text-[8px] font-bold text-slate-400 uppercase">
-                                                <span>{f}:</span>
-                                                <span className="text-slate-800">**********</span>
-                                            </div>
-                                        ))}
-                                        {formData.fields.length > 4 && (
-                                            <div className="text-[7px] text-center text-slate-300 font-bold uppercase tracking-widest">+{formData.fields.length - 4} more fields</div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Footer */}
-                            <div style={{ backgroundColor: formData.footerColor }} className="h-[10%] flex items-center justify-between px-6">
-                                <div className="w-12 h-1 bg-white/30 rounded-full" />
-                                <div className="flex gap-1">
-                                    <div className="w-1 h-1 bg-white/30 rounded-full" />
-                                    <div className="w-1 h-1 bg-white/30 rounded-full" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="max-w-[300px] text-center">
-                            <p className="text-[10px] font-bold text-slate-400 leading-relaxed italic">
-                                Preview displays a mockup profile. The final card will dynamically populate with real data based on selected parameters.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex gap-6 shrink-0 pt-6 border-t-2 border-slate-50">
-                    <button onClick={() => setIsModalOpen(false)} className="flex-1 py-5 text-slate-400 font-black text-sm uppercase tracking-widest hover:bg-slate-50 rounded-2xl transition-all">Discard Design</button>
-                    <button 
-                        onClick={handleAction} 
-                        className="flex-[2] py-5 bg-indigo-600 text-white font-black text-sm uppercase tracking-widest rounded-2xl shadow-2xl shadow-indigo-100 hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-3"
+                  <div className="absolute top-3 right-3 flex gap-1.5">
+                    <button
+                      onClick={() => openCreateModal(template)}
+                      title={template.isPreset ? "কপি করে কাস্টমাইজ করুন" : "সম্পাদনা করুন"}
+                      className="p-2 bg-white hover:bg-emerald-50 text-slate-600 hover:text-[#1C7D5A] rounded-lg border border-slate-200 shadow-xs transition-colors cursor-pointer"
                     >
-                        <ShieldCheck className="w-5 h-5" /> {modalType === 'add' ? 'Finalize Template' : 'Push Reconfigurations'}
+                      {template.isPreset ? <Copy className="w-4 h-4" /> : <Edit3 className="w-4 h-4" />}
                     </button>
+                    {!template.isPreset && (
+                      <button
+                        onClick={() => setDeleteTarget(template)}
+                        title="মুছে ফেলুন"
+                        className="p-2 bg-white hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-lg border border-slate-200 shadow-xs transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
-             </div>
+
+                {/* Metadata Footer */}
+                <div className="p-4 flex-1 flex flex-col justify-between gap-3">
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold text-[#1C7D5A] uppercase">
+                        {template.target_type === "employee" ? "শিক্ষক ও স্টাফ" : "শিক্ষার্থী"} •{" "}
+                        {isHoriz ? "আড়াআড়ি (Landscape)" : "লম্বা (Portrait)"}
+                      </span>
+                      <span className="text-[11px] font-semibold text-slate-400">
+                        {(template.fields || []).length} ফিল্ড
+                      </span>
+                    </div>
+                    <h3 className="text-base font-extrabold text-slate-800 mt-1 line-clamp-1">{template.name}</h3>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                    <button
+                      onClick={() => openCreateModal(template)}
+                      className="flex-1 py-2 px-3 bg-slate-100 hover:bg-[#1C7D5A] text-slate-700 hover:text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      {template.isPreset ? "কাস্টমাইজ ও সেভ" : "ডিজাইন এডিট"}
+                    </button>
+                    {!template.is_default && (
+                      <button
+                        onClick={() => handleSetDefault(template)}
+                        className="py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        ডিফল্ট করুন
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Split-Pane Designer Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-[120] flex items-center justify-center p-3 md:p-6">
+          <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[94vh] flex flex-col overflow-hidden shadow-2xl">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#123628] text-[#EAB33C] flex items-center justify-center">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-slate-800">
+                    {editingId ? "আইডি কার্ড টেমপ্লেট সম্পাদনা" : "নতুন আইডি কার্ড ডিজাইন স্টুডিও"}
+                  </h2>
+                  <p className="text-xs text-slate-500">ডানপাশে রিয়েল-টাইম ফ্রন্ট ও ব্যাক প্রিভিউ দেখে সেভ করুন</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded-xl cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleSave} className="flex-1 overflow-y-auto grid grid-cols-1 lg:grid-cols-12">
+              {/* Left Configuration */}
+              <div className="lg:col-span-6 p-6 space-y-6 border-b lg:border-b-0 lg:border-r border-slate-200 overflow-y-auto">
+                {/* 1. Preset Style */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-2">১. গ্রাফিক ডিজাইন প্রিসেট বাছাই করুন</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {ID_CARD_PRESETS.map((p) => (
+                      <button
+                        type="button"
+                        key={p.key}
+                        onClick={() => applyPreset(p)}
+                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                          formData.preset_key === p.key
+                            ? "border-[#1C7D5A] bg-emerald-50/70 ring-1 ring-[#1C7D5A]"
+                            : "border-slate-200 hover:border-slate-300"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <div className="flex items-center gap-1">
+                            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: p.primaryColor }} />
+                            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: p.accentColor }} />
+                          </div>
+                          <span className="text-[10px] font-bold text-slate-500">{p.badge}</span>
+                        </div>
+                        <p className="text-xs font-bold text-slate-800 line-clamp-1">{p.name}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. Basic Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="text-xs font-bold text-slate-700 block mb-1">টেমপ্লেটের নাম *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="যেমন: শিক্ষার্থী স্মার্ট কার্ড ২০২৬"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">কার জন্য প্রযোজ্য</label>
+                    <select
+                      value={formData.target_type}
+                      onChange={(e) => handleTargetTypeChange(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                    >
+                      <option value="student">শিক্ষার্থী (Student)</option>
+                      <option value="employee">শিক্ষক ও স্টাফ (Employee)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">কার্ডের অরিয়েন্টেশন</label>
+                    <select
+                      value={formData.layout}
+                      onChange={(e) => setFormData({ ...formData, layout: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                    >
+                      <option value="vertical">লম্বা (Portrait CR80)</option>
+                      <option value="horizontal">আড়াআড়ি (Landscape CR80)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">কার্ড ব্যাজ শিরোনাম</label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">মেয়াদ (Valid Thru)</label>
+                    <input
+                      type="text"
+                      value={formData.valid_thru}
+                      onChange={(e) => setFormData({ ...formData, valid_thru: e.target.value })}
+                      placeholder="ডিসেম্বর ২০২৬"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+                    />
+                  </div>
+                </div>
+
+                {/* 3. Colors */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-2">৩. কালার প্যালেট</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {[
+                      { key: "primary_color", label: "প্রাইমারি" },
+                      { key: "secondary_color", label: "সেকেন্ডারি" },
+                      { key: "accent_color", label: "গোল্ড/অ্যাকসেন্ট" },
+                      { key: "text_color", label: "হেডার টেক্সট" },
+                    ].map((c) => (
+                      <div key={c.key} className="bg-slate-50 border border-slate-200 rounded-xl p-2 flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={formData[c.key] || "#123628"}
+                          onChange={(e) => setFormData({ ...formData, [c.key]: e.target.value })}
+                          className="w-8 h-8 rounded cursor-pointer border-0 bg-transparent"
+                        />
+                        <div className="min-w-0">
+                          <span className="text-[10px] font-bold text-slate-500 block">{c.label}</span>
+                          <span className="text-[10px] font-mono font-bold text-slate-700">{formData[c.key]}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. Fields */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-2">৪. কার্ডে প্রদর্শিত তথ্য (Fields)</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {ID_CARD_AVAILABLE_FIELDS.map((f) => {
+                      const active = formData.fields.includes(f.key);
+                      return (
+                        <button
+                          type="button"
+                          key={f.key}
+                          onClick={() => toggleField(f.key)}
+                          className={`px-3 py-2 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
+                            active
+                              ? "bg-emerald-50 border-[#1C7D5A] text-[#123628]"
+                              : "bg-white border-slate-200 text-slate-500 hover:border-slate-300"
+                          }`}
+                        >
+                          <span className="truncate">{f.label}</span>
+                          {active && <Check className="w-3.5 h-3.5 text-[#1C7D5A] shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 5. Toggles & Footer Text */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {[
+                    { key: "show_photo", label: "ছবি দেখান" },
+                    { key: "show_qr", label: "QR ভেরিফিকেশন" },
+                    { key: "show_barcode", label: "বারকোড" },
+                    { key: "show_arabic_header", label: "আরবি শিরোনাম" },
+                    { key: "show_watermark", label: "লোগো ওয়াটারমার্ক" },
+                    { key: "is_default", label: "ডিফল্ট টেমপ্লেট" },
+                  ].map((opt) => (
+                    <label
+                      key={opt.key}
+                      className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer text-xs font-bold text-slate-700"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={Boolean(formData[opt.key])}
+                        onChange={(e) => setFormData({ ...formData, [opt.key]: e.target.checked })}
+                        className="accent-[#1C7D5A] w-4 h-4"
+                      />
+                      {opt.label}
+                    </label>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">স্বাক্ষর পদবী</label>
+                    <input
+                      type="text"
+                      value={formData.right_sign_label}
+                      onChange={(e) => setFormData({ ...formData, right_sign_label: e.target.value })}
+                      className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-[#1C7D5A]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 block mb-1">পিছনের দিকের নির্দেশনা</label>
+                    <input
+                      type="text"
+                      value={formData.back_note}
+                      onChange={(e) => setFormData({ ...formData, back_note: e.target.value })}
+                      className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-[#1C7D5A]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Live Preview */}
+              <div className="lg:col-span-6 bg-slate-100 p-6 flex flex-col items-center justify-between gap-4">
+                <div className="w-full flex items-center justify-between">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    লাইভ প্রিভিউ (CR80 প্রিন্ট স্কেল)
+                  </span>
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200">
+                    {[
+                      { id: "front", label: "সামনে" },
+                      { id: "back", label: "পিছনে" },
+                      { id: "both", label: "উভয় পাশ" },
+                    ].map((s) => (
+                      <button
+                        type="button"
+                        key={s.id}
+                        onClick={() => setPreviewSide(s.id)}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          previewSide === s.id ? "bg-[#123628] text-white" : "text-slate-600 hover:bg-slate-100"
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex-1 flex items-center justify-center py-4 overflow-auto w-full">
+                  <IdCardRenderer
+                    template={formData}
+                    person={formData.target_type === "employee" ? SAMPLE_EMPLOYEE : SAMPLE_STUDENT}
+                    madrasa={madrasa}
+                    targetType={formData.target_type}
+                    side={previewSide}
+                  />
+                </div>
+
+                <div className="w-full flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 cursor-pointer"
+                  >
+                    বাতিল
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="px-6 py-2.5 rounded-xl bg-[#1C7D5A] hover:bg-[#123628] text-white text-sm font-bold shadow-md flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                  >
+                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+                    {editingId ? "আপডেট সংরক্ষণ করুন" : "টেমপ্লেট সেভ করুন"}
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
-      {/* Delete Confirmation */}
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[100] flex items-center justify-center p-6">
-           <div className="bg-white rounded-[3rem] w-full max-w-md shadow-2xl animate-in fade-in zoom-in duration-300 overflow-hidden">
-              <div className="p-10 text-center space-y-8">
-                <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-[2.5rem] flex items-center justify-center mx-auto border-4 border-white shadow-2xl shadow-rose-100 relative">
-                    <AlertCircle className="w-10 h-10" />
-                </div>
-                <div className="space-y-3">
-                    <h2 className="text-3xl font-black text-slate-800 tracking-tight">Incinerate Template?</h2>
-                    <p className="text-sm font-bold text-slate-400 px-6 leading-relaxed">
-                        This action will permanently delete <span className="text-slate-800 font-black">{selectedTemplate?.name}</span> and all associated visual configs.
-                    </p>
-                </div>
-                
-                <div className="flex flex-col gap-4">
-                    <button onClick={handleDelete} className="w-full py-5 bg-rose-500 text-white font-black rounded-2xl shadow-xl shadow-rose-200 hover:bg-rose-600 active:scale-95 transition-all uppercase tracking-widest text-xs">Confirm Destruction</button>
-                    <button onClick={() => setIsDeleteModalOpen(false)} className="w-full py-5 font-black text-slate-400 hover:bg-slate-50 rounded-2xl transition-all uppercase tracking-widest text-xs">Retain Configuration</button>
-                </div>
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[130] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                <Trash2 className="w-5 h-5" />
               </div>
-           </div>
+              <div>
+                <h3 className="text-lg font-extrabold text-slate-800">টেমপ্লেট মুছে ফেলবেন?</h3>
+                <p className="text-xs text-slate-500">"{deleteTarget.name}" স্থায়ীভাবে মুছে যাবে।</p>
+              </div>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold cursor-pointer"
+              >
+                না, থাক
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold cursor-pointer"
+              >
+                হ্যাঁ, মুছে ফেলুন
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

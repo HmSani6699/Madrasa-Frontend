@@ -1,353 +1,506 @@
-import { useState } from "react";
-import { 
-  Users, 
-  Search, 
-  CreditCard, 
-  Filter, 
-  CheckCircle2, 
-  ChevronRight,
+import { useState, useEffect, useMemo } from "react";
+import {
+  Users,
+  Search,
   Printer,
-  Download,
   Eye,
-  Plus,
   X,
-  LayoutGrid,
-  List as ListIcon,
-  Image as ImageIcon,
-  Check
+  Check,
+  CreditCard,
+  Loader2,
+  User,
+  FlipHorizontal2,
+  Sparkles,
 } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
+import { usePortalSettings } from "../../context/PortalSettingsContext";
+import printStudioService from "../../services/printStudioService";
+import {
+  DEFAULT_ID_TEMPLATES,
+  ID_CARD_PRESETS,
+  getMadrasaBranding,
+  toBanglaDigits,
+} from "../../components/PrintStudio/printPresets";
+import { IdCardRenderer } from "../../components/PrintStudio/IdCardRenderer";
+import { printHtmlElement } from "../../components/PrintStudio/printEngine";
 
 const StudentIdCard = () => {
+  const { currentMadrasa } = useAuth();
+  const { settings } = usePortalSettings();
+  const madrasa = useMemo(() => getMadrasaBranding(currentMadrasa, settings), [currentMadrasa, settings]);
+
+  const [students, setStudents] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [templates, setTemplates] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [selectedClass, setSelectedClass] = useState("all");
+  const [selectedSection, setSelectedSection] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedClass, setSelectedClass] = useState("All Classes");
-  const [selectedSection, setSelectedSection] = useState("All Sections");
-  const [selectedTemplate, setSelectedTemplate] = useState("Classic Student Card");
-  
-  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState("");
+  const [presetOverride, setPresetOverride] = useState("");
+
+  const [selectedIds, setSelectedIds] = useState([]);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewSide, setPreviewSide] = useState("front"); // "front" | "back" | "both"
 
-  // Sample Data
-  const classes = ["All Classes", "Class 5", "Class 6", "Class 7", "Hifz Class", "Kitab Class"];
-  const sections = ["All Sections", "Section A", "Section B", "Morning", "Evening"];
-  const templates = ["Classic Student Card", "Modern Digital Card", "Minimalist Card"];
+  useEffect(() => {
+    const loadInitial = async () => {
+      try {
+        const [classRes, secRes, tplRes] = await Promise.all([
+          printStudioService.getClasses(),
+          printStudioService.getSections(),
+          printStudioService.getTemplates({ category: "id_card", target_type: "student" }),
+        ]);
+        if (classRes?.success) setClasses(classRes.data || []);
+        if (secRes?.success) setSections(secRes.data || []);
+        const combined = [
+          ...(tplRes?.data || []),
+          ...DEFAULT_ID_TEMPLATES.filter((t) => t.target_type === "student"),
+        ];
+        setTemplates(combined);
+        const def = combined.find((t) => t.is_default) || combined[0];
+        if (def) setSelectedTemplateId(def._id);
+      } catch (err) {
+        console.error("Failed loading lookups:", err);
+      }
+    };
+    loadInitial();
+  }, []);
 
-  const students = [
-    { id: 1, name: "Abdullah Ibn Omar", admissionNo: "2023001", class: "Class 5", section: "Section A", roll: "01", blood: "A+", photo: null },
-    { id: 2, name: "Zaid Ibn Harithah", admissionNo: "2023002", class: "Class 5", section: "Section A", roll: "02", blood: "O-", photo: null },
-    { id: 3, name: "Usama Ibn Zaid", admissionNo: "2023005", class: "Class 6", section: "Section B", roll: "05", blood: "B+", photo: null },
-    { id: 4, name: "Anas Ibn Malik", admissionNo: "2023009", class: "Class 6", section: "Section B", roll: "09", blood: "AB+", photo: null },
-    { id: 5, name: "Bilal Ibn Rabah", admissionNo: "2023012", class: "Hifz Class", section: "Morning", roll: "12", blood: "O+", photo: null },
-  ];
+  const fetchStudents = async () => {
+    setLoading(true);
+    try {
+      const params = {};
+      if (selectedClass !== "all") params.class_id = selectedClass;
+      if (selectedSection !== "all") params.section_id = selectedSection;
+      if (searchTerm.trim()) params.search = searchTerm.trim();
 
-  const filteredStudents = students.filter(s => 
-    (selectedClass === "All Classes" || s.class === selectedClass) &&
-    (selectedSection === "All Sections" || s.section === selectedSection) &&
-    (s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.admissionNo.includes(searchTerm))
-  );
-
-  const toggleStudentSelection = (studentId) => {
-    setSelectedStudents(prev => 
-      prev.includes(studentId) 
-        ? prev.filter(id => id !== studentId) 
-        : [...prev, studentId]
-    );
-  };
-
-  const selectAll = () => {
-    if (selectedStudents.length === filteredStudents.length) {
-      setSelectedStudents([]);
-    } else {
-      setSelectedStudents(filteredStudents.map(s => s.id));
+      const res = await printStudioService.getStudentCardsData(params);
+      if (res?.success) {
+        setStudents(res.data || []);
+      }
+    } catch (err) {
+      console.error("Error loading student cards:", err);
+      toast.error("শিক্ষার্থীদের তথ্য লোড করা যায়নি");
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchStudents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedClass, selectedSection]);
+
+  const filteredSections = useMemo(() => {
+    if (selectedClass === "all") return sections;
+    return sections.filter((s) => String(s.class_id) === String(selectedClass));
+  }, [sections, selectedClass]);
+
+  const filteredStudents = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase();
+    if (!q) return students;
+    return students.filter(
+      (s) =>
+        (s.name || "").toLowerCase().includes(q) ||
+        (s.student_id || "").toLowerCase().includes(q) ||
+        (s.roll_number || "").toLowerCase().includes(q) ||
+        (s.fatherName || "").toLowerCase().includes(q) ||
+        (s.phone || "").toLowerCase().includes(q)
+    );
+  }, [students, searchTerm]);
+
+  const activeTemplate = useMemo(() => {
+    const base = templates.find((t) => t._id === selectedTemplateId) || DEFAULT_ID_TEMPLATES[0];
+    if (!presetOverride) return base;
+    const preset = ID_CARD_PRESETS.find((p) => p.key === presetOverride);
+    if (!preset) return base;
+    return {
+      ...base,
+      preset_key: preset.key,
+      layout: preset.layout,
+      primary_color: preset.primaryColor,
+      secondary_color: preset.secondaryColor,
+      accent_color: preset.accentColor,
+      text_color: preset.textColor,
+    };
+  }, [templates, selectedTemplateId, presetOverride]);
+
+  const selectedStudentObjs = useMemo(
+    () => students.filter((s) => selectedIds.includes(s._id)),
+    [students, selectedIds]
+  );
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
+  const toggleSelectAll = () => {
+    const visibleIds = filteredStudents.map((s) => s._id);
+    const allSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.includes(id));
+    if (allSelected) {
+      setSelectedIds((prev) => prev.filter((id) => !visibleIds.includes(id)));
+    } else {
+      setSelectedIds((prev) => Array.from(new Set([...prev, ...visibleIds])));
+    }
+  };
+
+  const openSinglePreview = (student, e) => {
+    e.stopPropagation();
+    setSelectedIds([student._id]);
+    setIsPreviewOpen(true);
+  };
+
+  const handlePrint = () => {
+    try {
+      const isHoriz = activeTemplate.layout === "horizontal";
+      printHtmlElement({
+        elementId: "printable-student-id-sheet",
+        title: `Student ID Cards - ${madrasa.name}`,
+        orientation: isHoriz && previewSide === "both" ? "landscape" : "portrait",
+        marginMm: 6,
+      });
+    } catch (err) {
+      toast.error(err.message || "প্রিন্ট শুরু করা যায়নি");
+    }
+  };
+
+  const isHorizontal = activeTemplate.layout === "horizontal";
+  const cardsPerPage = previewSide === "both" ? (isHorizontal ? 4 : 4) : isHorizontal ? 8 : 9;
+
+  // Chunk into A4 pages
+  const pages = useMemo(() => {
+    const chunks = [];
+    for (let i = 0; i < selectedStudentObjs.length; i += cardsPerPage) {
+      chunks.push(selectedStudentObjs.slice(i, i + cardsPerPage));
+    }
+    return chunks;
+  }, [selectedStudentObjs, cardsPerPage]);
+
   return (
-    <div className="space-y-10 animate-in fade-in duration-500 p-6 md:p-10 text-slate-800">
+    <div className="p-4 md:p-6 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="bg-white rounded-[3rem] border-2 border-slate-200 p-10 flex flex-col lg:flex-row justify-between items-center gap-8 shadow-sm relative overflow-hidden">
-        <div className="flex items-center gap-8 relative z-10">
-          <div className="w-20 h-20 bg-indigo-50 rounded-[2rem] flex items-center justify-center border-2 border-indigo-100/50 shadow-inner">
-            <Users className="w-10 h-10 text-indigo-600" />
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 md:p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-[#1C7D5A]/10 text-[#1C7D5A] flex items-center justify-center shrink-0">
+            <Users className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight text-center lg:text-left">Student ID Cards</h1>
-            <p className="text-slate-500 font-bold mt-2 text-lg text-center lg:text-left">Generate and print ID cards for your students</p>
+            <h1 className="text-xl md:text-2xl font-extrabold text-slate-800">
+              ছাত্র আইডি কার্ড তৈরি ও প্রিন্ট (Student ID Cards)
+            </h1>
+            <p className="text-xs md:text-sm text-slate-500 mt-0.5">
+              শ্রেণি ও শাখা নির্বাচন করে একসাথে একাধিক শিক্ষার্থীর ফ্রন্ট ও ব্যাক আইডি কার্ড A4 শীটে প্রিন্ট করুন
+            </p>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-            <button 
-                disabled={selectedStudents.length === 0}
-                onClick={() => setIsPreviewOpen(true)}
-                className="px-8 py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-indigo-100 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:scale-100 disabled:shadow-none"
-            >
-                <Eye className="w-6 h-6" />
-                Preview Selection ({selectedStudents.length})
-            </button>
+        <button
+          disabled={selectedIds.length === 0}
+          onClick={() => setIsPreviewOpen(true)}
+          className="px-5 py-2.5 bg-[#1C7D5A] hover:bg-[#123628] text-white text-sm font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-45 cursor-pointer"
+        >
+          <Eye className="w-4 h-4" />
+          প্রিভিউ ও প্রিন্ট ({toBanglaDigits(selectedIds.length)} জন)
+        </button>
+      </div>
+
+      {/* Filter & Template Controls */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div>
+          <label className="text-xs font-bold text-slate-600 block mb-1">শ্রেণি / জামাত</label>
+          <select
+            value={selectedClass}
+            onChange={(e) => {
+              setSelectedClass(e.target.value);
+              setSelectedSection("all");
+            }}
+            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+          >
+            <option value="all">সকল শ্রেণি</option>
+            {classes.map((c) => (
+              <option key={c._id} value={c._id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-bold text-slate-600 block mb-1">শাখা / সেকশন</label>
+          <select
+            value={selectedSection}
+            onChange={(e) => setSelectedSection(e.target.value)}
+            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+          >
+            <option value="all">সকল শাখা</option>
+            {filteredSections.map((s) => (
+              <option key={s._id} value={s._id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-bold text-slate-600 block mb-1">সংরক্ষিত টেমপ্লেট</label>
+          <select
+            value={selectedTemplateId}
+            onChange={(e) => {
+              setSelectedTemplateId(e.target.value);
+              setPresetOverride("");
+            }}
+            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+          >
+            {templates.map((t) => (
+              <option key={t._id} value={t._id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-bold text-slate-600 block mb-1 flex items-center gap-1">
+            <Sparkles className="w-3.5 h-3.5 text-[#EAB33C]" /> নকশা দ্রুত বদলান
+          </label>
+          <select
+            value={presetOverride}
+            onChange={(e) => setPresetOverride(e.target.value)}
+            className="w-full px-3.5 py-2.5 bg-amber-50/60 border border-amber-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+          >
+            <option value="">টেমপ্লেটের নিজস্ব নকশা</option>
+            {ID_CARD_PRESETS.map((p) => (
+              <option key={p.key} value={p.key}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-bold text-slate-600 block mb-1">শিক্ষার্থী খুঁজুন</label>
+          <div className="relative">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="নাম, রোল বা আইডি..."
+              className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold outline-none focus:border-[#1C7D5A]"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Control Panel */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          {/* Filters */}
-          <div className="xl:col-span-3 bg-white rounded-[2.5rem] border-2 border-slate-100 p-6 flex flex-col md:flex-row gap-6 shadow-sm">
-              <div className="flex-1 space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Institutional Class</label>
-                  <select 
-                    value={selectedClass}
-                    onChange={(e) => setSelectedClass(e.target.value)}
-                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
-                  >
-                      {classes.map(c => <option key={c}>{c}</option>)}
-                  </select>
-              </div>
-              <div className="flex-1 space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Section Unit</label>
-                  <select 
-                    value={selectedSection}
-                    onChange={(e) => setSelectedSection(e.target.value)}
-                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
-                  >
-                      {sections.map(s => <option key={s}>{s}</option>)}
-                  </select>
-              </div>
-              <div className="flex-1 space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Applied Template</label>
-                  <select 
-                    value={selectedTemplate}
-                    onChange={(e) => setSelectedTemplate(e.target.value)}
-                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
-                  >
-                      {templates.map(t => <option key={t}>{t}</option>)}
-                  </select>
-              </div>
+      {/* Students Table */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 bg-slate-50/60">
+          <div className="flex items-center gap-2.5">
+            <CreditCard className="w-5 h-5 text-[#1C7D5A]" />
+            <h3 className="text-base font-extrabold text-slate-800">
+              শিক্ষার্থী তালিকা ({toBanglaDigits(filteredStudents.length)} জন)
+            </h3>
           </div>
+          <button
+            onClick={toggleSelectAll}
+            className="px-4 py-2 bg-white border border-slate-200 hover:border-[#1C7D5A] text-slate-700 hover:text-[#1C7D5A] rounded-xl text-xs font-bold transition-colors cursor-pointer"
+          >
+            {filteredStudents.length > 0 && filteredStudents.every((s) => selectedIds.includes(s._id))
+              ? "সব নির্বাচন বাতিল করুন"
+              : "ফিল্টারকৃত সবাইকে নির্বাচন করুন"}
+          </button>
+        </div>
 
-          {/* Search */}
-          <div className="bg-white rounded-[2.5rem] border-2 border-slate-100 p-6 flex items-end shadow-sm">
-              <div className="w-full space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase ml-2">Quick Search</label>
-                  <div className="relative">
-                      <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
-                      <input 
-                        placeholder="Search by name or ID..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold placeholder:text-slate-300 outline-none focus:ring-2 ring-indigo-500/20 transition-all"
-                      />
-                  </div>
-              </div>
+        {loading ? (
+          <div className="p-16 flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-8 h-8 animate-spin text-[#1C7D5A]" />
+            <p className="text-sm font-bold text-slate-500">শিক্ষার্থীদের তালিকা লোড হচ্ছে...</p>
           </div>
-      </div>
-
-      {/* Student List */}
-      <div className="bg-white rounded-[3rem] border-2 border-slate-100 shadow-xl shadow-slate-100/20 overflow-hidden relative">
-          <div className="p-8 border-b-2 border-slate-50 flex justify-between items-center bg-slate-50/30">
-              <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center border border-indigo-100">
-                      <ListIcon className="w-6 h-6 text-indigo-500" />
-                  </div>
-                  <div>
-                      <h3 className="text-xl font-black tracking-tight">Student Roster</h3>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Ready for dispatch</p>
-                  </div>
-              </div>
-              
-              <button 
-                onClick={selectAll}
-                className="px-6 py-3 bg-white border-2 border-slate-100 rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-indigo-200 hover:text-indigo-600 transition-all shadow-sm"
-              >
-                  {selectedStudents.length === filteredStudents.length ? 'Deselect All' : 'Select All Filtered'}
-              </button>
-          </div>
-
+        ) : (
           <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                  <thead>
-                      <tr className="text-left bg-slate-50/20">
-                          <th className="p-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Select</th>
-                          <th className="p-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Student Identity</th>
-                          <th className="p-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admission No</th>
-                          <th className="p-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Class / Section</th>
-                          <th className="p-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Roll No</th>
-                          <th className="p-8 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Status</th>
-                      </tr>
-                  </thead>
-                  <tbody className="divide-y-2 divide-slate-50">
-                      {filteredStudents.map(student => (
-                          <tr 
-                            key={student.id} 
-                            onClick={() => toggleStudentSelection(student.id)}
-                            className={`group hover:bg-slate-50/50 transition-colors cursor-pointer ${selectedStudents.includes(student.id) ? 'bg-indigo-50/30' : ''}`}
-                          >
-                              <td className="p-8">
-                                  <div className={`w-8 h-8 rounded-xl border-2 flex items-center justify-center transition-all ${
-                                      selectedStudents.includes(student.id) ? 'bg-indigo-600 border-indigo-600 shadow-lg shadow-indigo-100' : 'bg-white border-slate-200'
-                                  }`}>
-                                      {selectedStudents.includes(student.id) && <Check className="w-4 h-4 text-white font-bold" />}
-                                  </div>
-                              </td>
-                              <td className="p-8">
-                                  <div className="flex items-center gap-5">
-                                      <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center border-2 border-white shadow-sm overflow-hidden shrink-0">
-                                          {student.photo ? <img src={student.photo} alt="" className="w-full h-full object-cover" /> : <ImageIcon className="w-6 h-6 text-slate-300" />}
-                                      </div>
-                                      <span className="font-black text-slate-700 tracking-tight group-hover:text-indigo-600 transition-colors">{student.name}</span>
-                                  </div>
-                              </td>
-                              <td className="p-8">
-                                  <span className="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-xs font-black border border-slate-200/50 shadow-inner">
-                                      {student.admissionNo}
-                                  </span>
-                              </td>
-                              <td className="p-8">
-                                  <div className="flex flex-col gap-1">
-                                      <span className="text-xs font-black text-slate-600">{student.class}</span>
-                                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{student.section}</span>
-                                  </div>
-                              </td>
-                              <td className="p-8 font-black text-slate-800 tracking-tighter text-lg">{student.roll}</td>
-                              <td className="p-8 text-right">
-                                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100">
-                                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                      Ready
-                                  </span>
-                              </td>
-                          </tr>
-                      ))}
-                      {filteredStudents.length === 0 && (
-                          <tr>
-                              <td colSpan="6" className="p-20 text-center">
-                                  <div className="flex flex-col items-center gap-4 opacity-30">
-                                      <Search className="w-16 h-16" />
-                                      <p className="font-black text-xl uppercase tracking-widest">No matching students found</p>
-                                  </div>
-                              </td>
-                          </tr>
-                      )}
-                  </tbody>
-              </table>
+            <table className="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200 text-xs font-extrabold text-slate-500 uppercase">
+                  <th className="py-3.5 px-4 w-12">সিলেক্ট</th>
+                  <th className="py-3.5 px-4">শিক্ষার্থী</th>
+                  <th className="py-3.5 px-4">আইডি / দাখেলা</th>
+                  <th className="py-3.5 px-4">শ্রেণি ও শাখা</th>
+                  <th className="py-3.5 px-4">রোল</th>
+                  <th className="py-3.5 px-4">পিতার নাম ও ফোন</th>
+                  <th className="py-3.5 px-4">রক্ত</th>
+                  <th className="py-3.5 px-4 text-right">একশন</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredStudents.map((student) => {
+                  const checked = selectedIds.includes(student._id);
+                  return (
+                    <tr
+                      key={student._id}
+                      onClick={() => toggleSelect(student._id)}
+                      className={`cursor-pointer transition-colors ${
+                        checked ? "bg-emerald-50/60" : "hover:bg-slate-50/70"
+                      }`}
+                    >
+                      <td className="py-3 px-4">
+                        <div
+                          className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                            checked ? "bg-[#1C7D5A] border-[#1C7D5A]" : "border-slate-300 bg-white"
+                          }`}
+                        >
+                          {checked && <Check className="w-3.5 h-3.5 text-white" />}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                            {student.photo ? (
+                              <img src={student.photo} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <User className="w-5 h-5 text-slate-300" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800">{student.name}</p>
+                            <p className="text-[11px] text-slate-400">{student.residentialType}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 font-mono text-xs font-bold text-slate-600">{student.student_id}</td>
+                      <td className="py-3 px-4">
+                        <span className="font-bold text-slate-700">{student.class || "—"}</span>
+                        {student.section && <span className="text-xs text-slate-400 block">{student.section}</span>}
+                      </td>
+                      <td className="py-3 px-4 font-extrabold text-[#123628]">
+                        {student.roll_number ? toBanglaDigits(student.roll_number) : "—"}
+                      </td>
+                      <td className="py-3 px-4 text-xs">
+                        <p className="font-semibold text-slate-700">{student.fatherName || "—"}</p>
+                        <p className="text-slate-400">{toBanglaDigits(student.phone || "")}</p>
+                      </td>
+                      <td className="py-3 px-4">
+                        {student.bloodGroup ? (
+                          <span className="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 text-xs font-bold border border-rose-200">
+                            {student.bloodGroup}
+                          </span>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <button
+                          onClick={(e) => openSinglePreview(student, e)}
+                          className="px-3 py-1.5 bg-slate-100 hover:bg-[#1C7D5A] text-slate-700 hover:text-white rounded-lg text-xs font-bold transition-colors inline-flex items-center gap-1 cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> দেখুন
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {filteredStudents.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="py-16 text-center text-slate-400 font-bold">
+                      কোনো শিক্ষার্থী পাওয়া যায়নি
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
-          
-          <div className="p-8 flex justify-between items-center bg-slate-50/30 border-t-2 border-slate-50">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Showing <span className="text-slate-800">{filteredStudents.length}</span> of <span className="text-slate-800">{students.length}</span> total entries
-              </p>
-              <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black text-slate-400 uppercase pr-4 border-r border-slate-200">Selected: {selectedStudents.length}</span>
-                  <button 
-                    disabled={selectedStudents.length === 0}
-                    className="flex items-center gap-2 text-indigo-500 font-black text-[10px] uppercase tracking-widest hover:translate-x-1 transition-transform disabled:opacity-30"
-                  >
-                      Initiate Generation <ChevronRight className="w-4 h-4" />
-                  </button>
-              </div>
-          </div>
+        )}
       </div>
 
-      {/* Generation Preview Modal */}
+      {/* Print Preview Modal */}
       {isPreviewOpen && (
-          <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-xl z-[100] flex items-center justify-center p-6 sm:p-10 lg:p-20">
-              <div className="bg-white rounded-[4rem] w-full h-full max-w-7xl shadow-[0_0_100px_rgba(0,0,0,0.4)] flex flex-col overflow-hidden animate-in zoom-in duration-300">
-                   {/* Modal Header */}
-                   <div className="p-10 border-b-2 border-slate-50 flex items-center justify-between shrink-0 bg-white">
-                        <div className="flex items-center gap-6">
-                            <div className="w-16 h-16 bg-indigo-600 text-white rounded-[1.5rem] flex items-center justify-center shadow-2xl shadow-indigo-200">
-                                <Printer className="w-8 h-8" />
-                            </div>
-                            <div>
-                                <h2 className="text-3xl font-black text-slate-800 tracking-tight">Print Engine Preview</h2>
-                                <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Template: <span className="text-indigo-500">{selectedTemplate}</span></p>
-                            </div>
-                        </div>
-                        <div className="flex gap-4">
-                            <button className="flex items-center gap-3 px-8 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-sm hover:bg-slate-200 transition-all">
-                                <Download className="w-5 h-5" /> Export PDF
-                            </button>
-                            <button className="flex items-center gap-3 px-8 py-4 bg-indigo-600 text-white rounded-2xl font-black text-sm hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all">
-                                <Printer className="w-5 h-5" /> Print Now
-                            </button>
-                            <button onClick={() => setIsPreviewOpen(false)} className="p-4 text-slate-400 hover:bg-slate-50 rounded-2xl transition-all ml-4">
-                                <X className="w-8 h-8" />
-                            </button>
-                        </div>
-                   </div>
-
-                   {/* Preview Grid */}
-                   <div className="flex-1 overflow-y-auto p-12 lg:p-20 bg-slate-100/30 custom-scrollbar">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
-                            {selectedStudents.map(id => {
-                                const s = students.find(x => x.id === id);
-                                return (
-                                    <div key={id} className="relative group shrink-0 mx-auto">
-                                        {/* Mock Student ID Card Render */}
-                                        <div className="w-[300px] h-[460px] bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col scale-90 md:scale-100 transition-transform hover:scale-[1.02]">
-                                            {/* Card Header */}
-                                            <div className="h-[18%] bg-indigo-600 flex flex-col items-center justify-center text-white px-4">
-                                                <h4 className="text-[10px] font-black uppercase tracking-[0.3em]">Institutional ID</h4>
-                                                <p className="text-[7px] font-bold opacity-80 mt-1 uppercase">Madrasa Management System</p>
-                                            </div>
-
-                                            {/* Card Body */}
-                                            <div className="flex-1 p-8 flex flex-col items-center gap-6">
-                                                <div className="relative">
-                                                     <div className="w-28 h-28 bg-slate-50 border-4 border-slate-100 rounded-3xl overflow-hidden shadow-inner flex items-center justify-center">
-                                                        <ImageIcon className="w-12 h-12 text-slate-200" />
-                                                     </div>
-                                                     <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-lg border-2 border-white">
-                                                        <CheckCircle2 className="w-4 h-4" />
-                                                     </div>
-                                                </div>
-
-                                                <div className="text-center space-y-1">
-                                                    <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight leading-none">{s.name}</h3>
-                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{s.admissionNo}</p>
-                                                </div>
-
-                                                <div className="w-full space-y-3 pt-4 border-t-2 border-slate-50">
-                                                    <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
-                                                        <span>Class:</span> <span className="text-slate-800">{s.class}</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
-                                                        <span>Section:</span> <span className="text-slate-800">{s.section}</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
-                                                        <span>Roll No:</span> <span className="text-slate-800">{s.roll}</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest text-slate-400">
-                                                        <span>Blood Grp:</span> <span className="text-rose-600">{s.blood}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Card Footer */}
-                                            <div className="h-[12%] bg-slate-900 flex items-center justify-center px-8 relative overflow-hidden">
-                                                <div className="absolute inset-0 bg-indigo-500/10 skew-x-12" />
-                                                <div className="w-full h-8 flex items-center justify-center gap-2">
-                                                    <div className="h-0.5 bg-white/20 flex-1 rounded-full" />
-                                                    <div className="px-3 py-1 bg-white/10 rounded-full">
-                                                        <div className="w-12 h-2 border-t border-dashed border-white/40" />
-                                                    </div>
-                                                    <div className="h-0.5 bg-white/20 flex-1 rounded-full" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                   </div>
-
-                   {/* Modal Footer Info */}
-                   <div className="p-8 bg-slate-50 border-t-2 border-slate-100 flex items-center justify-center gap-8 text-[10px] font-black text-slate-400 uppercase tracking-widest shrink-0">
-                       <span className="flex items-center gap-2"><CreditCard className="w-4 h-4" /> Print Ready: High Fidelity</span>
-                       <div className="w-1 h-1 rounded-full bg-slate-300" />
-                       <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Data Validation: Success</span>
-                       <div className="w-1 h-1 rounded-full bg-slate-300" />
-                       <span className="flex items-center gap-2">Total Sheets: {Math.ceil(selectedStudents.length / 9)} A4 Pages</span>
-                   </div>
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[120] flex items-center justify-center p-3 md:p-6">
+          <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[94vh] flex flex-col overflow-hidden shadow-2xl">
+            <div className="px-6 py-4 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-white shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#123628] text-[#EAB33C] flex items-center justify-center">
+                  <Printer className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-extrabold text-slate-800">
+                    আইডি কার্ড প্রিন্ট প্রিভিউ ({toBanglaDigits(selectedStudentObjs.length)}টি কার্ড • {toBanglaDigits(pages.length)} A4 পাতা)
+                  </h2>
+                  <p className="text-xs text-slate-500">টেমপ্লেট: {activeTemplate.name}</p>
+                </div>
               </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center bg-slate-100 p-1 rounded-xl">
+                  {[
+                    { id: "front", label: "শুধু সামনে" },
+                    { id: "back", label: "শুধু পিছনে" },
+                    { id: "both", label: "সামনে + পিছনে" },
+                  ].map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => setPreviewSide(s.id)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        previewSide === s.id ? "bg-[#123628] text-white shadow-xs" : "text-slate-600"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handlePrint}
+                  className="px-5 py-2 bg-[#1C7D5A] hover:bg-[#123628] text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-2 cursor-pointer"
+                >
+                  <Printer className="w-4 h-4" /> প্রিন্ট / PDF সেভ করুন
+                </button>
+                <button
+                  onClick={() => setIsPreviewOpen(false)}
+                  className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 bg-slate-200/70 space-y-8">
+              <div id="printable-student-id-sheet" className="space-y-8">
+                {pages.map((pageCards, pIdx) => (
+                  <div
+                    key={pIdx}
+                    className="bg-white mx-auto p-5 shadow-md rounded-xl print-page-break"
+                    style={{ maxWidth: isHorizontal && previewSide === "both" ? "1050px" : "840px" }}
+                  >
+                    <div
+                      className={`grid gap-4 justify-items-center ${
+                        previewSide === "both"
+                          ? "grid-cols-1 md:grid-cols-2"
+                          : isHorizontal
+                          ? "grid-cols-1 sm:grid-cols-2"
+                          : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                      }`}
+                    >
+                      {pageCards.map((stu) => (
+                        <div key={stu._id} className="p-1 border border-dashed border-slate-300 rounded-2xl avoid-break">
+                          <IdCardRenderer
+                            template={activeTemplate}
+                            person={stu}
+                            madrasa={madrasa}
+                            targetType="student"
+                            side={previewSide}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
+        </div>
       )}
     </div>
   );
