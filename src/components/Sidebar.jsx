@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router";
 import { useAuth } from "../context/AuthContext";
-import { 
-  LayoutDashboard, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Settings,
   LogOut,
   Building2,
   Package,
@@ -26,6 +26,7 @@ import { talimatNavigation } from "../navigation/talimatNavigation";
 import { accountingNavigation } from "../navigation/accountingNavigation";
 import { useTranslation } from "react-i18next";
 import MadrasaSwitcher from "./MadrasaSwitcher";
+import CopyableMadrasaId from "./CopyableMadrasaId";
 
 
 import mlogo from "../../public/mlogo.jpg";
@@ -36,7 +37,7 @@ const SidebarItem = ({ item, level = 0 }) => {
   const { t } = useTranslation();
   const hasChildren = item.children && item.children.length > 0;
   const isActive = item.path && location.pathname === item.path;
-  
+
   // Helper to generate translation keys from English names
   const getTransKey = (name) => {
     const key = name.toLowerCase().replace(/ /g, '_').replace(/&/g, '').replace(/_+/g, '_');
@@ -45,11 +46,11 @@ const SidebarItem = ({ item, level = 0 }) => {
 
   const isChildActive = (children) => {
     if (!children) return false;
-    return children.some(child => 
+    return children.some(child =>
       (child.path && location.pathname === child.path) || isChildActive(child.children)
     );
   };
-  
+
   const activeChild = isChildActive(item.children);
 
   useEffect(() => {
@@ -63,34 +64,32 @@ const SidebarItem = ({ item, level = 0 }) => {
       <div className="mb-1">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-[8px] transition-all duration-200 group text-[14px] ${
-            activeChild
-              ? "bg-[#1C7D5A] font-semibold text-white shadow-sm border-l-[3px] border-[#EAB33C]"
-              : "text-white/85 hover:bg-white/10 hover:text-white"
-          }`}
+          className={`w-full flex items-center justify-between px-3 py-[6px] rounded-[8px] transition-all duration-200 group text-[14px] ${activeChild
+            ? "bg-[#1C7D5A] font-semibold text-white shadow-sm border-l-[3px] border-[#EAB33C]"
+            : "text-white/85 hover:bg-white/10 hover:text-white"
+            }`}
         >
-           <div className="flex items-center gap-3">
-             {item.icon ? (
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
-                  activeChild 
-                    ? "bg-white/20 text-[#EAB33C] shadow-sm" 
-                    : "text-white/85 group-hover:bg-white/10 group-hover:text-white"
+          <div className="flex items-center gap-3">
+            {item.icon ? (
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${activeChild
+                ? "bg-white/20 text-[#EAB33C] shadow-sm"
+                : "text-white/85 group-hover:bg-white/10 group-hover:text-white"
                 }`}>
-                  <item.icon className="w-[18px] h-[18px]" />
-                </div>
-             ) : (
-               <div className="w-8" />
-             )}
-             <span className="truncate font-medium">{t(getTransKey(item.name), item.name)}</span>
-           </div>
-           {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-white/80 group-hover:text-white" /> : <ChevronRight className="w-3.5 h-3.5 text-white/80 group-hover:text-white" />}
+                <item.icon className="w-[18px] h-[18px]" />
+              </div>
+            ) : (
+              <div className="w-8" />
+            )}
+            <span className="truncate font-medium">{t(getTransKey(item.name), item.name)}</span>
+          </div>
+          {isOpen ? <ChevronDown className="w-3.5 h-3.5 text-white/80 group-hover:text-white" /> : <ChevronRight className="w-3.5 h-3.5 text-white/80 group-hover:text-white" />}
         </button>
         {isOpen && (
-            <div className="mt-1 space-y-1 animate-fade-in-down origin-top overflow-hidden pl-4">
-                {item.children.map((child, index) => (
-                    <SidebarItem key={index} item={child} level={level + 1} />
-                ))}
-            </div>
+          <div className="mt-1 space-y-1 animate-fade-in-down origin-top overflow-hidden pl-4">
+            {item.children.map((child, index) => (
+              <SidebarItem key={index} item={child} level={level + 1} />
+            ))}
+          </div>
         )}
       </div>
     );
@@ -101,26 +100,24 @@ const SidebarItem = ({ item, level = 0 }) => {
       to={item.path}
       end
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2.5 rounded-[8px] transition-all duration-200 group text-[14px] ${
-          isActive
-            ? "bg-[#1C7D5A] text-white font-semibold shadow-sm border-l-[3px] border-[#EAB33C]"
-            : level > 0 
-              ? "text-white/85 hover:bg-white/10 hover:text-white ml-5"
-              : "text-white/85 hover:bg-white/10 hover:text-white"
+        `flex items-center gap-3 px-3 py-[6px] rounded-[8px] transition-all duration-200 group text-[14px] ${isActive
+          ? "bg-[#1C7D5A] text-white font-semibold shadow-sm border-l-[3px] border-[#EAB33C]"
+          : level > 0
+            ? "text-white/85 hover:bg-white/10 hover:text-white ml-5"
+            : "text-white/85 hover:bg-white/10 hover:text-white"
         }`
       }
     >
       {item.icon ? (
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
-          location.pathname === item.path 
-            ? "bg-white/20 text-[#EAB33C] shadow-sm" 
-            : "text-white/85 group-hover:bg-white/10 group-hover:text-white"
-        }`}>
-           <item.icon className="w-[18px] h-[18px]" />
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${location.pathname === item.path
+          ? "bg-white/20 text-[#EAB33C] shadow-sm"
+          : "text-white/85 group-hover:bg-white/10 group-hover:text-white"
+          }`}>
+          <item.icon className="w-[18px] h-[18px]" />
         </div>
       ) : level > 0 ? (
         <div className="flex items-center gap-3">
-           <div className={`w-[6px] h-[6px] rounded-full transition-all duration-300 ${location.pathname === item.path ? "bg-[#EAB33C] scale-125 ring-4 ring-[#EAB33C]/20" : "bg-white/40 group-hover:bg-[#EAB33C] group-hover:ring-4 group-hover:ring-[#EAB33C]/20"}`} />
+          <div className={`w-[6px] h-[6px] rounded-full transition-all duration-300 ${location.pathname === item.path ? "bg-[#EAB33C] scale-125 ring-4 ring-[#EAB33C]/20" : "bg-white/40 group-hover:bg-[#EAB33C] group-hover:ring-4 group-hover:ring-[#EAB33C]/20"}`} />
         </div>
       ) : (
         <div className="w-8" />
@@ -133,29 +130,33 @@ const SidebarItem = ({ item, level = 0 }) => {
 const Sidebar = ({ isMobileOpen, closeMobile }) => {
   const { user, logout, currentMadrasa } = useAuth();
   const { t } = useTranslation();
-  
+
   const superAdminLinks = [
-    { title: "Main", links: [
-      { name: "Dashboard", path: "/super-admin", icon: LayoutDashboard },
-      { 
-        name: "Demo Requests", 
-        icon: Sparkles,
-        children: [
-          { name: "Demo Requests List", path: "/super-admin/demo-requests", icon: FileText },
-          { name: "Demo Video Settings", path: "/super-admin/demo-video", icon: Video }
-        ]
-      },
-      { name: "Contact Messages", path: "/super-admin/contact-messages", icon: Mail },
-      { name: "Madrasas", path: "/super-admin/madrasas", icon: Building2 },
-      { name: "Subscription Plans", path: "/super-admin/plans", icon: Package },
-      { name: "Video Reviews", path: "/super-admin/reviews", icon: Video },
-      { name: "Additional Services", path: "/super-admin/additional-services", icon: Sparkles },
-      { name: "Billing & Payments", path: "/super-admin/billing", icon: Wallet },
-      { name: "SMS Settings", path: "/super-admin/sms", icon: MessageSquare },
-    ]},
-    { title: "Settings", links: [
-      { name: "Settings", path: "/super-admin/settings", icon: Settings },
-    ]}
+    {
+      title: "Main", links: [
+        { name: "Dashboard", path: "/super-admin", icon: LayoutDashboard },
+        {
+          name: "Demo Requests",
+          icon: Sparkles,
+          children: [
+            { name: "Demo Requests List", path: "/super-admin/demo-requests", icon: FileText },
+            { name: "Demo Video Settings", path: "/super-admin/demo-video", icon: Video }
+          ]
+        },
+        { name: "Contact Messages", path: "/super-admin/contact-messages", icon: Mail },
+        { name: "Madrasas", path: "/super-admin/madrasas", icon: Building2 },
+        { name: "Subscription Plans", path: "/super-admin/plans", icon: Package },
+        { name: "Video Reviews", path: "/super-admin/reviews", icon: Video },
+        { name: "Additional Services", path: "/super-admin/additional-services", icon: Sparkles },
+        { name: "Billing & Payments", path: "/super-admin/billing", icon: Wallet },
+        { name: "SMS Settings", path: "/super-admin/sms", icon: MessageSquare },
+      ]
+    },
+    {
+      title: "Settings", links: [
+        { name: "Settings", path: "/super-admin/settings", icon: Settings },
+      ]
+    }
   ];
 
   const adminLinks = [
@@ -225,25 +226,35 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
     <aside className={sidebarClasses}>
       {/* Header */}
       <div className="p-4 flex items-center justify-between border-b border-white/10 bg-[#0d271d]">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="h-11 w-11 bg-white rounded-xl p-1 flex items-center justify-center shadow-md shrink-0">
+        <div className="text-center w-full">
+          <div className=" p-1 flex items-center justify-center shadow-md shrink-0">
             {currentMadrasa?.logo ? (
-              <img src={currentMadrasa.logo} alt="Logo" className="w-full h-full object-contain" />
+              <div>
+                <img src={currentMadrasa.logo} alt="Logo" className="h-[70px] w-[70px]  rounded-full  object-contain rounded-full" />
+
+              </div>
             ) : (
-              <img src="/madrasa-sheba-logo.png" alt="Madrasa Sheba" className="w-full h-full object-contain" />
+              <img src="/madrasa-sheba-logo.png" alt="Madrasa Sheba" className="h-[70px] w-[70px]  rounded-full object-contain rounded-full" />
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="font-bold text-sm text-white tracking-tight leading-tight truncate">
+            <h1 className="font-bold text-[18px] text-white tracking-tight leading-tight truncate">
               {user?.role === "super_admin" ? "মাদ্রাসা সেবা" : (currentMadrasa?.name || "মাদ্রাসা সেবা")}
             </h1>
-            <span className="inline-block text-[11px] font-semibold text-[#EAB33C] tracking-wide mt-0.5">
-              {getRoleBadge()}
-            </span>
+            {user?.role === "super_admin" ? (
+              <span className="inline-block text-[13px] font-semibold text-[#EAB33C] tracking-wide mt-0.5">
+                {getRoleBadge()}
+              </span>
+            ) : (
+              <CopyableMadrasaId
+                code={currentMadrasa?.madrasa_code || user?.madrasa_code}
+                variant="sidebar"
+              />
+            )}
           </div>
         </div>
-        <button 
-          onClick={closeMobile} 
+        <button
+          onClick={closeMobile}
           className="lg:hidden md:hidden p-1.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all ml-2"
         >
           <X className="w-5 h-5" />
@@ -267,7 +278,7 @@ const Sidebar = ({ isMobileOpen, closeMobile }) => {
             </div>
             <div className="space-y-1">
               {section.links.map((link, index) => (
-                <div key={index} onClick={() => window.innerWidth < 768 && !link.children && closeMobile()}> 
+                <div key={index} onClick={() => window.innerWidth < 768 && !link.children && closeMobile()}>
                   <SidebarItem item={link} />
                 </div>
               ))}

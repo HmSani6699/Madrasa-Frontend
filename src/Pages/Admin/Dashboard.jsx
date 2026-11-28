@@ -9,16 +9,16 @@ import {
   MoreHorizontal,
   CalendarDays,
   Bell,
-  Loader2,
 } from "lucide-react";
 import RecentAdmissions from "../../components/RecentAdmissions";
+import ClassDistributionCard from "../../components/ClassDistributionCard";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import portalService from "../../services/portalService";
 
 const AdminDashboard = () => {
-  const { user, currentMadrasa } = useAuth();
+  const { currentMadrasa } = useAuth();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
@@ -68,22 +68,10 @@ const AdminDashboard = () => {
     }
   };
 
-  const classDistribution = (dashboardData.studentStats?.classDistribution || [
-    { className: "Class 1", count: 28 },
-    { className: "Class 2", count: 34 },
-    { className: "Class 3", count: 29 },
-    { className: "Class 4", count: 22 },
-  ]).map((item) => ({
+  const classDistribution = (dashboardData.studentStats?.classDistribution || []).map((item) => ({
     name: item.className || item.name || item.class || "Class",
     count: item.studentCount || item.count || item.students || 0,
   }));
-
-  const totalClassStudents = classDistribution.reduce(
-    (sum, item) => sum + item.count,
-    0
-  );
-
-  const chartColors = ["#1C7D5A", "#EAB33C", "#123628", "#3b82f6"];
 
   const financial = dashboardData.financialOverview || {};
   const totalAmount =
@@ -117,21 +105,21 @@ const AdminDashboard = () => {
     },
     {
       title: t("dashboard.total_students"),
-      value: dashboardData.studentStats?.totalStudents || "0",
+      value: Number(dashboardData.studentStats?.totalStudents ?? 0).toLocaleString(),
       icon: Users,
       color: "text-blue-600",
       bg: "bg-blue-50",
     },
     {
       title: t("dashboard.total_staff"),
-      value: dashboardData.studentStats?.totalStaff || "0",
+      value: Number(dashboardData.studentStats?.totalStaff ?? 0).toLocaleString(),
       icon: GraduationCap,
       color: "text-purple-600",
       bg: "bg-purple-50",
     },
     {
       title: t("dashboard.total_subjects"),
-      value: dashboardData.studentStats?.totalSubjects || "0",
+      value: Number(dashboardData.studentStats?.totalSubjects ?? 0).toLocaleString(),
       icon: CalendarCheck,
       color: "text-amber-600",
       bg: "bg-amber-50",
@@ -185,10 +173,14 @@ const AdminDashboard = () => {
           >
             <div className="absolute -top-[5%] -left-[20%] h-50 w-50 bg-[#1C7D5A18] rounded-full group-hover:scale-110 transition-transform duration-500"></div>
             <div className="relative z-20 flex flex-col items-start">
-              <h3 className="text-3xl font-bold text-slate-800 tracking-tight mb-1  relative z-20">
-                {stat.value}
-              </h3>
-              <p className="text-sm font-medium text-slate-500  relative z-20">{stat.title}</p>
+              {loading ? (
+                <div className="h-9 w-24 rounded-md bg-slate-200 animate-pulse mb-1" />
+              ) : (
+                <h3 className="text-3xl font-bold text-slate-800 tracking-tight mb-1 relative z-20">
+                  {stat.value}
+                </h3>
+              )}
+              <p className="text-sm font-medium text-slate-500 relative z-20">{stat.title}</p>
             </div>
 
             <div className="flex items-start justify-between mb-4">
@@ -205,79 +197,11 @@ const AdminDashboard = () => {
         {/* Left Column (Main) */}
         <div className="xl:col-span-2 space-y-4">
           {/* Student Distribution Overview */}
-          <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-lg font-bold text-slate-800">
-                  Class-wise Student Distribution
-                </h2>
-                <p className="text-sm text-slate-500 mt-1">
-                  A beautiful snapshot of how many students are in each class
-                </p>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5">
-                <Users className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-primary">
-                  {totalClassStudents || dashboardData.studentStats?.totalStudents || 0} Students
-                </span>
-              </div>
-            </div>
-
-            <div className="grid gap-6 lg:grid-cols-[220px_1fr] items-center">
-              <div className="flex justify-center">
-                <div className="relative w-44 h-44 rounded-full p-3 bg-linear-to-br from-slate-50 to-slate-100 border border-slate-200 shadow-inner">
-                  <div
-                    className="w-full h-full rounded-full"
-                    style={{
-                      background: `conic-gradient(${chartColors[0]} 0deg 120deg, ${chartColors[1]} 120deg 240deg, ${chartColors[2]} 240deg 320deg, ${chartColors[3]} 320deg 360deg)`,
-                    }}
-                  ></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <p className="text-3xl font-bold text-slate-800">
-                        {totalClassStudents || dashboardData.studentStats?.totalStudents || 0}
-                      </p>
-                      <p className="text-[10px] uppercase tracking-[0.25em] text-slate-400 mt-1">
-                        Students
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                {classDistribution.map((item, index) => {
-                  const percentage = totalClassStudents
-                    ? Math.round((item.count / totalClassStudents) * 100)
-                    : 0;
-
-                  return (
-                    <div key={`${item.name}-${index}`} className="space-y-1.5">
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="w-2.5 h-2.5 rounded-full"
-                            style={{ backgroundColor: chartColors[index % chartColors.length] }}
-                          ></span>
-                          <span className="font-semibold text-slate-700">{item.name}</span>
-                        </div>
-                        <span className="text-slate-500 font-medium">{item.count}</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                        <div
-                          className="h-full rounded-full"
-                          style={{
-                            width: `${percentage}%`,
-                            backgroundColor: chartColors[index % chartColors.length],
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          <ClassDistributionCard
+            data={classDistribution}
+            totalStudents={dashboardData.studentStats?.totalStudents || 0}
+            loading={loading}
+          />
 
           {/* Recent Admissions Table */}
           <div>

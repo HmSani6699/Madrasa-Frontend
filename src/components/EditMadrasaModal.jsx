@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import { Loader2, Save, Calendar, DollarSign, Activity } from "lucide-react";
+import CopyableMadrasaId from "./CopyableMadrasaId";
 import adminService from "../services/adminService";
 import toast from "react-hot-toast";
 
@@ -109,7 +110,10 @@ const EditMadrasaModal = ({ isOpen, onClose, madrasa }) => {
       <form onSubmit={handleSubmit} className="space-y-4 max-h-[80vh] overflow-y-auto px-1">
         {/* Core Info */}
         <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-100 space-y-4">
-          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Madrasa Information</h3>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Madrasa Information</h3>
+            <CopyableMadrasaId code={madrasa?.madrasa_code} />
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Madrasa Name

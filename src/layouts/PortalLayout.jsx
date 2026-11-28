@@ -30,6 +30,7 @@ const PortalLayout = () => {
   const location = useLocation();
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [isOpenProfileMenu, setIsOpenProfileMenu] = useState(false);
+  const [failedBannerSrc, setFailedBannerSrc] = useState(null);
   const profileRef = useRef(null);
 
   useEffect(() => {
@@ -56,8 +57,13 @@ const PortalLayout = () => {
   const arabicName = settings?.branding?.arabicName || "";
   const arabicLocation = settings?.branding?.arabicLocation || "";
   const logoSrc = settings?.branding?.logo || "/portal/school.png";
+  const headerBanner = settings?.branding?.headerBanner || "";
+  const showHeaderBanner = Boolean(headerBanner && failedBannerSrc !== headerBanner);
+  const rawFooterLogo = settings?.branding?.footerLogo;
   const footerLogoSrc =
-    settings?.branding?.footerLogo || settings?.branding?.logo || "/whitelogo.png";
+    rawFooterLogo && rawFooterLogo !== "/whitelogo.png"
+      ? rawFooterLogo
+      : logoSrc;
   const adminPhoto =
     settings?.profile?.adminPhoto ||
     settings?.about?.principalImage ||
@@ -193,52 +199,67 @@ const PortalLayout = () => {
 
       {/* ======> Institutional Triple Branding Header (Desktop) <====== */}
       <div className="bg-white/85 lg:block hidden border-b border-[#1C7D5A]/10">
-        <div
-          className={`lg:flex items-center ${
-            arabicName ? "justify-between" : "justify-center gap-10"
-          } max-w-[1060px] mx-auto px-4 py-3`}
-        >
-          {/* English / Primary Name */}
-          <div className={arabicName ? "text-center" : "text-left"}>
-            <h2 className="text-[26px] xl:text-[30px] font-bold text-[#123628]">
-              {englishName}
-            </h2>
-            {englishLocation && (
-              <p className="font-semibold text-slate-600 text-[15px]">
-                {englishLocation}
-              </p>
-            )}
+        {showHeaderBanner ? (
+          <div className="max-w-[1200px] mx-auto px-4 py-2.5 flex items-center justify-center">
+            <Link
+              to={basePath || "/"}
+              className="w-full flex items-center justify-center"
+            >
+              <img
+                src={headerBanner}
+                alt={madrasaName}
+                className="max-h-[120px] w-auto max-w-full object-contain mx-auto"
+                onError={() => setFailedBannerSrc(headerBanner)}
+              />
+            </Link>
           </div>
-
-          {/* Madrasa Crest Logo */}
-          <Link
-            to={basePath || "/"}
-            className="w-[120px] flex-shrink-0 flex justify-center"
+        ) : (
+          <div
+            className={`lg:flex items-center ${arabicName ? "justify-between" : "justify-center gap-10"
+              } max-w-[1060px] mx-auto px-4 py-3`}
           >
-            <img
-              src={logoSrc}
-              alt={madrasaName}
-              className="w-[110px] h-[110px] object-contain"
-              onError={(e) => {
-                e.currentTarget.src = "/portal/school.png";
-              }}
-            />
-          </Link>
-
-          {/* Arabic Name (shown when configured) */}
-          {arabicName && (
-            <div className="text-center" dir="rtl">
-              <h2 className="text-[26px] xl:text-[30px] font-bold text-[#123628] font-arabic">
-                {arabicName}
+            {/* English / Primary Name */}
+            <div className={arabicName ? "text-center" : "text-left"}>
+              <h2 className="text-[26px] xl:text-[30px] font-bold text-[#123628]">
+                {englishName}
               </h2>
-              {arabicLocation && (
-                <p className="font-semibold text-slate-600 text-[15px] font-arabic">
-                  {arabicLocation}
+              {englishLocation && (
+                <p className="font-semibold text-slate-600 text-[15px]">
+                  {englishLocation}
                 </p>
               )}
             </div>
-          )}
-        </div>
+
+            {/* Madrasa Crest Logo */}
+            <Link
+              to={basePath || "/"}
+              className="w-[120px] flex-shrink-0 flex justify-center"
+            >
+              <img
+                src={logoSrc}
+                alt={madrasaName}
+                className="w-[110px] h-[110px] object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = "/portal/school.png";
+                }}
+              />
+            </Link>
+
+            {/* Arabic Name (shown when configured) */}
+            {arabicName && (
+              <div className="text-center" dir="rtl">
+                <h2 className="text-[26px] xl:text-[30px] font-bold text-[#123628] font-arabic">
+                  {arabicName}
+                </h2>
+                {arabicLocation && (
+                  <p className="font-semibold text-slate-600 text-[15px] font-arabic">
+                    {arabicLocation}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ======> Main Sticky White Navbar <====== */}
@@ -268,18 +289,16 @@ const PortalLayout = () => {
                 <div key={item.path} className="group relative pb-1">
                   <Link
                     to={item.path}
-                    className={`transition-colors duration-300 font-semibold text-[16px] ${
-                      active
-                        ? "text-[#1C7D5A]"
-                        : "text-[#0f172a] hover:text-[#1C7D5A]"
-                    }`}
+                    className={`transition-colors duration-300 font-semibold text-[16px] ${active
+                      ? "text-[#1C7D5A]"
+                      : "text-[#0f172a] hover:text-[#1C7D5A]"
+                      }`}
                   >
                     {item.label}
                   </Link>
                   <div
-                    className={`absolute left-0 bottom-0 h-[2px] bg-[#1C7D5A] transition-all duration-300 ${
-                      active ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
+                    className={`absolute left-0 bottom-0 h-[2px] bg-[#1C7D5A] transition-all duration-300 ${active ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
                   />
                 </div>
               );
@@ -443,24 +462,17 @@ const PortalLayout = () => {
               {/* Brand Column */}
               <div className="w-full mt-[30px] lg:mt-0">
                 <div className="flex justify-center items-center lg:justify-start gap-[14px]">
-                  <div className="w-[64px] h-[64px] rounded-2xl bg-white p-1.5 flex items-center justify-center overflow-hidden shadow-md">
+                  <div className="w-[70px] h-[70px] shrink-0 rounded-full bg-white p-1.5 flex items-center justify-center overflow-hidden shadow-md">
                     <img
                       className="w-full h-full object-contain"
                       src={footerLogoSrc}
                       alt={madrasaName}
                       onError={(e) => {
-                        e.currentTarget.src = "/whitelogo.png";
+                        e.currentTarget.src = "/portal/school.png";
                       }}
                     />
                   </div>
-                  <div>
-                    <h3 className="text-[20px] font-bold text-white">{madrasaName}</h3>
-                    {settings?.branding?.tagline && (
-                      <p className="text-[13px] text-[#EAB33C] font-medium">
-                        {settings.branding.tagline}
-                      </p>
-                    )}
-                  </div>
+
                 </div>
                 <p className="text-slate-300 text-[16px] mt-[20px] lg:pr-[60px] text-center lg:text-left leading-relaxed">
                   {settings?.footer?.aboutText ||

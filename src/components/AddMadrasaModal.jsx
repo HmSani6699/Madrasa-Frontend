@@ -90,7 +90,8 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
         nextBillingDate: formData.nextBillingDate
       };
 
-      await adminService.createMadrasa(payload);
+      const res = await adminService.createMadrasa(payload);
+      const createdCode = res?.data?.madrasa_code;
       setLoading(false);
       onClose();
 
@@ -109,7 +110,11 @@ const AddMadrasaModal = ({ isOpen, onClose }) => {
         nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       });
 
-      toast.success('Madrasa and Admin created successfully!');
+      toast.success(
+        createdCode
+          ? `Madrasa created successfully! ID: ${createdCode}`
+          : 'Madrasa and Admin created successfully!'
+      );
 
     } catch (err) {
       setLoading(false);

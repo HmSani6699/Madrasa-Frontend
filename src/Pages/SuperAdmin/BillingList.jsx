@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Search, Loader2, Wallet, DollarSign, Calendar, Clock, CheckCircle2, AlertTriangle, HelpCircle, ArrowRightLeft, ShieldAlert, Award, FileSpreadsheet, MoreHorizontal } from "lucide-react";
 import adminService from "../../services/adminService";
+import CopyableMadrasaId from "../../components/CopyableMadrasaId";
 import toast from "react-hot-toast";
 
 const BillingList = () => {
@@ -75,6 +76,7 @@ const BillingList = () => {
 
   const filteredMadrasas = madrasas.filter(item =>
     item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.madrasa_code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.admin?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -252,7 +254,10 @@ const BillingList = () => {
                       {/* Madrasa Details */}
                       <td className="py-4 px-6">
                         <div>
-                          <p className="font-bold text-gray-900">{item.name}</p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-bold text-gray-900">{item.name}</p>
+                            <CopyableMadrasaId code={item.madrasa_code} />
+                          </div>
                           <p className="text-xs text-gray-400 mt-0.5">{item.admin} | {item.phone}</p>
                         </div>
                       </td>

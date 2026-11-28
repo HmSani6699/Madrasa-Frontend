@@ -29,7 +29,8 @@ const defaultSettings = {
     tagline: "",
     logoText: "MS",
     logo: "/portal/school.png",
-    footerLogo: "/whitelogo.png",
+    footerLogo: "/portal/school.png",
+    headerBanner: "",
   },
   contact: {
     phone: "",
@@ -181,10 +182,14 @@ const mergePortalData = (remoteSettings = {}, madrasa = null) => {
       tagline: remoteSettings.branding?.tagline || instAddress,
       logo: remoteSettings.branding?.logo || madrasa?.logo || defaultSettings.branding.logo,
       footerLogo:
-        remoteSettings.branding?.footerLogo ||
+        (remoteSettings.branding?.footerLogo &&
+        remoteSettings.branding.footerLogo !== "/whitelogo.png"
+          ? remoteSettings.branding.footerLogo
+          : "") ||
         remoteSettings.branding?.logo ||
         madrasa?.logo ||
-        defaultSettings.branding.footerLogo,
+        defaultSettings.branding.logo,
+      headerBanner: remoteSettings.branding?.headerBanner || "",
     },
     contact: {
       ...defaultSettings.contact,
@@ -353,7 +358,12 @@ export const PortalSettingsProvider = ({ children }) => {
 
   const updateSettings = async (newSettings) => {
     setSettings(newSettings);
-    localStorage.setItem("portal_settings", JSON.stringify(newSettings));
+    try {
+      // Remove any legacy oversized cache so base64 portal images never exhaust localStorage quota
+      localStorage.removeItem("portal_settings");
+    } catch {
+      // Ignore storage errors
+    }
 
     const token = localStorage.getItem("accessToken");
     if (!token) return { success: true };
@@ -367,7 +377,6 @@ export const PortalSettingsProvider = ({ children }) => {
           response.data.data.madrasa
         );
         setSettings(merged);
-        localStorage.setItem("portal_settings", JSON.stringify(merged));
         return { success: true, data: merged };
       }
       return { success: true };

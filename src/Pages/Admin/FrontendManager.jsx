@@ -279,12 +279,62 @@ const FrontendManager = () => {
                             accept="image/*"
                             className="hidden"
                             onChange={(e) =>
-                              handleImageUpload(e.target.files?.[0], (res) =>
-                                handleUpdate("branding.logo", res)
-                              )
+                              handleImageUpload(e.target.files?.[0], (res) => {
+                                handleUpdate("branding.logo", res);
+                                handleUpdate("branding.footerLogo", res);
+                              })
                             }
                           />
                         </label>
+                      </div>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="text-sm font-bold text-slate-700 mb-1 block">
+                        Header Banner Image (Portal Top Middle Banner)
+                      </label>
+                      <p className="text-xs text-slate-500 mb-2.5">
+                        পাবলিক পোর্টালের উপরের অংশে (বাংলা/আরবি নাম ও লোগোসহ) পূর্ণ হেডার ব্যানার ইমেজ দেখাতে চাইলে এখানে আপলোড করুন।
+                      </p>
+                      <div className="space-y-3">
+                        {localSettings?.branding?.headerBanner && (
+                          <div className="relative rounded-xl border border-slate-200 bg-white p-3 flex items-center justify-center">
+                            <img
+                              src={localSettings.branding.headerBanner}
+                              alt="Header Banner Preview"
+                              className="max-h-28 w-auto max-w-full object-contain mx-auto"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleUpdate("branding.headerBanner", "")}
+                              title="Remove Header Banner"
+                              className="absolute top-2 right-2 p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        )}
+                        <div className="flex flex-wrap items-center gap-3">
+                          <label className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-[#1C7D5A]">
+                            <ImageIcon className="w-4 h-4 text-slate-500" />
+                            <span className="text-sm font-semibold text-slate-600">
+                              {localSettings?.branding?.headerBanner
+                                ? "Change Header Banner"
+                                : "Upload Header Banner"}
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                handleImageUpload(file, (res) =>
+                                  handleUpdate("branding.headerBanner", res)
+                                );
+                                e.target.value = "";
+                              }}
+                            />
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>

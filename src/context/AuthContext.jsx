@@ -3,6 +3,18 @@ import authService from "../services/authService";
 
 const AuthContext = createContext();
 
+const safeStoreCurrentMadrasa = (madrasa) => {
+  try {
+    if (madrasa) {
+      localStorage.setItem("currentMadrasa", JSON.stringify(madrasa));
+    } else {
+      localStorage.removeItem("currentMadrasa");
+    }
+  } catch {
+    // Ignore storage quota errors (e.g. if madrasa contains a large base64 logo)
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   /* General State */
   const [user, setUser] = useState(null);
@@ -46,6 +58,8 @@ export const AuthProvider = ({ children }) => {
       const refreshToken = localStorage.getItem("refreshToken");
       const storedUser = localStorage.getItem("user");
       
+      let loadedMadrasa = null;
+
       if (accessToken && storedUser) {
         try {
           setUser(JSON.parse(storedUser));
@@ -57,7 +71,9 @@ export const AuthProvider = ({ children }) => {
           const profileRes = await authService.getCurrentUser();
           if (profileRes.success) {
             setUser(profileRes.data.user);
-            setCurrentMadrasa(profileRes.data.madrasa);
+            loadedMadrasa = profileRes.data.madrasa || null;
+            setCurrentMadrasa(loadedMadrasa);
+            safeStoreCurrentMadrasa(loadedMadrasa);
             if (Array.isArray(profileRes.data.guardianChildren)) {
               syncGuardianChildren(profileRes.data.guardianChildren);
             }
@@ -80,7 +96,9 @@ export const AuthProvider = ({ children }) => {
               const profileRes = await authService.getCurrentUser();
               if (profileRes.success) {
                 setUser(profileRes.data.user);
-                setCurrentMadrasa(profileRes.data.madrasa);
+                loadedMadrasa = profileRes.data.madrasa || null;
+                setCurrentMadrasa(loadedMadrasa);
+                safeStoreCurrentMadrasa(loadedMadrasa);
                 if (Array.isArray(profileRes.data.guardianChildren)) {
                   syncGuardianChildren(profileRes.data.guardianChildren);
                 }
@@ -102,7 +120,7 @@ export const AuthProvider = ({ children }) => {
       if (storedMadrasas) {
         try { setMadrasas(JSON.parse(storedMadrasas)); } catch { localStorage.removeItem("madrasas"); }
       }
-      if (storedCurrentMadrasa && !currentMadrasa) {
+      if (storedCurrentMadrasa && !loadedMadrasa) {
         try { setCurrentMadrasa(JSON.parse(storedCurrentMadrasa)); } catch { localStorage.removeItem("currentMadrasa"); }
       }
       if (storedChildren) {
@@ -142,7 +160,9 @@ export const AuthProvider = ({ children }) => {
           const profileRes = await authService.getCurrentUser();
           if (profileRes.success) {
             setUser(profileRes.data.user);
-            setCurrentMadrasa(profileRes.data.madrasa);
+            const loadedMadrasa = profileRes.data.madrasa || null;
+            setCurrentMadrasa(loadedMadrasa);
+            safeStoreCurrentMadrasa(loadedMadrasa);
             if (Array.isArray(profileRes.data.guardianChildren)) {
               syncGuardianChildren(profileRes.data.guardianChildren);
             }

@@ -1,5 +1,6 @@
 import { ShieldCheck, ShieldAlert, MapPin, Users, Phone, Mail, User, BookOpen, Calendar, DollarSign, Award } from "lucide-react";
 import Modal from "./Modal";
+import CopyableMadrasaId from "./CopyableMadrasaId";
 
 const ViewMadrasaModal = ({ isOpen, onClose, madrasa }) => {
   if (!madrasa) return null;
@@ -30,7 +31,10 @@ const ViewMadrasaModal = ({ isOpen, onClose, madrasa }) => {
         {/* Header Section */}
         <div className="flex items-start justify-between bg-gradient-to-r from-primary/5 to-transparent p-4 rounded-2xl border border-primary/10">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">{madrasa.name}</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-xl font-bold text-gray-900">{madrasa.name}</h2>
+              <CopyableMadrasaId code={madrasa.madrasa_code} />
+            </div>
             <div className="flex flex-wrap items-center gap-2 mt-1">
               <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                 madrasa.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :

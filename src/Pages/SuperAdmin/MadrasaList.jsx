@@ -5,6 +5,7 @@ import ViewMadrasaModal from "../../components/ViewMadrasaModal";
 import EditMadrasaModal from "../../components/EditMadrasaModal";
 import ChangeStatusModal from "../../components/ChangeStatusModal";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
+import CopyableMadrasaId from "../../components/CopyableMadrasaId";
 import adminService from "../../services/adminService";
 import toast from "react-hot-toast";
 
@@ -48,8 +49,10 @@ const MadrasaList = () => {
 
   // Filter Logic
   const filteredMadrasas = allMadrasas.filter(madrasa => {
-    const matchesSearch = (madrasa.name?.toLowerCase().includes(searchTerm.toLowerCase())) || 
-                           (madrasa.admin?.toLowerCase().includes(searchTerm.toLowerCase()));
+    const query = searchTerm.toLowerCase();
+    const matchesSearch = (madrasa.name?.toLowerCase().includes(query)) ||
+                           (madrasa.madrasa_code?.toLowerCase().includes(query)) ||
+                           (madrasa.admin?.toLowerCase().includes(query));
     const matchesStatus = statusFilter === "All" || madrasa.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -74,7 +77,7 @@ const MadrasaList = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input 
                     type="text" 
-                    placeholder="Search madrasas..." 
+                    placeholder="Search name, ID, admin..." 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 w-full sm:w-64 shadow-sm"
@@ -112,8 +115,11 @@ const MadrasaList = () => {
                  return (
                    <tr key={item._id || item.id} className="hover:bg-gray-50/50 transition-colors group">
                      <td className="py-4 px-6">
-                       <div>
-                           <p className="font-semibold text-gray-900">{item.name}</p>
+                       <div className="space-y-1">
+                           <div className="flex flex-wrap items-center gap-2">
+                             <p className="font-semibold text-gray-900">{item.name}</p>
+                             <CopyableMadrasaId code={item.madrasa_code} />
+                           </div>
                            <p className="text-xs text-gray-500 flex items-center gap-1">
                                <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
                                {item.location} • <span className="font-semibold text-gray-700">{item.students} / {studentLimit}</span> Students
